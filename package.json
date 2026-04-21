@@ -1,0 +1,23 @@
+{
+  "name": "agent",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@pinecone-database/pinecone": "^7.2.0",
+    "@supabase/supabase-js": "^2.104.0",
+    "axios": "^1.15.1",
+    "dotenv": "^17.4.2",
+    "openai": "^6.34.0"
+  }
+}
