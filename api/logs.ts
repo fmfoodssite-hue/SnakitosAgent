@@ -1,6 +1,7 @@
-const supabase = require('../lib/supabase');
+import { VercelRequest, VercelResponse } from '@vercel/node';
+import supabase from '../lib/supabase';
 
-module.exports = async (req, res) => {
+export default async (req: VercelRequest, res: VercelResponse) => {
   if (req.method === 'GET') {
     // Fetch logs for the admin dashboard
     const { data, error } = await supabase

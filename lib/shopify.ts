@@ -1,10 +1,10 @@
-const axios = require('axios');
-const crypto = require('crypto');
+import axios from 'axios';
+import * as crypto from 'crypto';
 
 const shopifyApi = axios.create({
   baseURL: `https://${process.env.SHOPIFY_SHOP_DOMAIN}/admin/api/2024-01`,
   headers: {
-    'X-Shopify-Access-Token': process.env.SHOPIFY_ADMIN_API_ACCESS_TOKEN,
+    'X-Shopify-Access-Token': process.env.SHOPIFY_ADMIN_API_ACCESS_TOKEN || '',
     'Content-Type': 'application/json',
   },
 });
@@ -12,7 +12,7 @@ const shopifyApi = axios.create({
 /**
  * Verifies the HMAC signature for Shopify App Proxy requests
  */
-function verifyShopifyProxy(params, secret) {
+export function verifyShopifyProxy(params: Record<string, any>, secret: string): boolean {
   const { hmac, ...rest } = params;
   if (!hmac) return false;
 
@@ -32,7 +32,7 @@ function verifyShopifyProxy(params, secret) {
 /**
  * Fetch real-time order status
  */
-async function getOrderStatus(orderId) {
+export async function getOrderStatus(orderId: string): Promise<any> {
   try {
     const response = await shopifyApi.get(`/orders/${orderId}.json`);
     return response.data.order;
@@ -45,7 +45,7 @@ async function getOrderStatus(orderId) {
 /**
  * Fetch real-time product info
  */
-async function getProductInfo(productId) {
+export async function getProductInfo(productId: string): Promise<any> {
   try {
     const response = await shopifyApi.get(`/products/${productId}.json`);
     return response.data.product;
@@ -55,9 +55,4 @@ async function getProductInfo(productId) {
   }
 }
 
-module.exports = {
-  shopifyApi,
-  verifyShopifyProxy,
-  getOrderStatus,
-  getProductInfo,
-};
+export default shopifyApi;

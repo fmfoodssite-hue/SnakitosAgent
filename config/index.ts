@@ -1,6 +1,7 @@
-require("dotenv").config();
+import dotenv from 'dotenv';
+dotenv.config();
 
-module.exports = {
+export const config = {
   openai: {
     apiKey: process.env.OPENAI_API_KEY,
   },
@@ -14,3 +15,5 @@ module.exports = {
     accessToken: process.env.SHOPIFY_ADMIN_API_ACCESS_TOKEN,
   },
 };
+
+export default config;

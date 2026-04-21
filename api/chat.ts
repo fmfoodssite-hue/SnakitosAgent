@@ -1,9 +1,10 @@
-const supabase = require('../lib/supabase');
-const openai = require('../lib/ai');
-const { index } = require('../lib/pinecone');
-const { getOrderStatus } = require('../lib/shopify');
+import { VercelRequest, VercelResponse } from '@vercel/node';
+import supabase from '../lib/supabase';
+import openai from '../lib/ai';
+import { index } from '../lib/pinecone';
+import { getOrderStatus } from '../lib/shopify';
 
-module.exports = async (req, res) => {
+export default async (req: VercelRequest, res: VercelResponse) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -13,16 +14,16 @@ module.exports = async (req, res) => {
   try {
     // 1. PINECONE: Retrieve relevant knowledge base context
     const queryResponse = await index.query({
-      vector: Array(1536).fill(0), // In reality, you'd embed the user's message here
+      vector: Array(1536).fill(0), 
       topK: 3,
       includeMetadata: true,
     });
 
     const context = queryResponse.matches
-      .map(match => match.metadata.text)
+      .map(match => match.metadata?.text || '')
       .join('\n');
 
-    // 2. SHOPIFY: Real-time Order Tracking (if order number present)
+    // 2. SHOPIFY: Real-time Order Tracking
     let orderDetails = '';
     const orderMatch = message.match(/#\d+/);
     if (orderMatch) {
@@ -33,7 +34,7 @@ module.exports = async (req, res) => {
       }
     }
 
-    // 3. OPENAI: Generate Response with Context and Real-time Data
+    // 3. OPENAI: Generate Response
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
@@ -50,7 +51,7 @@ module.exports = async (req, res) => {
     ]);
 
     res.status(200).json({ response: aiResponse });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Chat Error:', error);
     res.status(500).json({ error: 'Failed to process chat' });
   }
