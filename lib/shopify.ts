@@ -1,58 +1,46 @@
-import axios from 'axios';
-import * as crypto from 'crypto';
+import * as crypto from "crypto";
+import { shopifyService } from "../services/shopify.service";
 
-const shopifyApi = axios.create({
-  baseURL: `https://${process.env.SHOPIFY_SHOP_DOMAIN}/admin/api/2024-01`,
-  headers: {
-    'X-Shopify-Access-Token': process.env.SHOPIFY_ADMIN_API_ACCESS_TOKEN || '',
-    'Content-Type': 'application/json',
-  },
-});
+export function verifyShopifyProxy(
+  params: Record<string, string | string[]>,
+  secret: string,
+): boolean {
+  const { hmac, signature, ...rest } = params;
+  const providedHmac = Array.isArray(hmac) ? hmac[0] : hmac;
+  const providedSignature = Array.isArray(signature) ? signature[0] : signature;
+  const digest = providedHmac || providedSignature;
 
-/**
- * Verifies the HMAC signature for Shopify App Proxy requests
- */
-export function verifyShopifyProxy(params: Record<string, any>, secret: string): boolean {
-  const { hmac, ...rest } = params;
-  if (!hmac) return false;
+  if (!digest) {
+    return false;
+  }
 
-  const sortedParams = Object.keys(rest)
+  const serialized = Object.keys(rest)
     .sort()
-    .map(key => `${key}=${Array.isArray(rest[key]) ? rest[key].join(',') : rest[key]}`)
-    .join('');
-  
-  const calculatedHmac = crypto
-    .createHmac('sha256', secret)
-    .update(sortedParams)
-    .digest('hex');
+    .map((key) => {
+      const value = rest[key];
+      return `${key}=${Array.isArray(value) ? value.join(",") : value}`;
+    })
+    .join("");
 
-  return calculatedHmac === hmac;
+  const calculated = crypto.createHmac("sha256", secret).update(serialized).digest("hex");
+  return crypto.timingSafeEqual(Buffer.from(calculated), Buffer.from(digest));
 }
 
-/**
- * Fetch real-time order status
- */
-export async function getOrderStatus(orderId: string): Promise<any> {
-  try {
-    const response = await shopifyApi.get(`/orders/${orderId}.json`);
-    return response.data.order;
-  } catch (error) {
-    console.error('Shopify Order Error:', error);
-    return null;
-  }
+export async function getOrderStatus(orderId: string) {
+  return shopifyService.findOrder(orderId);
 }
 
-/**
- * Fetch real-time product info
- */
-export async function getProductInfo(productId: string): Promise<any> {
-  try {
-    const response = await shopifyApi.get(`/products/${productId}.json`);
-    return response.data.product;
-  } catch (error) {
-    console.error('Shopify Product Error:', error);
-    return null;
-  }
+export async function getProductInfo(query: string) {
+  const products = await shopifyService.searchProducts(query);
+  return products[0] ?? null;
 }
 
-export default shopifyApi;
+export async function getRecentOrders(limit = 5) {
+  return shopifyService.getRecentOrders(limit);
+}
+
+export async function getStoreStats() {
+  return shopifyService.getStoreStats();
+}
+
+export default shopifyService;

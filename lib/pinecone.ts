@@ -1,7 +1,11 @@
-import { Pinecone } from '@pinecone-database/pinecone';
+import { knowledgeService } from "../services/knowledge.service";
 
-export const pc = new Pinecone({
-  apiKey: process.env.PINECONE_API_KEY || ''
-});
+export const index = {
+  query: async (_input: unknown) => ({
+    matches: (await knowledgeService.retrieve("")).map((item) => ({
+      metadata: { text: item.content },
+    })),
+  }),
+};
 
-export const index = pc.index(process.env.PINECONE_INDEX || 'agent-index');
+export default index;

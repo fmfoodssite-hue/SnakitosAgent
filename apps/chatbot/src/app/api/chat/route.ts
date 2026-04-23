@@ -1,19 +1,33 @@
 import { NextResponse } from "next/server";
-import { saveInteraction } from "@/lib/supabase";
+import { supportAgentService } from "../../../../../../services/support-agent.service";
+import { ChatRequestBody } from "../../../../../../types/chat.types";
 
 export async function POST(request: Request) {
   try {
-    const { message, userId } = await request.json();
+    const body = (await request.json()) as ChatRequestBody;
+    const message = typeof body.message === "string" ? body.message.trim() : "";
 
-    // 1. Logic for AI Response (Placeholder for now)
-    // You would normally call OpenAI here
-    const aiResponse = `I received your message: "${message}". How can I help you with your Shopify order?`;
+    if (!message) {
+      return NextResponse.json({ error: "Message is required." }, { status: 400 });
+    }
 
-    // 2. Save the interaction to Supabase for the Admin to see
-    await saveInteraction(userId || "anonymous", message, aiResponse);
+    const result = await supportAgentService.handleChat({
+      message,
+      userId: body.userId,
+      chatId: body.chatId,
+      email: body.email,
+      phone: body.phone,
+    });
 
-    return NextResponse.json({ response: aiResponse });
+    return NextResponse.json(result);
   } catch (error) {
-    return NextResponse.json({ error: "Failed to process chat" }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: "Failed to process chat",
+        response:
+          "We are having trouble processing your request right now. Please contact support on WhatsApp: +92-345-828-3827",
+      },
+      { status: 500 },
+    );
   }
 }

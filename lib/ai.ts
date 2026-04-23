@@ -1,7 +1,5 @@
-import OpenAI from "openai";
+import { aiService, openaiClient } from "../services/ai.service";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+export const generateSupportResponse = aiService.generateResponse.bind(aiService);
 
-export default openai;
+export default openaiClient;
