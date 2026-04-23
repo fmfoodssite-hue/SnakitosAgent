@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { 
   LayoutDashboard, 
   ShoppingBag, 
@@ -11,7 +11,8 @@ import {
   Settings, 
   Zap,
   BarChart3,
-  Bot
+  Bot,
+  LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -27,6 +28,13 @@ const menuItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/login");
+    router.refresh();
+  };
 
   return (
     <div className="w-64 h-screen border-r border-white/5 bg-[#09090b] flex flex-col sticky top-0">
@@ -66,7 +74,15 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="p-4 mt-auto">
+      <div className="p-4 space-y-2 mt-auto">
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-400 hover:text-red-400 hover:bg-red-500/5 transition-all duration-200 group"
+        >
+          <LogOut className="w-5 h-5 transition-transform group-hover:-translate-x-1" />
+          <span className="font-medium">Logout</span>
+        </button>
+
         <div className="glass-card p-4 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20">
           <p className="text-xs font-semibold text-indigo-400 uppercase tracking-wider mb-1">Status</p>
           <div className="flex items-center gap-2">
