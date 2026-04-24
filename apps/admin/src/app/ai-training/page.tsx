@@ -17,6 +17,11 @@ export default function AiTrainingPage() {
   }, []);
 
   const fetchKnowledge = async () => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from("knowledge")
@@ -34,7 +39,7 @@ export default function AiTrainingPage() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title || !content) return;
+    if (!title || !content || !supabase) return;
 
     setSaving(true);
     try {
@@ -55,6 +60,8 @@ export default function AiTrainingPage() {
   };
 
   const handleDelete = async (id: number) => {
+    if (!supabase) return;
+
     try {
       const { error } = await supabase
         .from("knowledge")

@@ -22,6 +22,11 @@ export default function InteractionsPage() {
   }, [selectedUser]);
 
   const fetchSessions = async () => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
+
     try {
       // Get unique user IDs and their latest message
       const { data, error } = await supabase
@@ -49,6 +54,8 @@ export default function InteractionsPage() {
   };
 
   const fetchMessages = async (userId: string) => {
+    if (!supabase) return;
+
     try {
       const { data, error } = await supabase
         .from("interactions")
