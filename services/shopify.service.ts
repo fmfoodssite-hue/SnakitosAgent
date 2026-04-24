@@ -29,6 +29,26 @@ type ShopifyAccessTokenResponse = {
   expires_in: number;
 };
 
+type StorefrontProductsResponse = {
+  products: Array<{
+    id: number;
+    title: string;
+    handle: string;
+    status?: string;
+    tags?: string;
+    vendor?: string;
+    product_type?: string;
+    body_html?: string;
+    variants?: Array<{
+      id: number;
+      title: string;
+      sku: string | null;
+      price: string;
+      available?: boolean;
+    }>;
+  }>;
+};
+
 const cache = new Map<string, CacheEntry<unknown>>();
 const DEFAULT_TTL_MS = 60_000;
 
@@ -118,64 +138,74 @@ export class ShopifyService {
       return cached;
     }
 
-    const data = await this.graphql<{
-      products: {
-        edges: Array<{ node: ProductSearchNode }>;
-      };
-    }>(
-      `
-        query SearchProducts($query: String!) {
-          products(first: 5, query: $query) {
-            edges {
-              node {
-                id
-                legacyResourceId
-                title
-                handle
-                status
-                totalInventory
-                variants(first: 5) {
-                  edges {
-                    node {
-                      id
-                      title
-                      sku
-                      price
-                      inventoryQuantity
+    let products: ProductLookupResult[];
+
+    try {
+      const data = await this.graphql<{
+        products: {
+          edges: Array<{ node: ProductSearchNode }>;
+        };
+      }>(
+        `
+          query SearchProducts($query: String!) {
+            products(first: 5, query: $query) {
+              edges {
+                node {
+                  id
+                  legacyResourceId
+                  title
+                  handle
+                  status
+                  totalInventory
+                  variants(first: 5) {
+                    edges {
+                      node {
+                        id
+                        title
+                        sku
+                        price
+                        inventoryQuantity
+                      }
                     }
                   }
                 }
               }
             }
           }
-        }
-      `,
-      {
-        query: `title:*${trimmed}* OR handle:*${trimmed}*`,
-      },
-    );
+        `,
+        {
+          query: `title:*${trimmed}* OR handle:*${trimmed}*`,
+        },
+      );
 
-    const products: ProductLookupResult[] = data.products.edges.map(({ node }) => ({
-      id: node.legacyResourceId,
-      title: node.title,
-      handle: node.handle,
-      status: node.status,
-      price: node.variants.edges[0]?.node.price ?? null,
-      availability:
-        typeof node.totalInventory === "number"
-          ? node.totalInventory > 0
-            ? "in_stock"
-            : "out_of_stock"
-          : "unknown",
-      totalInventory: node.totalInventory,
-      variants: node.variants.edges.map(({ node: variant }) => ({
-        id: variant.id,
-        title: variant.title,
-        price: variant.price,
-        sku: variant.sku,
-        inventoryQuantity: variant.inventoryQuantity,
-      })),
-    }));
+      products = data.products.edges.map(({ node }) => ({
+        id: node.legacyResourceId,
+        title: node.title,
+        handle: node.handle,
+        status: node.status,
+        price: node.variants.edges[0]?.node.price ?? null,
+        availability:
+          typeof node.totalInventory === "number"
+            ? node.totalInventory > 0
+              ? "in_stock"
+              : "out_of_stock"
+            : "unknown",
+        totalInventory: node.totalInventory,
+        variants: node.variants.edges.map(({ node: variant }) => ({
+          id: variant.id,
+          title: variant.title,
+          price: variant.price,
+          sku: variant.sku,
+          inventoryQuantity: variant.inventoryQuantity,
+        })),
+      }));
+    } catch (error) {
+      if (!this.shouldUseStorefrontFallback(error)) {
+        throw error;
+      }
+
+      products = await this.searchProductsViaStorefront(trimmed);
+    }
 
     return setCached(cacheKey, products);
   }
@@ -442,6 +472,10 @@ export class ShopifyService {
   }
 
   private async getAdminAccessToken(): Promise<string> {
+    if (config.shopify.accessToken) {
+      return config.shopify.accessToken;
+    }
+
     if (config.shopify.clientId && config.shopify.clientSecret) {
       if (this.tokenCache && Date.now() < this.tokenCache.expiresAt - 60_000) {
         return this.tokenCache.token;
@@ -475,11 +509,103 @@ export class ShopifyService {
       return payload.access_token;
     }
 
-    if (!config.shopify.accessToken) {
-      throw new Error("Shopify Admin API credentials are not configured.");
+    throw new Error("Shopify Admin API credentials are not configured.");
+  }
+
+  private shouldUseStorefrontFallback(error: unknown): boolean {
+    if (!(error instanceof Error)) {
+      return false;
     }
 
-    return config.shopify.accessToken;
+    const message = error.message.toLowerCase();
+    return (
+      message.includes("authentication failed") ||
+      message.includes("invalid api key or access token") ||
+      message.includes("credentials are not configured")
+    );
+  }
+
+  private async searchProductsViaStorefront(query: string): Promise<ProductLookupResult[]> {
+    if (!config.shopify.storefrontDomain) {
+      throw new Error(
+        "Shopify product catalog is unavailable because SHOPIFY_SHOP_DOMAIN is not configured.",
+      );
+    }
+
+    const response = await fetch(
+      `https://${config.shopify.storefrontDomain}/products.json?limit=250`,
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Shopify storefront catalog request failed with status ${response.status}.`,
+      );
+    }
+
+    const payload = (await response.json()) as StorefrontProductsResponse;
+    const normalizedQuery = this.normalizeSearchText(query);
+
+    const matches = payload.products
+      .filter((product) => {
+        const haystack = this.normalizeSearchText(
+          [
+            product.title,
+            product.handle,
+            product.vendor,
+            product.product_type,
+            product.tags,
+            product.body_html,
+          ]
+            .filter(Boolean)
+            .join(" "),
+        );
+
+        return haystack.includes(normalizedQuery);
+      })
+      .slice(0, 5);
+
+    return matches.map((product) => {
+      const variants = (product.variants ?? []).map((variant) => ({
+        id: String(variant.id),
+        title: variant.title,
+        price: variant.price,
+        sku: variant.sku,
+        inventoryQuantity: null,
+      }));
+      const variantAvailability = (product.variants ?? [])
+        .map((variant) => variant.available)
+        .filter((value): value is boolean => typeof value === "boolean");
+      const hasAvailableVariant = (product.variants ?? []).some((variant) => variant.available);
+
+      return {
+        id: String(product.id),
+        title: product.title,
+        handle: product.handle,
+        status: (product.status ?? "active").toUpperCase(),
+        price: variants[0]?.price ?? null,
+        availability:
+          variantAvailability.length === 0
+            ? "unknown"
+            : hasAvailableVariant
+              ? "in_stock"
+              : "out_of_stock",
+        totalInventory: null,
+        variants,
+      };
+    });
+  }
+
+  private normalizeSearchText(value: string): string {
+    return value
+      .toLowerCase()
+      .replace(/<[^>]+>/g, " ")
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim();
   }
 }
 
