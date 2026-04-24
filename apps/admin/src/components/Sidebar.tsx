@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+const adminBasePath = process.env.NEXT_PUBLIC_ADMIN_BASE_PATH || "/apps/admin";
+
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/" },
   { icon: ShoppingBag, label: "Orders", href: "/orders" },
@@ -34,7 +36,7 @@ export default function Sidebar() {
   if (pathname === "/login") return null;
 
   const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
+    await fetch(`${adminBasePath}/api/auth/logout`, { method: "POST" });
     router.push("/login");
     router.refresh();
   };
@@ -52,11 +54,12 @@ export default function Sidebar() {
 
       <nav className="flex-1 px-4 space-y-1 py-4">
         {menuItems.map((item) => {
-          const isActive = pathname === item.href;
+          const href = item.href;
+          const isActive = pathname === href;
           return (
             <Link
               key={item.href}
-              href={item.href}
+              href={href}
               className={cn(
                 "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group",
                 isActive 

@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { Zap, Lock, ArrowRight, ShieldAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+const adminBasePath = process.env.NEXT_PUBLIC_ADMIN_BASE_PATH || "/apps/admin";
+
 export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
@@ -16,7 +18,7 @@ export default function LoginPage() {
     setError(false);
 
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch(`${adminBasePath}/api/auth/login`, {
         method: "POST",
         body: JSON.stringify({ password }),
         headers: { "Content-Type": "application/json" },

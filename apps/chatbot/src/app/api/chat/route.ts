@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { supportAgentService } from "../../../../../../services/support-agent.service";
-import { ChatRequestBody } from "../../../../../../types/chat.types";
+import { supportAgentService } from "@/server/services/support-agent.service";
+import { ChatRequestBody } from "@/server/types/chat.types";
 
 export async function POST(request: Request) {
   try {

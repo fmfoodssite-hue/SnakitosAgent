@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
+const adminBasePath = "/apps/admin";
+
 export async function POST(request: Request) {
   try {
     const { password } = await request.json();
@@ -20,7 +22,7 @@ export async function POST(request: Request) {
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
         maxAge: 60 * 60 * 24, // 24 hours
-        path: "/",
+        path: adminBasePath,
       });
 
       return NextResponse.json({ success: true });

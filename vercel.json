@@ -1,16 +1,33 @@
 {
-  "buildCommand": "npm --prefix apps/chatbot run build",
-  "outputDirectory": "apps/chatbot/.next",
-  "installCommand": "npm install",
-  "framework": "nextjs",
-  "headers": [
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2,
+  "builds": [
     {
-      "source": "/api/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type" }
-      ]
+      "src": "apps/admin/package.json",
+      "use": "@vercel/next"
+    },
+    {
+      "src": "apps/chatbot/package.json",
+      "use": "@vercel/next"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type"
+      },
+      "continue": true
+    },
+    {
+      "src": "/apps/admin(?:/(.*))?$",
+      "dest": "apps/admin"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "apps/chatbot"
     }
   ]
 }

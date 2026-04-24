@@ -13,6 +13,8 @@ import { cn } from "@/lib/utils";
 import { getRecentOrders, getStoreStats } from "@/lib/shopify";
 import { getRecentInteractions } from "@/lib/supabase";
 
+export const dynamic = "force-dynamic";
+
 export default async function Dashboard() {
   // Fetch real data
   const [orders, interactions, statsData] = await Promise.all([
