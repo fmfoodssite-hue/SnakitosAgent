@@ -14,7 +14,9 @@
   },
   "scripts": {
     "build:chatbot": "npm --prefix apps/chatbot run build",
+    "build:admin": "npm --prefix apps/admin run build",
     "dev:chatbot": "npm --prefix apps/chatbot run dev",
+    "dev:admin": "npm --prefix apps/admin run dev",
     "start:chatbot": "npm --prefix apps/chatbot run start",
     "typecheck": "tsc --noEmit",
     "test": "npm run typecheck"

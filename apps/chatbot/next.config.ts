@@ -1,13 +1,10 @@
-import path from "path";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   experimental: {
-    // Allows importing files from outside the apps/chatbot directory (e.g., the root lib folder)
+    // Allows webpack to import files from outside the apps/chatbot directory
+    // e.g. root-level services/ types/ lib/ folders
     externalDir: true,
-  },
-  turbopack: {
-    root: path.join(__dirname, "..", ".."),
   },
 };
 

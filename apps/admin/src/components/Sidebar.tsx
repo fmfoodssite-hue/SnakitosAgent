@@ -30,6 +30,9 @@ export default function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
 
+  // Don't render sidebar on the login page
+  if (pathname === "/login") return null;
+
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
     router.push("/login");
