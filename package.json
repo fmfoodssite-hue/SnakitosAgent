@@ -1,8 +1,14 @@
 {
   "name": "agent",
   "version": "1.0.0",
+  "private": true,
   "description": "",
   "main": "index.js",
+  "packageManager": "npm@11.12.1",
+  "workspaces": [
+    "apps/admin",
+    "apps/chatbot"
+  ],
   "directories": {
     "lib": "lib"
   },
