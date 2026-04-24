@@ -38,6 +38,8 @@ export const config = {
     adminDomain: resolveShopifyAdminDomain(),
     storefrontDomain: normalizeShopDomain(getEnv("SHOPIFY_SHOP_DOMAIN")),
     accessToken: getEnv("SHOPIFY_ADMIN_API_ACCESS_TOKEN"),
+    clientId: getEnv("SHOPIFY_CLIENT_ID"),
+    clientSecret: getEnv("SHOPIFY_CLIENT_SECRET"),
     apiVersion: getEnv("SHOPIFY_API_VERSION") || "2025-01",
   },
   pinecone: {
@@ -54,6 +56,7 @@ export function hasRequiredRuntimeConfig(): boolean {
       config.supabase.url &&
       config.supabase.serviceRoleKey &&
       config.shopify.adminDomain &&
-      config.shopify.accessToken,
+      (config.shopify.accessToken ||
+        (config.shopify.clientId && config.shopify.clientSecret)),
   );
 }

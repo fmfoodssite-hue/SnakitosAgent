@@ -23,6 +23,12 @@ type GraphQlResponse<T> = {
   errors?: Array<{ message: string }>;
 };
 
+type ShopifyAccessTokenResponse = {
+  access_token: string;
+  scope: string;
+  expires_in: number;
+};
+
 const cache = new Map<string, CacheEntry<unknown>>();
 const DEFAULT_TTL_MS = 60_000;
 
@@ -50,6 +56,10 @@ function setCached<T>(key: string, value: T, ttlMs = DEFAULT_TTL_MS): T {
 
 export class ShopifyService {
   private readonly endpoint = `https://${config.shopify.adminDomain}/admin/api/${config.shopify.apiVersion}/graphql.json`;
+  private tokenCache: {
+    token: string;
+    expiresAt: number;
+  } | null = null;
 
   async getVerifiedOrder(orderReference: string, phone: string): Promise<OrderVerificationResult | null> {
     const order = await this.findOrder(orderReference);
@@ -383,7 +393,11 @@ export class ShopifyService {
   }
 
   private async graphql<TData>(query: string, variables: Record<string, unknown>): Promise<TData> {
-    if (!config.shopify.adminDomain || !config.shopify.accessToken) {
+    if (
+      !config.shopify.adminDomain ||
+      (!config.shopify.accessToken &&
+        !(config.shopify.clientId && config.shopify.clientSecret))
+    ) {
       throw new Error("Shopify Admin API credentials are not configured.");
     }
 
@@ -397,7 +411,7 @@ export class ShopifyService {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-Shopify-Access-Token": config.shopify.accessToken,
+        "X-Shopify-Access-Token": await this.getAdminAccessToken(),
       },
       body: JSON.stringify({
         query,
@@ -408,7 +422,7 @@ export class ShopifyService {
     if (!response.ok) {
       if (response.status === 401) {
         throw new Error(
-          "Shopify Admin API authentication failed. Check SHOPIFY_ADMIN_DOMAIN and SHOPIFY_ADMIN_API_ACCESS_TOKEN.",
+          "Shopify Admin API authentication failed. Check SHOPIFY_ADMIN_DOMAIN and either SHOPIFY_ADMIN_API_ACCESS_TOKEN or SHOPIFY_CLIENT_ID / SHOPIFY_CLIENT_SECRET.",
         );
       }
 
@@ -425,6 +439,47 @@ export class ShopifyService {
     }
 
     return payload.data;
+  }
+
+  private async getAdminAccessToken(): Promise<string> {
+    if (config.shopify.clientId && config.shopify.clientSecret) {
+      if (this.tokenCache && Date.now() < this.tokenCache.expiresAt - 60_000) {
+        return this.tokenCache.token;
+      }
+
+      const tokenEndpoint = `https://${config.shopify.adminDomain}/admin/oauth/access_token`;
+      const response = await fetch(tokenEndpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          grant_type: "client_credentials",
+          client_id: config.shopify.clientId,
+          client_secret: config.shopify.clientSecret,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Shopify token exchange failed with status ${response.status}. Check SHOPIFY_CLIENT_ID and SHOPIFY_CLIENT_SECRET.`,
+        );
+      }
+
+      const payload = (await response.json()) as ShopifyAccessTokenResponse;
+      this.tokenCache = {
+        token: payload.access_token,
+        expiresAt: Date.now() + payload.expires_in * 1000,
+      };
+
+      return payload.access_token;
+    }
+
+    if (!config.shopify.accessToken) {
+      throw new Error("Shopify Admin API credentials are not configured.");
+    }
+
+    return config.shopify.accessToken;
   }
 }
 
