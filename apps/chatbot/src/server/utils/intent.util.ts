@@ -14,6 +14,7 @@ const ORDER_KEYWORDS = [
 
 const PRODUCT_KEYWORDS = [
   "product",
+  "products",
   "price",
   "available",
   "availability",
@@ -22,6 +23,39 @@ const PRODUCT_KEYWORDS = [
   "flavor",
   "size",
   "buy",
+  "snack",
+  "snacks",
+  "deal",
+  "deals",
+  "combo",
+  "combos",
+  "nachos",
+  "chips",
+  "bundle",
+  "seller",
+  "selling",
+  "movie",
+  "store",
+  "catalog",
+  "sharing",
+  "party",
+  "pack",
+  "specials",
+  "item",
+  "items",
+];
+
+const PRODUCT_BROWSING_PATTERNS = [
+  /best\s+seller/i,
+  /best\s+selling/i,
+  /best\s+for\s+movie/i,
+  /best\s+for\s+sharing/i,
+  /store\s+catalog/i,
+  /store\s+specials/i,
+  /store\s+best/i,
+  /party/i,
+  /movie/i,
+  /sharing/i,
 ];
 
 export function detectIntent(message: string, phone?: string): {
@@ -33,7 +67,11 @@ export function detectIntent(message: string, phone?: string): {
   const orderId = extractOrderReference(message);
   const normalizedPhone = normalizePhone(phone) || extractPhoneNumber(message);
 
-  if (orderId || ORDER_KEYWORDS.some((keyword) => normalizedMessage.includes(keyword))) {
+  if (
+    orderId ||
+    normalizedPhone ||
+    ORDER_KEYWORDS.some((keyword) => normalizedMessage.includes(keyword))
+  ) {
     return {
       intent: "order",
       orderId,
@@ -41,7 +79,10 @@ export function detectIntent(message: string, phone?: string): {
     };
   }
 
-  if (PRODUCT_KEYWORDS.some((keyword) => normalizedMessage.includes(keyword))) {
+  if (
+    PRODUCT_KEYWORDS.some((keyword) => normalizedMessage.includes(keyword)) ||
+    PRODUCT_BROWSING_PATTERNS.some((pattern) => pattern.test(message))
+  ) {
     return {
       intent: "product",
       orderId: "",

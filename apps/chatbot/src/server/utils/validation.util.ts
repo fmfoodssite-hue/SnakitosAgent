@@ -101,7 +101,12 @@ export function compareOrderReference(order: OrderLookupResult, provided: string
 
 export function extractProductQuery(message: string): string {
   const cleaned = message
-    .replace(/\b(price|product|available|availability|stock|do you have|tell me about|info|information)\b/gi, " ")
+    .toLowerCase()
+    .replace(
+      /\b(hey|hi|hello|please|okay|ok|i want|i need|show me|give me|tell me|details|detail|about|of the|from the|in the|for the|what is|what are|do you have|can you|could you|share|know|information|info|available|availability|stock)\b/gi,
+      " ",
+    )
+    .replace(/[^a-z0-9\s&-]/gi, " ")
     .replace(/\s+/g, " ")
     .trim();
 

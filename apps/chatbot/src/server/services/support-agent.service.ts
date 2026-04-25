@@ -5,6 +5,7 @@ import {
   ChatRequestInput,
   ChatResponsePayload,
 } from "../types/chat.types";
+import { ProductLookupResult } from "../types/order.types";
 import { detectIntent } from "../utils/intent.util";
 import {
   extractProductQuery,
@@ -28,8 +29,18 @@ export class SupportAgentService {
     await supabaseService.addMessage(chatId, "user", input.message);
 
     try {
-      const intentResult = detectIntent(input.message, input.phone);
-      const response = await this.routeIntent(intentResult.intent, intentResult, input.message, chatId);
+      const recentMessages = await supabaseService.getRecentMessages(chatId);
+      const intentResult = this.resolveIntentWithConversationContext(
+        input.message,
+        input.phone,
+        recentMessages,
+      );
+      const response = await this.routeIntent(
+        intentResult.intent,
+        intentResult,
+        input.message,
+        chatId,
+      );
 
       await supabaseService.addMessage(chatId, "bot", response.response);
       await supabaseService.logEvent("chat_processed", {
@@ -80,6 +91,60 @@ export class SupportAgentService {
     }
 
     return this.handleGeneralIntent(userMessage, chatId);
+  }
+
+  private resolveIntentWithConversationContext(
+    message: string,
+    phone: string | undefined,
+    recentMessages: Array<{ role: "user" | "bot"; content: string }>,
+  ): ReturnType<typeof detectIntent> {
+    const current = detectIntent(message, phone);
+    if (current.intent === "order" && current.orderId && current.phone) {
+      return current;
+    }
+
+    const recentUserMessages = recentMessages
+      .filter((item) => item.role === "user")
+      .map((item) => item.content)
+      .reverse();
+    const previousOrderContext = recentUserMessages.reduce(
+      (acc, content) => {
+        const detected = detectIntent(content);
+
+        if (!acc.orderId && detected.orderId) {
+          acc.orderId = detected.orderId;
+        }
+
+        if (!acc.phone && detected.phone) {
+          acc.phone = detected.phone;
+        }
+
+        if (!acc.intentIsOrder && detected.intent === "order") {
+          acc.intentIsOrder = true;
+        }
+
+        return acc;
+      },
+      {
+        orderId: "",
+        phone: "",
+        intentIsOrder: false,
+      },
+    );
+
+    if (
+      current.intent === "order" ||
+      previousOrderContext.intentIsOrder ||
+      Boolean(current.orderId || current.phone)
+    ) {
+      return {
+        intent: "order",
+        orderId: current.orderId || previousOrderContext.orderId,
+        phone: current.phone || previousOrderContext.phone,
+      };
+    }
+
+    return current;
   }
 
   private async handleOrderIntent(
@@ -161,16 +226,23 @@ export class SupportAgentService {
     chatId: string,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
     const productQuery = extractProductQuery(userMessage);
-    if (!productQuery) {
-      return {
-        intent: "product",
-        response: "Please tell me which product you want to know about.",
-      };
-    }
 
-    let products;
+    const isStoreBrowsingQuestion = /(best|selling|seller|popular|featured|deal|deals|bundle|combo|movie|party|snack|snacks|store|catalog)/i.test(
+      userMessage,
+    );
+
+    let products: ProductLookupResult[] = [];
     try {
-      products = await shopifyService.searchProducts(productQuery);
+      if (productQuery) {
+        products = await shopifyService.searchProducts(productQuery);
+      }
+
+      if ((products.length === 0 && isStoreBrowsingQuestion) || !productQuery) {
+        products = await shopifyService.getStorefrontRecommendations(
+          productQuery || userMessage,
+          5,
+        );
+      }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Product lookup failed";
       await supabaseService.logEvent("product_lookup_error", {
@@ -196,8 +268,18 @@ export class SupportAgentService {
       return {
         intent: "product",
         response: formatWhatsAppFallback(
-          `I could not find a product matching "${productQuery}".`,
+          productQuery
+            ? `I could not find a product matching "${productQuery}".`
+            : "I could not find matching products in the store right now.",
         ),
+      };
+    }
+
+    if (isStoreBrowsingQuestion) {
+      return {
+        intent: "product",
+        response: this.buildStorefrontRecommendationResponse(userMessage, products),
+        data: products,
       };
     }
 
@@ -214,6 +296,35 @@ export class SupportAgentService {
       response,
       data: products,
     };
+  }
+
+  private buildStorefrontRecommendationResponse(
+    userMessage: string,
+    products: Array<{
+      title: string;
+      price: string | null;
+    }>,
+  ): string {
+    const lowered = userMessage.toLowerCase();
+    let intro = "Here are some Snakitos products I found:";
+
+    if (/(best|selling|seller|popular|featured)/i.test(lowered)) {
+      intro =
+        "I do not have live best-selling analytics, but these are strong featured Snakitos options from the store right now:";
+    } else if (/(movie|party|sharing|family)/i.test(lowered)) {
+      intro = "For movie time or sharing, these Snakitos options look like a good fit:";
+    } else if (/(deal|deals|bundle|combo|offer)/i.test(lowered)) {
+      intro = "Here are some Snakitos deals and bundles I found:";
+    } else if (/(rate|price|prices)/i.test(lowered)) {
+      intro = "Here are some current Snakitos product prices:";
+    }
+
+    const lines = products.slice(0, 5).map((product, index) => {
+      const price = product.price ? `PKR ${product.price}` : "Price not listed";
+      return `${index + 1}. ${product.title} - ${price}`;
+    });
+
+    return `${intro}\n${lines.join("\n")}\nIf you want, I can also suggest deals, nachos, or movie-night snacks.`;
   }
 
   private async handleGeneralIntent(

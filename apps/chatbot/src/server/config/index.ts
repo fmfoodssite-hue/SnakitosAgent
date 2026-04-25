@@ -1,6 +1,13 @@
+import path from "path";
 import dotenv from "dotenv";
 
-dotenv.config();
+dotenv.config({
+  path: path.resolve(process.cwd(), ".env"),
+});
+dotenv.config({
+  path: path.resolve(process.cwd(), "..", "..", ".env"),
+  override: false,
+});
 
 function getEnv(name: string): string {
   return (process.env[name] ?? "").trim();

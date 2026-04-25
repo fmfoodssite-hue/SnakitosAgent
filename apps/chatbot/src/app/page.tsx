@@ -16,6 +16,7 @@ export default function PublicChatbot() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState("");
+  const [chatId, setChatId] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -26,6 +27,11 @@ export default function PublicChatbot() {
       localStorage.setItem("chat_user_id", id);
     }
     setUserId(id);
+
+    const existingChatId = localStorage.getItem("chat_id") || "";
+    if (existingChatId) {
+      setChatId(existingChatId);
+    }
   }, []);
 
   useEffect(() => {
@@ -45,11 +51,15 @@ export default function PublicChatbot() {
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
-        body: JSON.stringify({ message: userMessage, userId }),
+        body: JSON.stringify({ message: userMessage, userId, chatId }),
         headers: { "Content-Type": "application/json" },
       });
 
       const data = await res.json();
+      if (typeof data.chatId === "string" && data.chatId) {
+        setChatId(data.chatId);
+        localStorage.setItem("chat_id", data.chatId);
+      }
       if (data.response) {
         setMessages((prev) => [...prev, { role: "assistant", content: data.response }]);
       }

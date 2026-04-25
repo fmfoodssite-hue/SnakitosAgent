@@ -296,6 +296,58 @@ export class ShopifyService {
     };
   }
 
+  async getStorefrontRecommendations(query: string, limit = 5): Promise<ProductLookupResult[]> {
+    const products = await this.getStorefrontCatalog();
+    const normalizedQuery = this.normalizeSearchText(query);
+    const queryTokens = normalizedQuery.split(" ").filter(Boolean);
+    const isDealsRequest = /(deal|bundle|combo|offer|offers)/i.test(query);
+    const isMovieRequest = /(movie|night|party|sharing|family)/i.test(query);
+    const isPopularRequest = /(best|selling|seller|popular|top|featured)/i.test(query);
+
+    const scored = products
+      .map((product) => {
+        const haystack = this.normalizeSearchText(
+          [
+            product.title,
+            product.handle,
+            product.status,
+            product.variants.map((variant) => variant.title).join(" "),
+          ].join(" "),
+        );
+
+        let score = 0;
+        for (const token of queryTokens) {
+          if (haystack.includes(token)) {
+            score += 3;
+          }
+        }
+
+        if (isDealsRequest && /(deal|bundle|combo|pack|box)/i.test(product.title)) {
+          score += 5;
+        }
+
+        if (isMovieRequest && /(nachos|bundle|pack|combo|chips|snack)/i.test(product.title)) {
+          score += 4;
+        }
+
+        if (isPopularRequest && /(mega|ultimate|fiesta|deal|bundle|nachos|snack)/i.test(product.title)) {
+          score += 2;
+        }
+
+        if (product.price) {
+          score += 1;
+        }
+
+        return { product, score };
+      })
+      .filter((item) => item.score > 0 || queryTokens.length === 0 || isPopularRequest)
+      .sort((left, right) => right.score - left.score)
+      .slice(0, limit)
+      .map((item) => item.product);
+
+    return scored;
+  }
+
   private async searchOrders(query: string): Promise<OrderLookupResult[]> {
     const cacheKey = `orders:${query}`;
     const cached = getCached<OrderLookupResult[]>(cacheKey);
@@ -526,10 +578,36 @@ export class ShopifyService {
   }
 
   private async searchProductsViaStorefront(query: string): Promise<ProductLookupResult[]> {
+    const products = await this.getStorefrontCatalog();
+    const normalizedQuery = this.normalizeSearchText(query);
+
+    const matches = products.filter((product) => {
+      const haystack = this.normalizeSearchText(
+        [
+          product.title,
+          product.handle,
+          product.status,
+          product.variants.map((variant) => variant.title).join(" "),
+        ].join(" "),
+      );
+
+      return haystack.includes(normalizedQuery);
+    });
+
+    return matches.slice(0, 5);
+  }
+
+  private async getStorefrontCatalog(): Promise<ProductLookupResult[]> {
     if (!config.shopify.storefrontDomain) {
       throw new Error(
         "Shopify product catalog is unavailable because SHOPIFY_SHOP_DOMAIN is not configured.",
       );
+    }
+
+    const cacheKey = `storefront-catalog:${config.shopify.storefrontDomain}`;
+    const cached = getCached<ProductLookupResult[]>(cacheKey);
+    if (cached) {
+      return cached;
     }
 
     const response = await fetch(
@@ -548,28 +626,7 @@ export class ShopifyService {
     }
 
     const payload = (await response.json()) as StorefrontProductsResponse;
-    const normalizedQuery = this.normalizeSearchText(query);
-
-    const matches = payload.products
-      .filter((product) => {
-        const haystack = this.normalizeSearchText(
-          [
-            product.title,
-            product.handle,
-            product.vendor,
-            product.product_type,
-            product.tags,
-            product.body_html,
-          ]
-            .filter(Boolean)
-            .join(" "),
-        );
-
-        return haystack.includes(normalizedQuery);
-      })
-      .slice(0, 5);
-
-    return matches.map((product) => {
+    const catalog: ProductLookupResult[] = payload.products.map((product) => {
       const variants = (product.variants ?? []).map((variant) => ({
         id: String(variant.id),
         title: variant.title,
@@ -598,6 +655,8 @@ export class ShopifyService {
         variants,
       };
     });
+
+    return setCached(cacheKey, catalog, 10 * DEFAULT_TTL_MS);
   }
 
   private normalizeSearchText(value: string): string {

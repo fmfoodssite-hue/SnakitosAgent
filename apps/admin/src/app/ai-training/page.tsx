@@ -24,7 +24,7 @@ export default function AiTrainingPage() {
 
     try {
       const { data, error } = await supabase
-        .from("knowledge")
+        .from("knowledge_documents")
         .select("*")
         .order("created_at", { ascending: false });
 
@@ -44,8 +44,8 @@ export default function AiTrainingPage() {
     setSaving(true);
     try {
       const { error } = await supabase
-        .from("knowledge")
-        .insert([{ title, content }]);
+        .from("knowledge_documents")
+        .insert([{ title, content, source: "manual" }]);
 
       if (error) throw error;
       
@@ -64,7 +64,7 @@ export default function AiTrainingPage() {
 
     try {
       const { error } = await supabase
-        .from("knowledge")
+        .from("knowledge_documents")
         .delete()
         .eq("id", id);
 
