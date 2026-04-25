@@ -1,4 +1,5 @@
 import { config } from "../config";
+import uploadedCatalog from "../data/uploaded-product-catalog.json";
 import {
   OrderLookupResult,
   OrderSearchNode,
@@ -47,6 +48,18 @@ type StorefrontProductsResponse = {
       available?: boolean;
     }>;
   }>;
+};
+
+type UploadedCatalogProduct = {
+  title: string;
+  price: string | null;
+  vendor: string | null;
+  productType: string | null;
+  availability: "in_stock" | "out_of_stock" | "unknown";
+  orderCount?: number | null;
+  unitsSold?: number | null;
+  tags?: string[];
+  description?: string | null;
 };
 
 const cache = new Map<string, CacheEntry<unknown>>();
@@ -183,6 +196,7 @@ export class ShopifyService {
         title: node.title,
         handle: node.handle,
         status: node.status,
+        source: "shopify_admin",
         price: node.variants.edges[0]?.node.price ?? null,
         description: null,
         vendor: null,
@@ -202,6 +216,8 @@ export class ShopifyService {
           sku: variant.sku,
           inventoryQuantity: variant.inventoryQuantity,
         })),
+        orderCount: null,
+        unitsSold: null,
       }));
     } catch (error) {
       if (!this.shouldUseStorefrontFallback(error)) {
@@ -209,6 +225,10 @@ export class ShopifyService {
       }
 
       products = await this.searchProductsViaStorefront(trimmed);
+    }
+
+    if (products.length === 0) {
+      products = this.searchProductsViaUploadedCatalog(trimmed);
     }
 
     return setCached(cacheKey, products);
@@ -301,12 +321,13 @@ export class ShopifyService {
   }
 
   async getStorefrontRecommendations(query: string, limit = 5): Promise<ProductLookupResult[]> {
-    const products = await this.getStorefrontCatalog();
+    const products = await this.getRecommendationCatalog();
     const normalizedQuery = this.normalizeSearchText(query);
     const queryTokens = normalizedQuery.split(" ").filter(Boolean);
     const isDealsRequest = /(deal|bundle|combo|offer|offers)/i.test(query);
     const isMovieRequest = /(movie|night|party|sharing|family)/i.test(query);
     const isPopularRequest = /(best|selling|seller|popular|top|featured)/i.test(query);
+    const isGiftRequest = /(gift|gifts|relative|friend|family|birthday|present|surprise)/i.test(query);
 
     const scored = products
       .map((product) => {
@@ -315,6 +336,10 @@ export class ShopifyService {
             product.title,
             product.handle,
             product.status,
+            product.description,
+            product.vendor,
+            product.productType,
+            product.tags.join(" "),
             product.variants.map((variant) => variant.title).join(" "),
           ].join(" "),
         );
@@ -334,6 +359,10 @@ export class ShopifyService {
           score += 4;
         }
 
+        if (isGiftRequest && /(bundle|deal|combo|fiesta|fusion|wonder|treasure|movie|gift|pack)/i.test(product.title)) {
+          score += 5;
+        }
+
         if (isPopularRequest && /(mega|ultimate|fiesta|deal|bundle|nachos|snack)/i.test(product.title)) {
           score += 2;
         }
@@ -346,9 +375,17 @@ export class ShopifyService {
           score += 1;
         }
 
+        if (product.orderCount) {
+          score += Math.min(8, Math.ceil(product.orderCount / 40));
+        }
+
+        if (product.unitsSold) {
+          score += Math.min(10, Math.ceil(product.unitsSold / 120));
+        }
+
         return { product, score };
       })
-      .filter((item) => item.score > 0 || queryTokens.length === 0 || isPopularRequest)
+      .filter((item) => item.score > 0 || queryTokens.length === 0 || isPopularRequest || isGiftRequest)
       .sort((left, right) => right.score - left.score)
       .slice(0, limit)
       .map((item) => item.product);
@@ -586,7 +623,7 @@ export class ShopifyService {
   }
 
   private async searchProductsViaStorefront(query: string): Promise<ProductLookupResult[]> {
-    const products = await this.getStorefrontCatalog();
+    const products = await this.getRecommendationCatalog();
     const normalizedQuery = this.normalizeSearchText(query);
 
     const matches = products.filter((product) => {
@@ -613,6 +650,43 @@ export class ShopifyService {
     });
 
     return matches.slice(0, 5);
+  }
+
+  private searchProductsViaUploadedCatalog(query: string): ProductLookupResult[] {
+    const normalizedQuery = this.normalizeSearchText(query);
+    const queryTokens = normalizedQuery.split(" ").filter(Boolean);
+
+    return this.getUploadedCatalog()
+      .map((product) => {
+        const haystack = this.normalizeSearchText(
+          [
+            product.title,
+            product.handle,
+            product.description,
+            product.vendor,
+            product.productType,
+            product.tags.join(" "),
+          ]
+            .filter(Boolean)
+            .join(" "),
+        );
+
+        const score = queryTokens.reduce((count, token) => {
+          return haystack.includes(token) ? count + 1 : count;
+        }, 0);
+
+        return { product, score };
+      })
+      .filter((item) => queryTokens.length > 0 && item.score >= Math.max(1, Math.min(2, queryTokens.length)))
+      .sort((left, right) => {
+        if (right.score !== left.score) {
+          return right.score - left.score;
+        }
+
+        return (right.product.unitsSold ?? 0) - (left.product.unitsSold ?? 0);
+      })
+      .slice(0, 5)
+      .map((item) => item.product);
   }
 
   private async getStorefrontCatalog(): Promise<ProductLookupResult[]> {
@@ -662,6 +736,7 @@ export class ShopifyService {
         title: product.title,
         handle: product.handle,
         status: (product.status ?? "active").toUpperCase(),
+        source: "shopify_storefront",
         price: variants[0]?.price ?? null,
         description: product.body_html ? this.stripHtml(product.body_html) : null,
         vendor: product.vendor ?? null,
@@ -676,11 +751,78 @@ export class ShopifyService {
               ? "in_stock"
               : "out_of_stock",
         totalInventory: null,
+        orderCount: null,
+        unitsSold: null,
         variants,
       };
     });
 
     return setCached(cacheKey, catalog, 10 * DEFAULT_TTL_MS);
+  }
+
+  private async getRecommendationCatalog(): Promise<ProductLookupResult[]> {
+    const uploadedProducts = this.getUploadedCatalog();
+
+    try {
+      const storefrontProducts = await this.getStorefrontCatalog();
+      return this.mergeCatalogs(uploadedProducts, storefrontProducts);
+    } catch {
+      return uploadedProducts;
+    }
+  }
+
+  private getUploadedCatalog(): ProductLookupResult[] {
+    return (uploadedCatalog as UploadedCatalogProduct[]).map((product, index) => ({
+      id: `uploaded-${index + 1}`,
+      title: product.title,
+      handle: this.slugify(product.title),
+      status: "ACTIVE",
+      source: "uploaded_catalog",
+      price: product.price,
+      description: product.description ?? null,
+      vendor: product.vendor ?? null,
+      productType: product.productType ?? null,
+      tags: product.tags ?? [],
+      availability: product.availability ?? "unknown",
+      totalInventory: null,
+      orderCount: product.orderCount ?? null,
+      unitsSold: product.unitsSold ?? null,
+      variants: [],
+    }));
+  }
+
+  private mergeCatalogs(
+    uploadedProducts: ProductLookupResult[],
+    storefrontProducts: ProductLookupResult[],
+  ): ProductLookupResult[] {
+    const merged = new Map<string, ProductLookupResult>();
+
+    for (const product of uploadedProducts) {
+      merged.set(this.normalizeSearchText(product.title), product);
+    }
+
+    for (const product of storefrontProducts) {
+      const key = this.normalizeSearchText(product.title);
+      const uploaded = merged.get(key);
+
+      if (!uploaded) {
+        merged.set(key, product);
+        continue;
+      }
+
+      merged.set(key, {
+        ...product,
+        source: product.source ?? uploaded.source,
+        orderCount: uploaded.orderCount ?? product.orderCount ?? null,
+        unitsSold: uploaded.unitsSold ?? product.unitsSold ?? null,
+        description: product.description ?? uploaded.description ?? null,
+        tags: product.tags.length > 0 ? product.tags : uploaded.tags,
+        vendor: product.vendor ?? uploaded.vendor ?? null,
+        productType: product.productType ?? uploaded.productType ?? null,
+      });
+    }
+
+    return Array.from(merged.values());
   }
 
   private normalizeSearchText(value: string): string {
@@ -689,6 +831,10 @@ export class ShopifyService {
       .replace(/<[^>]+>/g, " ")
       .replace(/[^a-z0-9]+/g, " ")
       .trim();
+  }
+
+  private slugify(value: string): string {
+    return this.normalizeSearchText(value).replace(/\s+/g, "-");
   }
 
   private stripHtml(value: string): string {

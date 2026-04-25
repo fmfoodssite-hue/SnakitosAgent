@@ -50,6 +50,7 @@ export type ProductLookupResult = {
   title: string;
   handle: string;
   status: string;
+  source?: "shopify_admin" | "shopify_storefront" | "uploaded_catalog";
   price: string | null;
   description: string | null;
   vendor: string | null;
@@ -57,6 +58,8 @@ export type ProductLookupResult = {
   tags: string[];
   availability: "in_stock" | "out_of_stock" | "unknown";
   totalInventory: number | null;
+  orderCount?: number | null;
+  unitsSold?: number | null;
   variants: ProductVariantLookup[];
 };
 

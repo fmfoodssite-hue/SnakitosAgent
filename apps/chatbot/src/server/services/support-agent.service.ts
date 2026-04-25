@@ -234,7 +234,7 @@ export class SupportAgentService {
       recentMessages,
     );
 
-    const isStoreBrowsingQuestion = /(best|selling|seller|popular|featured|deal|deals|bundle|combo|movie|party|snack|snacks|store|catalog)/i.test(
+    const isStoreBrowsingQuestion = /(best|selling|seller|popular|featured|deal|deals|bundle|combo|movie|party|snack|snacks|store|catalog|gift|gifts|relative)/i.test(
       userMessage,
     );
 
@@ -255,10 +255,21 @@ export class SupportAgentService {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Product lookup failed";
       await supabaseService.logEvent("product_lookup_error", {
-        query: productQuery,
+        query: referencedProduct || productQuery || userMessage,
         chatId,
         error: errorMessage,
       });
+
+      const fallbackProducts = await this.getFallbackProductRecommendations(
+        referencedProduct || productQuery || userMessage,
+      );
+      if (fallbackProducts.length > 0) {
+        return {
+          intent: "product",
+          response: this.buildStorefrontRecommendationResponse(userMessage, fallbackProducts),
+          data: fallbackProducts,
+        };
+      }
 
       return {
         intent: "product",
@@ -292,17 +303,9 @@ export class SupportAgentService {
       };
     }
 
-    const response = await aiService.generateResponse({
-      intent: "product",
-      userMessage,
-      context: {
-        products,
-      },
-    });
-
     return {
       intent: "product",
-      response,
+      response: this.buildProductResponse(products),
       data: products,
     };
   }
@@ -312,28 +315,106 @@ export class SupportAgentService {
     products: Array<{
       title: string;
       price: string | null;
+      orderCount?: number | null;
+      unitsSold?: number | null;
     }>,
   ): string {
     const lowered = userMessage.toLowerCase();
     let intro = "Here are some Snakitos products I found:";
 
-    if (/(best|selling|seller|popular|featured)/i.test(lowered)) {
-      intro =
-        "I do not have live best-selling analytics, but these are strong featured Snakitos options from the store right now:";
+    if (/(deal|deals|bundle|combo|offer)/i.test(lowered)) {
+      intro = "Here are some Snakitos deals and bundles I found:";
+    } else if (/(gift|gifts|relative|friend|family gift|birthday|present)/i.test(lowered)) {
+      intro = "These Snakitos options look like strong gift picks from the store right now:";
+    } else if (/(best|selling|seller|popular|featured)/i.test(lowered)) {
+      const topProduct = products[0];
+      if (topProduct?.unitsSold) {
+        intro = `Based on your uploaded order history, ${topProduct.title} is one of the strongest sellers right now. Here are the top picks:`;
+      } else {
+        intro =
+          "I do not have live best-selling analytics, but these are strong featured Snakitos options from the store right now:";
+      }
     } else if (/(movie|party|sharing|family)/i.test(lowered)) {
       intro = "For movie time or sharing, these Snakitos options look like a good fit:";
-    } else if (/(deal|deals|bundle|combo|offer)/i.test(lowered)) {
-      intro = "Here are some Snakitos deals and bundles I found:";
     } else if (/(rate|price|prices)/i.test(lowered)) {
       intro = "Here are some current Snakitos product prices:";
     }
 
     const lines = products.slice(0, 5).map((product, index) => {
       const price = product.price ? `PKR ${product.price}` : "Price not listed";
-      return `${index + 1}. ${product.title} - ${price}`;
+      const popularity =
+        product.unitsSold && product.orderCount
+          ? ` - Sold ${product.unitsSold} units in ${product.orderCount} orders`
+          : "";
+      return `${index + 1}. ${product.title} - ${price}${popularity}`;
     });
 
     return `${intro}\n${lines.join("\n")}\nIf you want, I can also suggest deals, nachos, or movie-night snacks.`;
+  }
+
+  private async getFallbackProductRecommendations(query: string): Promise<ProductLookupResult[]> {
+    try {
+      return await shopifyService.getStorefrontRecommendations(query, 5);
+    } catch {
+      return [];
+    }
+  }
+
+  private buildProductResponse(
+    products: Array<{
+      title: string;
+      price: string | null;
+      availability: "in_stock" | "out_of_stock" | "unknown";
+      productType?: string | null;
+      vendor?: string | null;
+      tags?: string[];
+      description?: string | null;
+      orderCount?: number | null;
+      unitsSold?: number | null;
+    }>,
+  ): string {
+    if (products.length === 1) {
+      const [product] = products;
+      const details = [
+        `Product: ${product.title}`,
+        product.price ? `Price: PKR ${product.price}` : null,
+        `Availability: ${this.formatAvailability(product.availability)}`,
+        product.productType ? `Category: ${product.productType}` : null,
+        product.vendor ? `Brand: ${product.vendor}` : null,
+        product.unitsSold ? `Units sold: ${product.unitsSold}` : null,
+        product.orderCount ? `Orders recorded: ${product.orderCount}` : null,
+        product.tags && product.tags.length > 0 ? `Tags: ${product.tags.slice(0, 6).join(", ")}` : null,
+        product.description ? `Details: ${product.description.slice(0, 240)}` : null,
+      ].filter(Boolean);
+
+      return `${details.join("\n")}\nIf you want, I can also suggest similar Snakitos products.`;
+    }
+
+    const lines = products.slice(0, 5).map((product, index) => {
+      const parts = [
+        `${index + 1}. ${product.title}`,
+        product.price ? `PKR ${product.price}` : "Price not listed",
+        this.formatAvailability(product.availability),
+      ];
+
+      return parts.join(" - ");
+    });
+
+    return `Here are the closest Snakitos products I found:\n${lines.join("\n")}\nReply with the product name or number if you want more details about one item.`;
+  }
+
+  private formatAvailability(
+    availability: "in_stock" | "out_of_stock" | "unknown",
+  ): string {
+    if (availability === "in_stock") {
+      return "In stock";
+    }
+
+    if (availability === "out_of_stock") {
+      return "Out of stock";
+    }
+
+    return "Availability not confirmed";
   }
 
   private resolveReferencedProductFromConversation(

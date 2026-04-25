@@ -13,6 +13,8 @@ function getEnv(name: string): string {
   return (process.env[name] ?? "").trim();
 }
 
+const DEFAULT_STOREFRONT_DOMAIN = "snakitos.com";
+
 function normalizeShopDomain(value: string): string {
   return value.replace(/^https?:\/\//i, "").replace(/\/+$/g, "");
 }
@@ -43,7 +45,9 @@ export const config = {
   },
   shopify: {
     adminDomain: resolveShopifyAdminDomain(),
-    storefrontDomain: normalizeShopDomain(getEnv("SHOPIFY_SHOP_DOMAIN")),
+    storefrontDomain: normalizeShopDomain(
+      getEnv("SHOPIFY_SHOP_DOMAIN") || DEFAULT_STOREFRONT_DOMAIN,
+    ),
     accessToken: getEnv("SHOPIFY_ADMIN_API_ACCESS_TOKEN"),
     clientId: getEnv("SHOPIFY_CLIENT_ID"),
     clientSecret: getEnv("SHOPIFY_CLIENT_SECRET"),
