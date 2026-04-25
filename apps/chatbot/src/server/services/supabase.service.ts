@@ -95,6 +95,26 @@ export class SupabaseService {
       .map((item) => ({ role: item.role as MessageRole, content: item.content as string }));
   }
 
+  async getRecentMessagesForUser(
+    userId: string,
+    limit = 12,
+  ): Promise<Array<{ role: MessageRole; content: string }>> {
+    const { data, error } = await this.client
+      .from("messages")
+      .select("role, content, created_at, chats!inner(user_id)")
+      .eq("chats.user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(limit);
+
+    if (error || !data) {
+      return [];
+    }
+
+    return data
+      .reverse()
+      .map((item) => ({ role: item.role as MessageRole, content: item.content as string }));
+  }
+
   async logEvent(event: string, metadata: Record<string, unknown>): Promise<void> {
     await this.client.from("logs").insert({
       id: randomUUID(),

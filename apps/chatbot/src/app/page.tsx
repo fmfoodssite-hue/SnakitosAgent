@@ -17,6 +17,7 @@ export default function PublicChatbot() {
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState("");
   const [chatId, setChatId] = useState("");
+  const [phone, setPhone] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -32,6 +33,11 @@ export default function PublicChatbot() {
     if (existingChatId) {
       setChatId(existingChatId);
     }
+
+    const existingPhone = localStorage.getItem("chat_phone") || "";
+    if (existingPhone) {
+      setPhone(existingPhone);
+    }
   }, []);
 
   useEffect(() => {
@@ -44,6 +50,11 @@ export default function PublicChatbot() {
     if (!input.trim() || loading) return;
 
     const userMessage = input.trim();
+    const detectedPhone = extractPhoneNumber(userMessage) || phone;
+    if (detectedPhone) {
+      setPhone(detectedPhone);
+      localStorage.setItem("chat_phone", detectedPhone);
+    }
     setInput("");
     setMessages((prev) => [...prev, { role: "user", content: userMessage }]);
     setLoading(true);
@@ -51,7 +62,7 @@ export default function PublicChatbot() {
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
-        body: JSON.stringify({ message: userMessage, userId, chatId }),
+        body: JSON.stringify({ message: userMessage, userId, chatId, phone: detectedPhone }),
         headers: { "Content-Type": "application/json" },
       });
 
@@ -149,4 +160,13 @@ export default function PublicChatbot() {
 
 function cn(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
+}
+
+function extractPhoneNumber(value: string): string {
+  const candidates = value.match(/(?:\+?\d[\d\s\-()]{8,}\d)/g) ?? [];
+  const normalized = candidates
+    .map((candidate) => candidate.replace(/\D/g, ""))
+    .filter((candidate) => candidate.length >= 10);
+
+  return normalized[0] ?? "";
 }

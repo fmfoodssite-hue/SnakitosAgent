@@ -103,7 +103,7 @@ export function extractProductQuery(message: string): string {
   const cleaned = message
     .toLowerCase()
     .replace(
-      /\b(hey|hi|hello|please|okay|ok|i want|i need|show me|give me|tell me|details|detail|about|of the|from the|in the|for the|what is|what are|do you have|can you|could you|share|know|information|info|available|availability|stock)\b/gi,
+      /\b(hey|hi|hello|please|okay|ok|i want|i need|show me|give me|tell me|details|detail|about|of the|from the|in the|for the|what is|what are|do you have|can you|could you|share|know|information|info|available|availability|stock|this|that|those|thos|item|product)\b/gi,
       " ",
     )
     .replace(/[^a-z0-9\s&-]/gi, " ")
@@ -111,6 +111,16 @@ export function extractProductQuery(message: string): string {
     .trim();
 
   return cleaned.length >= 2 ? cleaned : "";
+}
+
+export function extractSelectionIndex(message: string): number | null {
+  const match = message.trim().match(/^(\d+)\b/);
+  if (!match) {
+    return null;
+  }
+
+  const value = Number(match[1]);
+  return Number.isInteger(value) && value > 0 ? value : null;
 }
 
 export function formatWhatsAppFallback(message: string): string {

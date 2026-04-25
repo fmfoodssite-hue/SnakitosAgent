@@ -9,6 +9,7 @@ import { ProductLookupResult } from "../types/order.types";
 import { detectIntent } from "../utils/intent.util";
 import {
   extractProductQuery,
+  extractSelectionIndex,
   formatWhatsAppFallback,
   normalizePhone,
 } from "../utils/validation.util";
@@ -30,10 +31,11 @@ export class SupportAgentService {
 
     try {
       const recentMessages = await supabaseService.getRecentMessages(chatId);
+      const userRecentMessages = await supabaseService.getRecentMessagesForUser(userId);
       const intentResult = this.resolveIntentWithConversationContext(
         input.message,
         input.phone,
-        recentMessages,
+        [...userRecentMessages, ...recentMessages],
       );
       const response = await this.routeIntent(
         intentResult.intent,
@@ -225,7 +227,12 @@ export class SupportAgentService {
     userMessage: string,
     chatId: string,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
+    const recentMessages = await supabaseService.getRecentMessages(chatId);
     const productQuery = extractProductQuery(userMessage);
+    const referencedProduct = this.resolveReferencedProductFromConversation(
+      userMessage,
+      recentMessages,
+    );
 
     const isStoreBrowsingQuestion = /(best|selling|seller|popular|featured|deal|deals|bundle|combo|movie|party|snack|snacks|store|catalog)/i.test(
       userMessage,
@@ -233,13 +240,15 @@ export class SupportAgentService {
 
     let products: ProductLookupResult[] = [];
     try {
-      if (productQuery) {
+      if (referencedProduct) {
+        products = await shopifyService.searchProducts(referencedProduct);
+      } else if (productQuery) {
         products = await shopifyService.searchProducts(productQuery);
       }
 
-      if ((products.length === 0 && isStoreBrowsingQuestion) || !productQuery) {
+      if ((products.length === 0 && isStoreBrowsingQuestion) || (!productQuery && !referencedProduct)) {
         products = await shopifyService.getStorefrontRecommendations(
-          productQuery || userMessage,
+          referencedProduct || productQuery || userMessage,
           5,
         );
       }
@@ -325,6 +334,36 @@ export class SupportAgentService {
     });
 
     return `${intro}\n${lines.join("\n")}\nIf you want, I can also suggest deals, nachos, or movie-night snacks.`;
+  }
+
+  private resolveReferencedProductFromConversation(
+    userMessage: string,
+    recentMessages: Array<{ role: "user" | "bot"; content: string }>,
+  ): string {
+    const directQuery = extractProductQuery(userMessage);
+    const numberedChoice = extractSelectionIndex(userMessage);
+    const recentBotMessages = recentMessages
+      .filter((item) => item.role === "bot")
+      .map((item) => item.content)
+      .reverse();
+
+    const numberedProducts = recentBotMessages.flatMap((content) =>
+      [...content.matchAll(/\d+\.\s+(.+?)\s+-\s+(?:PKR|Price)/gi)].map((match) => match[1].trim()),
+    );
+
+    if (numberedChoice && numberedProducts[numberedChoice - 1]) {
+      return numberedProducts[numberedChoice - 1];
+    }
+
+    const mentionedProduct = numberedProducts.find((title) =>
+      userMessage.toLowerCase().includes(title.toLowerCase()),
+    );
+
+    if (mentionedProduct) {
+      return mentionedProduct;
+    }
+
+    return directQuery;
   }
 
   private async handleGeneralIntent(

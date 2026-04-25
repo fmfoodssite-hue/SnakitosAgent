@@ -51,6 +51,10 @@ export type ProductLookupResult = {
   handle: string;
   status: string;
   price: string | null;
+  description: string | null;
+  vendor: string | null;
+  productType: string | null;
+  tags: string[];
   availability: "in_stock" | "out_of_stock" | "unknown";
   totalInventory: number | null;
   variants: ProductVariantLookup[];

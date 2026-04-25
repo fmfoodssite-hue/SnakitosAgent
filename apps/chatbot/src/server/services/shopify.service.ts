@@ -184,6 +184,10 @@ export class ShopifyService {
         handle: node.handle,
         status: node.status,
         price: node.variants.edges[0]?.node.price ?? null,
+        description: null,
+        vendor: null,
+        productType: null,
+        tags: [],
         availability:
           typeof node.totalInventory === "number"
             ? node.totalInventory > 0
@@ -332,6 +336,10 @@ export class ShopifyService {
 
         if (isPopularRequest && /(mega|ultimate|fiesta|deal|bundle|nachos|snack)/i.test(product.title)) {
           score += 2;
+        }
+
+        if (/(nachos|movie|party|sharing|bundle|deal|combo|snack|chips)/i.test(product.description || "")) {
+          score += 1;
         }
 
         if (product.price) {
@@ -587,11 +595,21 @@ export class ShopifyService {
           product.title,
           product.handle,
           product.status,
+          product.description,
+          product.vendor,
+          product.productType,
+          product.tags.join(" "),
           product.variants.map((variant) => variant.title).join(" "),
-        ].join(" "),
+        ]
+          .filter(Boolean)
+          .join(" "),
       );
+      const queryTokens = normalizedQuery.split(" ").filter(Boolean);
+      const score = queryTokens.reduce((count, token) => {
+        return haystack.includes(token) ? count + 1 : count;
+      }, 0);
 
-      return haystack.includes(normalizedQuery);
+      return queryTokens.length > 0 && score >= Math.max(1, Math.min(2, queryTokens.length - 1));
     });
 
     return matches.slice(0, 5);
@@ -645,6 +663,12 @@ export class ShopifyService {
         handle: product.handle,
         status: (product.status ?? "active").toUpperCase(),
         price: variants[0]?.price ?? null,
+        description: product.body_html ? this.stripHtml(product.body_html) : null,
+        vendor: product.vendor ?? null,
+        productType: product.product_type ?? null,
+        tags: product.tags
+          ? product.tags.split(",").map((tag) => tag.trim()).filter(Boolean)
+          : [],
         availability:
           variantAvailability.length === 0
             ? "unknown"
@@ -664,6 +688,19 @@ export class ShopifyService {
       .toLowerCase()
       .replace(/<[^>]+>/g, " ")
       .replace(/[^a-z0-9]+/g, " ")
+      .trim();
+  }
+
+  private stripHtml(value: string): string {
+    return value
+      .replace(/<script[\s\S]*?<\/script>/gi, " ")
+      .replace(/<style[\s\S]*?<\/style>/gi, " ")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&nbsp;/gi, " ")
+      .replace(/&amp;/gi, "&")
+      .replace(/&quot;/gi, '"')
+      .replace(/&#39;/gi, "'")
+      .replace(/\s+/g, " ")
       .trim();
   }
 }
