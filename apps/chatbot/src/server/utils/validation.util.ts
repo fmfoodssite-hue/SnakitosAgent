@@ -103,7 +103,7 @@ export function extractProductQuery(message: string): string {
   const cleaned = message
     .toLowerCase()
     .replace(
-      /\b(hey|hi|hello|please|okay|ok|i want|i need|show me|give me|tell me|details|detail|about|of the|from the|in the|for the|what is|what are|do you have|can you|could you|share|know|information|info|available|availability|stock|this|that|those|thos|item|product)\b/gi,
+      /\b(hey|hi|hello|please|okay|ok|i want|i need|show me|give me|tell me|details|detail|about|of the|from the|in the|for the|what is|what are|do you have|can you|could you|share|know|information|info|available|availability|stock|this|that|those|thos|item|items|product|products|best|top|recommend|recommended|suggest|suggestions|options|for me|should i|get me|something|good|nice)\b/gi,
       " ",
     )
     .replace(/[^a-z0-9\s&-]/gi, " ")

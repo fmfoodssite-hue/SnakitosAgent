@@ -14,9 +14,20 @@ function getEnv(name: string): string {
 }
 
 const DEFAULT_STOREFRONT_DOMAIN = "snakitos.com";
+const DEFAULT_OPENAI_MAX_TOKENS = 20_000;
 
 function normalizeShopDomain(value: string): string {
   return value.replace(/^https?:\/\//i, "").replace(/\/+$/g, "");
+}
+
+function getPositiveIntegerEnv(name: string, fallback: number): number {
+  const rawValue = getEnv(name);
+  if (!rawValue) {
+    return fallback;
+  }
+
+  const parsed = Number.parseInt(rawValue, 10);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
 }
 
 function resolveShopifyAdminDomain(): string {
@@ -34,6 +45,7 @@ export const config = {
     adminSecret: getEnv("ADMIN_SECRET") || getEnv("ADMIN_SECRET_KEY"),
     whatsappNumber: "+92-345-828-3827",
     openAiModel: "gpt-4o",
+    openAiMaxTokens: getPositiveIntegerEnv("OPENAI_MAX_TOKENS", DEFAULT_OPENAI_MAX_TOKENS),
   },
   openai: {
     apiKey: getEnv("OPENAI_API_KEY"),

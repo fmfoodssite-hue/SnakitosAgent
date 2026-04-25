@@ -255,7 +255,7 @@ export class SupportAgentService {
       recentMessages,
     );
 
-    const isStoreBrowsingQuestion = /(best|selling|seller|popular|featured|deal|deals|bundle|combo|movie|party|snack|snacks|store|catalog|gift|gifts|relative)/i.test(
+    const isStoreBrowsingQuestion = /(best|selling|seller|popular|featured|deal|deals|bundle|combo|movie|night|craving|hungry|munch|tea|evening|midnight|party|snack|snacks|store|catalog|gift|gifts|relative|recommend|suggest|sweet|salty|spicy|crispy|crunchy|cheesy|wafer|banana|choco|chocolate)/i.test(
       userMessage,
     );
 
@@ -301,6 +301,17 @@ export class SupportAgentService {
     }
 
     if (products.length === 0) {
+      const fallbackProducts = await this.getFallbackProductRecommendations(
+        referencedProduct || productQuery || userMessage,
+      );
+      if (fallbackProducts.length > 0) {
+        return {
+          intent: "product",
+          response: this.buildStorefrontRecommendationResponse(userMessage, fallbackProducts),
+          data: fallbackProducts,
+        };
+      }
+
       await supabaseService.logEvent("product_not_found", {
         query: productQuery,
         chatId,
@@ -348,6 +359,12 @@ export class SupportAgentService {
     } else if (/(best|selling|seller|popular|featured)/i.test(lowered)) {
       intro =
         "Here are some strong featured Snakitos options from the store right now:";
+    } else if (/(night|craving|late night)/i.test(lowered)) {
+      intro = "For late-night cravings, these Snakitos picks should hit the spot:";
+    } else if (/(tea|evening|midnight|hungry|munch|munchies)/i.test(lowered)) {
+      intro = "These Snakitos snacks look like a good match for that craving:";
+    } else if (/(sweet|salty|spicy|crispy|crunchy|cheesy|chocolate|choco)/i.test(lowered)) {
+      intro = "Here are some Snakitos picks that match that flavor craving:";
     } else if (/(movie|party|sharing|family)/i.test(lowered)) {
       intro = "For movie time or sharing, these Snakitos options look like a good fit:";
     } else if (/(rate|price|prices)/i.test(lowered)) {

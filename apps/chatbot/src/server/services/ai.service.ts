@@ -45,7 +45,7 @@ export class AiService {
     const completion = await getOpenAiClient().chat.completions.create({
       model: config.app.openAiModel,
       temperature: 0.2,
-      max_tokens: 350,
+      max_tokens: config.app.openAiMaxTokens,
       messages: [
         {
           role: "system",
