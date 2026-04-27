@@ -161,7 +161,7 @@ export class ShopifyService {
       }>(
         `
           query SearchProducts($query: String!) {
-            products(first: 5, query: $query) {
+            products(first: 50, query: $query) {
               edges {
                 node {
                   id
@@ -320,7 +320,7 @@ export class ShopifyService {
     };
   }
 
-  async getStorefrontRecommendations(query: string, limit = 5): Promise<ProductLookupResult[]> {
+  async getStorefrontRecommendations(query: string, limit = 50): Promise<ProductLookupResult[]> {
     const products = await this.getRecommendationCatalog();
     const normalizedQuery = this.normalizeSearchText(query);
     const queryTokens = normalizedQuery.split(" ").filter(Boolean);
@@ -328,6 +328,10 @@ export class ShopifyService {
     const isMovieRequest = /(movie|night|party|sharing|family)/i.test(query);
     const isPopularRequest = /(best|selling|seller|popular|top|featured)/i.test(query);
     const isGiftRequest = /(gift|gifts|relative|friend|family|birthday|present|surprise)/i.test(query);
+
+    // Extract target price (e.g., "under 200", "50", "rs 100") ignoring grams like "50g"
+    const priceMatch = query.match(/(?:under|below|less than|max|rs\.?|pkr)\s*(\d+)/i) || query.match(/\b(\d+)\b(?!\s*g)/i);
+    const targetPrice = priceMatch ? parseInt(priceMatch[1], 10) : null;
 
     const scored = products
       .map((product) => {
@@ -346,8 +350,19 @@ export class ShopifyService {
 
         let score = 0;
         for (const token of queryTokens) {
-          if (haystack.includes(token)) {
+          if (haystack.includes(token) && !/\d+/.test(token)) {
             score += 3;
+          }
+        }
+
+        if (targetPrice !== null && product.price) {
+          const priceVal = parseFloat(product.price);
+          if (priceVal <= targetPrice) {
+            score += 20;
+          } else if (priceVal <= targetPrice * 1.5) {
+            score += 5;
+          } else {
+            score -= 50;
           }
         }
 
@@ -385,7 +400,7 @@ export class ShopifyService {
 
         return { product, score };
       })
-      .filter((item) => item.score > 0 || queryTokens.length === 0 || isPopularRequest || isGiftRequest)
+      .filter((item) => item.score > -10 && (item.score > 0 || queryTokens.length === 0 || isPopularRequest || isGiftRequest || targetPrice !== null))
       .sort((left, right) => right.score - left.score)
       .slice(0, limit)
       .map((item) => item.product);
@@ -649,7 +664,7 @@ export class ShopifyService {
       return queryTokens.length > 0 && score >= Math.max(1, Math.min(2, queryTokens.length - 1));
     });
 
-    return matches.slice(0, 5);
+    return matches.slice(0, 50);
   }
 
   private searchProductsViaUploadedCatalog(query: string): ProductLookupResult[] {
@@ -685,7 +700,7 @@ export class ShopifyService {
 
         return (right.product.unitsSold ?? 0) - (left.product.unitsSold ?? 0);
       })
-      .slice(0, 5)
+      .slice(0, 50)
       .map((item) => item.product);
   }
 

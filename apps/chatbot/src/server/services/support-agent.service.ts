@@ -270,7 +270,7 @@ export class SupportAgentService {
       if ((products.length === 0 && isStoreBrowsingQuestion) || (!productQuery && !referencedProduct)) {
         products = await shopifyService.getStorefrontRecommendations(
           referencedProduct || productQuery || userMessage,
-          5,
+          50,
         );
       }
     } catch (error) {
@@ -285,9 +285,14 @@ export class SupportAgentService {
         referencedProduct || productQuery || userMessage,
       );
       if (fallbackProducts.length > 0) {
+        const response = await aiService.generateResponse({
+          intent: "product",
+          userMessage,
+          context: { products: fallbackProducts },
+        });
         return {
           intent: "product",
-          response: this.buildStorefrontRecommendationResponse(userMessage, fallbackProducts),
+          response,
           data: fallbackProducts,
         };
       }
@@ -305,9 +310,14 @@ export class SupportAgentService {
         referencedProduct || productQuery || userMessage,
       );
       if (fallbackProducts.length > 0) {
+        const response = await aiService.generateResponse({
+          intent: "product",
+          userMessage,
+          context: { products: fallbackProducts },
+        });
         return {
           intent: "product",
-          response: this.buildStorefrontRecommendationResponse(userMessage, fallbackProducts),
+          response,
           data: fallbackProducts,
         };
       }
@@ -327,101 +337,26 @@ export class SupportAgentService {
       };
     }
 
-    if (isStoreBrowsingQuestion) {
-      return {
-        intent: "product",
-        response: this.buildStorefrontRecommendationResponse(userMessage, products),
-        data: products,
-      };
-    }
+    const response = await aiService.generateResponse({
+      intent: "product",
+      userMessage,
+      context: { products },
+    });
 
     return {
       intent: "product",
-      response: this.buildProductResponse(products),
+      response,
       data: products,
     };
   }
-
-  private buildStorefrontRecommendationResponse(
-    userMessage: string,
-    products: Array<{
-      title: string;
-      price: string | null;
-    }>,
-  ): string {
-    const lowered = userMessage.toLowerCase();
-    let intro = "Here are some Snakitos products I found:";
-
-    if (/(deal|deals|bundle|combo|offer)/i.test(lowered)) {
-      intro = "Here are some Snakitos deals and bundles I found:";
-    } else if (/(gift|gifts|relative|friend|family gift|birthday|present)/i.test(lowered)) {
-      intro = "These Snakitos options look like strong gift picks from the store right now:";
-    } else if (/(best|selling|seller|popular|featured)/i.test(lowered)) {
-      intro =
-        "Here are some strong featured Snakitos options from the store right now:";
-    } else if (/(night|craving|late night)/i.test(lowered)) {
-      intro = "For late-night cravings, these Snakitos picks should hit the spot:";
-    } else if (/(tea|evening|midnight|hungry|munch|munchies)/i.test(lowered)) {
-      intro = "These Snakitos snacks look like a good match for that craving:";
-    } else if (/(sweet|salty|spicy|crispy|crunchy|cheesy|chocolate|choco)/i.test(lowered)) {
-      intro = "Here are some Snakitos picks that match that flavor craving:";
-    } else if (/(movie|party|sharing|family)/i.test(lowered)) {
-      intro = "For movie time or sharing, these Snakitos options look like a good fit:";
-    } else if (/(rate|price|prices)/i.test(lowered)) {
-      intro = "Here are some current Snakitos product prices:";
-    }
-
-    const lines = products.slice(0, 5).map((product, index) => {
-      const price = product.price ? `PKR ${product.price}` : "Price not listed";
-      return `${index + 1}. ${product.title} - ${price}`;
-    });
-
-    return `${intro}\n${lines.join("\n")}\nIf you want, I can also suggest deals, nachos, or movie-night snacks.`;
-  }
-
   private async getFallbackProductRecommendations(query: string): Promise<ProductLookupResult[]> {
     try {
-      return await shopifyService.getStorefrontRecommendations(query, 5);
+      return await shopifyService.getStorefrontRecommendations(query, 50);
     } catch {
       return [];
     }
   }
 
-  private buildProductResponse(
-    products: Array<{
-      title: string;
-      price: string | null;
-      availability: "in_stock" | "out_of_stock" | "unknown";
-      productType?: string | null;
-      vendor?: string | null;
-      tags?: string[];
-      description?: string | null;
-      orderCount?: number | null;
-      unitsSold?: number | null;
-    }>,
-  ): string {
-    if (products.length === 1) {
-      const [product] = products;
-      const details = [
-        `Product: ${product.title}`,
-        product.price ? `Price: PKR ${product.price}` : null,
-        product.description ? `Details: ${product.description.slice(0, 240)}` : null,
-      ].filter(Boolean);
-
-      return `${details.join("\n")}\nIf you want, I can also suggest similar Snakitos products.`;
-    }
-
-    const lines = products.slice(0, 5).map((product, index) => {
-      const parts = [
-        `${index + 1}. ${product.title}`,
-        product.price ? `PKR ${product.price}` : "Price not listed",
-      ];
-
-      return parts.join(" - ");
-    });
-
-    return `Here are the closest Snakitos products I found:\n${lines.join("\n")}\nReply with the product name or number if you want more details about one item.`;
-  }
 
   private resolveReferencedProductFromConversation(
     userMessage: string,

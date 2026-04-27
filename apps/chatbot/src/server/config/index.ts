@@ -14,7 +14,7 @@ function getEnv(name: string): string {
 }
 
 const DEFAULT_STOREFRONT_DOMAIN = "snakitos.com";
-const DEFAULT_OPENAI_MAX_TOKENS = 20_000;
+const DEFAULT_OPENAI_MAX_TOKENS = 1000;
 
 function normalizeShopDomain(value: string): string {
   return value.replace(/^https?:\/\//i, "").replace(/\/+$/g, "");

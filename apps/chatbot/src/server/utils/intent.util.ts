@@ -2,14 +2,27 @@ import { AgentIntent } from "../types/chat.types";
 import { extractOrderReference, extractPhoneNumber, normalizePhone } from "./validation.util";
 
 const ORDER_KEYWORDS = [
-  "order",
   "tracking",
   "track",
   "shipment",
-  "shipping",
-  "delivery",
   "where is my parcel",
   "where is my order",
+  "order status",
+];
+
+const POLICY_KEYWORDS = [
+  "policy",
+  "policies",
+  "return",
+  "refund",
+  "shipping",
+  "delivery",
+  "exchange",
+  "cancel",
+  "cancellation",
+  "payment",
+  "methods",
+  "how to pay",
 ];
 
 const PRODUCT_KEYWORDS = [
@@ -120,11 +133,14 @@ export function detectIntent(message: string, phone?: string): {
   const orderId = extractOrderReference(message);
   const normalizedPhone = normalizePhone(phone) || extractPhoneNumber(message);
 
-  if (
-    orderId ||
-    normalizedPhone ||
-    ORDER_KEYWORDS.some((keyword) => normalizedMessage.includes(keyword))
-  ) {
+  const hasOrderKeywords = ORDER_KEYWORDS.some((keyword) => normalizedMessage.includes(keyword));
+  const hasProductKeywords = 
+    PRODUCT_KEYWORDS.some((keyword) => normalizedMessage.includes(keyword)) ||
+    PRODUCT_BROWSING_PATTERNS.some((pattern) => pattern.test(message));
+  const hasPolicyKeywords = POLICY_KEYWORDS.some((keyword) => normalizedMessage.includes(keyword));
+
+  // If user explicitly mentions order tracking keywords, it's an order intent.
+  if (hasOrderKeywords) {
     return {
       intent: "order",
       orderId,
@@ -132,13 +148,29 @@ export function detectIntent(message: string, phone?: string): {
     };
   }
 
-  if (
-    PRODUCT_KEYWORDS.some((keyword) => normalizedMessage.includes(keyword)) ||
-    PRODUCT_BROWSING_PATTERNS.some((pattern) => pattern.test(message))
-  ) {
+  // If user mentions product keywords, it's a product intent, even if a number (price) is present.
+  if (hasProductKeywords) {
     return {
       intent: "product",
       orderId: "",
+      phone: normalizedPhone,
+    };
+  }
+
+  // If it's a policy keyword, return general (which covers policies).
+  if (hasPolicyKeywords) {
+    return {
+      intent: "general",
+      orderId: "",
+      phone: normalizedPhone,
+    };
+  }
+
+  // Fallback: If a valid order ID or phone is found but no keywords, assume order tracking.
+  if (orderId || normalizedPhone) {
+    return {
+      intent: "order",
+      orderId,
       phone: normalizedPhone,
     };
   }
