@@ -65,6 +65,25 @@ function stripHtml(value: string): string {
     .trim();
 }
 
+function decodeHtml(value: string): string {
+  return value
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/&rsquo;/gi, "'")
+    .replace(/&ndash;/gi, "-")
+    .replace(/&mdash;/gi, "-");
+}
+
+function toAbsoluteUrl(pathOrUrl: string): string {
+  if (/^https?:\/\//i.test(pathOrUrl)) {
+    return pathOrUrl;
+  }
+
+  return `https://${config.shopify.storefrontDomain}${pathOrUrl.startsWith("/") ? pathOrUrl : `/${pathOrUrl}`}`;
+}
+
 export class KnowledgeService {
   private pinecone: Pinecone | null;
 
@@ -202,6 +221,72 @@ export class KnowledgeService {
     }
   }
 
+  private async fetchHtmlKnowledgeDocument(
+    url: string,
+    fallbackTitle: string,
+    source: string,
+    maxLength = 5000,
+  ): Promise<KnowledgeDocument> {
+    const response = await fetch(url);
+    const html = await response.text();
+    const title =
+      html.match(/<title>\s*([^<]+?)\s*&ndash;/i)?.[1]?.trim() ||
+      html.match(/<title>\s*([^<]+?)\s*<\/title>/i)?.[1]?.trim() ||
+      fallbackTitle;
+
+    return {
+      id: randomUUID(),
+      title,
+      content: stripHtml(html).slice(0, maxLength),
+      source,
+    };
+  }
+
+  private async fetchBlogDocuments(blogHtml: string): Promise<KnowledgeDocument[]> {
+    const linkMatches = [...blogHtml.matchAll(/###\s*<a[^>]+href="([^"]+)"[^>]*>\s*([^<]+?)\s*<\/a>/gi)];
+    const uniqueLinks = Array.from(
+      new Map(
+        linkMatches.map((match) => [
+          toAbsoluteUrl(match[1]),
+          {
+            url: toAbsoluteUrl(match[1]),
+            title: decodeHtml(stripHtml(match[2])).trim(),
+          },
+        ]),
+      ).values(),
+    ).slice(0, 8);
+
+    const articleDocs = await Promise.all(
+      uniqueLinks.map(async ({ url, title }) => {
+        try {
+          const doc = await this.fetchHtmlKnowledgeDocument(
+            url,
+            `Snakitos Blog: ${title}`,
+            "snakitos-blog",
+            6000,
+          );
+
+          return {
+            ...doc,
+            title: doc.title.startsWith("Buy the Best")
+              ? `Snakitos Blog: ${title}`
+              : doc.title,
+            content: [`Source URL: ${url}`, doc.content].join("\n"),
+          };
+        } catch {
+          return {
+            id: randomUUID(),
+            title: `Snakitos Blog: ${title}`,
+            content: `Source URL: ${url}`,
+            source: "snakitos-blog",
+          };
+        }
+      }),
+    );
+
+    return articleDocs;
+  }
+
   private async getStorefrontKnowledgeDocuments(): Promise<KnowledgeDocument[]> {
     const cacheKey = `storefront-knowledge:${config.shopify.storefrontDomain}`;
     const cached = getCached<KnowledgeDocument[]>(cacheKey);
@@ -209,11 +294,15 @@ export class KnowledgeService {
       return cached;
     }
 
-    const [productsResponse, contactPage, shippingPolicy, refundPolicy] = await Promise.all([
+    const [productsResponse, contactPage, complaintPage, shippingPolicy, refundPolicy, privacyPolicy, termsOfService, blogPage] = await Promise.all([
       fetch(`https://${config.shopify.storefrontDomain}/products.json?limit=250`),
       fetch(`https://${config.shopify.storefrontDomain}/pages/contact`),
+      fetch(`https://${config.shopify.storefrontDomain}/pages/complaint-form`),
       fetch(`https://${config.shopify.storefrontDomain}/policies/shipping-policy`),
       fetch(`https://${config.shopify.storefrontDomain}/policies/refund-policy`),
+      fetch(`https://${config.shopify.storefrontDomain}/policies/privacy-policy`),
+      fetch(`https://${config.shopify.storefrontDomain}/policies/terms-of-service`),
+      fetch(`https://${config.shopify.storefrontDomain}/blogs/blog`),
     ]);
 
     const productsPayload = (await productsResponse.json()) as {
@@ -243,12 +332,24 @@ export class KnowledgeService {
           fallbackTitle: "Snakitos Contact Page",
         },
         {
+          response: complaintPage,
+          fallbackTitle: "Snakitos Complaint Form",
+        },
+        {
           response: shippingPolicy,
           fallbackTitle: "Snakitos Shipping Policy",
         },
         {
           response: refundPolicy,
           fallbackTitle: "Snakitos Refund Policy",
+        },
+        {
+          response: privacyPolicy,
+          fallbackTitle: "Snakitos Privacy Policy",
+        },
+        {
+          response: termsOfService,
+          fallbackTitle: "Snakitos Terms of Service",
         },
       ].map(async ({ response, fallbackTitle }) => {
         const html = await response.text();
@@ -262,6 +363,19 @@ export class KnowledgeService {
       }),
     );
 
+    const blogHtml = await blogPage.text();
+    const blogEntries = await this.fetchBlogDocuments(blogHtml);
+
+    const blogOverview: KnowledgeDocument = {
+      id: randomUUID(),
+      title: "Snakitos Blog Overview",
+      content: [
+        `Blog URL: https://${config.shopify.storefrontDomain}/blogs/blog`,
+        "Recent blog topics include spicy snacks, tea-time snacks, healthy snacking, balanced snack plates, portable snacks, city-specific snack recommendations, and snack occasions.",
+      ].join("\n"),
+      source: "snakitos-blog",
+    };
+
     const overview: KnowledgeDocument = {
       id: randomUUID(),
       title: "Snakitos Store Overview",
@@ -273,7 +387,7 @@ export class KnowledgeService {
       source: "snakitos-storefront",
     };
 
-    return setCached(cacheKey, [overview, ...policyPages, ...products]);
+    return setCached(cacheKey, [overview, blogOverview, ...policyPages, ...blogEntries, ...products]);
   }
 }
 
