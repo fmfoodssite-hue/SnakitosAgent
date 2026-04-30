@@ -6,8 +6,11 @@ export type MessageRole = "user" | "bot";
 
 export type KnowledgeDocument = {
   id: string;
-  title: string;
-  content: string;
+  name: string;
+  text: string;
+  link: string;
+  type: string;
+  category: string;
   source: string;
 };
 

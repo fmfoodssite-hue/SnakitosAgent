@@ -49,6 +49,7 @@ export type ProductLookupResult = {
   id: string;
   title: string;
   handle: string;
+  link: string;
   status: string;
   source?: "shopify_admin" | "shopify_storefront" | "uploaded_catalog";
   price: string | null;

@@ -64,6 +64,20 @@ type UploadedCatalogProduct = {
 
 const cache = new Map<string, CacheEntry<unknown>>();
 const DEFAULT_TTL_MS = 60_000;
+const STOREFRONT_BASE_URL = "https://snakitos.com";
+
+function sanitizeCustomerFacingDescription(value: string | null | undefined): string | null {
+  const cleaned = (value ?? "")
+    .replace(
+      /Popular Snakitos product from uploaded order history\.\s*Sold in \d+ orders with \d+ units recorded\.?/gi,
+      "",
+    )
+    .replace(/Sold in \d+ orders with \d+ units recorded\.?/gi, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return cleaned || null;
+}
 
 function getCached<T>(key: string): T | null {
   const cached = cache.get(key);
@@ -195,6 +209,7 @@ export class ShopifyService {
         id: node.legacyResourceId,
         title: node.title,
         handle: node.handle,
+        link: `${STOREFRONT_BASE_URL}/products/${node.handle}`,
         status: node.status,
         source: "shopify_admin",
         price: node.variants.edges[0]?.node.price ?? null,
@@ -750,6 +765,7 @@ export class ShopifyService {
         id: String(product.id),
         title: product.title,
         handle: product.handle,
+        link: `${STOREFRONT_BASE_URL}/products/${product.handle}`,
         status: (product.status ?? "active").toUpperCase(),
         source: "shopify_storefront",
         price: variants[0]?.price ?? null,
@@ -791,17 +807,18 @@ export class ShopifyService {
       id: `uploaded-${index + 1}`,
       title: product.title,
       handle: this.slugify(product.title),
+      link: `${STOREFRONT_BASE_URL}/collections/all`,
       status: "ACTIVE",
       source: "uploaded_catalog",
       price: product.price,
-      description: product.description ?? null,
+      description: sanitizeCustomerFacingDescription(product.description),
       vendor: product.vendor ?? null,
       productType: product.productType ?? null,
       tags: product.tags ?? [],
       availability: product.availability ?? "unknown",
       totalInventory: null,
-      orderCount: product.orderCount ?? null,
-      unitsSold: product.unitsSold ?? null,
+      orderCount: null,
+      unitsSold: null,
       variants: [],
     }));
   }
@@ -828,9 +845,12 @@ export class ShopifyService {
       merged.set(key, {
         ...product,
         source: product.source ?? uploaded.source,
-        orderCount: uploaded.orderCount ?? product.orderCount ?? null,
-        unitsSold: uploaded.unitsSold ?? product.unitsSold ?? null,
-        description: product.description ?? uploaded.description ?? null,
+        orderCount: null,
+        unitsSold: null,
+        description:
+          sanitizeCustomerFacingDescription(product.description) ??
+          sanitizeCustomerFacingDescription(uploaded.description) ??
+          null,
         tags: product.tags.length > 0 ? product.tags : uploaded.tags,
         vendor: product.vendor ?? uploaded.vendor ?? null,
         productType: product.productType ?? uploaded.productType ?? null,

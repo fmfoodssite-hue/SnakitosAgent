@@ -1,4 +1,5 @@
 import { config } from "../config";
+import policyData from "../data/policies.json";
 import {
   AgentContext,
   AgentIntent,
@@ -18,6 +19,17 @@ import { knowledgeService } from "./knowledge.service";
 import { shopifyService } from "./shopify.service";
 import { supabaseService } from "./supabase.service";
 
+type PolicySection = {
+  title: string;
+  content: string;
+};
+
+type PolicyDocument = {
+  policy_name: string;
+  source: string;
+  sections: PolicySection[];
+};
+
 export class SupportAgentService {
   async handleChat(input: ChatRequestInput): Promise<ChatResponsePayload> {
     const userId = await supabaseService.upsertUser({
@@ -32,7 +44,7 @@ export class SupportAgentService {
     try {
       if (this.isSensitiveRequest(input.message)) {
         const response =
-          "I can help with products, orders, shipping, and store policies, but I can’t provide internal system or security information.";
+          "I can help with products, orders, shipping, and store policies, but I can't provide internal system or security information.";
         await supabaseService.addMessage(chatId, "bot", response);
 
         return {
@@ -99,8 +111,19 @@ export class SupportAgentService {
     userMessage: string,
     chatId: string,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
+    if (this.isGreetingOrSmallTalk(userMessage)) {
+      return {
+        intent: "general",
+        response: this.buildGreetingResponse(),
+      };
+    }
+
     if (intent === "order") {
       return this.handleOrderIntent(intentResult, userMessage);
+    }
+
+    if (this.isPolicyQuestion(userMessage)) {
+      return this.handlePolicyIntent(userMessage);
     }
 
     if (intent === "product") {
@@ -175,16 +198,18 @@ export class SupportAgentService {
     userMessage: string,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
     if (!intentResult.orderId || !intentResult.phone) {
-      const missingFields = [
-        !intentResult.orderId ? "order ID" : null,
-        !intentResult.phone ? "phone number" : null,
-      ].filter(Boolean);
-
       return {
         intent: "order",
-        response: formatWhatsAppFallback(
-          `Please share your ${missingFields.join(" and ")} so I can track your order.`,
-        ),
+        response: JSON.stringify({
+          type: "fallback",
+          message: "Please provide:\n* Order Number\n* Phone Number",
+          products: [],
+          policy_link: "",
+          options: [
+            { label: "Back", value: "show categories" },
+            { label: "Home", value: "home" },
+          ],
+        }),
       };
     }
 
@@ -200,9 +225,7 @@ export class SupportAgentService {
 
       return {
         intent: "order",
-        response: formatWhatsAppFallback(
-          "I could not access the order system right now.",
-        ),
+        response: formatWhatsAppFallback("I could not access the order system right now."),
       };
     }
 
@@ -213,9 +236,7 @@ export class SupportAgentService {
 
       return {
         intent: "order",
-        response: formatWhatsAppFallback(
-          "Sorry, we could not verify your order details.",
-        ),
+        response: formatWhatsAppFallback("Sorry, we could not verify your order details."),
       };
     }
 
@@ -267,7 +288,10 @@ export class SupportAgentService {
         products = await shopifyService.searchProducts(productQuery);
       }
 
-      if ((products.length === 0 && isStoreBrowsingQuestion) || (!productQuery && !referencedProduct)) {
+      if (
+        (products.length === 0 && isStoreBrowsingQuestion) ||
+        (!productQuery && !referencedProduct)
+      ) {
         products = await shopifyService.getStorefrontRecommendations(
           referencedProduct || productQuery || userMessage,
           50,
@@ -299,9 +323,7 @@ export class SupportAgentService {
 
       return {
         intent: "product",
-        response: formatWhatsAppFallback(
-          "I could not access the product catalog right now.",
-        ),
+        response: formatWhatsAppFallback("I could not access the product catalog right now."),
       };
     }
 
@@ -337,11 +359,7 @@ export class SupportAgentService {
       };
     }
 
-    const response = await aiService.generateResponse({
-      intent: "product",
-      userMessage,
-      context: { products },
-    });
+    const response = this.buildProductResponse(products, userMessage);
 
     return {
       intent: "product",
@@ -349,6 +367,7 @@ export class SupportAgentService {
       data: products,
     };
   }
+
   private async getFallbackProductRecommendations(query: string): Promise<ProductLookupResult[]> {
     try {
       return await shopifyService.getStorefrontRecommendations(query, 50);
@@ -356,7 +375,6 @@ export class SupportAgentService {
       return [];
     }
   }
-
 
   private resolveReferencedProductFromConversation(
     userMessage: string,
@@ -388,20 +406,98 @@ export class SupportAgentService {
     return directQuery;
   }
 
+  private async handlePolicyIntent(
+    userMessage: string,
+  ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
+    const policyDocument = this.resolvePolicyDocument(userMessage);
+
+    if (!policyDocument) {
+      return {
+        intent: "general",
+        response: JSON.stringify({
+          type: "policy",
+          message: "Please contact support.",
+          products: [],
+          policy_link: "https://snakitos.com/policies/",
+          options: [
+            { label: "Back", value: "show categories" },
+            { label: "Home", value: "home" },
+          ],
+        }),
+        data: [],
+      };
+    }
+
+    return {
+      intent: "general",
+      response: JSON.stringify({
+        type: "policy",
+        message: this.buildPolicyMessage(policyDocument, userMessage),
+        products: [],
+        policy_link: policyDocument.source,
+        options: [
+          { label: "Back", value: "show categories" },
+          { label: "Home", value: "home" },
+        ],
+      }),
+      data: policyDocument,
+    };
+  }
+
   private async handleGeneralIntent(
     userMessage: string,
     chatId: string,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
+    if (this.isUnclearQuery(userMessage)) {
+      return {
+        intent: "general",
+        response: JSON.stringify({
+          type: "fallback",
+          message: "I can help with products, orders, or policies.",
+          products: [],
+          policy_link: "",
+          options: [
+            { label: "Deals", value: "show best deals" },
+            { label: "Track Order", value: "track my order" },
+            { label: "Policies", value: "show shipping and refund policy" },
+            { label: "Home", value: "home" },
+          ],
+        }),
+      };
+    }
+
     const [knowledge, recentMessages] = await Promise.all([
       knowledgeService.retrieve(userMessage),
       supabaseService.getRecentMessages(chatId),
     ]);
 
+    const relevantKnowledge = knowledge.filter(
+      (item) => !this.isPolicyQuestion(userMessage) || item.type === "policy",
+    );
+
+    if (relevantKnowledge.length === 0) {
+      return {
+        intent: "general",
+        response: JSON.stringify({
+          type: "fallback",
+          message: "I couldn't find exact details, but here's what I know...",
+          products: [],
+          policy_link: "",
+          options: [
+            { label: "Deals", value: "show best deals" },
+            { label: "Policies", value: "show shipping and refund policy" },
+            { label: "Home", value: "home" },
+          ],
+        }),
+        data: [],
+      };
+    }
+
     const response = await aiService.generateResponse({
       intent: "general",
       userMessage,
       context: {
-        knowledge,
+        knowledge: relevantKnowledge,
         recentMessages,
         policies: {
           whatsappSupport: config.app.whatsappNumber,
@@ -412,8 +508,304 @@ export class SupportAgentService {
     return {
       intent: "general",
       response,
-      data: knowledge,
+      data: relevantKnowledge,
     };
+  }
+
+  private isGreetingOrSmallTalk(message: string): boolean {
+    return /^(hi|hello|hey|assalamualaikum|salam|yo|start|menu)\b/i.test(message.trim());
+  }
+
+  private isUnclearQuery(message: string): boolean {
+    return /^(hi|hello|hey|ok|okay|hmm|hmmm|thanks|thank you|start|menu)\b/i.test(
+      message.trim(),
+    );
+  }
+
+  private isPolicyQuestion(message: string): boolean {
+    return /(policy|policies|privacy|terms|service|return|refund|shipping|delivery|exchange|cancel|cancellation|payment|cookie|cookies|share|sharing|third party|third parties|personal data|personal information|what data|collect|collection|tracking|charges|refund window|damaged|defective)/i.test(
+      message,
+    );
+  }
+
+  private buildGreetingResponse(): string {
+    return JSON.stringify({
+      type: "fallback",
+      message: "I can help with products, orders, or policies.",
+      products: [],
+      policy_link: "",
+      options: [
+        { label: "Deals", value: "show best deals" },
+        { label: "Sweet Tooth", value: "Show me Sweet Tooth snacks" },
+        { label: "Track Order", value: "track my order" },
+        { label: "Policies", value: "show shipping and refund policy" },
+        { label: "Home", value: "home" },
+      ],
+    });
+  }
+
+  private buildPolicyMessage(policy: PolicyDocument, userMessage: string): string {
+    const sections = this.selectRelevantPolicySections(policy, userMessage).slice(0, 3);
+
+    if (sections.length === 0) {
+      return "Please contact support.";
+    }
+
+    const bullets = sections.map((section) => `* ${this.shortenPolicyContent(section.content)}`);
+    return `${policy.policy_name}:\n\n${bullets.join("\n")}`;
+  }
+
+  private selectRelevantPolicySections(
+    policy: PolicyDocument,
+    userMessage: string,
+  ): PolicySection[] {
+    const normalized = userMessage.toLowerCase();
+
+    if (policy.policy_name === "Privacy Policy") {
+      if (/share|sharing|third party|third parties|processor|logistics/.test(normalized)) {
+        return policy.sections.filter((section) => /data sharing/i.test(section.title));
+      }
+
+      if (/rights|delete|deletion|access|update|correction/.test(normalized)) {
+        return policy.sections.filter((section) => /user rights/i.test(section.title));
+      }
+
+      if (/cookie|tracking|browser/.test(normalized)) {
+        return policy.sections.filter((section) => /cookies|tracking/i.test(section.title));
+      }
+
+      if (/use|used|purpose|process orders|personalize|updates|offers/.test(normalized)) {
+        return policy.sections.filter((section) => /use of information/i.test(section.title));
+      }
+
+      if (/collect|collection|data|personal|information/.test(normalized)) {
+        return policy.sections.filter((section) => /information collection/i.test(section.title));
+      }
+
+      return policy.sections.filter((section) =>
+        /information collection|use of information|cookies|data sharing|user rights/i.test(
+          section.title,
+        ),
+      );
+    }
+
+    if (policy.policy_name === "Shipping Policy") {
+      if (/process|processing|confirmation|payment verification|availability/.test(normalized)) {
+        return policy.sections.filter((section) => /order processing/i.test(section.title));
+      }
+
+      if (/delivery|time|days|delay|location/.test(normalized)) {
+        return policy.sections.filter((section) => /delivery time/i.test(section.title));
+      }
+
+      if (/shipping charges|shipping cost|charges|fees|checkout|promotion/.test(normalized)) {
+        return policy.sections.filter((section) => /shipping charges/i.test(section.title));
+      }
+
+      if (/tracking|track/.test(normalized)) {
+        return policy.sections.filter((section) => /tracking orders/i.test(section.title));
+      }
+
+      if (/incorrect address|unavailability|delivery fail|re-delivery/.test(normalized)) {
+        return policy.sections.filter((section) => /delivery issues/i.test(section.title));
+      }
+
+      return policy.sections.filter((section) =>
+        /order processing|delivery time|shipping charges|tracking orders|delivery issues/i.test(
+          section.title,
+        ),
+      );
+    }
+
+    if (policy.policy_name === "Return & Refund Policy") {
+      if (/unused|eligible|eligibility|return window|condition/.test(normalized)) {
+        return policy.sections.filter((section) => /return eligibility/i.test(section.title));
+      }
+
+      if (/process|how|return request|official channels|ship back/.test(normalized)) {
+        return policy.sections.filter((section) => /return process/i.test(section.title));
+      }
+
+      if (/refund|payment method|inspection|processed/.test(normalized)) {
+        return policy.sections.filter((section) => /refund processing/i.test(section.title));
+      }
+
+      if (/non-returnable|perishable|hygiene/.test(normalized)) {
+        return policy.sections.filter((section) => /non-returnable/i.test(section.title));
+      }
+
+      if (/damaged|defective|replacement|proof/.test(normalized)) {
+        return policy.sections.filter((section) => /damaged|defective/i.test(section.title));
+      }
+
+      return policy.sections.filter((section) =>
+        /return eligibility|return process|refund processing|non-returnable|damaged/i.test(
+          section.title,
+        ),
+      );
+    }
+
+    if (policy.policy_name === "Terms of Service") {
+      if (/accept|agreement|agree|laws/.test(normalized)) {
+        return policy.sections.filter((section) => /acceptance of terms/i.test(section.title));
+      }
+
+      if (/responsibilit|misuse|illegal|harmful|accurate information/.test(normalized)) {
+        return policy.sections.filter((section) => /user responsibilities/i.test(section.title));
+      }
+
+      if (/product info|description|errors|correction/.test(normalized)) {
+        return policy.sections.filter((section) => /product information/i.test(section.title));
+      }
+
+      if (/price|pricing|payment|processed/.test(normalized)) {
+        return policy.sections.filter((section) => /pricing/i.test(section.title));
+      }
+
+      if (/liability|damages/.test(normalized)) {
+        return policy.sections.filter((section) => /limitation of liability/i.test(section.title));
+      }
+
+      return policy.sections.filter((section) =>
+        /acceptance of terms|user responsibilities|product information|pricing|liability/i.test(
+          section.title,
+        ),
+      );
+    }
+
+    return policy.sections;
+  }
+
+  private resolvePolicyDocument(message: string): PolicyDocument | null {
+    const normalized = message.toLowerCase();
+    const policies = (policyData.policies ?? []) as PolicyDocument[];
+
+    if (
+      /privacy|data|collect|collection|share|sharing|third party|third parties|cookie|cookies|personal information|personal data|user rights|delete my data/.test(
+        normalized,
+      )
+    ) {
+      return policies.find((policy) => policy.policy_name === "Privacy Policy") ?? null;
+    }
+
+    if (/terms|service|website use|liability|pricing|payments/.test(normalized)) {
+      return policies.find((policy) => policy.policy_name === "Terms of Service") ?? null;
+    }
+
+    if (/shipping|delivery|tracking|charges/.test(normalized)) {
+      return policies.find((policy) => policy.policy_name === "Shipping Policy") ?? null;
+    }
+
+    if (/refund|return|exchange|damaged|defective/.test(normalized)) {
+      return policies.find((policy) => policy.policy_name === "Return & Refund Policy") ?? null;
+    }
+
+    return null;
+  }
+
+  private buildProductResponse(products: ProductLookupResult[], userMessage: string): string {
+    const rankedProducts = this.rankProductsForDisplay(products, userMessage).slice(0, 4);
+    const productPayload = rankedProducts.map((product) => ({
+      name: product.title,
+      description: this.buildCustomerProductDescription(product),
+      price: product.price ?? "",
+      link: product.link,
+    }));
+
+    return JSON.stringify({
+      type: "product",
+      message: "Top Picks for You:",
+      products: productPayload,
+      policy_link: "",
+      options: [
+        { label: "Back", value: "show categories" },
+        { label: "Home", value: "home" },
+      ],
+    });
+  }
+
+  private rankProductsForDisplay(
+    products: ProductLookupResult[],
+    userMessage: string,
+  ): ProductLookupResult[] {
+    const query = userMessage.toLowerCase();
+    const tokens = query.split(/[^a-z0-9]+/).filter((token) => token.length >= 3);
+    const wantsSpicy = /spicy|peri|masala|paprika|salsa|hot/i.test(query);
+    const wantsSweet = /sweet|choco|wafer|hazelnut|strawberry|cappuccino/i.test(query);
+    const wantsBanana = /banana/i.test(query);
+    const wantsPotato = /potato|patata/i.test(query);
+
+    return products
+      .map((product) => {
+        const haystack = [
+          product.title,
+          product.productType,
+          product.description,
+          product.tags.join(" "),
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+
+        let score = 0;
+        for (const token of tokens) {
+          if (haystack.includes(token)) {
+            score += 3;
+          }
+        }
+
+        if (wantsSpicy && /spicy|peri|masala|paprika|salsa|hot/i.test(haystack)) {
+          score += 8;
+        } else if (wantsSpicy) {
+          score -= 6;
+        }
+
+        if (wantsSweet && /sweet|choco|wafer|hazelnut|strawberry|cappuccino/i.test(haystack)) {
+          score += 8;
+        } else if (wantsSweet) {
+          score -= 6;
+        }
+
+        if (wantsBanana && /banana/i.test(haystack)) {
+          score += 8;
+        } else if (wantsBanana) {
+          score -= 6;
+        }
+
+        if (wantsPotato && /potato|patata/i.test(haystack)) {
+          score += 8;
+        } else if (wantsPotato) {
+          score -= 6;
+        }
+
+        return { product, score };
+      })
+      .filter((item) => item.score > 0)
+      .sort((left, right) => right.score - left.score)
+      .map((item) => item.product);
+  }
+
+  private buildCustomerProductDescription(product: ProductLookupResult): string {
+    if (product.description && product.description !== "Snakitos snack from uploaded catalog.") {
+      return product.description;
+    }
+
+    if (product.productType) {
+      return `${product.productType} snack from Snakitos.`;
+    }
+
+    return "Snack from Snakitos.";
+  }
+
+  private shortenPolicyContent(content: string): string {
+    const normalized = content.trim();
+
+    if (normalized.length <= 170) {
+      return normalized;
+    }
+
+    const sentence = normalized.match(/^(.+?[.!?])(?:\s|$)/)?.[1];
+    return sentence ?? `${normalized.slice(0, 167).trim()}...`;
   }
 }
 

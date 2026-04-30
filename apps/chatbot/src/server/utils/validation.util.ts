@@ -130,5 +130,9 @@ export function formatWhatsAppFallback(message: string): string {
     message: fallbackMessage,
     products: [],
     policy_link: "",
+    options: [
+      { "label": "Back", "value": "show categories" },
+      { "label": "Home", "value": "home" }
+    ]
   });
 }

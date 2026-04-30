@@ -1,0 +1,120 @@
+{
+  "policies": [
+    {
+      "policy_name": "Privacy Policy",
+      "source": "https://snakitos.com/policies/privacy-policy",
+      "sections": [
+        {
+          "title": "Information Collection",
+          "content": "We collect personal information such as name, email address, phone number, and shipping address when you place an order, contact support, or interact with our website. Additionally, we collect technical data including IP address, browser type, device information, and browsing behavior through cookies and analytics tools."
+        },
+        {
+          "title": "Use of Information",
+          "content": "The collected information is used to process orders, manage transactions, improve website performance, personalize your experience, and communicate updates, offers, or support-related messages."
+        },
+        {
+          "title": "Cookies & Tracking Technologies",
+          "content": "We use cookies and similar technologies to enhance user experience, analyze traffic, and understand user behavior. Users can manage or disable cookies through their browser settings."
+        },
+        {
+          "title": "Data Sharing & Third Parties",
+          "content": "We do not sell or rent personal data. However, we may share information with trusted third parties such as payment processors, logistics providers, and service partners strictly for order fulfillment and operational purposes."
+        },
+        {
+          "title": "User Rights",
+          "content": "Users have the right to access, update, or request deletion of their personal data. Requests can be made through official contact channels."
+        },
+        {
+          "title": "Data Security",
+          "content": "We implement industry-standard security measures to protect user data. However, no method of transmission over the internet is completely secure."
+        },
+        {
+          "title": "Policy Updates",
+          "content": "We reserve the right to update this policy at any time. Continued use of the website implies acceptance of updated terms."
+        }
+      ]
+    },
+    {
+      "policy_name": "Shipping Policy",
+      "source": "https://snakitos.com/policies/shipping-policy",
+      "sections": [
+        {
+          "title": "Order Processing",
+          "content": "Orders are processed after confirmation and payment verification. Processing time may vary depending on order volume and availability."
+        },
+        {
+          "title": "Delivery Time",
+          "content": "Delivery timelines vary based on location but are typically within a few business days. Delays may occur due to external factors such as weather or logistics issues."
+        },
+        {
+          "title": "Shipping Charges",
+          "content": "Shipping costs are calculated based on location, order size, and promotions. These charges are displayed at checkout."
+        },
+        {
+          "title": "Tracking Orders",
+          "content": "Customers may receive tracking details once the order is shipped, allowing them to monitor delivery status."
+        },
+        {
+          "title": "Delivery Issues",
+          "content": "If delivery fails due to incorrect address or unavailability, re-delivery attempts or additional charges may apply."
+        }
+      ]
+    },
+    {
+      "policy_name": "Return & Refund Policy",
+      "source": "https://snakitos.com/policies/refund-policy",
+      "sections": [
+        {
+          "title": "Return Eligibility",
+          "content": "Items are eligible for return if they are unused, in original condition, and within the specified return window."
+        },
+        {
+          "title": "Return Process",
+          "content": "Customers must initiate a return request through official channels. Items must be shipped back according to instructions provided."
+        },
+        {
+          "title": "Refund Processing",
+          "content": "Refunds are issued after inspection of returned items and are processed to the original payment method."
+        },
+        {
+          "title": "Non-Returnable Items",
+          "content": "Certain items such as perishable goods or hygiene-related products may not be eligible for return."
+        },
+        {
+          "title": "Damaged or Defective Products",
+          "content": "Customers should report damaged or defective items immediately with proof for quick resolution or replacement."
+        }
+      ]
+    },
+    {
+      "policy_name": "Terms of Service",
+      "source": "https://snakitos.com/policies/terms-of-service",
+      "sections": [
+        {
+          "title": "Acceptance of Terms",
+          "content": "By accessing or using the website, users agree to comply with these terms and all applicable laws."
+        },
+        {
+          "title": "User Responsibilities",
+          "content": "Users must provide accurate information and must not misuse the website for illegal or harmful activities."
+        },
+        {
+          "title": "Product Information",
+          "content": "We strive to ensure accurate product descriptions, but errors may occur and are subject to correction."
+        },
+        {
+          "title": "Pricing & Payments",
+          "content": "All prices are subject to change. Orders will only be processed after successful payment."
+        },
+        {
+          "title": "Limitation of Liability",
+          "content": "We are not liable for indirect or incidental damages resulting from the use of our website or products."
+        },
+        {
+          "title": "Changes to Terms",
+          "content": "We reserve the right to modify these terms at any time without prior notice."
+        }
+      ]
+    }
+  ]
+}

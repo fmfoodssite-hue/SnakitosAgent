@@ -46,6 +46,7 @@ export const config = {
     apiKey: getEnv("PINECONE_API_KEY"),
     indexName: getEnv("PINECONE_INDEX"),
     namespace: getEnv("PINECONE_NAMESPACE"),
+    host: getEnv("PINECONE_HOST") || getEnv("PINECONE_INDEX_HOST"),
   },
 } as const;
 

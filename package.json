@@ -17,6 +17,8 @@
     "build:admin": "npm --prefix apps/admin run build",
     "dev:chatbot": "npm --prefix apps/chatbot run dev",
     "dev:admin": "npm --prefix apps/admin run dev",
+    "ingest:json": "node scripts/ingest-json-to-pinecone.mjs",
+    "query:rag": "node scripts/query-pinecone-knowledge.mjs",
     "sync:snakitos": "node scripts/sync-snakitos-knowledge.mjs",
     "test:product-queries": "node scripts/test-product-queries.mjs",
     "start:chatbot": "npm --prefix apps/chatbot run start",

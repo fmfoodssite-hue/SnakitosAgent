@@ -13,6 +13,15 @@ const ORDER_KEYWORDS = [
 const POLICY_KEYWORDS = [
   "policy",
   "policies",
+  "privacy",
+  "terms",
+  "service",
+  "data",
+  "collect",
+  "sharing",
+  "share",
+  "cookie",
+  "cookies",
   "return",
   "refund",
   "shipping",
@@ -148,19 +157,19 @@ export function detectIntent(message: string, phone?: string): {
     };
   }
 
-  // If user mentions product keywords, it's a product intent, even if a number (price) is present.
-  if (hasProductKeywords) {
+  // Policy questions should win over product browsing when a message contains both.
+  if (hasPolicyKeywords) {
     return {
-      intent: "product",
+      intent: "general",
       orderId: "",
       phone: normalizedPhone,
     };
   }
 
-  // If it's a policy keyword, return general (which covers policies).
-  if (hasPolicyKeywords) {
+  // If user mentions product keywords, it's a product intent, even if a number (price) is present.
+  if (hasProductKeywords) {
     return {
-      intent: "general",
+      intent: "product",
       orderId: "",
       phone: normalizedPhone,
     };
