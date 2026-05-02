@@ -1,13 +1,24 @@
 import path from "path";
 import dotenv from "dotenv";
 
-dotenv.config({
-  path: path.resolve(process.cwd(), ".env"),
-});
-dotenv.config({
-  path: path.resolve(process.cwd(), "..", "..", ".env"),
-  override: false,
-});
+function loadEnvFiles(): void {
+  const candidatePaths = [
+    path.resolve(process.cwd(), ".env"),
+    path.resolve(process.cwd(), ".env.local"),
+    path.resolve(process.cwd(), "..", "..", ".env"),
+    path.resolve(process.cwd(), "..", "..", ".env.local"),
+  ];
+
+  for (const envPath of candidatePaths) {
+    dotenv.config({
+      path: envPath,
+      override: envPath.endsWith(".env.local"),
+      quiet: true,
+    });
+  }
+}
+
+loadEnvFiles();
 
 function getEnv(name: string): string {
   return (process.env[name] ?? "").trim();
@@ -31,13 +42,7 @@ function getPositiveIntegerEnv(name: string, fallback: number): number {
 }
 
 function resolveShopifyAdminDomain(): string {
-  const explicitAdminDomain =
-    getEnv("SHOPIFY_ADMIN_DOMAIN") ||
-    getEnv("SHOPIFY_ADMIN_SHOP_DOMAIN") ||
-    getEnv("SHOPIFY_MYSHOPIFY_DOMAIN");
-  const fallbackDomain = getEnv("SHOPIFY_SHOP_DOMAIN");
-
-  return normalizeShopDomain(explicitAdminDomain || fallbackDomain);
+  return normalizeShopDomain(getEnv("SHOPIFY_ADMIN_DOMAIN"));
 }
 
 export const config = {

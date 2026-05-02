@@ -8,6 +8,11 @@ import {
 import { ProductLookupResult } from "../types/order.types";
 import { detectIntent } from "../utils/intent.util";
 import {
+  clearOrderVerificationFailures,
+  getOrderVerificationBlockState,
+  recordOrderVerificationFailure,
+} from "../utils/security.util";
+import {
   extractProductQuery,
   extractSelectionIndex,
   formatWhatsAppFallback,
@@ -66,6 +71,7 @@ export class SupportAgentService {
         intentResult,
         input.message,
         chatId,
+        input.clientKey,
       );
       const safeResponse = aiService.sanitizeCustomerResponse(response.response);
 
@@ -109,6 +115,7 @@ export class SupportAgentService {
     intentResult: ReturnType<typeof detectIntent>,
     userMessage: string,
     chatId: string,
+    clientKey?: string,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
     if (this.isGreetingOrSmallTalk(userMessage)) {
       return {
@@ -118,7 +125,7 @@ export class SupportAgentService {
     }
 
     if (intent === "order") {
-      return this.handleOrderIntent(intentResult, userMessage);
+      return this.handleOrderIntent(intentResult, userMessage, clientKey);
     }
 
     if (this.isPolicyQuestion(userMessage)) {
@@ -195,6 +202,7 @@ export class SupportAgentService {
   private async handleOrderIntent(
     intentResult: ReturnType<typeof detectIntent>,
     userMessage: string,
+    clientKey?: string,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
     if (!intentResult.orderId || !intentResult.phone) {
       return {
@@ -202,6 +210,23 @@ export class SupportAgentService {
         response: JSON.stringify({
           type: "fallback",
           message: "Please provide:\n* Order Number\n* Phone Number",
+          products: [],
+          policy_link: "",
+          options: [
+            { label: "Back", value: "show categories" },
+            { label: "Home", value: "home" },
+          ],
+        }),
+      };
+    }
+
+    const blockState = getOrderVerificationBlockState(clientKey ?? "");
+    if (blockState.blocked) {
+      return {
+        intent: "order",
+        response: JSON.stringify({
+          type: "fallback",
+          message: `Too many failed order verification attempts. Please wait about ${Math.ceil(blockState.retryAfterSeconds / 60)} minutes and try again, or contact support.`,
           products: [],
           policy_link: "",
           options: [
@@ -229,20 +254,38 @@ export class SupportAgentService {
     }
 
     if (!order) {
+      const failureState = recordOrderVerificationFailure(clientKey ?? "");
       await supabaseService.logEvent("order_verification_failed", {
         orderId: intentResult.orderId,
+        remainingAttempts: failureState.remainingAttempts,
+        blocked: failureState.blocked,
       });
 
       return {
         intent: "order",
-        response: formatWhatsAppFallback("Sorry, we could not verify your order details."),
+        response: failureState.blocked
+          ? JSON.stringify({
+              type: "fallback",
+              message:
+                "Too many failed order verification attempts. Please wait 15 minutes and try again, or contact support.",
+              products: [],
+              policy_link: "",
+              options: [
+                { label: "Back", value: "show categories" },
+                { label: "Home", value: "home" },
+              ],
+            })
+          : formatWhatsAppFallback("Sorry, we could not verify your order details."),
       };
     }
+
+    clearOrderVerificationFailures(clientKey ?? "");
 
     const context: AgentContext = {
       order: {
         orderName: order.orderName,
         orderNumber: order.orderNumber,
+        customerName: order.customerName,
         financialStatus: order.financialStatus,
         fulfillmentStatus: order.fulfillmentStatus,
         createdAt: order.createdAt,
@@ -759,8 +802,23 @@ export class SupportAgentService {
 
   private buildOrderResponse(order: Partial<NonNullable<AgentContext["order"]>> | undefined): string {
     const safeOrder = order ?? {};
+    const customerLine = safeOrder.customerName
+      ? `Customer name is ${safeOrder.customerName}.`
+      : "";
+    const productTitles =
+      Array.isArray(safeOrder.lineItems) && safeOrder.lineItems.length > 0
+        ? safeOrder.lineItems
+            .map((item) => item.title?.trim())
+            .filter((value): value is string => Boolean(value))
+        : [];
+    const productLine =
+      productTitles.length > 0
+        ? `Ordered product${productTitles.length > 1 ? "s are" : " is"} ${productTitles.join(", ")}.`
+        : "";
     const parts = [
+      customerLine,
       safeOrder.orderName ? `Your order is ${safeOrder.orderName}.` : "",
+      productLine,
       safeOrder.fulfillmentStatus ? `Fulfillment status is ${safeOrder.fulfillmentStatus}.` : "",
       safeOrder.financialStatus ? `Payment status is ${safeOrder.financialStatus}.` : "",
     ].filter(Boolean);

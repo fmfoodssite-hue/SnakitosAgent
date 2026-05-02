@@ -241,7 +241,7 @@ export default function PublicChatbot() {
     </div>
   );
 
-  const renderAssistantMessage = (content: string) => {
+  const renderAssistantMessage = (content: string, showActions: boolean) => {
     try {
       if (content.trim().startsWith("{")) {
         const parsed = JSON.parse(content) as StructuredContent;
@@ -289,7 +289,7 @@ export default function PublicChatbot() {
               </a>
             ) : null}
 
-            {renderOptions(parsed.options ?? [])}
+            {showActions ? renderOptions(parsed.options ?? []) : null}
           </div>
         );
       }
@@ -297,7 +297,7 @@ export default function PublicChatbot() {
       return (
         <div className={styles.assistantContent}>
           {renderParagraphText(content)}
-          {renderOptions([])}
+          {showActions ? renderOptions([]) : null}
         </div>
       );
     }
@@ -305,7 +305,7 @@ export default function PublicChatbot() {
     return (
       <div className={styles.assistantContent}>
         {renderParagraphText(content)}
-        {renderOptions([])}
+        {showActions ? renderOptions([]) : null}
       </div>
     );
   };
@@ -426,6 +426,12 @@ export default function PublicChatbot() {
 
           <div ref={scrollRef} className={styles.chatBody}>
             {messages.map((message, index) => (
+              (() => {
+                const isLatestAssistant =
+                  message.role === "assistant" &&
+                  messages.findLastIndex((item) => item.role === "assistant") === index;
+
+                return (
               <div
                 key={index}
                 className={
@@ -445,10 +451,12 @@ export default function PublicChatbot() {
                   }
                 >
                   {message.role === "assistant"
-                    ? renderAssistantMessage(message.content)
+                    ? renderAssistantMessage(message.content, isLatestAssistant)
                     : message.content}
                 </div>
               </div>
+                );
+              })()
             ))}
 
             {loading ? (

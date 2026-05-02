@@ -69,7 +69,6 @@ export type OrderSearchNode = {
   id: string;
   legacyResourceId: string;
   name: string;
-  orderNumber: number;
   displayFinancialStatus: string;
   displayFulfillmentStatus: string;
   createdAt: string;

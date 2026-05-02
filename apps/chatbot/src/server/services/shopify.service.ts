@@ -298,14 +298,13 @@ export class ShopifyService {
         query RecentOrders($limit: Int!) {
           orders(first: $limit, sortKey: PROCESSED_AT, reverse: true) {
             edges {
-              node {
-                id
-                legacyResourceId
-                name
-                orderNumber
-                displayFinancialStatus
-                displayFulfillmentStatus
-                createdAt
+                node {
+                  id
+                  legacyResourceId
+                  name
+                  displayFinancialStatus
+                  displayFulfillmentStatus
+                  createdAt
                 totalPriceSet {
                   shopMoney {
                     amount
@@ -501,14 +500,13 @@ export class ShopifyService {
         query SearchOrders($query: String!) {
           orders(first: 5, query: $query, sortKey: PROCESSED_AT, reverse: true) {
             edges {
-              node {
-                id
-                legacyResourceId
-                name
-                orderNumber
-                displayFinancialStatus
-                displayFulfillmentStatus
-                createdAt
+                node {
+                  id
+                  legacyResourceId
+                  name
+                  displayFinancialStatus
+                  displayFulfillmentStatus
+                  createdAt
                 totalPriceSet {
                   shopMoney {
                     amount
@@ -566,11 +564,13 @@ export class ShopifyService {
   }
 
   private mapOrder(node: OrderSearchNode): OrderLookupResult {
+    const derivedOrderNumber = extractNumericOrderId(node.name) || String(node.legacyResourceId);
+
     return {
       id: node.legacyResourceId,
       gid: node.id,
       orderName: node.name,
-      orderNumber: String(node.orderNumber),
+      orderNumber: derivedOrderNumber,
       financialStatus: node.displayFinancialStatus,
       fulfillmentStatus: node.displayFulfillmentStatus,
       createdAt: node.createdAt,
@@ -661,10 +661,6 @@ export class ShopifyService {
   }
 
   private async getAdminAccessToken(): Promise<string> {
-    if (config.shopify.accessToken) {
-      return config.shopify.accessToken;
-    }
-
     if (config.shopify.clientId && config.shopify.clientSecret) {
       if (this.tokenCache && Date.now() < this.tokenCache.expiresAt - 60_000) {
         return this.tokenCache.token;
@@ -696,6 +692,10 @@ export class ShopifyService {
       };
 
       return payload.access_token;
+    }
+
+    if (config.shopify.accessToken) {
+      return config.shopify.accessToken;
     }
 
     throw new Error("Shopify Admin API credentials are not configured.");

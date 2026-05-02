@@ -28,6 +28,7 @@ export type ChatRequestBody = {
   chatId?: string;
   email?: string;
   phone?: string;
+  clientKey?: string;
 };
 
 export type ChatRequestInput = ChatRequestBody;
