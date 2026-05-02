@@ -247,7 +247,7 @@ export default function PublicChatbot() {
         const parsed = JSON.parse(content) as StructuredContent;
         return (
           <div className={styles.assistantContent}>
-            <p className={styles.assistantText}>{parsed.message}</p>
+            {renderParagraphText(parsed.message)}
 
             {parsed.products && parsed.products.length > 0 ? (
               <div className={styles.productList}>
@@ -296,7 +296,7 @@ export default function PublicChatbot() {
     } catch {
       return (
         <div className={styles.assistantContent}>
-          <p className={styles.assistantText}>{content}</p>
+          {renderParagraphText(content)}
           {renderOptions([])}
         </div>
       );
@@ -304,7 +304,7 @@ export default function PublicChatbot() {
 
     return (
       <div className={styles.assistantContent}>
-        <p className={styles.assistantText}>{content}</p>
+        {renderParagraphText(content)}
         {renderOptions([])}
       </div>
     );
@@ -606,4 +606,17 @@ function ensureNavigationOptions(options: Option[]): Option[] {
   }
 
   return items;
+}
+
+function renderParagraphText(content: string): React.ReactNode {
+  const blocks = content
+    .split(/\n\s*\n/)
+    .map((block) => block.trim())
+    .filter(Boolean);
+
+  return blocks.map((block, index) => (
+    <p key={`${block}-${index}`} className={styles.assistantText}>
+      {block.replace(/\n/g, " ")}
+    </p>
+  ));
 }

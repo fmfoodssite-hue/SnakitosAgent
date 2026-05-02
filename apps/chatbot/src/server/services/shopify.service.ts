@@ -66,6 +66,43 @@ type UploadedCatalogProduct = {
 const cache = new Map<string, CacheEntry<unknown>>();
 const DEFAULT_TTL_MS = 60_000;
 const STOREFRONT_BASE_URL = "https://snakitos.com";
+const SEARCH_ALIAS_GROUPS: Record<string, string[]> = {
+  "sweet tooth": ["sweet snacks", "wafer rolls", "choco stick", "chocolate snacks"],
+  "multi grain": ["multigrain", "stix", "chickpea puffs", "healthy snacks"],
+  "banana chips": ["banana snacks", "bbq banana chips", "sea salt banana chips"],
+  "patata chips": ["potato slims", "potato chips", "patata", "masala chips", "salty chips"],
+  deals: ["best deals", "bundle", "combo", "gift pack", "value pack", "mega deal"],
+  nachos: ["salsa nachos", "paprika nachos", "movie night snacks", "party snacks"],
+  snaktory: ["snack box", "gift bundle", "assorted snacks"],
+  "hot spicy": ["hot and spicy", "spicy snacks", "fiery snacks"],
+  "lemon chilli": ["lemon and chilli", "lemon chili", "tangy spicy"],
+  "peri peri": ["peri peri stix", "peri snacks", "spicy stix"],
+  "tea time": ["evening snacks", "tea snacks", "chai time snacks"],
+  "late night": ["midnight snacks", "night cravings", "movie night snacks"],
+};
+
+function toCartLink(variantId: string | null | undefined, fallbackLink: string): string {
+  const normalizedVariantId = (variantId ?? "").trim();
+  if (/^\d+$/.test(normalizedVariantId)) {
+    return `${STOREFRONT_BASE_URL}/cart/${normalizedVariantId}:1`;
+  }
+
+  return fallbackLink;
+}
+
+function parsePriceValue(price: string | null | undefined): number | null {
+  const normalized = (price ?? "").replace(/,/g, "").trim();
+  if (!normalized) {
+    return null;
+  }
+
+  const value = Number.parseFloat(normalized);
+  return Number.isFinite(value) ? value : null;
+}
+
+function uniqueStrings(values: string[]): string[] {
+  return Array.from(new Set(values.map((value) => value.trim()).filter(Boolean)));
+}
 
 function sanitizeCustomerFacingDescription(value: string | null | undefined): string | null {
   const cleaned = (value ?? "")
@@ -211,6 +248,7 @@ export class ShopifyService {
         title: node.title,
         handle: node.handle,
         link: `${STOREFRONT_BASE_URL}/products/${node.handle}`,
+        cartLink: `${STOREFRONT_BASE_URL}/products/${node.handle}`,
         status: node.status,
         source: "shopify_admin",
         price: node.variants.edges[0]?.node.price ?? null,
@@ -340,6 +378,7 @@ export class ShopifyService {
     const products = await this.getRecommendationCatalog();
     const normalizedQuery = this.normalizeSearchText(query);
     const queryTokens = normalizedQuery.split(" ").filter(Boolean);
+    const queryPhrases = this.expandSearchPhrases(query);
     const isDealsRequest = /(deal|bundle|combo|offer|offers)/i.test(query);
     const isMovieRequest = /(movie|night|party|sharing|family)/i.test(query);
     const isPopularRequest = /(best|selling|seller|popular|top|featured)/i.test(query);
@@ -349,7 +388,7 @@ export class ShopifyService {
     const priceMatch = query.match(/(?:under|below|less than|max|rs\.?|pkr)\s*(\d+)/i) || query.match(/\b(\d+)\b(?!\s*g)/i);
     const targetPrice = priceMatch ? parseInt(priceMatch[1], 10) : null;
 
-    const scored = products
+    const scoredProducts = products
       .map((product) => {
         const haystack = this.normalizeSearchText(
           [
@@ -371,14 +410,29 @@ export class ShopifyService {
           }
         }
 
+        for (const phrase of queryPhrases) {
+          if (phrase.includes(" ") && haystack.includes(phrase)) {
+            score += 7;
+          }
+        }
+
         if (targetPrice !== null && product.price) {
-          const priceVal = parseFloat(product.price);
-          if (priceVal <= targetPrice) {
+          const priceVal = parsePriceValue(product.price);
+          if (priceVal !== null && priceVal <= targetPrice) {
             score += 20;
-          } else if (priceVal <= targetPrice * 1.5) {
+          } else if (priceVal !== null && priceVal <= targetPrice * 1.5) {
             score += 5;
           } else {
             score -= 50;
+          }
+        }
+
+        const productPrice = parsePriceValue(product.price);
+        if (isDealsRequest && productPrice !== null) {
+          if (productPrice >= 1000) {
+            score += 16;
+          } else {
+            score -= 14;
           }
         }
 
@@ -417,11 +471,18 @@ export class ShopifyService {
         return { product, score };
       })
       .filter((item) => item.score > -10 && (item.score > 0 || queryTokens.length === 0 || isPopularRequest || isGiftRequest || targetPrice !== null))
-      .sort((left, right) => right.score - left.score)
+      .sort((left, right) => right.score - left.score);
+
+    const highValueDeals = isDealsRequest
+      ? scoredProducts.filter((item) => {
+          const price = parsePriceValue(item.product.price);
+          return price !== null && price >= 1000;
+        })
+      : [];
+
+    return (highValueDeals.length > 0 ? highValueDeals : scoredProducts)
       .slice(0, limit)
       .map((item) => item.product);
-
-    return scored;
   }
 
   private async searchOrders(query: string): Promise<OrderLookupResult[]> {
@@ -656,6 +717,7 @@ export class ShopifyService {
   private async searchProductsViaStorefront(query: string): Promise<ProductLookupResult[]> {
     const products = await this.getRecommendationCatalog();
     const normalizedQuery = this.normalizeSearchText(query);
+    const queryPhrases = this.expandSearchPhrases(query);
 
     const matches = products.filter((product) => {
       const haystack = this.normalizeSearchText(
@@ -677,7 +739,11 @@ export class ShopifyService {
         return haystack.includes(token) ? count + 1 : count;
       }, 0);
 
-      return queryTokens.length > 0 && score >= Math.max(1, Math.min(2, queryTokens.length - 1));
+      const phraseScore = queryPhrases.reduce((count, phrase) => {
+        return phrase.includes(" ") && haystack.includes(phrase) ? count + 2 : count;
+      }, 0);
+
+      return queryTokens.length > 0 && score + phraseScore >= Math.max(1, Math.min(2, queryTokens.length - 1));
     });
 
     return matches.slice(0, 50);
@@ -686,6 +752,7 @@ export class ShopifyService {
   private searchProductsViaUploadedCatalog(query: string): ProductLookupResult[] {
     const normalizedQuery = this.normalizeSearchText(query);
     const queryTokens = normalizedQuery.split(" ").filter(Boolean);
+    const queryPhrases = this.expandSearchPhrases(query);
 
     return this.getUploadedCatalog()
       .map((product) => {
@@ -706,7 +773,11 @@ export class ShopifyService {
           return haystack.includes(token) ? count + 1 : count;
         }, 0);
 
-        return { product, score };
+        const phraseScore = queryPhrases.reduce((count, phrase) => {
+          return phrase.includes(" ") && haystack.includes(phrase) ? count + 2 : count;
+        }, 0);
+
+        return { product, score: score + phraseScore };
       })
       .filter((item) => queryTokens.length > 0 && item.score >= Math.max(1, Math.min(2, queryTokens.length)))
       .sort((left, right) => {
@@ -767,6 +838,7 @@ export class ShopifyService {
         title: product.title,
         handle: product.handle,
         link: `${STOREFRONT_BASE_URL}/products/${product.handle}`,
+        cartLink: toCartLink(variants[0]?.id ?? null, `${STOREFRONT_BASE_URL}/products/${product.handle}`),
         status: (product.status ?? "active").toUpperCase(),
         source: "shopify_storefront",
         price: variants[0]?.price ?? null,
@@ -822,6 +894,7 @@ export class ShopifyService {
           title: canonical?.title ?? product.title,
           handle,
           link: canonical?.link ?? `${STOREFRONT_BASE_URL}/collections/all`,
+          cartLink: canonical?.link ?? `${STOREFRONT_BASE_URL}/collections/all`,
           status: "ACTIVE",
           source: "uploaded_catalog" as const,
           price: product.price,
@@ -852,6 +925,7 @@ export class ShopifyService {
         title: product.title,
         handle: product.link.split("/").filter(Boolean).pop() ?? this.slugify(product.title),
         link: product.link,
+        cartLink: product.link,
         status: "ACTIVE",
         source: "uploaded_catalog" as const,
         price: null,
@@ -890,6 +964,7 @@ export class ShopifyService {
 
       merged.set(key, {
         ...product,
+        cartLink: product.cartLink ?? uploaded.cartLink ?? product.link,
         source: product.source ?? uploaded.source,
         orderCount: null,
         unitsSold: null,
@@ -912,6 +987,34 @@ export class ShopifyService {
       .replace(/<[^>]+>/g, " ")
       .replace(/[^a-z0-9]+/g, " ")
       .trim();
+  }
+
+  private expandSearchPhrases(value: string): string[] {
+    const normalized = this.normalizeSearchText(value);
+    const tokens = normalized.split(" ").filter(Boolean);
+    const bigrams: string[] = [];
+    const trigrams: string[] = [];
+
+    for (let index = 0; index < tokens.length - 1; index += 1) {
+      bigrams.push(`${tokens[index]} ${tokens[index + 1]}`);
+    }
+
+    for (let index = 0; index < tokens.length - 2; index += 1) {
+      trigrams.push(`${tokens[index]} ${tokens[index + 1]} ${tokens[index + 2]}`);
+    }
+
+    const directPhrases = uniqueStrings([normalized, ...bigrams, ...trigrams]);
+    const aliasPhrases = directPhrases.flatMap((phrase) => {
+      const aliases = SEARCH_ALIAS_GROUPS[phrase] ?? [];
+      return aliases.map((alias) => this.normalizeSearchText(alias));
+    });
+
+    const tokenAliases = tokens.flatMap((token) => {
+      const aliases = SEARCH_ALIAS_GROUPS[token] ?? [];
+      return aliases.map((alias) => this.normalizeSearchText(alias));
+    });
+
+    return uniqueStrings([...directPhrases, ...aliasPhrases, ...tokenAliases]);
   }
 
   private slugify(value: string): string {

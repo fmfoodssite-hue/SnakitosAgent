@@ -13,6 +13,7 @@ import {
   formatWhatsAppFallback,
   normalizePhone,
 } from "../utils/validation.util";
+import { aiService } from "./ai.service";
 import { knowledgeService } from "./knowledge.service";
 import { shopifyService } from "./shopify.service";
 import { supabaseService } from "./supabase.service";
@@ -66,7 +67,7 @@ export class SupportAgentService {
         input.message,
         chatId,
       );
-      const safeResponse = response.response;
+      const safeResponse = aiService.sanitizeCustomerResponse(response.response);
 
       await supabaseService.addMessage(chatId, "bot", safeResponse);
       await supabaseService.logEvent("chat_processed", {
@@ -132,7 +133,7 @@ export class SupportAgentService {
   }
 
   private isSensitiveRequest(message: string): boolean {
-    return /(api key|access token|secret key|client secret|password|prompt|system prompt|hidden instruction|ignore previous instructions|developer message|env file|environment variable|process\.env|shopify_admin_api_access_token|openai_api_key|supabase_service_role_key)/i.test(
+    return /(api key|access token|secret key|client secret|password|prompt|system prompt|hidden instruction|ignore previous instructions|developer message|env file|environment variable|process\.env|shopify_admin_api_access_token|openai_api_key|supabase_service_role_key|pinecone_api_key|private key|bearer token|authorization header|session token|cookie dump|show me your rules|reveal instructions|print config|leak)/i.test(
       message,
     );
   }
@@ -301,9 +302,15 @@ export class SupportAgentService {
         referencedProduct || productQuery || userMessage,
       );
       if (fallbackProducts.length > 0) {
+        const curatedProducts = this.selectProductsForResponse(fallbackProducts, userMessage);
+        const response = await aiService.generateResponse({
+          intent: "product",
+          userMessage,
+          context: { products: curatedProducts },
+        });
         return {
           intent: "product",
-          response: this.buildProductResponse(fallbackProducts, userMessage),
+          response,
           data: fallbackProducts,
         };
       }
@@ -319,9 +326,15 @@ export class SupportAgentService {
         referencedProduct || productQuery || userMessage,
       );
       if (fallbackProducts.length > 0) {
+        const curatedProducts = this.selectProductsForResponse(fallbackProducts, userMessage);
+        const response = await aiService.generateResponse({
+          intent: "product",
+          userMessage,
+          context: { products: curatedProducts },
+        });
         return {
           intent: "product",
-          response: this.buildProductResponse(fallbackProducts, userMessage),
+          response,
           data: fallbackProducts,
         };
       }
@@ -341,7 +354,12 @@ export class SupportAgentService {
       };
     }
 
-    const response = this.buildProductResponse(products, userMessage);
+    const curatedProducts = this.selectProductsForResponse(products, userMessage);
+    const response = await aiService.generateResponse({
+      intent: "product",
+      userMessage,
+      context: { products: curatedProducts },
+    });
 
     return {
       intent: "product",
@@ -410,18 +428,17 @@ export class SupportAgentService {
       };
     }
 
+    const response = await aiService.generateResponse({
+      intent: "general",
+      userMessage,
+      context: {
+        knowledge: this.buildPolicyKnowledge(policyDocument, userMessage),
+      },
+    });
+
     return {
       intent: "general",
-      response: JSON.stringify({
-        type: "policy",
-        message: this.buildPolicyMessage(policyDocument, userMessage),
-        products: [],
-        policy_link: policyDocument.source,
-        options: [
-          { label: "Back", value: "show categories" },
-          { label: "Home", value: "home" },
-        ],
-      }),
+      response,
       data: policyDocument,
     };
   }
@@ -445,14 +462,6 @@ export class SupportAgentService {
             { label: "Home", value: "home" },
           ],
         }),
-      };
-    }
-
-    const directResponse = this.buildDirectGeneralResponse(userMessage);
-    if (directResponse) {
-      return {
-        intent: "general",
-        response: directResponse,
       };
     }
 
@@ -480,9 +489,19 @@ export class SupportAgentService {
       };
     }
 
+    const recentMessages = await supabaseService.getRecentMessages(chatId);
+    const response = await aiService.generateResponse({
+      intent: "general",
+      userMessage,
+      context: {
+        knowledge: relevantKnowledge,
+        recentMessages,
+      },
+    });
+
     return {
       intent: "general",
-      response: this.buildKnowledgeResponse(relevantKnowledge),
+      response,
       data: relevantKnowledge,
     };
   }
@@ -521,108 +540,6 @@ export class SupportAgentService {
         { label: "Home", value: "home" },
       ],
     });
-  }
-
-  private buildDirectGeneralResponse(userMessage: string): string | null {
-    const normalized = userMessage.toLowerCase();
-
-    if (/contact|phone number|email|address|support/.test(normalized)) {
-      return JSON.stringify({
-        type: "fallback",
-        message: "You can contact Snakitos through the official contact page for address, phone, email, and support details.",
-        products: [],
-        policy_link: "https://snakitos.com/pages/contact",
-        options: [
-          { label: "Back", value: "show categories" },
-          { label: "Home", value: "home" },
-        ],
-      });
-    }
-
-    if (/complaint|complain/.test(normalized)) {
-      return JSON.stringify({
-        type: "fallback",
-        message: "You can use the Snakitos complaint form for complaint and return-related support.",
-        products: [],
-        policy_link: "https://snakitos.com/pages/complaint-form",
-        options: [
-          { label: "Back", value: "show categories" },
-          { label: "Home", value: "home" },
-        ],
-      });
-    }
-
-    if (/\bcart\b/.test(normalized)) {
-      return JSON.stringify({
-        type: "fallback",
-        message: "You can review your basket on the Snakitos cart page.",
-        products: [],
-        policy_link: "https://snakitos.com/cart",
-        options: [
-          { label: "Back", value: "show categories" },
-          { label: "Home", value: "home" },
-        ],
-      });
-    }
-
-    if (/search/.test(normalized)) {
-      return JSON.stringify({
-        type: "fallback",
-        message: "You can use the Snakitos search page to explore products directly.",
-        products: [],
-        policy_link: "https://snakitos.com/search",
-        options: [
-          { label: "Back", value: "show categories" },
-          { label: "Home", value: "home" },
-        ],
-      });
-    }
-
-    if (/\bblog\b|tea time|snacking on the go|healthy snacks/.test(normalized)) {
-      return JSON.stringify({
-        type: "fallback",
-        message: "Snakitos also has a public blog with snack guides, tea-time ideas, and themed content.",
-        products: [],
-        policy_link: "https://snakitos.com/blogs/blog",
-        options: [
-          { label: "Back", value: "show categories" },
-          { label: "Home", value: "home" },
-        ],
-      });
-    }
-
-    return null;
-  }
-
-  private buildKnowledgeResponse(
-    knowledge: Array<{ name: string; text: string; link: string }>,
-  ): string {
-    const topItems = knowledge.slice(0, 3);
-    const message = topItems
-      .map((item) => `* ${item.text}`)
-      .join("\n");
-
-    return JSON.stringify({
-      type: "fallback",
-      message: message || "I couldn't find exact details, but here's what I know...",
-      products: [],
-      policy_link: topItems[0]?.link ?? "",
-      options: [
-        { label: "Back", value: "show categories" },
-        { label: "Home", value: "home" },
-      ],
-    });
-  }
-
-  private buildPolicyMessage(policy: PolicyDocument, userMessage: string): string {
-    const sections = this.selectRelevantPolicySections(policy, userMessage).slice(0, 3);
-
-    if (sections.length === 0) {
-      return "Please contact support.";
-    }
-
-    const bullets = sections.map((section) => `* ${this.shortenPolicyContent(section.content)}`);
-    return `${policy.policy_name}:\n\n${bullets.join("\n")}`;
   }
 
   private selectRelevantPolicySections(
@@ -775,12 +692,18 @@ export class SupportAgentService {
 
   private buildProductResponse(products: ProductLookupResult[], userMessage: string): string {
     const rankedProducts = this.rankProductsForDisplay(products, userMessage);
-    const displayProducts = (rankedProducts.length > 0 ? rankedProducts : products).slice(0, 4);
+    const isDealsRequest = /(deal|deals|bundle|combo|offer|offers)/i.test(userMessage);
+    const rankedOrOriginal = rankedProducts.length > 0 ? rankedProducts : products;
+    const highValueDeals = isDealsRequest
+      ? rankedOrOriginal.filter((product) => this.parseDisplayPrice(product.price) >= 1000)
+      : [];
+    const displayProducts = (highValueDeals.length > 0 ? highValueDeals : rankedOrOriginal).slice(0, 4);
     const productPayload = displayProducts.map((product) => ({
       name: product.title,
       description: this.buildCustomerProductDescription(product),
       price: product.price ?? "",
       link: product.link,
+      cart_link: product.cartLink ?? product.link,
     }));
 
     return JSON.stringify({
@@ -795,22 +718,61 @@ export class SupportAgentService {
     });
   }
 
+  private selectProductsForResponse(
+    products: ProductLookupResult[],
+    userMessage: string,
+  ): ProductLookupResult[] {
+    const rankedProducts = this.rankProductsForDisplay(products, userMessage);
+    const isDealsRequest = /(deal|deals|bundle|combo|offer|offers)/i.test(userMessage);
+    const rankedOrOriginal = rankedProducts.length > 0 ? rankedProducts : products;
+    const highValueDeals = isDealsRequest
+      ? rankedOrOriginal.filter((product) => this.parseDisplayPrice(product.price) >= 1000)
+      : [];
+
+    return (highValueDeals.length > 0 ? highValueDeals : rankedOrOriginal).slice(0, 5);
+  }
+
+  private buildPolicyKnowledge(
+    policy: PolicyDocument,
+    userMessage: string,
+  ): Array<{
+    id: string;
+    name: string;
+    text: string;
+    link: string;
+    type: string;
+    category: string;
+    source: string;
+  }> {
+    const sections = this.selectRelevantPolicySections(policy, userMessage).slice(0, 3);
+
+    return sections.map((section, index) => ({
+      id: `${policy.policy_name}-${index + 1}`,
+      name: policy.policy_name,
+      text: `${policy.policy_name}: ${this.toParagraphSentence(section.content)}`,
+      link: policy.source,
+      type: "policy",
+      category: "policy",
+      source: "policy_json",
+    }));
+  }
+
   private buildOrderResponse(order: Partial<NonNullable<AgentContext["order"]>> | undefined): string {
     const safeOrder = order ?? {};
     const parts = [
-      safeOrder.orderName ? `Order: ${safeOrder.orderName}` : "",
-      safeOrder.fulfillmentStatus ? `Fulfillment: ${safeOrder.fulfillmentStatus}` : "",
-      safeOrder.financialStatus ? `Payment: ${safeOrder.financialStatus}` : "",
+      safeOrder.orderName ? `Your order is ${safeOrder.orderName}.` : "",
+      safeOrder.fulfillmentStatus ? `Fulfillment status is ${safeOrder.fulfillmentStatus}.` : "",
+      safeOrder.financialStatus ? `Payment status is ${safeOrder.financialStatus}.` : "",
     ].filter(Boolean);
 
     const trackingLine =
       Array.isArray(safeOrder.tracking) && safeOrder.tracking.length > 0
-        ? `Tracking: ${safeOrder.tracking[0]?.number || "available"}`
+        ? `Tracking number is ${safeOrder.tracking[0]?.number || "available"}.`
         : "Tracking will be shared after shipment if available.";
 
     return JSON.stringify({
       type: "fallback",
-      message: `${parts.join("\n")}\n${trackingLine}`.trim(),
+      message: `${parts.join("\n\n")}\n\n${trackingLine}`.trim(),
       products: [],
       policy_link: "",
       options: [
@@ -826,6 +788,7 @@ export class SupportAgentService {
   ): ProductLookupResult[] {
     const query = userMessage.toLowerCase();
     const tokens = query.split(/[^a-z0-9]+/).filter((token) => token.length >= 3);
+    const phrases = this.extractSearchCombinations(userMessage);
     const wantsSpicy = /spicy|peri|masala|paprika|salsa|hot/i.test(query);
     const wantsSweet = /sweet|choco|wafer|hazelnut|strawberry|cappuccino/i.test(query);
     const wantsBanana = /banana/i.test(query);
@@ -847,6 +810,12 @@ export class SupportAgentService {
         for (const token of tokens) {
           if (haystack.includes(token)) {
             score += 3;
+          }
+        }
+
+        for (const phrase of phrases) {
+          if (phrase.includes(" ") && haystack.includes(phrase)) {
+            score += 6;
           }
         }
 
@@ -881,6 +850,38 @@ export class SupportAgentService {
       .map((item) => item.product);
   }
 
+  private extractSearchCombinations(message: string): string[] {
+    const normalized = message
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, " ")
+      .trim();
+    const tokens = normalized.split(" ").filter(Boolean);
+    const phrases = new Set<string>([normalized]);
+
+    for (let index = 0; index < tokens.length - 1; index += 1) {
+      phrases.add(`${tokens[index]} ${tokens[index + 1]}`);
+    }
+
+    for (let index = 0; index < tokens.length - 2; index += 1) {
+      phrases.add(`${tokens[index]} ${tokens[index + 1]} ${tokens[index + 2]}`);
+    }
+
+    if (normalized.includes("hot and spicy")) {
+      phrases.add("hot spicy");
+    }
+    if (normalized.includes("multi grain")) {
+      phrases.add("multigrain");
+    }
+    if (normalized.includes("tea time")) {
+      phrases.add("evening snacks");
+    }
+    if (normalized.includes("movie night")) {
+      phrases.add("party snacks");
+    }
+
+    return Array.from(phrases).filter(Boolean);
+  }
+
   private buildCustomerProductDescription(product: ProductLookupResult): string {
     if (product.description && product.description !== "Snakitos snack from uploaded catalog.") {
       return product.description;
@@ -893,6 +894,12 @@ export class SupportAgentService {
     return "Snack from Snakitos.";
   }
 
+  private parseDisplayPrice(price: string | null | undefined): number {
+    const normalized = (price ?? "").replace(/,/g, "").trim();
+    const value = Number.parseFloat(normalized);
+    return Number.isFinite(value) ? value : 0;
+  }
+
   private shortenPolicyContent(content: string): string {
     const normalized = content.trim();
 
@@ -902,6 +909,11 @@ export class SupportAgentService {
 
     const sentence = normalized.match(/^(.+?[.!?])(?:\s|$)/)?.[1];
     return sentence ?? `${normalized.slice(0, 167).trim()}...`;
+  }
+
+  private toParagraphSentence(content: string): string {
+    const normalized = this.shortenPolicyContent(content).replace(/^\*\s*/, "").trim();
+    return /[.!?]$/.test(normalized) ? normalized : `${normalized}.`;
   }
 }
 

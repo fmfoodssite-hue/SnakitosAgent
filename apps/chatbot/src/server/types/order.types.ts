@@ -50,6 +50,7 @@ export type ProductLookupResult = {
   title: string;
   handle: string;
   link: string;
+  cartLink?: string | null;
   status: string;
   source?: "shopify_admin" | "shopify_storefront" | "uploaded_catalog";
   price: string | null;

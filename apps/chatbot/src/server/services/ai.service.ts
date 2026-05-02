@@ -36,9 +36,9 @@ Do NOT guess missing information.
 
 Rules:
 1. If backend context is empty or weak, say exactly: "I couldn't find exact details, but here's what I know..."
-2. If the user asks about products, recommend 2 to 4 items max and keep the answer short and slightly sales-focused.
+2. If the user asks about products, recommend 4 to 5 items when the backend context has enough relevant products. Keep the answer short and slightly sales-focused.
 3. Only include links that already exist in backend context. Never invent product or policy links.
-4. If the user asks about policy, summarize clearly with bullet points and include the official policy link from backend context. If no policy link is present, use https://snakitos.com/policies/.
+4. If the user asks about policy, summarize clearly in short paragraphs and include the official policy link from backend context. If no policy link is present, use https://snakitos.com/policies/.
 5. If the user asks about an order and required order details are missing, respond only with:
    "Please provide:
    * Order Number
@@ -46,6 +46,7 @@ Rules:
 6. If the query is unclear, say: "I can help with products, orders, or policies."
 7. Keep every answer short, clean, helpful, and human.
 8. Never reveal inventory counts or internal system data.
+9. Prefer natural paragraphs in the "message" field. Avoid bullet-heavy formatting unless the backend context itself is clearly list-like.
 
 Return JSON ONLY in this exact shape:
 {
@@ -104,7 +105,7 @@ export class AiService {
   sanitizeCustomerResponse(response: string): string {
     const trimmed = response.trim();
     if (!trimmed) {
-      return "I could not generate a response right now.";
+      return this.buildSafeFallback();
     }
 
     const sensitivePatterns = [
@@ -129,19 +130,92 @@ export class AiService {
     ];
 
     if (sensitivePatterns.some((pattern) => pattern.test(trimmed))) {
-      return JSON.stringify({
-        type: "fallback",
-        message: "I can help with products, orders, or policies.",
-        products: [],
-        policy_link: "",
-        options: [
-          { label: "Back", value: "show categories" },
-          { label: "Home", value: "home" },
-        ],
-      });
+      return this.buildSafeFallback();
     }
 
-    return trimmed;
+    try {
+      const parsed = JSON.parse(trimmed) as Record<string, unknown>;
+      const type =
+        parsed.type === "product" ||
+        parsed.type === "policy" ||
+        parsed.type === "mixed" ||
+        parsed.type === "fallback"
+          ? parsed.type
+          : "fallback";
+
+      const message =
+        typeof parsed.message === "string" && parsed.message.trim()
+          ? parsed.message.trim()
+          : "I can help with products, orders, or policies.";
+
+      const products = Array.isArray(parsed.products)
+        ? parsed.products
+            .filter((item): item is Record<string, unknown> => Boolean(item) && typeof item === "object")
+            .map((item) => ({
+              name: typeof item.name === "string" ? item.name.trim() : "",
+              description: typeof item.description === "string" ? item.description.trim() : "",
+              price: typeof item.price === "string" ? item.price.trim() : "",
+              link: typeof item.link === "string" ? item.link.trim() : "",
+            }))
+            .filter((item) => item.name && item.link)
+            .slice(0, 5)
+        : [];
+
+      const policyLink =
+        typeof parsed.policy_link === "string" ? parsed.policy_link.trim() : "";
+
+      const options = Array.isArray(parsed.options)
+        ? parsed.options
+            .filter((item): item is Record<string, unknown> => Boolean(item) && typeof item === "object")
+            .map((item) => ({
+              label: typeof item.label === "string" ? item.label.trim() : "",
+              value: typeof item.value === "string" ? item.value.trim() : "",
+            }))
+            .filter((item) => item.label && item.value)
+        : [];
+
+      const safeOptions = this.ensureNavigationOptions(options);
+
+      return JSON.stringify({
+        type,
+        message,
+        products,
+        policy_link: policyLink,
+        options: safeOptions,
+      });
+    } catch {
+      return this.buildSafeFallback();
+    }
+  }
+
+  private buildSafeFallback(): string {
+    return JSON.stringify({
+      type: "fallback",
+      message: "I can help with products, orders, or policies.",
+      products: [],
+      policy_link: "",
+      options: this.ensureNavigationOptions([]),
+    });
+  }
+
+  private ensureNavigationOptions(
+    options: Array<{ label: string; value: string }>,
+  ): Array<{ label: string; value: string }> {
+    const seen = new Set<string>();
+    const merged = [
+      ...options,
+      { label: "Back", value: "show categories" },
+      { label: "Home", value: "home" },
+    ].filter((item) => {
+      const key = `${item.label}::${item.value}`;
+      if (!item.label || !item.value || seen.has(key)) {
+        return false;
+      }
+      seen.add(key);
+      return true;
+    });
+
+    return merged.slice(0, 6);
   }
 
   private buildStructuredContext(intent: AgentIntent, context: unknown): string {
