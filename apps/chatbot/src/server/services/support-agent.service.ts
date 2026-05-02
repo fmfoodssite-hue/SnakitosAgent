@@ -1,4 +1,3 @@
-import { config } from "../config";
 import policyData from "../data/policies.json";
 import {
   AgentContext,
@@ -14,7 +13,6 @@ import {
   formatWhatsAppFallback,
   normalizePhone,
 } from "../utils/validation.util";
-import { aiService } from "./ai.service";
 import { knowledgeService } from "./knowledge.service";
 import { shopifyService } from "./shopify.service";
 import { supabaseService } from "./supabase.service";
@@ -68,7 +66,7 @@ export class SupportAgentService {
         input.message,
         chatId,
       );
-      const safeResponse = aiService.sanitizeCustomerResponse(response.response);
+      const safeResponse = response.response;
 
       await supabaseService.addMessage(chatId, "bot", safeResponse);
       await supabaseService.logEvent("chat_processed", {
@@ -252,15 +250,9 @@ export class SupportAgentService {
       },
     };
 
-    const response = await aiService.generateResponse({
-      intent: "order",
-      userMessage,
-      context,
-    });
-
     return {
       intent: "order",
-      response,
+      response: this.buildOrderResponse(context.order ?? order),
       data: order,
     };
   }
@@ -309,14 +301,9 @@ export class SupportAgentService {
         referencedProduct || productQuery || userMessage,
       );
       if (fallbackProducts.length > 0) {
-        const response = await aiService.generateResponse({
-          intent: "product",
-          userMessage,
-          context: { products: fallbackProducts },
-        });
         return {
           intent: "product",
-          response,
+          response: this.buildProductResponse(fallbackProducts, userMessage),
           data: fallbackProducts,
         };
       }
@@ -332,14 +319,9 @@ export class SupportAgentService {
         referencedProduct || productQuery || userMessage,
       );
       if (fallbackProducts.length > 0) {
-        const response = await aiService.generateResponse({
-          intent: "product",
-          userMessage,
-          context: { products: fallbackProducts },
-        });
         return {
           intent: "product",
-          response,
+          response: this.buildProductResponse(fallbackProducts, userMessage),
           data: fallbackProducts,
         };
       }
@@ -466,10 +448,15 @@ export class SupportAgentService {
       };
     }
 
-    const [knowledge, recentMessages] = await Promise.all([
-      knowledgeService.retrieve(userMessage),
-      supabaseService.getRecentMessages(chatId),
-    ]);
+    const directResponse = this.buildDirectGeneralResponse(userMessage);
+    if (directResponse) {
+      return {
+        intent: "general",
+        response: directResponse,
+      };
+    }
+
+    const knowledge = await knowledgeService.retrieve(userMessage);
 
     const relevantKnowledge = knowledge.filter(
       (item) => !this.isPolicyQuestion(userMessage) || item.type === "policy",
@@ -493,31 +480,21 @@ export class SupportAgentService {
       };
     }
 
-    const response = await aiService.generateResponse({
-      intent: "general",
-      userMessage,
-      context: {
-        knowledge: relevantKnowledge,
-        recentMessages,
-        policies: {
-          whatsappSupport: config.app.whatsappNumber,
-        },
-      },
-    });
-
     return {
       intent: "general",
-      response,
+      response: this.buildKnowledgeResponse(relevantKnowledge),
       data: relevantKnowledge,
     };
   }
 
   private isGreetingOrSmallTalk(message: string): boolean {
-    return /^(hi|hello|hey|assalamualaikum|salam|yo|start|menu)\b/i.test(message.trim());
+    return /^(hi|hello|hey|assalamualaikum|salam|yo|start|menu|show categories|collections)\b/i.test(
+      message.trim(),
+    );
   }
 
   private isUnclearQuery(message: string): boolean {
-    return /^(hi|hello|hey|ok|okay|hmm|hmmm|thanks|thank you|start|menu)\b/i.test(
+    return /^(hi|hello|hey|ok|okay|hmm|hmmm|thanks|thank you|start|menu|show categories|collections)\b/i.test(
       message.trim(),
     );
   }
@@ -537,8 +514,101 @@ export class SupportAgentService {
       options: [
         { label: "Deals", value: "show best deals" },
         { label: "Sweet Tooth", value: "Show me Sweet Tooth snacks" },
+        { label: "Multi Grain", value: "Show me Multi Grain snacks" },
+        { label: "Banana Chips", value: "Show me Banana Chips" },
         { label: "Track Order", value: "track my order" },
         { label: "Policies", value: "show shipping and refund policy" },
+        { label: "Home", value: "home" },
+      ],
+    });
+  }
+
+  private buildDirectGeneralResponse(userMessage: string): string | null {
+    const normalized = userMessage.toLowerCase();
+
+    if (/contact|phone number|email|address|support/.test(normalized)) {
+      return JSON.stringify({
+        type: "fallback",
+        message: "You can contact Snakitos through the official contact page for address, phone, email, and support details.",
+        products: [],
+        policy_link: "https://snakitos.com/pages/contact",
+        options: [
+          { label: "Back", value: "show categories" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
+    if (/complaint|complain/.test(normalized)) {
+      return JSON.stringify({
+        type: "fallback",
+        message: "You can use the Snakitos complaint form for complaint and return-related support.",
+        products: [],
+        policy_link: "https://snakitos.com/pages/complaint-form",
+        options: [
+          { label: "Back", value: "show categories" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
+    if (/\bcart\b/.test(normalized)) {
+      return JSON.stringify({
+        type: "fallback",
+        message: "You can review your basket on the Snakitos cart page.",
+        products: [],
+        policy_link: "https://snakitos.com/cart",
+        options: [
+          { label: "Back", value: "show categories" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
+    if (/search/.test(normalized)) {
+      return JSON.stringify({
+        type: "fallback",
+        message: "You can use the Snakitos search page to explore products directly.",
+        products: [],
+        policy_link: "https://snakitos.com/search",
+        options: [
+          { label: "Back", value: "show categories" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
+    if (/\bblog\b|tea time|snacking on the go|healthy snacks/.test(normalized)) {
+      return JSON.stringify({
+        type: "fallback",
+        message: "Snakitos also has a public blog with snack guides, tea-time ideas, and themed content.",
+        products: [],
+        policy_link: "https://snakitos.com/blogs/blog",
+        options: [
+          { label: "Back", value: "show categories" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
+    return null;
+  }
+
+  private buildKnowledgeResponse(
+    knowledge: Array<{ name: string; text: string; link: string }>,
+  ): string {
+    const topItems = knowledge.slice(0, 3);
+    const message = topItems
+      .map((item) => `* ${item.text}`)
+      .join("\n");
+
+    return JSON.stringify({
+      type: "fallback",
+      message: message || "I couldn't find exact details, but here's what I know...",
+      products: [],
+      policy_link: topItems[0]?.link ?? "",
+      options: [
+        { label: "Back", value: "show categories" },
         { label: "Home", value: "home" },
       ],
     });
@@ -704,8 +774,9 @@ export class SupportAgentService {
   }
 
   private buildProductResponse(products: ProductLookupResult[], userMessage: string): string {
-    const rankedProducts = this.rankProductsForDisplay(products, userMessage).slice(0, 4);
-    const productPayload = rankedProducts.map((product) => ({
+    const rankedProducts = this.rankProductsForDisplay(products, userMessage);
+    const displayProducts = (rankedProducts.length > 0 ? rankedProducts : products).slice(0, 4);
+    const productPayload = displayProducts.map((product) => ({
       name: product.title,
       description: this.buildCustomerProductDescription(product),
       price: product.price ?? "",
@@ -716,6 +787,31 @@ export class SupportAgentService {
       type: "product",
       message: "Top Picks for You:",
       products: productPayload,
+      policy_link: "",
+      options: [
+        { label: "Back", value: "show categories" },
+        { label: "Home", value: "home" },
+      ],
+    });
+  }
+
+  private buildOrderResponse(order: Partial<NonNullable<AgentContext["order"]>> | undefined): string {
+    const safeOrder = order ?? {};
+    const parts = [
+      safeOrder.orderName ? `Order: ${safeOrder.orderName}` : "",
+      safeOrder.fulfillmentStatus ? `Fulfillment: ${safeOrder.fulfillmentStatus}` : "",
+      safeOrder.financialStatus ? `Payment: ${safeOrder.financialStatus}` : "",
+    ].filter(Boolean);
+
+    const trackingLine =
+      Array.isArray(safeOrder.tracking) && safeOrder.tracking.length > 0
+        ? `Tracking: ${safeOrder.tracking[0]?.number || "available"}`
+        : "Tracking will be shared after shipment if available.";
+
+    return JSON.stringify({
+      type: "fallback",
+      message: `${parts.join("\n")}\n${trackingLine}`.trim(),
+      products: [],
       policy_link: "",
       options: [
         { label: "Back", value: "show categories" },

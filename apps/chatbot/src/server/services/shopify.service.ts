@@ -13,6 +13,7 @@ import {
   extractNumericOrderId,
   normalizeOrderReference,
 } from "../utils/validation.util";
+import { getCanonicalTreeProducts } from "../utils/site-tree.util";
 
 type CacheEntry<T> = {
   expiresAt: number;
@@ -803,24 +804,69 @@ export class ShopifyService {
   }
 
   private getUploadedCatalog(): ProductLookupResult[] {
-    return (uploadedCatalog as UploadedCatalogProduct[]).map((product, index) => ({
-      id: `uploaded-${index + 1}`,
-      title: product.title,
-      handle: this.slugify(product.title),
-      link: `${STOREFRONT_BASE_URL}/collections/all`,
-      status: "ACTIVE",
-      source: "uploaded_catalog",
-      price: product.price,
-      description: sanitizeCustomerFacingDescription(product.description),
-      vendor: product.vendor ?? null,
-      productType: product.productType ?? null,
-      tags: product.tags ?? [],
-      availability: product.availability ?? "unknown",
-      totalInventory: null,
-      orderCount: null,
-      unitsSold: null,
-      variants: [],
-    }));
+    const treeProducts = getCanonicalTreeProducts();
+    const treeByTitle = new Map(
+      treeProducts.map((product) => [this.normalizeSearchText(product.title), product]),
+    );
+
+    const mergedUploadedProducts = (uploadedCatalog as UploadedCatalogProduct[]).map(
+      (product, index) => {
+        const normalizedTitle = this.normalizeSearchText(product.title);
+        const canonical = treeByTitle.get(normalizedTitle);
+        const handle = canonical
+          ? canonical.link.split("/").filter(Boolean).pop() ?? this.slugify(product.title)
+          : this.slugify(product.title);
+
+        return {
+          id: canonical?.id ?? `uploaded-${index + 1}`,
+          title: canonical?.title ?? product.title,
+          handle,
+          link: canonical?.link ?? `${STOREFRONT_BASE_URL}/collections/all`,
+          status: "ACTIVE",
+          source: "uploaded_catalog" as const,
+          price: product.price,
+          description:
+            canonical?.description ?? sanitizeCustomerFacingDescription(product.description),
+          vendor: typeof product.vendor === "string" ? product.vendor : null,
+          productType: canonical?.productType ?? product.productType ?? null,
+          tags: Array.from(
+            new Set([...(canonical?.tags ?? []), ...(product.tags ?? [])].filter(Boolean)),
+          ),
+          availability: product.availability ?? "unknown",
+          totalInventory: null,
+          orderCount: null,
+          unitsSold: null,
+          variants: [],
+        };
+      },
+    );
+
+    const existingTitles = new Set(
+      mergedUploadedProducts.map((product) => this.normalizeSearchText(product.title)),
+    );
+
+    const treeOnlyProducts = treeProducts
+      .filter((product) => !existingTitles.has(this.normalizeSearchText(product.title)))
+      .map((product) => ({
+        id: product.id,
+        title: product.title,
+        handle: product.link.split("/").filter(Boolean).pop() ?? this.slugify(product.title),
+        link: product.link,
+        status: "ACTIVE",
+        source: "uploaded_catalog" as const,
+        price: null,
+        description: product.description,
+        vendor: "snakitos",
+        productType: product.productType,
+        tags: product.tags,
+        availability: "unknown" as const,
+        totalInventory: null,
+        orderCount: null,
+        unitsSold: null,
+        variants: [],
+      }));
+
+    return [...mergedUploadedProducts, ...treeOnlyProducts];
   }
 
   private mergeCatalogs(

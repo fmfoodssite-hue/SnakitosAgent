@@ -1,0 +1,973 @@
+{
+  "metadata_template": [
+    "id",
+    "name",
+    "description",
+    "tags",
+    "link",
+    "fallback_link",
+    "discoverability_status"
+  ],
+  "crawl_notes": [
+    "Use on-page headings as canonical titles; some URL slugs do not match rendered product titles.",
+    "Use https://snakitos.com/collections/all?page=n as the catalog expansion source-of-truth.",
+    "Treat https://snakitos.com/collections as a routing/index page, not the final product count authority.",
+    "Organic - Natural currently renders as an empty collection placeholder.",
+    "Checkout, order-status, and order-tracking pages were not publicly discoverable during this crawl and are marked unspecified."
+  ],
+  "root": {
+    "id": "root:snakitos",
+    "title": "Snakitos public content tree",
+    "url": "https://snakitos.com/",
+    "type": "site_root",
+    "children": [
+      {
+        "id": "cat:product",
+        "title": "Product",
+        "url": "https://snakitos.com/collections",
+        "type": "category",
+        "children": [
+          {
+            "id": "page:collections",
+            "title": "Collections Index",
+            "url": "https://snakitos.com/collections",
+            "type": "index_page",
+            "metadata_seed": {
+              "name": "Collections Index",
+              "description": "Directory page for public Snakitos collections and category counts.",
+              "tags": ["product", "index", "collections"],
+              "link": "https://snakitos.com/collections",
+              "fallback_link": "https://snakitos.com/collections/all",
+              "discoverability_status": "resolved"
+            }
+          },
+          {
+            "id": "page:all-products",
+            "title": "All Products",
+            "url": "https://snakitos.com/collections/all",
+            "type": "catalog_page",
+            "metadata_seed": {
+              "name": "All Products",
+              "description": "Paginated public catalog; use as the source of truth for crawler expansion.",
+              "tags": ["product", "catalog", "all-products"],
+              "link": "https://snakitos.com/collections/all",
+              "fallback_link": "https://snakitos.com/collections",
+              "discoverability_status": "resolved"
+            }
+          },
+          {
+            "id": "col:sweet-tooth",
+            "title": "Sweet Tooth",
+            "url": "https://snakitos.com/collections/sweet-tooth",
+            "type": "collection_page",
+            "item_count_observed": 17,
+            "metadata_seed": {
+              "name": "Sweet Tooth",
+              "description": "Sweet snacks collection covering wafer rolls, choco sticks, and sweet bundles.",
+              "tags": ["product", "collection", "sweet"],
+              "link": "https://snakitos.com/collections/sweet-tooth",
+              "fallback_link": "https://snakitos.com/collections/all",
+              "discoverability_status": "resolved"
+            },
+            "children": [
+              {
+                "id": "prod:coco-choco-can",
+                "title": "Coco Choco Can - Snakitos - 70g",
+                "url": "https://snakitos.com/products/coco-choco-can",
+                "type": "product_page",
+                "metadata_seed": {
+                  "name": "Coco Choco Can - Snakitos - 70g",
+                  "description": "Crunchy chocolate-filled biscuit snack.",
+                  "tags": ["product", "sweet-tooth", "chocolate", "biscuit"],
+                  "link": "https://snakitos.com/products/coco-choco-can",
+                  "fallback_link": "https://snakitos.com/collections/sweet-tooth",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "prod:wafer-cappuccino",
+                "title": "Wafer Rolls Cappuccino - 80g",
+                "url": "https://snakitos.com/products/snakitos-wafer-roll-cappuccino",
+                "type": "product_page",
+                "metadata_seed": {
+                  "name": "Wafer Rolls Cappuccino - 80g",
+                  "description": "Crispy wafer rolls with cappuccino-flavored filling.",
+                  "tags": ["product", "sweet-tooth", "wafer-roll", "cappuccino"],
+                  "link": "https://snakitos.com/products/snakitos-wafer-roll-cappuccino",
+                  "fallback_link": "https://snakitos.com/collections/sweet-tooth",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "prod:wafer-dark-chocolate",
+                "title": "Wafer Rolls Dark Chocolate - 80g",
+                "url": "https://snakitos.com/collections/sweet-tooth/products/hazelnut-snakitos-wafer-sticks-rolls",
+                "type": "product_page",
+                "metadata_seed": {
+                  "name": "Wafer Rolls Dark Chocolate - 80g",
+                  "description": "Crispy wafer rolls filled with rich dark chocolate.",
+                  "tags": ["product", "sweet-tooth", "wafer-roll", "dark-chocolate", "slug-title-mismatch"],
+                  "link": "https://snakitos.com/collections/sweet-tooth/products/hazelnut-snakitos-wafer-sticks-rolls",
+                  "fallback_link": "https://snakitos.com/collections/sweet-tooth",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "prod:wafer-hazelnut",
+                "title": "Wafer Rolls Hazelnut - 80g",
+                "url": "https://snakitos.com/products/wafer-roll-hazelnut",
+                "type": "product_page",
+                "metadata_seed": {
+                  "name": "Wafer Rolls Hazelnut - 80g",
+                  "description": "Crispy wafer rolls with rich hazelnut filling.",
+                  "tags": ["product", "sweet-tooth", "wafer-roll", "hazelnut"],
+                  "link": "https://snakitos.com/products/wafer-roll-hazelnut",
+                  "fallback_link": "https://snakitos.com/collections/sweet-tooth",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "prod:wafer-strawberry",
+                "title": "Wafer Rolls Strawberry - 80g",
+                "url": "https://snakitos.com/products/strawberry-snakitos-wafer-sticks-rolls",
+                "type": "product_page",
+                "metadata_seed": {
+                  "name": "Wafer Rolls Strawberry - 80g",
+                  "description": "Crispy wafer rolls with fruity strawberry filling.",
+                  "tags": ["product", "sweet-tooth", "wafer-roll", "strawberry"],
+                  "link": "https://snakitos.com/products/strawberry-snakitos-wafer-sticks-rolls",
+                  "fallback_link": "https://snakitos.com/collections/sweet-tooth",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "prod:choco-stick-chocolate",
+                "title": "Choco Stick with Chocolate Spread - 35g",
+                "url": "https://snakitos.com/products/snakitos-choco-stick",
+                "type": "product_page",
+                "metadata_seed": {
+                  "name": "Choco Stick with Chocolate Spread - 35g",
+                  "description": "Chocolate stick snack with chocolate spread.",
+                  "tags": ["product", "sweet-tooth", "choco-stick", "chocolate"],
+                  "link": "https://snakitos.com/products/snakitos-choco-stick",
+                  "fallback_link": "https://snakitos.com/collections/sweet-tooth",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "prod:choco-stick-strawberry",
+                "title": "Choco Stick with Strawberry Spread - 35g",
+                "url": "https://snakitos.com/products/snakitos-strawberry-stick",
+                "type": "product_page",
+                "metadata_seed": {
+                  "name": "Choco Stick with Strawberry Spread - 35g",
+                  "description": "Chocolate stick snack paired with strawberry spread.",
+                  "tags": ["product", "sweet-tooth", "choco-stick", "strawberry"],
+                  "link": "https://snakitos.com/products/snakitos-strawberry-stick",
+                  "fallback_link": "https://snakitos.com/collections/sweet-tooth",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "prod:snaktory-box",
+                "title": "Snakitos Snaktory",
+                "url": "https://snakitos.com/collections/sweet-tooth/products/snakitos-snaktory",
+                "type": "product_page",
+                "metadata_seed": {
+                  "name": "Snakitos Snaktory",
+                  "description": "Gift-style wafer and Coco Choco bundle.",
+                  "tags": ["product", "sweet-tooth", "bundle", "snaktory"],
+                  "link": "https://snakitos.com/collections/sweet-tooth/products/snakitos-snaktory",
+                  "fallback_link": "https://snakitos.com/collections/sweet-tooth",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "prod:wafer-hazelnut-pack-6",
+                "title": "Wafer Roll Hazelnut - Pack of 6",
+                "url": "https://snakitos.com/collections/sweet-tooth/products/wafer-roll-hazelnut-pack-of-6",
+                "type": "product_page",
+                "metadata_seed": {
+                  "name": "Wafer Roll Hazelnut - Pack of 6",
+                  "description": "Hazelnut wafer rolls multipack.",
+                  "tags": ["product", "sweet-tooth", "multipack", "hazelnut"],
+                  "link": "https://snakitos.com/collections/sweet-tooth/products/wafer-roll-hazelnut-pack-of-6",
+                  "fallback_link": "https://snakitos.com/collections/sweet-tooth",
+                  "discoverability_status": "resolved"
+                }
+              }
+            ]
+          },
+          {
+            "id": "col:multi-grain",
+            "title": "Multi Grain",
+            "url": "https://snakitos.com/collections/multi-grain",
+            "type": "collection_page",
+            "item_count_observed": 8,
+            "metadata_seed": {
+              "name": "Multi Grain",
+              "description": "Savory multigrain snacks, including Stix variants and ChickPea Puffs.",
+              "tags": ["product", "collection", "multigrain"],
+              "link": "https://snakitos.com/collections/multi-grain",
+              "fallback_link": "https://snakitos.com/collections/all",
+              "discoverability_status": "resolved"
+            },
+            "children": [
+              {
+                "id": "prod:chickpea-puffs",
+                "title": "ChickPea Puffs - 70g",
+                "url": "https://snakitos.com/products/snakitos-chick-pea-puff",
+                "type": "product_page",
+                "metadata_seed": {
+                  "name": "ChickPea Puffs - 70g",
+                  "description": "Crunchy chickpea masala puff snack.",
+                  "tags": ["product", "multigrain", "chickpea", "savory"],
+                  "link": "https://snakitos.com/products/snakitos-chick-pea-puff",
+                  "fallback_link": "https://snakitos.com/collections/multi-grain",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "prod:stix-hot-spicy",
+                "title": "Stix Hot & Spicy - Multigrain - 50g",
+                "url": "https://snakitos.com/products/snakitos-stix-hot-spicy",
+                "type": "product_page",
+                "metadata_seed": {
+                  "name": "Stix Hot & Spicy - Multigrain - 50g",
+                  "description": "Fiery multigrain stick snack.",
+                  "tags": ["product", "multigrain", "stix", "spicy"],
+                  "link": "https://snakitos.com/products/snakitos-stix-hot-spicy",
+                  "fallback_link": "https://snakitos.com/collections/multi-grain",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "prod:stix-lemon-chilli",
+                "title": "Stix Lemon and Chilli - Multigrain - 50g",
+                "url": "https://snakitos.com/products/snakitos-lemon-and-chilli",
+                "type": "product_page",
+                "metadata_seed": {
+                  "name": "Stix Lemon and Chilli - Multigrain - 50g",
+                  "description": "Tangy and spicy lemon-chilli multigrain sticks.",
+                  "tags": ["product", "multigrain", "stix", "lemon", "chilli"],
+                  "link": "https://snakitos.com/products/snakitos-lemon-and-chilli",
+                  "fallback_link": "https://snakitos.com/collections/multi-grain",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "prod:stix-masala",
+                "title": "Stix Masala - Multigrain - 50g",
+                "url": "https://snakitos.com/products/snakitos-stix-masala",
+                "type": "product_page",
+                "metadata_seed": {
+                  "name": "Stix Masala - Multigrain - 50g",
+                  "description": "Masala-seasoned multigrain sticks.",
+                  "tags": ["product", "multigrain", "stix", "masala"],
+                  "link": "https://snakitos.com/products/snakitos-stix-masala",
+                  "fallback_link": "https://snakitos.com/collections/multi-grain",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "prod:stix-peri-peri",
+                "title": "Stix Peri Peri - Multigrain - 50g",
+                "url": "https://snakitos.com/products/snakitos-stix-peri-peri",
+                "type": "product_page",
+                "metadata_seed": {
+                  "name": "Stix Peri Peri - Multigrain - 50g",
+                  "description": "Spicy peri peri multigrain sticks.",
+                  "tags": ["product", "multigrain", "stix", "peri-peri", "spicy"],
+                  "link": "https://snakitos.com/products/snakitos-stix-peri-peri",
+                  "fallback_link": "https://snakitos.com/collections/multi-grain",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "prod:stix-salty",
+                "title": "Stix Salty - Multigrain - 50g",
+                "url": "https://snakitos.com/products/snakitos-stix-salty",
+                "type": "product_page",
+                "metadata_seed": {
+                  "name": "Stix Salty - Multigrain - 50g",
+                  "description": "Classic salted multigrain sticks.",
+                  "tags": ["product", "multigrain", "stix", "salty"],
+                  "link": "https://snakitos.com/products/snakitos-stix-salty",
+                  "fallback_link": "https://snakitos.com/collections/multi-grain",
+                  "discoverability_status": "resolved"
+                }
+              }
+            ]
+          },
+          {
+            "id": "col:banana-chips",
+            "title": "Banana Chips",
+            "url": "https://snakitos.com/collections/banana-chips",
+            "type": "collection_page",
+            "item_count_observed": 4,
+            "metadata_seed": {
+              "name": "Banana Chips",
+              "description": "Banana chip variants and banana-chip-led bundles.",
+              "tags": ["product", "collection", "banana-chips"],
+              "link": "https://snakitos.com/collections/banana-chips",
+              "fallback_link": "https://snakitos.com/collections/all",
+              "discoverability_status": "resolved"
+            },
+            "children": [
+              {
+                "id": "prod:banana-bbq",
+                "title": "Banana Chips BBQ - 100g",
+                "url": "https://snakitos.com/products/banana-chips-bbq-100g",
+                "type": "product_page",
+                "metadata_seed": {
+                  "name": "Banana Chips BBQ - 100g",
+                  "description": "Crispy banana chips with BBQ flavor.",
+                  "tags": ["product", "banana-chips", "bbq", "savory"],
+                  "link": "https://snakitos.com/products/banana-chips-bbq-100g",
+                  "fallback_link": "https://snakitos.com/collections/banana-chips",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "prod:banana-sea-salt",
+                "title": "Banana Chips Sea Salt - 100g",
+                "url": "https://snakitos.com/products/banana-chips-sea-salt",
+                "type": "product_page",
+                "metadata_seed": {
+                  "name": "Banana Chips Sea Salt - 100g",
+                  "description": "Crispy banana chips with sea salt.",
+                  "tags": ["product", "banana-chips", "sea-salt", "savory"],
+                  "link": "https://snakitos.com/products/banana-chips-sea-salt",
+                  "fallback_link": "https://snakitos.com/collections/banana-chips",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "prod:banana-achari-masti",
+                "title": "Snakitos Banana Chips Achari Masti",
+                "url": "https://snakitos.com/products/snakitos-banana-chips-cheese-flavoured",
+                "type": "product_page",
+                "metadata_seed": {
+                  "name": "Snakitos Banana Chips Achari Masti",
+                  "description": "Banana chips with achari-style desi flavor.",
+                  "tags": ["product", "banana-chips", "achari", "slug-title-mismatch"],
+                  "link": "https://snakitos.com/products/snakitos-banana-chips-cheese-flavoured",
+                  "fallback_link": "https://snakitos.com/collections/banana-chips",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "prod:banana-cheese",
+                "title": "Snakitos Banana Chips Cheese Flavoured",
+                "url": "https://snakitos.com/products/snakitos-banana-chips-cheese-flavoured-100g",
+                "type": "product_page",
+                "metadata_seed": {
+                  "name": "Snakitos Banana Chips Cheese Flavoured",
+                  "description": "Banana chips with cheese flavor.",
+                  "tags": ["product", "banana-chips", "cheese", "savory"],
+                  "link": "https://snakitos.com/products/snakitos-banana-chips-cheese-flavoured-100g",
+                  "fallback_link": "https://snakitos.com/collections/banana-chips",
+                  "discoverability_status": "resolved"
+                }
+              }
+            ]
+          },
+          {
+            "id": "col:patata-chips",
+            "title": "Patata Chips",
+            "url": "https://snakitos.com/collections/patata-chips",
+            "type": "collection_page",
+            "item_count_observed": 3,
+            "metadata_seed": {
+              "name": "Patata Chips",
+              "description": "Potato Slims collection.",
+              "tags": ["product", "collection", "patata-chips", "potato-slims"],
+              "link": "https://snakitos.com/collections/patata-chips",
+              "fallback_link": "https://snakitos.com/collections/all",
+              "discoverability_status": "resolved"
+            },
+            "children": [
+              {
+                "id": "prod:patata-masala",
+                "title": "Patata Masala - 50g",
+                "url": "https://snakitos.com/products/patata-masala-potato-slims",
+                "type": "product_page",
+                "metadata_seed": {
+                  "name": "Patata Masala - 50g",
+                  "description": "Spicy Potato Slims masala variant.",
+                  "tags": ["product", "patata", "potato-slims", "masala"],
+                  "link": "https://snakitos.com/products/patata-masala-potato-slims",
+                  "fallback_link": "https://snakitos.com/collections/patata-chips",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "prod:patata-salty",
+                "title": "Patata Salty - 50g",
+                "url": "https://snakitos.com/products/snakitos-patata-salty",
+                "type": "product_page",
+                "metadata_seed": {
+                  "name": "Patata Salty - 50g",
+                  "description": "Salted Potato Slims variant.",
+                  "tags": ["product", "patata", "potato-slims", "salty"],
+                  "link": "https://snakitos.com/products/snakitos-patata-salty",
+                  "fallback_link": "https://snakitos.com/collections/patata-chips",
+                  "discoverability_status": "resolved"
+                }
+              }
+            ]
+          },
+          {
+            "id": "col:deals",
+            "title": "Deals",
+            "url": "https://snakitos.com/collections/deals",
+            "type": "collection_page",
+            "item_count_observed": 41,
+            "metadata_seed": {
+              "name": "Deals",
+              "description": "Deals hub linking nachos, bundles, snaktory, can-tray, and mega-discounts.",
+              "tags": ["product", "collection", "deals"],
+              "link": "https://snakitos.com/collections/deals",
+              "fallback_link": "https://snakitos.com/collections/all",
+              "discoverability_status": "resolved"
+            },
+            "children": [
+              {
+                "id": "col:nachos",
+                "title": "Nachos",
+                "url": "https://snakitos.com/collections/nachos",
+                "type": "collection_page",
+                "item_count_observed": 17,
+                "metadata_seed": {
+                  "name": "Nachos",
+                  "description": "Nachos collection and bundles.",
+                  "tags": ["product", "collection", "nachos"],
+                  "link": "https://snakitos.com/collections/nachos",
+                  "fallback_link": "https://snakitos.com/collections/deals",
+                  "discoverability_status": "resolved"
+                },
+                "children": [
+                  {
+                    "id": "prod:nachos-salsa-10",
+                    "title": "Nachos Salsa Pack Of 10 - 50g ( +DC )",
+                    "url": "https://snakitos.com/collections/nachos/products/nachos-salsa-pack-of-10-50g-dc-copy",
+                    "type": "product_page",
+                    "metadata_seed": {
+                      "name": "Nachos Salsa Pack Of 10 - 50g ( +DC )",
+                      "description": "Salsa-flavored tortilla chip multipack.",
+                      "tags": ["product", "nachos", "salsa", "multipack"],
+                      "link": "https://snakitos.com/collections/nachos/products/nachos-salsa-pack-of-10-50g-dc-copy",
+                      "fallback_link": "https://snakitos.com/collections/nachos",
+                      "discoverability_status": "resolved"
+                    }
+                  },
+                  {
+                    "id": "prod:nachos-paprika-10",
+                    "title": "Nachos Paprika Pack Of 10 - 50g ( +DC )",
+                    "url": "https://snakitos.com/collections/nachos/products/nachos-paprika-pack-of-10-50g-dc-1",
+                    "type": "product_page",
+                    "metadata_seed": {
+                      "name": "Nachos Paprika Pack Of 10 - 50g ( +DC )",
+                      "description": "Paprika-flavored tortilla chip multipack.",
+                      "tags": ["product", "nachos", "paprika", "multipack"],
+                      "link": "https://snakitos.com/collections/nachos/products/nachos-paprika-pack-of-10-50g-dc-1",
+                      "fallback_link": "https://snakitos.com/collections/nachos",
+                      "discoverability_status": "resolved"
+                    }
+                  },
+                  {
+                    "id": "prod:nachos-salsa-paprika-box",
+                    "title": "FM Foods Snakitos Nachos Salsa & Paprika Pack (10 Packs)",
+                    "url": "https://snakitos.com/collections/nachos/products/fm-foods-snakitos-nachos-salsa-paprika-pack-10-packs",
+                    "type": "product_page",
+                    "metadata_seed": {
+                      "name": "FM Foods Snakitos Nachos Salsa & Paprika Pack (10 Packs)",
+                      "description": "Mixed bundle with salsa and paprika nachos.",
+                      "tags": ["product", "nachos", "bundle", "salsa", "paprika"],
+                      "link": "https://snakitos.com/collections/nachos/products/fm-foods-snakitos-nachos-salsa-paprika-pack-10-packs",
+                      "fallback_link": "https://snakitos.com/collections/nachos",
+                      "discoverability_status": "resolved"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "col:bundle",
+                "title": "Bundle",
+                "url": "https://snakitos.com/collections/bundle",
+                "type": "collection_page",
+                "item_count_observed": 30,
+                "metadata_seed": {
+                  "name": "Bundle",
+                  "description": "Bundle offers and larger multipacks.",
+                  "tags": ["product", "collection", "bundle"],
+                  "link": "https://snakitos.com/collections/bundle",
+                  "fallback_link": "https://snakitos.com/collections/deals",
+                  "discoverability_status": "resolved"
+                },
+                "children": [
+                  {
+                    "id": "prod:wafer-wonder-bundle",
+                    "title": "Wafer Wonder Bundle - Hazelnut Snakitos Wafer Sticks / Rolls | Free Shipping",
+                    "url": "https://snakitos.com/collections/bundle/products/wafer-wonder-bundle-hazelnut-snakitos-wafer-sticks-rolls-free-shipping-1",
+                    "type": "product_page",
+                    "metadata_seed": {
+                      "name": "Wafer Wonder Bundle - Hazelnut Snakitos Wafer Sticks / Rolls | Free Shipping",
+                      "description": "Hazelnut wafer-roll bundle with free shipping.",
+                      "tags": ["product", "bundle", "wafer-roll", "hazelnut", "free-shipping"],
+                      "link": "https://snakitos.com/collections/bundle/products/wafer-wonder-bundle-hazelnut-snakitos-wafer-sticks-rolls-free-shipping-1",
+                      "fallback_link": "https://snakitos.com/collections/bundle",
+                      "discoverability_status": "resolved"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "col:snaktory",
+                "title": "Snaktory",
+                "url": "https://snakitos.com/collections/snaktory",
+                "type": "collection_page",
+                "item_count_observed": 10,
+                "metadata_seed": {
+                  "name": "Snaktory",
+                  "description": "Snaktory-branded assortments and themed packs.",
+                  "tags": ["product", "collection", "snaktory"],
+                  "link": "https://snakitos.com/collections/snaktory",
+                  "fallback_link": "https://snakitos.com/collections/deals",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "col:can-tray",
+                "title": "Can Tray",
+                "url": "https://snakitos.com/collections/can-tray",
+                "type": "collection_page",
+                "item_count_observed": 1,
+                "metadata_seed": {
+                  "name": "Can Tray",
+                  "description": "Can-tray multipack collection.",
+                  "tags": ["product", "collection", "can-tray"],
+                  "link": "https://snakitos.com/collections/can-tray",
+                  "fallback_link": "https://snakitos.com/collections/deals",
+                  "discoverability_status": "resolved"
+                },
+                "children": [
+                  {
+                    "id": "prod:multi-grain-stix-can-tray",
+                    "title": "Multi Grain Stix - Can Tray 5 +1",
+                    "url": "https://snakitos.com/collections/can-tray/products/snakitos-multi-grain-stix-can-tray-5-1",
+                    "type": "product_page",
+                    "metadata_seed": {
+                      "name": "Multi Grain Stix - Can Tray 5 +1",
+                      "description": "Assorted multigrain Stix can-tray multipack.",
+                      "tags": ["product", "can-tray", "multigrain", "multipack"],
+                      "link": "https://snakitos.com/collections/can-tray/products/snakitos-multi-grain-stix-can-tray-5-1",
+                      "fallback_link": "https://snakitos.com/collections/can-tray",
+                      "discoverability_status": "resolved"
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "col:mega-discounts",
+                "title": "Mega Discounts",
+                "url": "https://snakitos.com/collections/mega-discounts",
+                "type": "collection_page",
+                "item_count_observed": 3,
+                "metadata_seed": {
+                  "name": "Mega Discounts",
+                  "description": "Large-value deal collection.",
+                  "tags": ["product", "collection", "mega-discounts"],
+                  "link": "https://snakitos.com/collections/mega-discounts",
+                  "fallback_link": "https://snakitos.com/collections/deals",
+                  "discoverability_status": "resolved"
+                },
+                "children": [
+                  {
+                    "id": "prod:mega-snack-deal",
+                    "title": "Fm Foods Mega Snack Deal",
+                    "url": "https://snakitos.com/collections/mega-discounts/products/fm-foods-mega-snack-deal-1",
+                    "type": "product_page",
+                    "metadata_seed": {
+                      "name": "Fm Foods Mega Snack Deal",
+                      "description": "Large assorted snack-box deal covering multiple Snakitos products.",
+                      "tags": ["product", "mega-discounts", "bundle", "assorted"],
+                      "link": "https://snakitos.com/collections/mega-discounts/products/fm-foods-mega-snack-deal-1",
+                      "fallback_link": "https://snakitos.com/collections/mega-discounts",
+                      "discoverability_status": "resolved"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "col:organic-natural",
+            "title": "Organic - Natural",
+            "url": "https://snakitos.com/collections/organic-natural",
+            "type": "collection_page",
+            "item_count_observed": 0,
+            "metadata_seed": {
+              "name": "Organic - Natural",
+              "description": "Empty placeholder collection during crawl.",
+              "tags": ["product", "collection", "organic", "empty-placeholder"],
+              "link": "https://snakitos.com/collections/organic-natural",
+              "fallback_link": "https://snakitos.com/collections/all",
+              "discoverability_status": "resolved"
+            }
+          }
+        ]
+      },
+      {
+        "id": "cat:order",
+        "title": "Order",
+        "url": "unspecified",
+        "type": "category",
+        "children": [
+          {
+            "id": "page:cart",
+            "title": "Cart",
+            "url": "https://snakitos.com/cart",
+            "type": "workflow_page",
+            "metadata_seed": {
+              "name": "Cart",
+              "description": "Public cart page for current basket state.",
+              "tags": ["order", "cart", "workflow"],
+              "link": "https://snakitos.com/cart",
+              "fallback_link": "https://snakitos.com/collections/all",
+              "discoverability_status": "resolved"
+            }
+          },
+          {
+            "id": "page:complaint-form",
+            "title": "Complaint Form",
+            "url": "https://snakitos.com/pages/complaint-form",
+            "type": "support_page",
+            "metadata_seed": {
+              "name": "Complaint Form",
+              "description": "Public complaint and return support page.",
+              "tags": ["order", "support", "complaint", "return"],
+              "link": "https://snakitos.com/pages/complaint-form",
+              "fallback_link": "https://snakitos.com/pages/contact",
+              "discoverability_status": "resolved"
+            }
+          },
+          {
+            "id": "ref:contact-support",
+            "title": "Order Support Contact",
+            "url": "https://snakitos.com/pages/contact",
+            "type": "page_ref",
+            "ref_id": "page:contact",
+            "metadata_seed": {
+              "name": "Order Support Contact",
+              "description": "Route order-help intents to the canonical contact page.",
+              "tags": ["order", "support", "contact", "ref"],
+              "link": "https://snakitos.com/pages/contact",
+              "fallback_link": "https://snakitos.com/pages/contact",
+              "discoverability_status": "resolved"
+            }
+          },
+          {
+            "id": "ref:shipping-policy",
+            "title": "Shipping Policy Reference",
+            "url": "https://snakitos.com/policies/shipping-policy",
+            "type": "page_ref",
+            "ref_id": "policy:shipping",
+            "metadata_seed": {
+              "name": "Shipping Policy Reference",
+              "description": "Order-routing alias for delivery time and tracking questions.",
+              "tags": ["order", "shipping", "tracking", "policy-ref"],
+              "link": "https://snakitos.com/policies/shipping-policy",
+              "fallback_link": "https://snakitos.com/pages/contact",
+              "discoverability_status": "resolved"
+            }
+          },
+          {
+            "id": "page:checkout-unspecified",
+            "title": "Checkout",
+            "url": "unspecified",
+            "type": "workflow_page_unspecified",
+            "metadata_seed": {
+              "name": "Checkout",
+              "description": "Public checkout page not discoverable without transactional state.",
+              "tags": ["order", "checkout", "unspecified"],
+              "link": "unspecified",
+              "fallback_link": "https://snakitos.com/cart",
+              "discoverability_status": "unspecified"
+            }
+          },
+          {
+            "id": "page:order-status-unspecified",
+            "title": "Order Status",
+            "url": "unspecified",
+            "type": "workflow_page_unspecified",
+            "metadata_seed": {
+              "name": "Order Status",
+              "description": "Live order-status endpoint not publicly discoverable.",
+              "tags": ["order", "status", "unspecified"],
+              "link": "unspecified",
+              "fallback_link": "https://snakitos.com/pages/contact",
+              "discoverability_status": "unspecified"
+            }
+          },
+          {
+            "id": "page:order-tracking-unspecified",
+            "title": "Order Tracking",
+            "url": "unspecified",
+            "type": "workflow_page_unspecified",
+            "metadata_seed": {
+              "name": "Order Tracking",
+              "description": "No dedicated public tracking page discovered; tracking appears to be sent by email.",
+              "tags": ["order", "tracking", "unspecified"],
+              "link": "unspecified",
+              "fallback_link": "https://snakitos.com/policies/shipping-policy",
+              "discoverability_status": "unspecified"
+            }
+          }
+        ]
+      },
+      {
+        "id": "cat:policy",
+        "title": "Policy",
+        "url": "https://snakitos.com/policies/terms-of-service",
+        "type": "category",
+        "children": [
+          {
+            "id": "policy:terms",
+            "title": "Terms of Service",
+            "url": "https://snakitos.com/policies/terms-of-service",
+            "type": "policy_page",
+            "metadata_seed": {
+              "name": "Terms of Service",
+              "description": "Site terms, service conditions, and store-use rules.",
+              "tags": ["policy", "terms", "legal"],
+              "link": "https://snakitos.com/policies/terms-of-service",
+              "fallback_link": "https://snakitos.com/pages/contact",
+              "discoverability_status": "resolved"
+            }
+          },
+          {
+            "id": "policy:privacy",
+            "title": "Privacy Policy",
+            "url": "https://snakitos.com/policies/privacy-policy",
+            "type": "policy_page",
+            "metadata_seed": {
+              "name": "Privacy Policy",
+              "description": "Collection and use of personal, usage, and tracking data.",
+              "tags": ["policy", "privacy", "data"],
+              "link": "https://snakitos.com/policies/privacy-policy",
+              "fallback_link": "https://snakitos.com/pages/contact",
+              "discoverability_status": "resolved"
+            }
+          },
+          {
+            "id": "policy:shipping",
+            "title": "Shipping Policy",
+            "url": "https://snakitos.com/policies/shipping-policy",
+            "type": "policy_page",
+            "metadata_seed": {
+              "name": "Shipping Policy",
+              "description": "Processing time, delivery time, shipping rates, and tracking guidance.",
+              "tags": ["policy", "shipping", "delivery", "tracking"],
+              "link": "https://snakitos.com/policies/shipping-policy",
+              "fallback_link": "https://snakitos.com/pages/contact",
+              "discoverability_status": "resolved"
+            }
+          },
+          {
+            "id": "policy:refund",
+            "title": "Return & Refund Policy",
+            "url": "https://snakitos.com/policies/refund-policy",
+            "type": "policy_page",
+            "metadata_seed": {
+              "name": "Return & Refund Policy",
+              "description": "Return eligibility, 14-day window, and refund process.",
+              "tags": ["policy", "refund", "return"],
+              "link": "https://snakitos.com/policies/refund-policy",
+              "fallback_link": "https://snakitos.com/pages/complaint-form",
+              "discoverability_status": "resolved"
+            }
+          }
+        ]
+      },
+      {
+        "id": "cat:general",
+        "title": "General",
+        "url": "https://snakitos.com/",
+        "type": "category",
+        "children": [
+          {
+            "id": "page:home",
+            "title": "Home",
+            "url": "https://snakitos.com/",
+            "type": "general_page",
+            "metadata_seed": {
+              "name": "Home",
+              "description": "Homepage with category navigation, featured products, and brand overview.",
+              "tags": ["general", "home", "navigation"],
+              "link": "https://snakitos.com/",
+              "fallback_link": "https://snakitos.com/",
+              "discoverability_status": "resolved"
+            }
+          },
+          {
+            "id": "page:search",
+            "title": "Search",
+            "url": "https://snakitos.com/search",
+            "type": "utility_page",
+            "metadata_seed": {
+              "name": "Search",
+              "description": "Site search entry point for product discovery.",
+              "tags": ["general", "search", "utility"],
+              "link": "https://snakitos.com/search",
+              "fallback_link": "https://snakitos.com/collections/all",
+              "discoverability_status": "resolved"
+            }
+          },
+          {
+            "id": "page:contact",
+            "title": "Contact",
+            "url": "https://snakitos.com/pages/contact",
+            "type": "general_page",
+            "metadata_seed": {
+              "name": "Contact",
+              "description": "Address, phone, email, and contact form.",
+              "tags": ["general", "contact", "support"],
+              "link": "https://snakitos.com/pages/contact",
+              "fallback_link": "https://snakitos.com/",
+              "discoverability_status": "resolved"
+            }
+          },
+          {
+            "id": "page:blog-index",
+            "title": "Blog",
+            "url": "https://snakitos.com/blogs/blog",
+            "type": "blog_index_page",
+            "metadata_seed": {
+              "name": "Blog",
+              "description": "Public blog index for snack guides and topical content.",
+              "tags": ["general", "blog", "content"],
+              "link": "https://snakitos.com/blogs/blog",
+              "fallback_link": "https://snakitos.com/",
+              "discoverability_status": "resolved"
+            },
+            "children": [
+              {
+                "id": "blog:spicy-snacks-2026",
+                "title": "op spicy snacks in Pakistan you must try in 2026",
+                "url": "https://snakitos.com/blogs/blog/op-spicy-snacks-in-pakistan-you-must-try-in-2026",
+                "type": "blog_post",
+                "metadata_seed": {
+                  "name": "op spicy snacks in Pakistan you must try in 2026",
+                  "description": "Blog post about trending spicy snack options.",
+                  "tags": ["general", "blog", "spicy-snacks"],
+                  "link": "https://snakitos.com/blogs/blog/op-spicy-snacks-in-pakistan-you-must-try-in-2026",
+                  "fallback_link": "https://snakitos.com/blogs/blog",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "blog:tea-time-pk",
+                "title": "Best snacks to eat during tea time in Pakistan",
+                "url": "https://snakitos.com/blogs/blog/best-snacks-to-eat-during-tea-time-in-pakistan",
+                "type": "blog_post",
+                "metadata_seed": {
+                  "name": "Best snacks to eat during tea time in Pakistan",
+                  "description": "Blog post about tea-time snack choices.",
+                  "tags": ["general", "blog", "tea-time"],
+                  "link": "https://snakitos.com/blogs/blog/best-snacks-to-eat-during-tea-time-in-pakistan",
+                  "fallback_link": "https://snakitos.com/blogs/blog",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "blog:lahore-spicy",
+                "title": "The Best Snacks for Lahore's Spicy Food Lovers",
+                "url": "https://snakitos.com/blogs/blog/the-best-snacks-for-lahore-s-spicy-food-lovers",
+                "type": "blog_post",
+                "metadata_seed": {
+                  "name": "The Best Snacks for Lahore's Spicy Food Lovers",
+                  "description": "Regional spicy-snack themed blog post.",
+                  "tags": ["general", "blog", "lahore", "spicy"],
+                  "link": "https://snakitos.com/blogs/blog/the-best-snacks-for-lahore-s-spicy-food-lovers",
+                  "fallback_link": "https://snakitos.com/blogs/blog",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "blog:karachi-tea-time",
+                "title": "Top 5 Snacks to Enjoy During Karachi's Evening Tea Time",
+                "url": "https://snakitos.com/blogs/blog/top-5-snacks-karachi-evening-tea-time",
+                "type": "blog_post",
+                "metadata_seed": {
+                  "name": "Top 5 Snacks to Enjoy During Karachi's Evening Tea Time",
+                  "description": "Regional Karachi tea-time snack list.",
+                  "tags": ["general", "blog", "karachi", "tea-time"],
+                  "link": "https://snakitos.com/blogs/blog/top-5-snacks-karachi-evening-tea-time",
+                  "fallback_link": "https://snakitos.com/blogs/blog",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "blog:balanced-snack-plate",
+                "title": "How to Create a Balanced Snack Plate with Snakitos",
+                "url": "https://snakitos.com/blogs/blog/how-to-create-a-balanced-snack-plate-with-snakitos",
+                "type": "blog_post",
+                "metadata_seed": {
+                  "name": "How to Create a Balanced Snack Plate with Snakitos",
+                  "description": "Blog post about balanced snack combinations.",
+                  "tags": ["general", "blog", "healthy", "snack-plate"],
+                  "link": "https://snakitos.com/blogs/blog/how-to-create-a-balanced-snack-plate-with-snakitos",
+                  "fallback_link": "https://snakitos.com/blogs/blog",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "blog:healthy-snacking-professionals",
+                "title": "Healthy Snacking Tips for Busy Professionals",
+                "url": "https://snakitos.com/blogs/blog/healthy-snacking-tips-for-busy-professionals",
+                "type": "blog_post",
+                "metadata_seed": {
+                  "name": "Healthy Snacking Tips for Busy Professionals",
+                  "description": "Blog post on practical healthy snacking advice.",
+                  "tags": ["general", "blog", "healthy", "professionals"],
+                  "link": "https://snakitos.com/blogs/blog/healthy-snacking-tips-for-busy-professionals",
+                  "fallback_link": "https://snakitos.com/blogs/blog",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "blog:snacking-on-the-go",
+                "title": "The Ultimate Guide to Snacking on the Go: Portable and Delicious Options",
+                "url": "https://snakitos.com/blogs/blog/the-ultimate-guide-to-snacking-on-the-go-portable-and-delicious-options",
+                "type": "blog_post",
+                "metadata_seed": {
+                  "name": "The Ultimate Guide to Snacking on the Go: Portable and Delicious Options",
+                  "description": "Blog post about portable snacking.",
+                  "tags": ["general", "blog", "portable", "on-the-go"],
+                  "link": "https://snakitos.com/blogs/blog/the-ultimate-guide-to-snacking-on-the-go-portable-and-delicious-options",
+                  "fallback_link": "https://snakitos.com/blogs/blog",
+                  "discoverability_status": "resolved"
+                }
+              },
+              {
+                "id": "blog:top-5-healthy-snacks",
+                "title": "Top 5 Healthy Snacks to Keep You Energized Throughout the Day",
+                "url": "https://snakitos.com/blogs/blog/top-5-healthy-snacks-to-keep-you-energized-throughout-the-day",
+                "type": "blog_post",
+                "metadata_seed": {
+                  "name": "Top 5 Healthy Snacks to Keep You Energized Throughout the Day",
+                  "description": "Blog post about healthy snack options.",
+                  "tags": ["general", "blog", "healthy-snacks", "energy"],
+                  "link": "https://snakitos.com/blogs/blog/top-5-healthy-snacks-to-keep-you-energized-throughout-the-day",
+                  "fallback_link": "https://snakitos.com/blogs/blog",
+                  "discoverability_status": "resolved"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

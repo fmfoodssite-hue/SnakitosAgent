@@ -32,6 +32,28 @@ export type JsonKnowledgeItem = {
   link?: unknown;
 };
 
+type SiteTreeMetadataSeed = {
+  name?: unknown;
+  description?: unknown;
+  tags?: unknown;
+  link?: unknown;
+  fallback_link?: unknown;
+  discoverability_status?: unknown;
+};
+
+type SiteTreeNode = {
+  id?: unknown;
+  title?: unknown;
+  url?: unknown;
+  type?: unknown;
+  metadata_seed?: SiteTreeMetadataSeed;
+  children?: unknown;
+};
+
+type SiteTreeDocument = {
+  root?: SiteTreeNode;
+};
+
 export type PineconeRuntimeConfig = {
   openAiApiKey: string;
   pineconeApiKey: string;
@@ -189,6 +211,72 @@ function inferCategory(item: JsonKnowledgeItem): string {
   return coerceString(item.category || item.productType).toLowerCase();
 }
 
+function normalizeTypeFromTreeNode(
+  nodeType: string,
+  metadataSeed: SiteTreeMetadataSeed | undefined,
+): string {
+  const normalizedNodeType = nodeType.toLowerCase();
+  const tags = Array.isArray(metadataSeed?.tags)
+    ? metadataSeed.tags.map((tag) => coerceString(tag).toLowerCase())
+    : [];
+
+  if (normalizedNodeType === "policy_page") {
+    return "policy";
+  }
+
+  if (
+    normalizedNodeType === "product_page" ||
+    normalizedNodeType === "collection_page" ||
+    normalizedNodeType === "catalog_page" ||
+    normalizedNodeType === "index_page" ||
+    tags.includes("product")
+  ) {
+    return "product";
+  }
+
+  if (
+    normalizedNodeType === "blog_post" ||
+    normalizedNodeType === "blog_index_page" ||
+    normalizedNodeType === "general_page" ||
+    normalizedNodeType === "utility_page" ||
+    normalizedNodeType === "support_page" ||
+    normalizedNodeType === "workflow_page" ||
+    normalizedNodeType === "workflow_page_unspecified" ||
+    normalizedNodeType === "page_ref"
+  ) {
+    return "knowledge";
+  }
+
+  return "knowledge";
+}
+
+function categoryFromTreeTags(metadataSeed: SiteTreeMetadataSeed | undefined): string {
+  const tags = Array.isArray(metadataSeed?.tags)
+    ? metadataSeed.tags.map((tag) => coerceString(tag).toLowerCase()).filter(Boolean)
+    : [];
+
+  return (
+    tags.find(
+      (tag) =>
+        ![
+          "product",
+          "policy",
+          "general",
+          "order",
+          "collection",
+          "index",
+          "catalog",
+          "content",
+          "utility",
+          "workflow",
+          "legal",
+          "ref",
+          "policy-ref",
+        ].includes(tag),
+    ) ?? ""
+  );
+}
+
 function extractMeaningfulBody(item: JsonKnowledgeItem): string {
   const body =
     coerceString(item.description) || coerceString(item.text) || coerceString(item.content);
@@ -299,15 +387,70 @@ export function prepareKnowledgeRecords(
   });
 }
 
+function flattenSiteTreeToKnowledgeItems(document: SiteTreeDocument): JsonKnowledgeItem[] {
+  const items: JsonKnowledgeItem[] = [];
+
+  function visit(node: SiteTreeNode) {
+    const metadataSeed = node.metadata_seed;
+    const nodeType = coerceString(node.type);
+    const title = coerceString(node.title);
+    const url = coerceString(node.url);
+    const id = coerceString(node.id);
+
+    if (id && title) {
+      const type = normalizeTypeFromTreeNode(nodeType, metadataSeed);
+      const link = coerceString(metadataSeed?.link) || (url !== "unspecified" ? url : "");
+      const fallbackLink = coerceString(metadataSeed?.fallback_link);
+      const discoverabilityStatus = coerceString(metadataSeed?.discoverability_status);
+      const description = [
+        coerceString(metadataSeed?.description),
+        discoverabilityStatus ? `Discoverability status: ${discoverabilityStatus}.` : "",
+        fallbackLink && !link ? `Use fallback page: ${fallbackLink}.` : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
+
+      items.push({
+        id,
+        name: coerceString(metadataSeed?.name) || title,
+        description,
+        category: categoryFromTreeTags(metadataSeed),
+        type,
+        link: link || fallbackLink,
+      });
+    }
+
+    const children = Array.isArray(node.children) ? node.children : [];
+    for (const child of children) {
+      visit(child as SiteTreeNode);
+    }
+  }
+
+  if (document.root) {
+    visit(document.root);
+  }
+
+  return items;
+}
+
+function normalizeKnowledgeInput(parsed: unknown): JsonKnowledgeItem[] {
+  if (Array.isArray(parsed)) {
+    return parsed as JsonKnowledgeItem[];
+  }
+
+  if (parsed && typeof parsed === "object" && "root" in parsed) {
+    return flattenSiteTreeToKnowledgeItems(parsed as SiteTreeDocument);
+  }
+
+  throw new Error(
+    "Knowledge JSON file must contain either a top-level array or a site tree object with a root node.",
+  );
+}
+
 export async function readKnowledgeJsonFile(filePath: string): Promise<JsonKnowledgeItem[]> {
   const raw = await readFile(filePath, "utf8");
   const parsed = JSON.parse(raw) as unknown;
-
-  if (!Array.isArray(parsed)) {
-    throw new Error("Knowledge JSON file must contain a top-level array.");
-  }
-
-  return parsed as JsonKnowledgeItem[];
+  return normalizeKnowledgeInput(parsed);
 }
 
 export async function createEmbeddings(

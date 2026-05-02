@@ -67,6 +67,56 @@ function resolveFallbackLink(type, storefrontDomain) {
     : toAbsoluteStoreUrl("/policies/", storefrontDomain);
 }
 
+function normalizeTypeFromTreeNode(nodeType, metadataSeed) {
+  const normalizedNodeType = cleanText(nodeType).toLowerCase();
+  const tags = Array.isArray(metadataSeed?.tags)
+    ? metadataSeed.tags.map((tag) => cleanText(tag).toLowerCase())
+    : [];
+
+  if (normalizedNodeType === "policy_page") {
+    return "policy";
+  }
+
+  if (
+    normalizedNodeType === "product_page" ||
+    normalizedNodeType === "collection_page" ||
+    normalizedNodeType === "catalog_page" ||
+    normalizedNodeType === "index_page" ||
+    tags.includes("product")
+  ) {
+    return "product";
+  }
+
+  return "knowledge";
+}
+
+function categoryFromTreeTags(metadataSeed) {
+  const tags = Array.isArray(metadataSeed?.tags)
+    ? metadataSeed.tags.map((tag) => cleanText(tag).toLowerCase()).filter(Boolean)
+    : [];
+
+  return (
+    tags.find(
+      (tag) =>
+        ![
+          "product",
+          "policy",
+          "general",
+          "order",
+          "collection",
+          "index",
+          "catalog",
+          "content",
+          "utility",
+          "workflow",
+          "legal",
+          "ref",
+          "policy-ref",
+        ].includes(tag),
+    ) || ""
+  );
+}
+
 function buildSemanticText(item) {
   const name = cleanText(item.name || item.title || item.id || "Knowledge");
   const description = stripSensitiveSalesLanguage(
@@ -168,6 +218,49 @@ function prepareRecords(items, storefrontDomain) {
   });
 }
 
+function flattenSiteTreeToItems(document) {
+  const items = [];
+
+  function visit(node) {
+    const metadataSeed = node?.metadata_seed || {};
+    const id = cleanText(node?.id);
+    const title = cleanText(node?.title);
+    const url = cleanText(node?.url);
+    const fallbackLink = cleanText(metadataSeed?.fallback_link);
+    const discoverabilityStatus = cleanText(metadataSeed?.discoverability_status);
+
+    if (id && title) {
+      const link = cleanText(metadataSeed?.link) || (url !== "unspecified" ? url : "");
+      const description = [
+        cleanText(metadataSeed?.description),
+        discoverabilityStatus ? `Discoverability status: ${discoverabilityStatus}.` : "",
+        fallbackLink && !link ? `Use fallback page: ${fallbackLink}.` : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
+
+      items.push({
+        id,
+        name: cleanText(metadataSeed?.name) || title,
+        description,
+        category: categoryFromTreeTags(metadataSeed),
+        type: normalizeTypeFromTreeNode(node?.type, metadataSeed),
+        link: link || fallbackLink,
+      });
+    }
+
+    for (const child of Array.isArray(node?.children) ? node.children : []) {
+      visit(child);
+    }
+  }
+
+  if (document?.root) {
+    visit(document.root);
+  }
+
+  return items;
+}
+
 async function main() {
   const filePathArg = process.argv[2];
   const replaceNamespace = process.argv.includes("--replace");
@@ -201,9 +294,17 @@ async function main() {
 
   const absolutePath = path.resolve(process.cwd(), filePathArg);
   const raw = await fs.readFile(absolutePath, "utf8");
-  const items = JSON.parse(raw);
-  if (!Array.isArray(items)) {
-    throw new Error("Knowledge JSON file must contain a top-level array.");
+  const parsed = JSON.parse(raw);
+  const items = Array.isArray(parsed)
+    ? parsed
+    : parsed && typeof parsed === "object" && parsed.root
+      ? flattenSiteTreeToItems(parsed)
+      : null;
+
+  if (!items) {
+    throw new Error(
+      "Knowledge JSON file must contain either a top-level array or a site tree object with a root node.",
+    );
   }
 
   const records = prepareRecords(items, storefrontDomain);

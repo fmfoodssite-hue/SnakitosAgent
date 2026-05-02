@@ -8,7 +8,8 @@ import {
   Gift,
   House,
   Loader2,
-  Map,
+  Package,
+  ScrollText,
   Send,
   ShoppingBag,
   Sparkles,
@@ -42,37 +43,74 @@ interface Message {
   content: string;
 }
 
+type SendRequest = {
+  value: string;
+  displayText?: string;
+  silent?: boolean;
+};
+
 const STORE_HOME_URL = "https://snakitos.com/";
 const STORE_PRODUCTS_URL = "https://snakitos.com/collections/all";
+const STORE_POLICIES_URL = "https://snakitos.com/policies/";
 
-const CATEGORY_ACTIONS: Array<{ label: string; value: string; blurb: string }> = [
+const COLLECTION_ACTIONS: Array<{ label: string; value: string; blurb: string; href: string }> = [
   {
     label: "Sweet Tooth",
     value: "Show me Sweet Tooth snacks",
     blurb: "Wafer rolls, choco sticks, and chocolate-forward favorites.",
+    href: "https://snakitos.com/collections/sweet-tooth",
   },
   {
     label: "Multi Grain",
     value: "Show me Multi Grain snacks",
     blurb: "Stix, chickpea picks, and bolder crunchy flavors.",
-  },
-  {
-    label: "Potato Slims",
-    value: "Show me Potato Slims",
-    blurb: "Classic salty and masala snack cravings.",
+    href: "https://snakitos.com/collections/multi-grain",
   },
   {
     label: "Banana Chips",
     value: "Show me Banana Chips",
     blurb: "Sea salt, BBQ, cheese, and achari masti choices.",
+    href: "https://snakitos.com/collections/banana-chips",
+  },
+  {
+    label: "Patata Chips",
+    value: "Show me Patata Chips",
+    blurb: "Masala and salty potato-slims style picks.",
+    href: "https://snakitos.com/collections/patata-chips",
+  },
+  {
+    label: "Deals",
+    value: "show best deals",
+    blurb: "Bundles, mega offers, can trays, and giftable value picks.",
+    href: "https://snakitos.com/collections/deals",
+  },
+  {
+    label: "Nachos",
+    value: "Show me Nachos",
+    blurb: "Paprika and salsa picks for movie-night style snacking.",
+    href: "https://snakitos.com/collections/nachos",
+  },
+  {
+    label: "Snaktory",
+    value: "Show me Snaktory bundles",
+    blurb: "Assorted snack packs and gifting-friendly combinations.",
+    href: "https://snakitos.com/collections/snaktory",
   },
 ];
 
 const QUICK_ACTIONS: Option[] = [
+  { label: "Collections", value: "show categories" },
   { label: "Deals", value: "show best deals" },
-  { label: "Gift Packs", value: "show gift packs" },
+  { label: "Bundles", value: "show gift packs" },
   { label: "Track Order", value: "track my order" },
   { label: "Policies", value: "show shipping and refund policy" },
+];
+
+const STOREFRONT_LINKS = [
+  { label: "Home", href: STORE_HOME_URL },
+  { label: "Search", href: "https://snakitos.com/search" },
+  { label: "Cart", href: "https://snakitos.com/cart" },
+  { label: "Contact", href: "https://snakitos.com/pages/contact" },
 ];
 
 export default function PublicChatbot() {
@@ -82,7 +120,7 @@ export default function PublicChatbot() {
       content: JSON.stringify({
         type: "mixed",
         message:
-          "Welcome to Snakitos. I can help you explore snacks, bundles, policies, or order support.",
+          "Welcome to Snakitos. I can help with products, orders, policies, and general store guidance.",
         options: [
           { label: "Deals", value: "show best deals" },
           { label: "Sweet Tooth", value: "Show me Sweet Tooth snacks" },
@@ -125,16 +163,23 @@ export default function PublicChatbot() {
     }
   }, [messages]);
 
-  const handleSend = async (overrideMessage?: string) => {
-    const messageToSend = overrideMessage || input.trim();
+  const handleSend = async (request?: string | SendRequest) => {
+    const messageToSend =
+      typeof request === "string" ? request : request?.value || input.trim();
     if (!messageToSend || loading) {
       return;
     }
 
     if (messageToSend.toLowerCase() === "home") {
-      window.open(STORE_HOME_URL, "_blank", "noopener,noreferrer");
+      window.location.href = STORE_HOME_URL;
       return;
     }
+
+    const displayText =
+      typeof request === "string"
+        ? request
+        : request?.displayText ?? request?.value ?? messageToSend;
+    const silent = typeof request === "object" ? Boolean(request.silent) : false;
 
     const detectedPhone = extractPhoneNumber(messageToSend) || phone;
     if (detectedPhone) {
@@ -142,11 +187,13 @@ export default function PublicChatbot() {
       localStorage.setItem("chat_phone", detectedPhone);
     }
 
-    if (!overrideMessage) {
+    if (!request) {
       setInput("");
     }
 
-    setMessages((prev) => [...prev, { role: "user", content: messageToSend }]);
+    if (!silent) {
+      setMessages((prev) => [...prev, { role: "user", content: displayText }]);
+    }
     setLoading(true);
 
     try {
@@ -177,7 +224,13 @@ export default function PublicChatbot() {
       {ensureNavigationOptions(options).map((option) => (
         <button
           key={`${option.label}-${option.value}`}
-          onClick={() => handleSend(option.value)}
+          onClick={() =>
+            handleSend({
+              value: option.value,
+              displayText: option.label,
+              silent: true,
+            })
+          }
           className={styles.optionChip}
         >
           {option.label === "Back" ? <CornerDownLeft size={12} /> : null}
@@ -259,95 +312,77 @@ export default function PublicChatbot() {
 
   return (
     <main className={styles.page}>
-      <div className={styles.backgroundGlow} />
+      <div className={styles.container}>
+        <section className={styles.topbar}>
+          <div className={styles.topbarBrand}>
+            <span className={styles.brandChip}>Snakitos</span>
+            <p>Public support assistant</p>
+          </div>
+          <div className={styles.topbarActions}>
+            <a
+              href={STORE_HOME_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.topbarLink}
+            >
+              Visit Store
+            </a>
+            <a
+              href={STORE_PRODUCTS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.topbarLinkMuted}
+            >
+              All Products
+            </a>
+          </div>
+        </section>
 
-      <div className={styles.layout}>
-        <section className={styles.brandPanel}>
-          <div className={styles.brandHeader}>
+        <section className={styles.heroCard}>
+          <div className={styles.heroCopy}>
             <div className={styles.badges}>
-              <span>Export Quality</span>
               <span>Pakistani Snacks</span>
+              <span>Category-led Help</span>
             </div>
-            <h1>Snakitos support that feels like part of the storefront.</h1>
+            <h1>Shop Snakitos faster with a mobile-first snack concierge.</h1>
             <p>
-              Browse sweet bites, spicy stix, potato slims, banana chips, bundles,
-              gifting ideas, and policy help in one place.
+              Explore Sweet Tooth, Multi Grain, Banana Chips, Patata Chips, Deals,
+              Nachos, Snaktory, policies, and order support from one chat flow.
             </p>
-
-            <div className={styles.heroActions}>
-              <a
-                href={STORE_HOME_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.primaryCta}
-              >
-                Visit Snakitos
-                <ExternalLink size={16} />
-              </a>
-              <button
-                onClick={() => handleSend("show best deals")}
-                className={styles.secondaryCta}
-              >
-                Explore Deals
-                <Sparkles size={16} />
-              </button>
-            </div>
           </div>
 
-          <div className={styles.featureGrid}>
-            <div className={styles.categoryPanel}>
-              <div className={styles.sectionLabel}>
-                <Map size={14} />
-                <span>Shop by Category</span>
-              </div>
-              <div className={styles.categoryGrid}>
-                {CATEGORY_ACTIONS.map((category) => (
-                  <button
-                    key={category.label}
-                    onClick={() => handleSend(category.value)}
-                    className={styles.categoryCard}
-                  >
-                    <strong>{category.label}</strong>
-                    <span>{category.blurb}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div className={styles.insightGrid}>
-              <button
-                onClick={() => handleSend("show gift packs")}
-                className={styles.infoCard}
-              >
-                <div className={styles.infoIcon}>
-                  <Gift size={18} />
-                </div>
-                <strong>Gift Packs</strong>
-                <span>Push visitors toward variety packs and gifting-friendly bundles.</span>
-              </button>
-
-              <button
-                onClick={() => handleSend("show popular snacks")}
-                className={styles.infoCard}
-              >
-                <div className={styles.infoIcon}>
-                  <ShoppingBag size={18} />
-                </div>
-                <strong>Popular Picks</strong>
-                <span>Fast route to spicy, crunchy, sweet, and savory recommendations.</span>
-              </button>
-
-              <div className={styles.infoCardStatic}>
-                <div className={styles.infoIcon}>
-                  <Sparkles size={18} />
-                </div>
-                <strong>Store Tone</strong>
-                <span>
-                  Warm, direct, giftable, and category-led, like the live Snakitos site.
-                </span>
-              </div>
-            </div>
+          <div className={styles.heroActions}>
+            <button
+              onClick={() => handleSend("show best deals")}
+              className={styles.primaryCta}
+            >
+              Explore Deals
+              <Sparkles size={16} />
+            </button>
+            <a
+              href={STORE_POLICIES_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.secondaryCta}
+            >
+              View Policies
+              <ExternalLink size={16} />
+            </a>
           </div>
+        </section>
+
+        <section className={styles.storefrontRail}>
+          {STOREFRONT_LINKS.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.storefrontLink}
+            >
+              {item.label}
+            </a>
+          ))}
         </section>
 
         <section className={styles.chatShell}>
@@ -375,7 +410,13 @@ export default function PublicChatbot() {
             {QUICK_ACTIONS.map((action) => (
               <button
                 key={action.label}
-                onClick={() => handleSend(action.value)}
+                onClick={() =>
+                  handleSend({
+                    value: action.value,
+                    displayText: action.label,
+                    silent: true,
+                  })
+                }
                 className={styles.quickRailChip}
               >
                 {action.label}
@@ -415,7 +456,7 @@ export default function PublicChatbot() {
                 <div className={styles.avatarAssistant}>
                   <Loader2 size={14} className={styles.spinner} />
                 </div>
-                <div className={styles.loadingBubble}>Snakitos AI is thinking...</div>
+                <div className={styles.loadingBubble}>Checking Snakitos...</div>
               </div>
             ) : null}
           </div>
@@ -427,7 +468,7 @@ export default function PublicChatbot() {
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
                 onKeyDown={(event) => event.key === "Enter" && handleSend()}
-                placeholder="Ask about stix, bundles, policies, or your order..."
+                placeholder="Ask about collections, bundles, policies, or your order..."
                 className={styles.input}
               />
               <button
@@ -438,8 +479,106 @@ export default function PublicChatbot() {
                 <Send size={18} />
               </button>
             </div>
-            <p className={styles.footerNote}>Grounded answers with direct Snakitos links</p>
+            <p className={styles.footerNote}>Fast answers with official Snakitos links</p>
           </div>
+        </section>
+
+        <section className={styles.collectionPanel}>
+          <div className={styles.panelHeading}>
+            <div>
+              <span className={styles.eyebrow}>Collections</span>
+              <h2>Shop by Snakitos category</h2>
+            </div>
+            <a
+              href={STORE_PRODUCTS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.panelLink}
+            >
+              View all
+            </a>
+          </div>
+
+          <div className={styles.collectionScroller}>
+            {COLLECTION_ACTIONS.map((category) => (
+              <div key={category.label} className={styles.collectionCard}>
+                <button
+                onClick={() =>
+                  handleSend({
+                    value: category.value,
+                    displayText: category.label,
+                    silent: true,
+                  })
+                }
+                  className={styles.collectionButton}
+                >
+                  <strong>{category.label}</strong>
+                  <span>{category.blurb}</span>
+                </button>
+                <a
+                  href={category.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.collectionLink}
+                >
+                  Open collection
+                </a>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className={styles.utilityGrid}>
+          <button
+            onClick={() =>
+              handleSend({
+                value: "show gift packs",
+                displayText: "Bundles & Gifts",
+                silent: true,
+              })
+            }
+            className={styles.utilityCard}
+          >
+            <div className={styles.utilityIcon}>
+              <Gift size={18} />
+            </div>
+            <strong>Bundles & Gifts</strong>
+            <span>Push bundle and gifting queries to the right collections quickly.</span>
+          </button>
+
+          <button
+            onClick={() =>
+              handleSend({
+                value: "track my order",
+                displayText: "Order Help",
+                silent: true,
+              })
+            }
+            className={styles.utilityCard}
+          >
+            <div className={styles.utilityIcon}>
+              <Package size={18} />
+            </div>
+            <strong>Order Help</strong>
+            <span>Route tracking and support questions into the order flow.</span>
+          </button>
+
+          <button
+            onClick={() =>
+              handleSend({
+                value: "show shipping and refund policy",
+                displayText: "Policy Help",
+                silent: true,
+              })
+            }
+            className={styles.utilityCard}
+          >
+            <div className={styles.utilityIcon}>
+              <ScrollText size={18} />
+            </div>
+            <strong>Policy Help</strong>
+            <span>Use the Snakitos policy pages as the source of truth.</span>
+          </button>
         </section>
       </div>
     </main>

@@ -35,15 +35,15 @@ Do NOT use outside knowledge.
 Do NOT guess missing information.
 
 Rules:
-1. If backend context is empty or weak, say exactly: "I couldn't find exact details, but here’s what I know..."
+1. If backend context is empty or weak, say exactly: "I couldn't find exact details, but here's what I know..."
 2. If the user asks about products, recommend 2 to 4 items max and keep the answer short and slightly sales-focused.
 3. Only include links that already exist in backend context. Never invent product or policy links.
 4. If the user asks about policy, summarize clearly with bullet points and include the official policy link from backend context. If no policy link is present, use https://snakitos.com/policies/.
 5. If the user asks about an order and required order details are missing, respond only with:
-   "📦 Please provide:
+   "Please provide:
    * Order Number
    * Phone Number"
-6. If the query is unclear, say: "I can help with products, orders, or policies 😊"
+6. If the query is unclear, say: "I can help with products, orders, or policies."
 7. Keep every answer short, clean, helpful, and human.
 8. Never reveal inventory counts or internal system data.
 
@@ -69,8 +69,8 @@ Return JSON ONLY in this exact shape:
 }
 
 Navigation is mandatory. Always include these options:
-{ "label": "⬅ Back", "value": "show categories" }
-{ "label": "🏠 Home", "value": "home" }`;
+{ "label": "Back", "value": "show categories" }
+{ "label": "Home", "value": "home" }`;
 
 export class AiService {
   async generateResponse(input: AiGenerationInput): Promise<string> {
@@ -131,12 +131,12 @@ export class AiService {
     if (sensitivePatterns.some((pattern) => pattern.test(trimmed))) {
       return JSON.stringify({
         type: "fallback",
-        message: "I can help with products, orders, or policies 😊",
+        message: "I can help with products, orders, or policies.",
         products: [],
         policy_link: "",
         options: [
-          { label: "⬅ Back", value: "show categories" },
-          { label: "🏠 Home", value: "home" },
+          { label: "Back", value: "show categories" },
+          { label: "Home", value: "home" },
         ],
       });
     }
