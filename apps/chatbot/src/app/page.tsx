@@ -8,11 +8,14 @@ import {
   Gift,
   House,
   Loader2,
+  Mail,
   Package,
+  Phone,
   ScrollText,
   Send,
   ShoppingBag,
   Sparkles,
+  Truck,
   User,
 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
@@ -30,10 +33,42 @@ interface Product {
   link?: string;
 }
 
+interface OrderTracking {
+  company?: string | null;
+  number?: string | null;
+  url?: string | null;
+  status?: string | null;
+}
+
+interface OrderLineItem {
+  title: string;
+  quantity: number;
+  sku?: string | null;
+  variantTitle?: string | null;
+  total?: string;
+  currencyCode?: string;
+}
+
+interface OrderSummary {
+  orderName?: string;
+  orderNumber?: string;
+  customerName?: string | null;
+  customerEmail?: string | null;
+  customerPhone?: string | null;
+  shippingPhone?: string | null;
+  financialStatus?: string;
+  fulfillmentStatus?: string;
+  totalAmount?: string;
+  currencyCode?: string;
+  tracking?: OrderTracking[];
+  lineItems?: OrderLineItem[];
+}
+
 interface StructuredContent {
   type: "product" | "policy" | "mixed" | "fallback";
   message: string;
   products?: Product[];
+  order?: OrderSummary;
   policy_link?: string;
   options?: Option[];
 }
@@ -227,8 +262,7 @@ export default function PublicChatbot() {
           onClick={() =>
             handleSend({
               value: option.value,
-              displayText: option.label,
-              silent: true,
+              displayText: buildAutoClickText(option.value, option.label),
             })
           }
           className={styles.optionChip}
@@ -247,7 +281,7 @@ export default function PublicChatbot() {
         const parsed = JSON.parse(content) as StructuredContent;
         return (
           <div className={styles.assistantContent}>
-            {renderParagraphText(parsed.message)}
+            {parsed.order ? renderOrderSummary(parsed.order) : renderParagraphText(parsed.message)}
 
             {parsed.products && parsed.products.length > 0 ? (
               <div className={styles.productList}>
@@ -353,7 +387,12 @@ export default function PublicChatbot() {
 
           <div className={styles.heroActions}>
             <button
-              onClick={() => handleSend("show best deals")}
+              onClick={() =>
+                handleSend({
+                  value: "show best deals",
+                  displayText: buildAutoClickText("show best deals", "Deals"),
+                })
+              }
               className={styles.primaryCta}
             >
               Explore Deals
@@ -413,8 +452,7 @@ export default function PublicChatbot() {
                 onClick={() =>
                   handleSend({
                     value: action.value,
-                    displayText: action.label,
-                    silent: true,
+                    displayText: buildAutoClickText(action.value, action.label),
                   })
                 }
                 className={styles.quickRailChip}
@@ -452,7 +490,7 @@ export default function PublicChatbot() {
                 >
                   {message.role === "assistant"
                     ? renderAssistantMessage(message.content, isLatestAssistant)
-                    : message.content}
+                    : renderUserMessage(message.content)}
                 </div>
               </div>
                 );
@@ -511,13 +549,12 @@ export default function PublicChatbot() {
             {COLLECTION_ACTIONS.map((category) => (
               <div key={category.label} className={styles.collectionCard}>
                 <button
-                onClick={() =>
-                  handleSend({
-                    value: category.value,
-                    displayText: category.label,
-                    silent: true,
-                  })
-                }
+                  onClick={() =>
+                    handleSend({
+                      value: category.value,
+                      displayText: buildAutoClickText(category.value, category.label),
+                    })
+                  }
                   className={styles.collectionButton}
                 >
                   <strong>{category.label}</strong>
@@ -541,8 +578,7 @@ export default function PublicChatbot() {
             onClick={() =>
               handleSend({
                 value: "show gift packs",
-                displayText: "Bundles & Gifts",
-                silent: true,
+                displayText: buildAutoClickText("show gift packs", "Bundles & Gifts"),
               })
             }
             className={styles.utilityCard}
@@ -558,8 +594,7 @@ export default function PublicChatbot() {
             onClick={() =>
               handleSend({
                 value: "track my order",
-                displayText: "Order Help",
-                silent: true,
+                displayText: buildAutoClickText("track my order", "Order Help"),
               })
             }
             className={styles.utilityCard}
@@ -575,8 +610,10 @@ export default function PublicChatbot() {
             onClick={() =>
               handleSend({
                 value: "show shipping and refund policy",
-                displayText: "Policy Help",
-                silent: true,
+                displayText: buildAutoClickText(
+                  "show shipping and refund policy",
+                  "Policy Help",
+                ),
               })
             }
             className={styles.utilityCard}
@@ -600,6 +637,64 @@ function extractPhoneNumber(value: string): string {
     .filter((candidate) => candidate.length >= 10);
 
   return normalized[0] ?? "";
+}
+
+function extractOrderReference(value: string): string {
+  const withoutPhones = value.replace(/(?:\+?\d[\d\s\-()]{8,}\d)/g, " ");
+  const explicitHash = value.match(/#\s*([A-Z0-9-]{3,})/i);
+  if (explicitHash) {
+    return `#${explicitHash[1]}`;
+  }
+
+  const orderPhrase = value.match(
+    /\b(?:order(?:\s*(?:id|number|no\.?))?|id|tracking(?:\s*id)?)\s*[:#-]?\s*([A-Z0-9-]{3,})/i,
+  );
+  if (orderPhrase) {
+    return orderPhrase[1].startsWith("#") ? orderPhrase[1] : `#${orderPhrase[1]}`;
+  }
+
+  const bareDigits = withoutPhones.match(/\b(\d{4,})\b/);
+  return bareDigits ? `#${bareDigits[1]}` : "";
+}
+
+function buildAutoClickText(value: string, fallbackLabel: string): string {
+  const normalizedValue = value.trim();
+  const normalizedLabel = fallbackLabel.trim();
+
+  if (/^show categories$/i.test(normalizedValue)) {
+    return "Take me back to the main snack categories.";
+  }
+
+  if (/^show best deals$/i.test(normalizedValue)) {
+    return "Show me the best snack deals available right now.";
+  }
+
+  if (/^show gift packs$/i.test(normalizedValue)) {
+    return "Show me gift packs and bundle options.";
+  }
+
+  if (/^track my order$/i.test(normalizedValue)) {
+    return "I want to check my order status.";
+  }
+
+  if (/^show shipping and refund policy$/i.test(normalizedValue)) {
+    return "Show me the shipping and refund policy.";
+  }
+
+  if (/^show me /i.test(normalizedValue)) {
+    const sentence = normalizedValue.replace(/\s+/g, " ").trim();
+    return sentence.endsWith(".") ? sentence : `${sentence}.`;
+  }
+
+  if (/^home$/i.test(normalizedValue)) {
+    return "Take me to the home page.";
+  }
+
+  if (normalizedLabel) {
+    return `Show me ${normalizedLabel.toLowerCase()}.`;
+  }
+
+  return normalizedValue;
 }
 
 function ensureNavigationOptions(options: Option[]): Option[] {
@@ -627,4 +722,298 @@ function renderParagraphText(content: string): React.ReactNode {
       {block.replace(/\n/g, " ")}
     </p>
   ));
+}
+
+function renderUserMessage(content: string): React.ReactNode {
+  const display = formatUserMessageDisplay(content);
+
+  if (display.kind === "order_lookup") {
+    return (
+      <div className={styles.userMessageCard}>
+        <span className={styles.userMessageEyebrow}>Order Lookup</span>
+        <strong className={styles.userMessageTitle}>{display.title}</strong>
+        {display.detail ? <span className={styles.userMessageDetail}>{display.detail}</span> : null}
+      </div>
+    );
+  }
+
+  return <p className={styles.userMessageText}>{content}</p>;
+}
+
+function formatUserMessageDisplay(content: string):
+  | { kind: "plain" }
+  | { kind: "order_lookup"; title: string; detail?: string } {
+  const normalized = content.trim();
+  const orderId = extractOrderReference(normalized);
+  const phone = extractPhoneNumber(normalized);
+  const hasSpecificOrderReference = Boolean(orderId && /\d/.test(orderId));
+  const isOrderLookup = hasSpecificOrderReference || Boolean(phone);
+
+  if (!isOrderLookup) {
+    return { kind: "plain" };
+  }
+
+  const title = hasSpecificOrderReference ? `Check ${orderId}` : "Check order";
+  const detail = phone ? `Phone ending ${phone.slice(-4)}` : undefined;
+
+  return {
+    kind: "order_lookup",
+    title,
+    detail,
+  };
+}
+
+function renderOrderSummary(order: OrderSummary): React.ReactNode {
+  const trackingEntries = (order.tracking ?? []).filter(
+    (entry) => entry.number || entry.company || entry.url || entry.status,
+  );
+  const contactRows = getOrderContactRows(order);
+  const orderItems = Array.isArray(order.lineItems) ? order.lineItems : [];
+  const totalQuantity = orderItems.reduce(
+    (sum, item) => sum + (Number.isFinite(item.quantity) ? item.quantity : 0),
+    0,
+  );
+  const displayItemCount = totalQuantity || orderItems.length;
+  const fulfillmentLabel = formatStatusLabel(order.fulfillmentStatus) || "Pending";
+  const paymentLabel = formatStatusLabel(order.financialStatus) || "Pending";
+
+  return (
+    <section className={styles.orderCard}>
+      <div className={styles.orderHero}>
+        <div className={styles.orderHeroCopy}>
+          <span className={styles.orderEyebrow}>Order Summary</span>
+          <h3>{order.orderName || (order.orderNumber ? `Order #${order.orderNumber}` : "Order details")}</h3>
+          <p>
+            {trackingEntries.length > 0
+              ? "Tracking details are ready below."
+              : "Tracking will appear here once the shipment is created."}
+          </p>
+        </div>
+
+        {order.totalAmount ? (
+          <div className={styles.orderTotalCard}>
+            <span>Total</span>
+            <strong>{formatCurrency(order.totalAmount, order.currencyCode)}</strong>
+          </div>
+        ) : null}
+      </div>
+
+      <div className={styles.statusGrid}>
+        <div className={styles.statusCard}>
+          <span className={styles.statusLabel}>Fulfillment</span>
+          <span
+            className={`${styles.statusPill} ${getStatusToneClass(order.fulfillmentStatus)}`}
+          >
+            {fulfillmentLabel}
+          </span>
+        </div>
+
+        <div className={styles.statusCard}>
+          <span className={styles.statusLabel}>Payment</span>
+          <span className={`${styles.statusPill} ${getStatusToneClass(order.financialStatus)}`}>
+            {paymentLabel}
+          </span>
+        </div>
+      </div>
+
+      <div className={styles.orderInfoGrid}>
+        <div className={styles.infoTile}>
+          <div className={styles.infoTileHeader}>
+            <span className={styles.infoTileIcon}>
+              <User size={15} />
+            </span>
+            <span>Customer</span>
+          </div>
+          <strong>{order.customerName || "Not provided"}</strong>
+          <p>{order.orderNumber ? `Reference #${order.orderNumber}` : "Order reference available above."}</p>
+        </div>
+
+        <div className={styles.infoTile}>
+          <div className={styles.infoTileHeader}>
+            <span className={styles.infoTileIcon}>
+              <Phone size={15} />
+            </span>
+            <span>Contact</span>
+          </div>
+          {contactRows.length > 0 ? (
+            <div className={styles.infoList}>
+              {contactRows.map((row) => (
+                <div key={`${row.label}-${row.value}`} className={styles.infoRow}>
+                  <span className={styles.infoRowIcon}>
+                    {row.kind === "email" ? <Mail size={14} /> : <Phone size={14} />}
+                  </span>
+                  <div className={styles.infoRowText}>
+                    <span>{row.label}</span>
+                    <strong>{row.value}</strong>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <>
+              <strong>Not available</strong>
+              <p>No customer contact was returned for this order.</p>
+            </>
+          )}
+        </div>
+
+        <div className={styles.infoTile}>
+          <div className={styles.infoTileHeader}>
+            <span className={styles.infoTileIcon}>
+              <Truck size={15} />
+            </span>
+            <span>Tracking</span>
+          </div>
+          {trackingEntries.length > 0 ? (
+            <div className={styles.infoList}>
+              {trackingEntries.map((entry, index) => (
+                <div
+                  key={`${entry.number || entry.url || entry.company || "tracking"}-${index}`}
+                  className={styles.infoRow}
+                >
+                  <span className={styles.infoRowIcon}>
+                    <Package size={14} />
+                  </span>
+                  <div className={styles.infoRowText}>
+                    <span>{entry.company || `Shipment ${index + 1}`}</span>
+                    <strong>{entry.number || "Tracking pending"}</strong>
+                    {entry.status ? <p>{formatStatusLabel(entry.status)}</p> : null}
+                    {entry.url ? (
+                      <a
+                        href={entry.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.trackingLink}
+                      >
+                        Track shipment
+                        <ExternalLink size={12} />
+                      </a>
+                    ) : null}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <>
+              <strong>Pending after shipment</strong>
+              <p>The courier number will show up here as soon as the order is fulfilled.</p>
+            </>
+          )}
+        </div>
+      </div>
+
+      {orderItems.length > 0 ? (
+        <div className={styles.orderItemsSection}>
+          <div className={styles.orderItemsHeader}>
+            <div>
+              <span className={styles.orderEyebrow}>Order Items</span>
+              <h4>{`${displayItemCount} item${displayItemCount === 1 ? "" : "s"} in this order`}</h4>
+            </div>
+          </div>
+
+          <div className={styles.orderItemList}>
+            {orderItems.map((item, index) => {
+              const itemMeta = [item.variantTitle, item.sku ? `SKU ${item.sku}` : ""]
+                .filter(Boolean)
+                .join(" • ");
+
+              return (
+                <div key={`${item.title}-${index}`} className={styles.orderItemCard}>
+                  <div className={styles.orderItemTop}>
+                    <strong>{item.title}</strong>
+                    <span className={styles.orderQty}>x{item.quantity}</span>
+                  </div>
+                  <p>{itemMeta || "Standard order item"}</p>
+                  {item.total ? (
+                    <div className={styles.orderItemFooter}>
+                      <span className={styles.orderItemTotal}>
+                        {formatCurrency(item.total, item.currencyCode)}
+                      </span>
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
+    </section>
+  );
+}
+
+function getOrderContactRows(
+  order: OrderSummary,
+): Array<{ label: string; value: string; kind: "phone" | "email" }> {
+  const rows: Array<{ label: string; value: string; kind: "phone" | "email" }> = [];
+
+  if (order.customerPhone) {
+    rows.push({ label: "Phone", value: order.customerPhone, kind: "phone" });
+  }
+
+  if (order.shippingPhone && order.shippingPhone !== order.customerPhone) {
+    rows.push({ label: "Shipping phone", value: order.shippingPhone, kind: "phone" });
+  }
+
+  if (order.customerEmail) {
+    rows.push({ label: "Email", value: order.customerEmail, kind: "email" });
+  }
+
+  return rows;
+}
+
+function formatCurrency(amount?: string, currencyCode?: string): string {
+  if (!amount) {
+    return "";
+  }
+
+  const numericAmount = Number(amount);
+  if (!Number.isFinite(numericAmount)) {
+    return `${currencyCode ? `${currencyCode} ` : ""}${amount}`.trim();
+  }
+
+  try {
+    return new Intl.NumberFormat("en-PK", {
+      style: "currency",
+      currency: currencyCode || "PKR",
+      maximumFractionDigits: 2,
+    }).format(numericAmount);
+  } catch {
+    return `${currencyCode ? `${currencyCode} ` : ""}${amount}`.trim();
+  }
+}
+
+function formatStatusLabel(value?: string | null): string {
+  if (!value) {
+    return "";
+  }
+
+  return value
+    .toLowerCase()
+    .split(/[_\s-]+/)
+    .filter(Boolean)
+    .map((part) => part[0]?.toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function getStatusToneClass(value?: string | null): string {
+  const normalized = value?.toLowerCase() ?? "";
+
+  if (
+    normalized.includes("pending") ||
+    normalized.includes("unfulfilled") ||
+    normalized.includes("partial") ||
+    normalized.includes("in transit")
+  ) {
+    return styles.statusWarning;
+  }
+
+  if (
+    normalized.includes("paid") ||
+    normalized.includes("fulfilled") ||
+    normalized.includes("delivered")
+  ) {
+    return styles.statusSuccess;
+  }
+
+  return styles.statusNeutral;
 }

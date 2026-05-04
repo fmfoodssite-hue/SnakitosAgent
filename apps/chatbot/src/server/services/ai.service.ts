@@ -164,6 +164,11 @@ export class AiService {
       const policyLink =
         typeof parsed.policy_link === "string" ? parsed.policy_link.trim() : "";
 
+      const order =
+        parsed.order && typeof parsed.order === "object"
+          ? this.sanitizeOrderPayload(parsed.order as Record<string, unknown>)
+          : undefined;
+
       const options = Array.isArray(parsed.options)
         ? parsed.options
             .filter((item): item is Record<string, unknown> => Boolean(item) && typeof item === "object")
@@ -179,6 +184,7 @@ export class AiService {
       return JSON.stringify({
         type,
         message,
+        ...(order ? { order } : {}),
         products,
         policy_link: policyLink,
         options: safeOptions,
@@ -242,6 +248,50 @@ export class AiService {
       null,
       2,
     );
+  }
+
+  private sanitizeOrderPayload(order: Record<string, unknown>) {
+    const tracking = Array.isArray(order.tracking)
+      ? order.tracking
+          .filter((item): item is Record<string, unknown> => Boolean(item) && typeof item === "object")
+          .map((item) => ({
+            company: typeof item.company === "string" ? item.company.trim() : null,
+            number: typeof item.number === "string" ? item.number.trim() : null,
+            url: typeof item.url === "string" ? item.url.trim() : null,
+            status: typeof item.status === "string" ? item.status.trim() : null,
+          }))
+      : [];
+
+    const lineItems = Array.isArray(order.lineItems)
+      ? order.lineItems
+          .filter((item): item is Record<string, unknown> => Boolean(item) && typeof item === "object")
+          .map((item) => ({
+            title: typeof item.title === "string" ? item.title.trim() : "",
+            quantity: typeof item.quantity === "number" ? item.quantity : 0,
+            sku: typeof item.sku === "string" ? item.sku.trim() : null,
+            variantTitle: typeof item.variantTitle === "string" ? item.variantTitle.trim() : null,
+            total: typeof item.total === "string" ? item.total.trim() : "",
+            currencyCode: typeof item.currencyCode === "string" ? item.currencyCode.trim() : "",
+          }))
+          .filter((item) => item.title)
+      : [];
+
+    return {
+      orderName: typeof order.orderName === "string" ? order.orderName.trim() : "",
+      orderNumber: typeof order.orderNumber === "string" ? order.orderNumber.trim() : "",
+      customerName: typeof order.customerName === "string" ? order.customerName.trim() : null,
+      customerEmail: typeof order.customerEmail === "string" ? order.customerEmail.trim() : null,
+      customerPhone: typeof order.customerPhone === "string" ? order.customerPhone.trim() : null,
+      shippingPhone: typeof order.shippingPhone === "string" ? order.shippingPhone.trim() : null,
+      financialStatus:
+        typeof order.financialStatus === "string" ? order.financialStatus.trim() : "",
+      fulfillmentStatus:
+        typeof order.fulfillmentStatus === "string" ? order.fulfillmentStatus.trim() : "",
+      totalAmount: typeof order.totalAmount === "string" ? order.totalAmount.trim() : "",
+      currencyCode: typeof order.currencyCode === "string" ? order.currencyCode.trim() : "",
+      tracking,
+      lineItems,
+    };
   }
 }
 

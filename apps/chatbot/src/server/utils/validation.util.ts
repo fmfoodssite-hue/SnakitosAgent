@@ -125,7 +125,7 @@ export function extractSelectionIndex(message: string): number | null {
 }
 
 export function formatWhatsAppFallback(message: string): string {
-  const fallbackMessage = `${message}\nPlease contact support on WhatsApp: ${config.app.whatsappNumber}`;
+  const fallbackMessage = `${message}\n\nPlease contact support on WhatsApp: ${config.app.whatsappNumber}`;
   return JSON.stringify({
     type: "fallback",
     message: fallbackMessage,

@@ -151,7 +151,11 @@ export class SupportAgentService {
     recentMessages: Array<{ role: "user" | "bot"; content: string }>,
   ): ReturnType<typeof detectIntent> {
     const current = detectIntent(message, phone);
-    if (current.intent === "order" && current.orderId && current.phone) {
+    if (current.intent !== "order") {
+      return current;
+    }
+
+    if (current.orderId && current.phone) {
       return current;
     }
 
@@ -171,32 +175,19 @@ export class SupportAgentService {
           acc.phone = detected.phone;
         }
 
-        if (!acc.intentIsOrder && detected.intent === "order") {
-          acc.intentIsOrder = true;
-        }
-
         return acc;
       },
       {
         orderId: "",
         phone: "",
-        intentIsOrder: false,
       },
     );
 
-    if (
-      current.intent === "order" ||
-      previousOrderContext.intentIsOrder ||
-      Boolean(current.orderId || current.phone)
-    ) {
-      return {
-        intent: "order",
-        orderId: current.orderId || previousOrderContext.orderId,
-        phone: current.phone || previousOrderContext.phone,
-      };
-    }
-
-    return current;
+    return {
+      intent: "order",
+      orderId: current.orderId || previousOrderContext.orderId,
+      phone: current.phone || previousOrderContext.phone,
+    };
   }
 
   private async handleOrderIntent(
@@ -209,7 +200,8 @@ export class SupportAgentService {
         intent: "order",
         response: JSON.stringify({
           type: "fallback",
-          message: "Please provide:\n* Order Number\n* Phone Number",
+          message:
+            "I can check your order for you.\n\nPlease share your order number and the phone number used at checkout.",
           products: [],
           policy_link: "",
           options: [
@@ -226,7 +218,7 @@ export class SupportAgentService {
         intent: "order",
         response: JSON.stringify({
           type: "fallback",
-          message: `Too many failed order verification attempts. Please wait about ${Math.ceil(blockState.retryAfterSeconds / 60)} minutes and try again, or contact support.`,
+          message: `I couldn't verify the order after several attempts.\n\nPlease wait about ${Math.ceil(blockState.retryAfterSeconds / 60)} minutes and try again, or contact support if you still need help.`,
           products: [],
           policy_link: "",
           options: [
@@ -267,7 +259,7 @@ export class SupportAgentService {
           ? JSON.stringify({
               type: "fallback",
               message:
-                "Too many failed order verification attempts. Please wait 15 minutes and try again, or contact support.",
+                "I couldn't verify the order after several attempts.\n\nPlease wait 15 minutes and try again, or contact support if you still need help.",
               products: [],
               policy_link: "",
               options: [
@@ -275,7 +267,9 @@ export class SupportAgentService {
                 { label: "Home", value: "home" },
               ],
             })
-          : formatWhatsAppFallback("Sorry, we could not verify your order details."),
+          : formatWhatsAppFallback(
+              "I couldn't match that order with the phone number provided.\n\nPlease double-check both details and try again.",
+            ),
       };
     }
 
@@ -286,9 +280,14 @@ export class SupportAgentService {
         orderName: order.orderName,
         orderNumber: order.orderNumber,
         customerName: order.customerName,
+        customerEmail: order.customerEmail,
+        customerPhone: order.customerPhone,
+        shippingPhone: order.shippingPhone,
         financialStatus: order.financialStatus,
         fulfillmentStatus: order.fulfillmentStatus,
         createdAt: order.createdAt,
+        totalAmount: order.totalAmount,
+        currencyCode: order.currencyCode,
         tracking: order.tracking,
         lineItems: order.lineItems,
       },
@@ -802,35 +801,73 @@ export class SupportAgentService {
 
   private buildOrderResponse(order: Partial<NonNullable<AgentContext["order"]>> | undefined): string {
     const safeOrder = order ?? {};
-    const customerLine = safeOrder.customerName
-      ? `Customer name is ${safeOrder.customerName}.`
-      : "";
-    const productTitles =
-      Array.isArray(safeOrder.lineItems) && safeOrder.lineItems.length > 0
-        ? safeOrder.lineItems
-            .map((item) => item.title?.trim())
-            .filter((value): value is string => Boolean(value))
-        : [];
-    const productLine =
-      productTitles.length > 0
-        ? `Ordered product${productTitles.length > 1 ? "s are" : " is"} ${productTitles.join(", ")}.`
-        : "";
-    const parts = [
-      customerLine,
-      safeOrder.orderName ? `Your order is ${safeOrder.orderName}.` : "",
-      productLine,
-      safeOrder.fulfillmentStatus ? `Fulfillment status is ${safeOrder.fulfillmentStatus}.` : "",
-      safeOrder.financialStatus ? `Payment status is ${safeOrder.financialStatus}.` : "",
+    const contactParts = [
+      safeOrder.customerPhone ? `Phone: ${safeOrder.customerPhone}` : "",
+      safeOrder.shippingPhone && safeOrder.shippingPhone !== safeOrder.customerPhone
+        ? `Shipping phone: ${safeOrder.shippingPhone}`
+        : "",
+      safeOrder.customerEmail ? `Email: ${safeOrder.customerEmail}` : "",
     ].filter(Boolean);
 
-    const trackingLine =
+    const itemLines =
+      Array.isArray(safeOrder.lineItems) && safeOrder.lineItems.length > 0
+        ? safeOrder.lineItems
+            .map((item) => {
+              const title = item.title?.trim() || "Item";
+              const variant = item.variantTitle?.trim();
+              const quantity = Number.isFinite(item.quantity) ? `x${item.quantity}` : "";
+              const amount =
+                item.total && item.currencyCode ? `${item.currencyCode} ${item.total}` : item.total || "";
+              return [title, variant, quantity, amount].filter(Boolean).join(" | ");
+            })
+            .filter(Boolean)
+        : [];
+
+    const trackingLines =
       Array.isArray(safeOrder.tracking) && safeOrder.tracking.length > 0
-        ? `Tracking number is ${safeOrder.tracking[0]?.number || "available"}.`
-        : "Tracking will be shared after shipment if available.";
+        ? safeOrder.tracking.map((tracking) =>
+            [
+              tracking.number ? `Tracking number: ${tracking.number}` : "",
+              tracking.company ? `Carrier: ${tracking.company}` : "",
+              tracking.status ? `Status: ${tracking.status}` : "",
+            ]
+              .filter(Boolean)
+              .join(" | "),
+          ).filter(Boolean)
+        : [];
+
+    const summaryBlocks = [
+      safeOrder.orderName ? `Order: ${safeOrder.orderName}` : "",
+      safeOrder.customerName ? `Customer: ${safeOrder.customerName}` : "",
+      contactParts.length > 0 ? `Contact: ${contactParts.join(" | ")}` : "",
+      safeOrder.fulfillmentStatus ? `Fulfillment: ${safeOrder.fulfillmentStatus}` : "",
+      safeOrder.financialStatus ? `Payment: ${safeOrder.financialStatus}` : "",
+      safeOrder.totalAmount
+        ? `Total: ${safeOrder.currencyCode ? `${safeOrder.currencyCode} ` : ""}${safeOrder.totalAmount}`
+        : "",
+      itemLines.length > 0 ? `Order items:\n- ${itemLines.join("\n- ")}` : "",
+      trackingLines.length > 0
+        ? `Tracking:\n- ${trackingLines.join("\n- ")}`
+        : "Tracking: Tracking will be shared after shipment if available.",
+    ].filter(Boolean);
 
     return JSON.stringify({
       type: "fallback",
-      message: `${parts.join("\n\n")}\n\n${trackingLine}`.trim(),
+      message: summaryBlocks.join("\n\n"),
+      order: {
+        orderName: safeOrder.orderName,
+        orderNumber: safeOrder.orderNumber,
+        customerName: safeOrder.customerName,
+        customerEmail: safeOrder.customerEmail,
+        customerPhone: safeOrder.customerPhone,
+        shippingPhone: safeOrder.shippingPhone,
+        financialStatus: safeOrder.financialStatus,
+        fulfillmentStatus: safeOrder.fulfillmentStatus,
+        totalAmount: safeOrder.totalAmount,
+        currencyCode: safeOrder.currencyCode,
+        tracking: safeOrder.tracking,
+        lineItems: safeOrder.lineItems,
+      },
       products: [],
       policy_link: "",
       options: [
