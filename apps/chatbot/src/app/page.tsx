@@ -3,12 +3,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   Bot,
+  ChevronRight,
   CornerDownLeft,
   ExternalLink,
   Gift,
   House,
   Loader2,
   Mail,
+  MessageCircle,
   Package,
   Phone,
   ScrollText,
@@ -78,6 +80,8 @@ interface Message {
   content: string;
 }
 
+type ViewMode = "home" | "messages";
+
 type SendRequest = {
   value: string;
   displayText?: string;
@@ -86,7 +90,6 @@ type SendRequest = {
 
 const STORE_HOME_URL = "https://snakitos.com/";
 const STORE_PRODUCTS_URL = "https://snakitos.com/collections/all";
-const STORE_POLICIES_URL = "https://snakitos.com/policies/";
 
 const COLLECTION_ACTIONS: Array<{ label: string; value: string; blurb: string; href: string }> = [
   {
@@ -133,19 +136,36 @@ const COLLECTION_ACTIONS: Array<{ label: string; value: string; blurb: string; h
   },
 ];
 
-const QUICK_ACTIONS: Option[] = [
-  { label: "Collections", value: "show categories" },
-  { label: "Deals", value: "show best deals" },
-  { label: "Bundles", value: "show gift packs" },
-  { label: "Track Order", value: "track my order" },
-  { label: "Policies", value: "show shipping and refund policy" },
-];
-
-const STOREFRONT_LINKS = [
-  { label: "Home", href: STORE_HOME_URL },
-  { label: "Search", href: "https://snakitos.com/search" },
-  { label: "Cart", href: "https://snakitos.com/cart" },
-  { label: "Contact", href: "https://snakitos.com/pages/contact" },
+const HOME_SHORTCUTS: Array<{
+  label: string;
+  value: string;
+  blurb: string;
+  icon: "order" | "deals" | "collections" | "policy";
+}> = [
+  {
+    label: "Track Order",
+    value: "track my order",
+    blurb: "Check courier details, shipping status, and delivery updates.",
+    icon: "order",
+  },
+  {
+    label: "Snack Deals",
+    value: "show best deals",
+    blurb: "See bundle offers, gifting picks, and the best current value packs.",
+    icon: "deals",
+  },
+  {
+    label: "Shop Collections",
+    value: "show categories",
+    blurb: "Browse Sweet Tooth, Multi Grain, Banana Chips, Nachos, and more.",
+    icon: "collections",
+  },
+  {
+    label: "Shipping & Refunds",
+    value: "show shipping and refund policy",
+    blurb: "Get clear answers about delivery timing, refunds, and store policies.",
+    icon: "policy",
+  },
 ];
 
 export default function PublicChatbot() {
@@ -155,17 +175,11 @@ export default function PublicChatbot() {
       content: JSON.stringify({
         type: "mixed",
         message:
-          "Welcome to Snakitos. I can help with products, orders, policies, and general store guidance.",
-        options: [
-          { label: "Deals", value: "show best deals" },
-          { label: "Sweet Tooth", value: "Show me Sweet Tooth snacks" },
-          { label: "Multi Grain", value: "Show me Multi Grain snacks" },
-          { label: "Track Order", value: "track my order" },
-          { label: "Home", value: "home" },
-        ],
+          "Hello there! I'm your Snakitos AI Assistant.\n\nAsk about snack collections, bundle deals, order tracking, or shipping policies. I can help in English or Urdu.",
       }),
     },
   ]);
+  const [activeView, setActiveView] = useState<ViewMode>("home");
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState("");
@@ -193,10 +207,17 @@ export default function PublicChatbot() {
   }, []);
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    if (!scrollRef.current) {
+      return;
     }
-  }, [messages]);
+
+    if (activeView === "messages") {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      return;
+    }
+
+    scrollRef.current.scrollTop = 0;
+  }, [activeView, messages]);
 
   const handleSend = async (request?: string | SendRequest) => {
     const messageToSend =
@@ -209,6 +230,8 @@ export default function PublicChatbot() {
       window.location.href = STORE_HOME_URL;
       return;
     }
+
+    setActiveView("messages");
 
     const displayText =
       typeof request === "string"
@@ -254,17 +277,19 @@ export default function PublicChatbot() {
     }
   };
 
+  const handlePreset = (value: string, label: string) => {
+    void handleSend({
+      value,
+      displayText: buildAutoClickText(value, label),
+    });
+  };
+
   const renderOptions = (options: Option[]) => (
     <div className={styles.optionRow}>
       {ensureNavigationOptions(options).map((option) => (
         <button
           key={`${option.label}-${option.value}`}
-          onClick={() =>
-            handleSend({
-              value: option.value,
-              displayText: buildAutoClickText(option.value, option.label),
-            })
-          }
+          onClick={() => handlePreset(option.value, option.label)}
           className={styles.optionChip}
         >
           {option.label === "Back" ? <CornerDownLeft size={12} /> : null}
@@ -323,7 +348,13 @@ export default function PublicChatbot() {
               </a>
             ) : null}
 
-            {showActions ? renderOptions(parsed.options ?? []) : null}
+            {showActions
+              ? parsed.options && parsed.options.length > 0
+                ? renderOptions(parsed.options)
+                : parsed.order || parsed.products?.length || parsed.policy_link
+                  ? renderOptions([])
+                  : null
+              : null}
           </div>
         );
       }
@@ -346,93 +377,16 @@ export default function PublicChatbot() {
 
   return (
     <main className={styles.page}>
-      <div className={styles.container}>
-        <section className={styles.topbar}>
-          <div className={styles.topbarBrand}>
-            <span className={styles.brandChip}>Snakitos</span>
-            <p>Public support assistant</p>
-          </div>
-          <div className={styles.topbarActions}>
-            <a
-              href={STORE_HOME_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.topbarLink}
-            >
-              Visit Store
-            </a>
-            <a
-              href={STORE_PRODUCTS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.topbarLinkMuted}
-            >
-              All Products
-            </a>
-          </div>
-        </section>
-
-        <section className={styles.heroCard}>
-          <div className={styles.heroCopy}>
-            <div className={styles.badges}>
-              <span>Pakistani Snacks</span>
-              <span>Category-led Help</span>
-            </div>
-            <h1>Shop Snakitos faster with a mobile-first snack concierge.</h1>
-            <p>
-              Explore Sweet Tooth, Multi Grain, Banana Chips, Patata Chips, Deals,
-              Nachos, Snaktory, policies, and order support from one chat flow.
-            </p>
-          </div>
-
-          <div className={styles.heroActions}>
-            <button
-              onClick={() =>
-                handleSend({
-                  value: "show best deals",
-                  displayText: buildAutoClickText("show best deals", "Deals"),
-                })
-              }
-              className={styles.primaryCta}
-            >
-              Explore Deals
-              <Sparkles size={16} />
-            </button>
-            <a
-              href={STORE_POLICIES_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.secondaryCta}
-            >
-              View Policies
-              <ExternalLink size={16} />
-            </a>
-          </div>
-        </section>
-
-        <section className={styles.storefrontRail}>
-          {STOREFRONT_LINKS.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.storefrontLink}
-            >
-              {item.label}
-            </a>
-          ))}
-        </section>
-
+      <div className={styles.shellWrap}>
         <section className={styles.chatShell}>
-          <div className={styles.chatHeader}>
+          <header className={styles.chatHeader}>
             <div className={styles.chatIdentity}>
               <div className={styles.botBadge}>
-                <Bot size={22} />
+                <span>Sn</span>
               </div>
               <div>
-                <h2>Snakitos Concierge</h2>
-                <p>Live snack help</p>
+                <h1>Snakitos AI Assistant</h1>
+                <p>How can I help you today?</p>
               </div>
             </div>
             <a
@@ -441,70 +395,83 @@ export default function PublicChatbot() {
               rel="noopener noreferrer"
               className={styles.headerLink}
             >
-              Shop All
+              Shop
             </a>
-          </div>
-
-          <div className={styles.quickRail}>
-            {QUICK_ACTIONS.map((action) => (
-              <button
-                key={action.label}
-                onClick={() =>
-                  handleSend({
-                    value: action.value,
-                    displayText: buildAutoClickText(action.value, action.label),
-                  })
-                }
-                className={styles.quickRailChip}
-              >
-                {action.label}
-              </button>
-            ))}
-          </div>
+          </header>
 
           <div ref={scrollRef} className={styles.chatBody}>
-            {messages.map((message, index) => (
-              (() => {
-                const isLatestAssistant =
-                  message.role === "assistant" &&
-                  messages.findLastIndex((item) => item.role === "assistant") === index;
-
-                return (
-              <div
-                key={index}
-                className={
-                  message.role === "user" ? styles.messageRowUser : styles.messageRowAssistant
-                }
-              >
-                <div
-                  className={
-                    message.role === "user" ? styles.avatarUser : styles.avatarAssistant
-                  }
-                >
-                  {message.role === "user" ? <User size={14} /> : <Bot size={14} />}
-                </div>
-                <div
-                  className={
-                    message.role === "user" ? styles.userBubble : styles.assistantBubble
-                  }
-                >
-                  {message.role === "assistant"
-                    ? renderAssistantMessage(message.content, isLatestAssistant)
-                    : renderUserMessage(message.content)}
+            {activeView === "home" ? (
+              <div className={styles.homeView}>
+                <div className={styles.shortcutList}>
+                  {HOME_SHORTCUTS.map((shortcut) => (
+                    <button
+                      key={shortcut.label}
+                      onClick={() => handlePreset(shortcut.value, shortcut.label)}
+                      className={styles.shortcutCard}
+                    >
+                      <span className={styles.shortcutIcon}>
+                        {renderShortcutIcon(shortcut.icon)}
+                      </span>
+                      <span className={styles.shortcutCopy}>
+                        <strong>{shortcut.label}</strong>
+                      </span>
+                      <ChevronRight size={20} className={styles.shortcutArrow} />
+                    </button>
+                  ))}
                 </div>
               </div>
-                );
-              })()
-            ))}
+            ) : (
+              <div className={styles.messagesView}>
+                {messages.map((message, index) =>
+                  (() => {
+                    const isLatestAssistant =
+                      message.role === "assistant" &&
+                      messages.findLastIndex((item) => item.role === "assistant") === index;
 
-            {loading ? (
-              <div className={styles.messageRowAssistant}>
-                <div className={styles.avatarAssistant}>
-                  <Loader2 size={14} className={styles.spinner} />
-                </div>
-                <div className={styles.loadingBubble}>Checking Snakitos...</div>
+                    return (
+                      <div
+                        key={index}
+                        className={
+                          message.role === "user"
+                            ? styles.messageRowUser
+                            : styles.messageRowAssistant
+                        }
+                      >
+                        <div
+                          className={
+                            message.role === "user"
+                              ? styles.avatarUser
+                              : styles.avatarAssistant
+                          }
+                        >
+                          {message.role === "user" ? <User size={14} /> : <Bot size={14} />}
+                        </div>
+                        <div
+                          className={
+                            message.role === "user"
+                              ? styles.userBubble
+                              : styles.assistantBubble
+                          }
+                        >
+                          {message.role === "assistant"
+                            ? renderAssistantMessage(message.content, isLatestAssistant)
+                            : renderUserMessage(message.content)}
+                        </div>
+                      </div>
+                    );
+                  })(),
+                )}
+
+                {loading ? (
+                  <div className={styles.messageRowAssistant}>
+                    <div className={styles.avatarAssistant}>
+                      <Loader2 size={14} className={styles.spinner} />
+                    </div>
+                    <div className={styles.loadingBubble}>Checking Snakitos...</div>
+                  </div>
+                ) : null}
               </div>
-            ) : null}
+            )}
           </div>
 
           <div className={styles.chatFooter}>
@@ -514,7 +481,7 @@ export default function PublicChatbot() {
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
                 onKeyDown={(event) => event.key === "Enter" && handleSend()}
-                placeholder="Ask about collections, bundles, policies, or your order..."
+                placeholder="Message..."
                 className={styles.input}
               />
               <button
@@ -525,105 +492,30 @@ export default function PublicChatbot() {
                 <Send size={18} />
               </button>
             </div>
-            <p className={styles.footerNote}>Fast answers with official Snakitos links</p>
           </div>
-        </section>
 
-        <section className={styles.collectionPanel}>
-          <div className={styles.panelHeading}>
-            <div>
-              <span className={styles.eyebrow}>Collections</span>
-              <h2>Shop by Snakitos category</h2>
-            </div>
-            <a
-              href={STORE_PRODUCTS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.panelLink}
+          <nav className={styles.bottomNav}>
+            <button
+              type="button"
+              onClick={() => setActiveView("home")}
+              className={`${styles.navButton} ${
+                activeView === "home" ? styles.navButtonActive : ""
+              }`}
             >
-              View all
-            </a>
-          </div>
-
-          <div className={styles.collectionScroller}>
-            {COLLECTION_ACTIONS.map((category) => (
-              <div key={category.label} className={styles.collectionCard}>
-                <button
-                  onClick={() =>
-                    handleSend({
-                      value: category.value,
-                      displayText: buildAutoClickText(category.value, category.label),
-                    })
-                  }
-                  className={styles.collectionButton}
-                >
-                  <strong>{category.label}</strong>
-                  <span>{category.blurb}</span>
-                </button>
-                <a
-                  href={category.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.collectionLink}
-                >
-                  Open collection
-                </a>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className={styles.utilityGrid}>
-          <button
-            onClick={() =>
-              handleSend({
-                value: "show gift packs",
-                displayText: buildAutoClickText("show gift packs", "Bundles & Gifts"),
-              })
-            }
-            className={styles.utilityCard}
-          >
-            <div className={styles.utilityIcon}>
-              <Gift size={18} />
-            </div>
-            <strong>Bundles & Gifts</strong>
-            <span>Push bundle and gifting queries to the right collections quickly.</span>
-          </button>
-
-          <button
-            onClick={() =>
-              handleSend({
-                value: "track my order",
-                displayText: buildAutoClickText("track my order", "Order Help"),
-              })
-            }
-            className={styles.utilityCard}
-          >
-            <div className={styles.utilityIcon}>
-              <Package size={18} />
-            </div>
-            <strong>Order Help</strong>
-            <span>Route tracking and support questions into the order flow.</span>
-          </button>
-
-          <button
-            onClick={() =>
-              handleSend({
-                value: "show shipping and refund policy",
-                displayText: buildAutoClickText(
-                  "show shipping and refund policy",
-                  "Policy Help",
-                ),
-              })
-            }
-            className={styles.utilityCard}
-          >
-            <div className={styles.utilityIcon}>
-              <ScrollText size={18} />
-            </div>
-            <strong>Policy Help</strong>
-            <span>Use the Snakitos policy pages as the source of truth.</span>
-          </button>
+              <House size={18} />
+              <span>Home</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveView("messages")}
+              className={`${styles.navButton} ${
+                activeView === "messages" ? styles.navButtonActive : ""
+              }`}
+            >
+              <MessageCircle size={18} />
+              <span>Messages</span>
+            </button>
+          </nav>
         </section>
       </div>
     </main>
@@ -662,7 +554,9 @@ function buildAutoClickText(value: string, fallbackLabel: string): string {
   const normalizedLabel = fallbackLabel.trim();
 
   if (/^show categories$/i.test(normalizedValue)) {
-    return "Take me back to the main snack categories.";
+    return /^back$/i.test(normalizedLabel)
+      ? "Take me back to the main snack categories."
+      : "Show me the main snack collections.";
   }
 
   if (/^show best deals$/i.test(normalizedValue)) {
@@ -1016,4 +910,19 @@ function getStatusToneClass(value?: string | null): string {
   }
 
   return styles.statusNeutral;
+}
+
+function renderShortcutIcon(icon: "order" | "deals" | "collections" | "policy") {
+  switch (icon) {
+    case "order":
+      return <Package size={18} />;
+    case "deals":
+      return <Gift size={18} />;
+    case "collections":
+      return <Sparkles size={18} />;
+    case "policy":
+      return <ScrollText size={18} />;
+    default:
+      return <ShoppingBag size={18} />;
+  }
 }
