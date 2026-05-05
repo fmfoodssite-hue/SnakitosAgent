@@ -68,7 +68,15 @@ const DEFAULT_TTL_MS = 60_000;
 const STOREFRONT_BASE_URL = "https://snakitos.com";
 const SEARCH_ALIAS_GROUPS: Record<string, string[]> = {
   "sweet tooth": ["sweet snacks", "wafer rolls", "choco stick", "chocolate snacks"],
-  "multi grain": ["multigrain", "stix", "chickpea puffs", "healthy snacks"],
+  "multi grain": ["multigrain", "stix", "chickpea puffs", "healthy snacks", "healthwise snacks"],
+  multigrain: ["multi grain", "healthy snacks", "healthwise snacks"],
+  "multiple grain": ["multi grain", "multigrain", "healthy snacks"],
+  gluten: ["gluten free", "wheat free", "healthwise snacks", "healthy snacks"],
+  "gluten free": ["wheat free", "healthwise snacks", "healthy snacks", "multi grain"],
+  "wheat free": ["gluten free", "healthy snacks", "multi grain"],
+  healthy: ["multi grain", "multigrain", "healthwise snacks", "better-for-you snacks"],
+  healthwise: ["healthy snacks", "multi grain", "multigrain", "better-for-you snacks"],
+  "health wise": ["healthy snacks", "multi grain", "multigrain"],
   "banana chips": ["banana snacks", "bbq banana chips", "sea salt banana chips"],
   "patata chips": ["potato slims", "potato chips", "patata", "masala chips", "salty chips"],
   deals: ["best deals", "bundle", "combo", "gift pack", "value pack", "mega deal"],
@@ -382,6 +390,7 @@ export class ShopifyService {
     const isMovieRequest = /(movie|night|party|sharing|family)/i.test(query);
     const isPopularRequest = /(best|selling|seller|popular|top|featured)/i.test(query);
     const isGiftRequest = /(gift|gifts|relative|friend|family|birthday|present|surprise)/i.test(query);
+    const isHealthyRequest = /(healthy|healthwise|health\s*wise|multi\s*grain|multigrain|light|better\s*for\s*you)/i.test(query);
 
     // Extract target price (e.g., "under 200", "50", "rs 100") ignoring grams like "50g"
     const priceMatch = query.match(/(?:under|below|less than|max|rs\.?|pkr)\s*(\d+)/i) || query.match(/\b(\d+)\b(?!\s*g)/i);
@@ -445,6 +454,17 @@ export class ShopifyService {
 
         if (isGiftRequest && /(bundle|deal|combo|fiesta|fusion|wonder|treasure|movie|gift|pack)/i.test(product.title)) {
           score += 5;
+        }
+
+        if (
+          isHealthyRequest &&
+          /(multi\s*grain|multigrain|chickpea|light|healthy|stix|grain)/i.test(
+            `${product.title} ${product.productType ?? ""} ${product.description ?? ""}`,
+          )
+        ) {
+          score += 8;
+        } else if (isHealthyRequest) {
+          score -= 3;
         }
 
         if (isPopularRequest && /(mega|ultimate|fiesta|deal|bundle|nachos|snack)/i.test(product.title)) {

@@ -1,0 +1,98 @@
+[
+  {
+    "id": "cat-gluten-free-overview",
+    "name": "Gluten-Free Shopping Overview",
+    "type": "knowledge",
+    "category": "gluten-free",
+    "link": "https://snakitos.com/collections/all",
+    "description": "When a shopper asks for gluten-free snacks, gluten free options, wheat-free snacks, celiac-friendly snacks, or healthwise snacks, the assistant should treat the request as a product discovery question. The assistant should not promise that a product is gluten-free unless the knowledge base, label text, ingredient list, or product metadata explicitly confirms it. If exact gluten-free confirmation is missing, the safest answer is to explain that exact gluten-free status is not confirmed in the current catalog context and then suggest the most relevant simple or health-focused collections to explore next. Useful follow-up prompts include asking which flavor, category, or product label the shopper wants checked."
+  },
+  {
+    "id": "cat-gluten-free-language",
+    "name": "Gluten-Free Query Language",
+    "type": "knowledge",
+    "category": "gluten-free",
+    "link": "https://snakitos.com/collections/all",
+    "description": "Common shopper phrases related to gluten-free intent include gluten free, gluten-free, no gluten, wheat free, wheat-free, healthwise, healthy snacks, diet snacks, light snacks, cleaner snacks, simple ingredient snacks, and better-for-you snacks. The assistant should map these phrases toward product exploration rather than policy answers. Multi grain, multigrain, chickpea-based, corn-based, simple salted, and lightly seasoned snacks are often relevant discovery directions, but the assistant must still avoid claiming certified gluten-free status unless the product context says so directly."
+  },
+  {
+    "id": "cat-gluten-free-response-style",
+    "name": "Gluten-Free Response Style",
+    "type": "knowledge",
+    "category": "gluten-free",
+    "link": "https://snakitos.com/collections/all",
+    "description": "For gluten-free questions, the best response style is short, practical, and careful. Start by saying whether exact gluten-free confirmation is available. If not available, clearly say the current product context does not explicitly confirm gluten-free labeling. Then guide the shopper toward health-focused or simpler snack categories, ingredient checks, and specific product names. The answer should feel helpful without over-promising. Good navigation suggestions are Multi Grain snacks, Banana Chips, Deals, and product-specific follow-up questions."
+  },
+  {
+    "id": "cat-healthwise-multi-grain",
+    "name": "Healthwise and Multi Grain Guidance",
+    "type": "knowledge",
+    "category": "healthy-snacks",
+    "link": "https://snakitos.com/collections/multi-grain",
+    "description": "When a shopper says healthwise, healthy, health wise, multiple grain, multi grain, multigrain, lighter snacks, or better snacks, the assistant should strongly consider the Multi Grain collection first. These terms signal a shopper who wants a more mindful snacking direction rather than a random product result. The assistant should prioritize multi grain collections, chickpea or grain-forward snack wording, and simpler descriptions. If the request is broad, the assistant should recommend a few relevant options instead of asking the shopper to browse everything."
+  },
+  {
+    "id": "cat-delivery-overview",
+    "name": "Delivery Question Overview",
+    "type": "knowledge",
+    "category": "delivery",
+    "link": "https://snakitos.com/policies/shipping-policy",
+    "description": "Delivery questions include shipping, delivery time, dispatch, courier, parcel, order arrival, shipping charges, tracking, rider delays, and address issues. General delivery questions should be answered from shipping-policy knowledge. Specific delivery or tracking questions about an order should be answered from verified order context whenever order number and phone number are available. The assistant should keep delivery answers short, operational, and clear."
+  },
+  {
+    "id": "cat-delivery-tracking",
+    "name": "Delivery Tracking Guidance",
+    "type": "knowledge",
+    "category": "delivery",
+    "link": "https://snakitos.com/policies/shipping-policy",
+    "description": "If a shopper asks where their parcel is, when the order will arrive, whether dispatch has happened, or how to track delivery, the assistant should move toward order tracking support. The fastest useful response is to ask for order number and phone number if those details are missing. If verified tracking data exists, the assistant should summarize fulfillment status, tracking number, courier, and any available tracking link. If exact tracking data is not available yet, the assistant should say tracking will appear after shipment."
+  },
+  {
+    "id": "cat-delivery-faq",
+    "name": "Delivery FAQ Intent",
+    "type": "knowledge",
+    "category": "delivery",
+    "link": "https://snakitos.com/policies/shipping-policy",
+    "description": "Common general delivery questions include how long delivery takes, whether shipping is available in a location, how much shipping costs, why an order is delayed, and what happens if delivery fails. These are policy or service questions, not product questions. The assistant should prefer shipping-policy summaries, not generic product recommendations, when a user asks about delivery conditions."
+  },
+  {
+    "id": "cat-category-mapping",
+    "name": "Category Mapping for Snack Discovery",
+    "type": "knowledge",
+    "category": "category-routing",
+    "link": "https://snakitos.com/collections/all",
+    "description": "Broad snack discovery queries should map to the most relevant collection rather than a weak literal search. Sweet, chocolate, wafer, hazelnut, strawberry, or dessert-like requests should lean toward Sweet Tooth. Healthwise, healthy, multi grain, multigrain, grain, lighter, or mindful-snacking requests should lean toward Multi Grain. Salty or simple crispy requests may fit Patata Chips or Banana Chips. Party, movie-night, or sharing requests may fit Nachos, bundles, or Deals."
+  },
+  {
+    "id": "cat-banana-simple-snacks",
+    "name": "Simple Snack Discovery Guidance",
+    "type": "knowledge",
+    "category": "category-routing",
+    "link": "https://snakitos.com/collections/banana-chips",
+    "description": "When the shopper asks for simpler snack options, lighter crunch, tea-time options, or straightforward salted profiles, Banana Chips and Multi Grain are useful starting categories. The assistant should treat simple, plain, light, and tea-time wording as category discovery signals. The response should name a few relevant directions instead of forcing a narrow exact-match search."
+  },
+  {
+    "id": "cat-movie-night-bundles",
+    "name": "Movie Night and Bundle Guidance",
+    "type": "knowledge",
+    "category": "bundles",
+    "link": "https://snakitos.com/collections/deals",
+    "description": "Requests such as movie night snacks, snacks for sharing, party snacks, family packs, and gift bundles should route toward Deals, Nachos, and bundle-style recommendations. If the shopper gives a broad multi-word request, the assistant should prefer recommendation ranking over literal product-title matching so the answer feels fast and useful."
+  },
+  {
+    "id": "cat-gluten-free-disclaimer",
+    "name": "Gluten-Free Safety Disclaimer",
+    "type": "knowledge",
+    "category": "gluten-free",
+    "link": "https://snakitos.com/collections/all",
+    "description": "If exact allergen or ingredient confirmation is not present in the current backend context, the assistant should not invent gluten-free claims. It should say the current catalog context does not explicitly confirm gluten-free labeling and then offer to help narrow down ingredient-friendly options, check a specific product name, or guide the shopper to a health-focused collection."
+  },
+  {
+    "id": "cat-delivery-short-answer-style",
+    "name": "Delivery Short Answer Style",
+    "type": "knowledge",
+    "category": "delivery",
+    "link": "https://snakitos.com/policies/shipping-policy",
+    "description": "Delivery answers should usually be short and direct. For general delivery questions, summarize only the most relevant policy points and include the official shipping policy link when available. For specific order delivery questions, move straight to order verification or tracking details. Avoid long generic paragraphs when the user only wants a delivery update."
+  }
+]

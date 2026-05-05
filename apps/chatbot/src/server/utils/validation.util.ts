@@ -103,12 +103,18 @@ export function compareOrderReference(order: OrderLookupResult, provided: string
 export function extractProductQuery(message: string): string {
   const cleaned = message
     .toLowerCase()
-    .replace(
-      /\b(hey|hi|hello|please|okay|ok|i want|i need|show me|give me|tell me|details|detail|about|of the|from the|in the|for the|what is|what are|do you have|can you|could you|share|know|information|info|available|availability|stock|this|that|those|thos|item|items|product|products|best|top|recommend|recommended|suggest|suggestions|options|for me|should i|get me|something|good|nice)\b/gi,
-      " ",
-    )
     .replace(/[^a-z0-9\s&-]/gi, " ")
     .replace(/\s+/g, " ")
+    .trim()
+    .replace(
+      /^(?:hey|hi|hello|please|okay|ok|can you|could you|would you|do you have|i want|i need|show me|give me|tell me|share|let me see)\s+/i,
+      "",
+    )
+    .replace(
+      /\s+(?:please|details|detail|information|info|available|availability|stock)\s*$/i,
+      "",
+    )
+    .replace(/^(?:details about|detail about|information on|info on)\s+/i, "")
     .trim();
 
   return cleaned.length >= 2 ? cleaned : "";

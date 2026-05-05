@@ -1,6 +1,7 @@
 import path from "path";
 import dotenv from "dotenv";
 import { createClient } from "@supabase/supabase-js";
+import fs from "fs/promises";
 
 dotenv.config({ path: path.resolve(process.cwd(), ".env") });
 
@@ -45,6 +46,25 @@ async function fetchJson(url) {
     throw new Error(`Failed to fetch ${url}: ${response.status}`);
   }
   return response.json();
+}
+
+async function loadLocalCategoryKnowledge() {
+  const filePath = path.resolve(
+    process.cwd(),
+    "apps/chatbot/src/server/data/category-knowledge.json",
+  );
+  const raw = await fs.readFile(filePath, "utf8");
+  const parsed = JSON.parse(raw);
+
+  if (!Array.isArray(parsed)) {
+    throw new Error("category-knowledge.json must contain a top-level array.");
+  }
+
+  return parsed.map((item) => ({
+    title: item.name || item.title || "Category Knowledge",
+    content: item.description || item.content || "",
+    source: `snakitos:category:${item.category || "general"}`,
+  }));
 }
 
 function productDocument(product) {
@@ -136,6 +156,7 @@ async function main() {
     policyDocument(`https://${STORE_DOMAIN}/policies/refund-policy`),
     contactDocument(`https://${STORE_DOMAIN}/pages/contact`),
   ]);
+  const localCategoryKnowledge = await loadLocalCategoryKnowledge();
 
   const storeOverview = {
     title: "Snakitos Store Overview",
@@ -149,7 +170,13 @@ async function main() {
     source: "snakitos:overview",
   };
 
-  const documents = [storeOverview, ...policies, ...collections, ...products];
+  const documents = [
+    storeOverview,
+    ...localCategoryKnowledge,
+    ...policies,
+    ...collections,
+    ...products,
+  ];
 
   const { error: deleteError } = await supabase
     .from("knowledge_documents")

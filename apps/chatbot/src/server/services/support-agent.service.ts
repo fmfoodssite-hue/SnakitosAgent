@@ -34,6 +34,17 @@ type PolicyDocument = {
   sections: PolicySection[];
 };
 
+type ProductResponseCard = {
+  name: string;
+  description: string;
+  price: string;
+  link: string;
+  cart_link: string;
+  savings?: string;
+};
+
+const DEFAULT_SUGGESTION_LIMIT = 8;
+
 export class SupportAgentService {
   async handleChat(input: ChatRequestInput): Promise<ChatResponsePayload> {
     const userId = await supabaseService.upsertUser({
@@ -129,7 +140,7 @@ export class SupportAgentService {
     if (this.isGreetingOrSmallTalk(userMessage)) {
       return {
         intent: "general",
-        response: this.buildGreetingResponse(),
+        response: await this.buildGreetingResponse(userMessage),
       };
     }
 
@@ -207,12 +218,11 @@ export class SupportAgentService {
     if (!intentResult.orderId || !intentResult.phone) {
       return {
         intent: "order",
-        response: JSON.stringify({
+        response: await this.buildResponseWithSuggestions({
           type: "fallback",
           message:
             "I can check your order for you.\n\nPlease share your order number and the phone number used at checkout.",
-          products: [],
-          policy_link: "",
+          userMessage,
           options: [
             { label: "Back", value: "show categories" },
             { label: "Home", value: "home" },
@@ -225,11 +235,10 @@ export class SupportAgentService {
     if (blockState.blocked) {
       return {
         intent: "order",
-        response: JSON.stringify({
+        response: await this.buildResponseWithSuggestions({
           type: "fallback",
           message: `I couldn't verify the order after several attempts.\n\nPlease wait about ${Math.ceil(blockState.retryAfterSeconds / 60)} minutes and try again, or contact support if you still need help.`,
-          products: [],
-          policy_link: "",
+          userMessage,
           options: [
             { label: "Back", value: "show categories" },
             { label: "Home", value: "home" },
@@ -265,12 +274,11 @@ export class SupportAgentService {
       return {
         intent: "order",
         response: failureState.blocked
-          ? JSON.stringify({
+          ? await this.buildResponseWithSuggestions({
               type: "fallback",
               message:
                 "I couldn't verify the order after several attempts.\n\nPlease wait 15 minutes and try again, or contact support if you still need help.",
-              products: [],
-              policy_link: "",
+              userMessage,
               options: [
                 { label: "Back", value: "show categories" },
                 { label: "Home", value: "home" },
@@ -304,7 +312,7 @@ export class SupportAgentService {
 
     return {
       intent: "order",
-      response: this.buildOrderResponse(context.order ?? order),
+      response: await this.buildOrderResponse(context.order ?? order, userMessage),
       data: order,
     };
   }
@@ -328,13 +336,20 @@ export class SupportAgentService {
 
     let products: ProductLookupResult[] = [];
     try {
-      if (referencedProduct) {
+      const shouldPreferRecommendations = this.shouldPreferRecommendationFlow(
+        userMessage,
+        productQuery,
+        referencedProduct,
+      );
+
+      if (referencedProduct && !shouldPreferRecommendations) {
         products = await shopifyService.searchProducts(referencedProduct);
-      } else if (productQuery) {
+      } else if (productQuery && !shouldPreferRecommendations) {
         products = await shopifyService.searchProducts(productQuery);
       }
 
       if (
+        shouldPreferRecommendations ||
         (products.length === 0 && isStoreBrowsingQuestion) ||
         (!productQuery && !referencedProduct)
       ) {
@@ -358,7 +373,7 @@ export class SupportAgentService {
         const curatedProducts = this.selectProductsForResponse(fallbackProducts, userMessage);
         return {
           intent: "product",
-          response: this.buildProductResponse(curatedProducts, userMessage),
+          response: await this.buildProductResponse(curatedProducts, userMessage),
           data: fallbackProducts,
         };
       }
@@ -377,7 +392,7 @@ export class SupportAgentService {
         const curatedProducts = this.selectProductsForResponse(fallbackProducts, userMessage);
         return {
           intent: "product",
-          response: this.buildProductResponse(curatedProducts, userMessage),
+          response: await this.buildProductResponse(curatedProducts, userMessage),
           data: fallbackProducts,
         };
       }
@@ -401,7 +416,7 @@ export class SupportAgentService {
 
     return {
       intent: "product",
-      response: this.buildProductResponse(curatedProducts, userMessage),
+      response: await this.buildProductResponse(curatedProducts, userMessage),
       data: products,
     };
   }
@@ -422,6 +437,26 @@ export class SupportAgentService {
     return (
       extractSelectionIndex(userMessage) > 0 ||
       /\b(this|that|these|those|same one|first|second|third|last one)\b/i.test(userMessage)
+    );
+  }
+
+  private shouldPreferRecommendationFlow(
+    userMessage: string,
+    productQuery: string,
+    referencedProduct: string,
+  ): boolean {
+    if (referencedProduct) {
+      return false;
+    }
+
+    const normalized = productQuery || userMessage;
+    const wordCount = normalized.split(/\s+/).filter(Boolean).length;
+
+    return (
+      wordCount >= 4 ||
+      /\b(best|top|recommend|suggest|good for|perfect for|for movie|for tea|for gift|under \d+|below \d+|spicy|sweet|salty|crispy|crunchy|party|sharing|combo|bundle|deal)\b/i.test(
+        normalized,
+      )
     );
   }
 
@@ -475,11 +510,11 @@ export class SupportAgentService {
     if (!policyDocument) {
       return {
         intent: "general",
-        response: JSON.stringify({
+        response: await this.buildResponseWithSuggestions({
           type: "policy",
           message: "Please contact support.",
-          products: [],
-          policy_link: "https://snakitos.com/policies/",
+          userMessage,
+          policyLink: "https://snakitos.com/policies/",
           options: [
             { label: "Back", value: "show categories" },
             { label: "Home", value: "home" },
@@ -493,7 +528,7 @@ export class SupportAgentService {
 
     return {
       intent: "general",
-      response: this.buildKnowledgeResponse(knowledge, userMessage),
+      response: await this.buildKnowledgeResponse(knowledge, userMessage),
       data: policyDocument,
     };
   }
@@ -504,11 +539,10 @@ export class SupportAgentService {
     if (this.isUnclearQuery(userMessage)) {
       return {
         intent: "general",
-        response: JSON.stringify({
+        response: await this.buildResponseWithSuggestions({
           type: "fallback",
           message: "I can help with products, orders, or policies.",
-          products: [],
-          policy_link: "",
+          userMessage,
           options: [
             { label: "Deals", value: "show best deals" },
             { label: "Track Order", value: "track my order" },
@@ -528,11 +562,10 @@ export class SupportAgentService {
     if (relevantKnowledge.length === 0) {
       return {
         intent: "general",
-        response: JSON.stringify({
+        response: await this.buildResponseWithSuggestions({
           type: "fallback",
           message: "I couldn't find exact details, but here's what I know...",
-          products: [],
-          policy_link: "",
+          userMessage,
           options: [
             { label: "Deals", value: "show best deals" },
             { label: "Policies", value: "show shipping and refund policy" },
@@ -545,7 +578,7 @@ export class SupportAgentService {
 
     return {
       intent: "general",
-      response: this.buildKnowledgeResponse(relevantKnowledge, userMessage),
+      response: await this.buildKnowledgeResponse(relevantKnowledge, userMessage),
       data: relevantKnowledge,
     };
   }
@@ -568,12 +601,12 @@ export class SupportAgentService {
     );
   }
 
-  private buildGreetingResponse(): string {
-    return JSON.stringify({
+  private async buildGreetingResponse(userMessage: string): Promise<string> {
+    return this.buildResponseWithSuggestions({
       type: "fallback",
       message: "I can help with products, orders, or policies.",
-      products: [],
-      policy_link: "",
+      userMessage,
+      suggestionSeed: "best snack deals",
       options: [
         { label: "Deals", value: "show best deals" },
         { label: "Sweet Tooth", value: "Show me Sweet Tooth snacks" },
@@ -734,27 +767,30 @@ export class SupportAgentService {
     return null;
   }
 
-  private buildProductResponse(products: ProductLookupResult[], userMessage: string): string {
+  private async buildProductResponse(products: ProductLookupResult[], userMessage: string): Promise<string> {
     const rankedProducts = this.rankProductsForDisplay(products, userMessage);
-    const isDealsRequest = /(deal|deals|bundle|combo|offer|offers)/i.test(userMessage);
+    const isDealsRequest = this.isHighTicketIntent(userMessage);
     const rankedOrOriginal = rankedProducts.length > 0 ? rankedProducts : products;
     const highValueDeals = isDealsRequest
       ? rankedOrOriginal.filter((product) => this.parseDisplayPrice(product.price) >= 1000)
       : [];
-    const displayProducts = (highValueDeals.length > 0 ? highValueDeals : rankedOrOriginal).slice(0, 4);
-    const productPayload = displayProducts.map((product) => ({
-      name: product.title,
-      description: this.buildCustomerProductDescription(product),
-      price: product.price ?? "",
-      link: product.link,
-      cart_link: product.cartLink ?? product.link,
-    }));
+    const selectedProducts = highValueDeals.length > 0 ? highValueDeals : rankedOrOriginal;
+    const displayProducts = this.sortProductsForPresentation(selectedProducts, userMessage).slice(
+      0,
+      DEFAULT_SUGGESTION_LIMIT,
+    );
+    const productPayload = this.buildProductCards(displayProducts, userMessage);
+    const bestMatch = productPayload[0];
+    const totalSavings = this.sumDisplayedSavings(productPayload);
+    const message = bestMatch
+      ? this.buildProductMessage(bestMatch, userMessage, displayProducts.length, totalSavings)
+      : "Top Picks for You:";
 
-    return JSON.stringify({
+    return this.buildResponseWithSuggestions({
       type: "product",
-      message: "Top Picks for You:",
+      message,
+      userMessage,
       products: productPayload,
-      policy_link: "",
       options: [
         { label: "Back", value: "show categories" },
         { label: "Home", value: "home" },
@@ -767,13 +803,16 @@ export class SupportAgentService {
     userMessage: string,
   ): ProductLookupResult[] {
     const rankedProducts = this.rankProductsForDisplay(products, userMessage);
-    const isDealsRequest = /(deal|deals|bundle|combo|offer|offers)/i.test(userMessage);
+    const isDealsRequest = this.isHighTicketIntent(userMessage);
     const rankedOrOriginal = rankedProducts.length > 0 ? rankedProducts : products;
     const highValueDeals = isDealsRequest
-      ? rankedOrOriginal.filter((product) => this.parseDisplayPrice(product.price) >= 1000)
+      ? rankedOrOriginal.filter((product) => this.isLargeFormatProduct(product, userMessage))
       : [];
 
-    return (highValueDeals.length > 0 ? highValueDeals : rankedOrOriginal).slice(0, 5);
+    return this.sortProductsForPresentation(
+      highValueDeals.length > 0 ? highValueDeals : rankedOrOriginal,
+      userMessage,
+    ).slice(0, DEFAULT_SUGGESTION_LIMIT);
   }
 
   private buildPolicyKnowledge(
@@ -801,7 +840,7 @@ export class SupportAgentService {
     }));
   }
 
-  private buildKnowledgeResponse(
+  private async buildKnowledgeResponse(
     knowledge: Array<{
       id: string;
       name: string;
@@ -812,7 +851,7 @@ export class SupportAgentService {
       source: string;
     }>,
     userMessage: string,
-  ): string {
+  ): Promise<string> {
     const topKnowledge = knowledge.slice(0, 3);
     const policyLink =
       topKnowledge.find((item) => item.type === "policy" && item.link)?.link ?? "";
@@ -843,16 +882,19 @@ export class SupportAgentService {
           { label: "Home", value: "home" },
         ];
 
-    return JSON.stringify({
+    return this.buildResponseWithSuggestions({
       type,
       message,
-      products: [],
-      policy_link: policyLink,
+      userMessage,
+      policyLink,
       options,
     });
   }
 
-  private buildOrderResponse(order: Partial<NonNullable<AgentContext["order"]>> | undefined): string {
+  private async buildOrderResponse(
+    order: Partial<NonNullable<AgentContext["order"]>> | undefined,
+    userMessage: string,
+  ): Promise<string> {
     const safeOrder = order ?? {};
     const contactParts = [
       safeOrder.customerPhone ? `Phone: ${safeOrder.customerPhone}` : "",
@@ -904,9 +946,10 @@ export class SupportAgentService {
         : "Tracking: Tracking will be shared after shipment if available.",
     ].filter(Boolean);
 
-    return JSON.stringify({
+    return this.buildResponseWithSuggestions({
       type: "fallback",
       message: summaryBlocks.join("\n\n"),
+      userMessage,
       order: {
         orderName: safeOrder.orderName,
         orderNumber: safeOrder.orderNumber,
@@ -921,13 +964,229 @@ export class SupportAgentService {
         tracking: safeOrder.tracking,
         lineItems: safeOrder.lineItems,
       },
-      products: [],
-      policy_link: "",
       options: [
         { label: "Back", value: "show categories" },
         { label: "Home", value: "home" },
       ],
     });
+  }
+
+  private async buildResponseWithSuggestions(input: {
+    type: "product" | "policy" | "mixed" | "fallback";
+    message: string;
+    userMessage: string;
+    options: Array<{ label: string; value: string }>;
+    products?: ProductResponseCard[];
+    policyLink?: string;
+    order?: Record<string, unknown>;
+    suggestionSeed?: string;
+  }): Promise<string> {
+    const baseProducts = input.products ?? [];
+    const suggestions =
+      baseProducts.length > 0
+        ? baseProducts
+        : await this.getSuggestedProductCards(input.suggestionSeed || input.userMessage, input.userMessage);
+
+    return JSON.stringify({
+      type: input.type,
+      message: input.message,
+      ...(input.order ? { order: input.order } : {}),
+      products: suggestions,
+      policy_link: input.policyLink ?? "",
+      options: input.options,
+    });
+  }
+
+  private async getSuggestedProductCards(
+    query: string,
+    userMessage: string,
+  ): Promise<ProductResponseCard[]> {
+    try {
+      const recommendations = await Promise.race([
+        shopifyService.getStorefrontRecommendations(query, DEFAULT_SUGGESTION_LIMIT * 2),
+        new Promise<ProductLookupResult[]>((resolve) => {
+          setTimeout(() => resolve([]), 1200);
+        }),
+      ]);
+
+      const selected = this.selectProductsForResponse(recommendations, userMessage).slice(
+        0,
+        DEFAULT_SUGGESTION_LIMIT,
+      );
+      return this.buildProductCards(selected, userMessage);
+    } catch {
+      return [];
+    }
+  }
+
+  private buildProductCards(
+    products: ProductLookupResult[],
+    userMessage: string,
+  ): ProductResponseCard[] {
+    return products.map((product) => {
+      const savings = this.estimateSavings(product, products);
+      return {
+        name: product.title,
+        description: this.buildCustomerProductDescription(product, savings, userMessage),
+        price: product.price ?? "",
+        link: product.link,
+        cart_link: product.cartLink ?? product.link,
+        ...(savings ? { savings: savings.toFixed(0) } : {}),
+      };
+    });
+  }
+
+  private buildProductMessage(
+    bestMatch: ProductResponseCard,
+    userMessage: string,
+    totalCount: number,
+    totalSavings: number,
+  ): string {
+    if (this.isHighTicketIntent(userMessage)) {
+      const savingsLine =
+        totalSavings > 0
+          ? ` Estimated savings across these value picks: PKR ${totalSavings.toFixed(0)}.`
+          : "";
+      return totalCount > 1
+        ? `Best value match: ${bestMatch.name}. I also sorted stronger-value picks from high to low below.${savingsLine}`
+        : `Best value match: ${bestMatch.name}.${savingsLine}`;
+    }
+
+    return totalCount > 1
+      ? `Best match: ${bestMatch.name}. I also added more close picks below.`
+      : `Best match: ${bestMatch.name}.`;
+  }
+
+  private isHighTicketIntent(userMessage: string): boolean {
+    return /(deal|deals|bundle|combo|offer|offers|value pack|gift pack|family pack|family|sharing|share pack|box|high ticket|premium|bulk|party|movie night)/i.test(
+      userMessage,
+    );
+  }
+
+  private isLargeFormatProduct(
+    product: ProductLookupResult,
+    userMessage: string,
+  ): boolean {
+    const title = product.title.toLowerCase();
+    const description = (product.description ?? "").toLowerCase();
+    const combined = `${title} ${description}`;
+    const price = this.parseDisplayPrice(product.price);
+    const isFamilyIntent = /(family|sharing|party|bundle|combo|box|bulk|gift|movie night|pack)/i.test(
+      userMessage,
+    );
+
+    if (/(bundle|combo|box|tray|gift|fiesta|fusion|wonder|treasure|movie|family|sharing)/i.test(combined)) {
+      return true;
+    }
+
+    const packMatch = combined.match(/pack of\s*(\d+)/i);
+    const packCount = packMatch ? Number.parseInt(packMatch[1], 10) : 0;
+    if (packCount >= 20) {
+      return true;
+    }
+
+    if (isFamilyIntent && price >= 900) {
+      return true;
+    }
+
+    if (isFamilyIntent && /(free shipping|assorted|mixed)/i.test(combined)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  private estimateSavings(
+    product: ProductLookupResult,
+    products: ProductLookupResult[],
+  ): number | null {
+    const packMatch = product.title.match(/pack of\s*(\d+)/i);
+    if (!packMatch) {
+      return null;
+    }
+
+    const quantity = Number.parseInt(packMatch[1], 10);
+    if (!Number.isFinite(quantity) || quantity <= 1 || !product.price) {
+      return null;
+    }
+
+    const normalizedPackTitle = product.title
+      .replace(/\s*pack of\s*\d+.*$/i, "")
+      .replace(/\s*-\s*\d+g.*$/i, "")
+      .trim()
+      .toLowerCase();
+
+    const singleMatch = products.find((candidate) => {
+      if (candidate.id === product.id || !candidate.price) {
+        return false;
+      }
+
+      const candidateTitle = candidate.title
+        .replace(/\s*pack of\s*\d+.*$/i, "")
+        .replace(/\s*-\s*\d+g.*$/i, "")
+        .trim()
+        .toLowerCase();
+
+      return candidateTitle === normalizedPackTitle && !/pack of/i.test(candidate.title);
+    });
+
+    if (!singleMatch?.price) {
+      return null;
+    }
+
+    const packPrice = this.parseDisplayPrice(product.price);
+    const singlePrice = this.parseDisplayPrice(singleMatch.price);
+    if (packPrice <= 0 || singlePrice <= 0) {
+      return null;
+    }
+
+    const savings = singlePrice * quantity - packPrice;
+    return savings > 0 ? savings : null;
+  }
+
+  private sumDisplayedSavings(products: ProductResponseCard[]): number {
+    return products.reduce((sum, product) => {
+      const savings = Number.parseFloat(product.savings ?? "");
+      return Number.isFinite(savings) ? sum + savings : sum;
+    }, 0);
+  }
+
+  private sortProductsForPresentation(
+    products: ProductLookupResult[],
+    userMessage: string,
+  ): ProductLookupResult[] {
+    const isHighTicket = this.isHighTicketIntent(userMessage);
+    const copied = [...products];
+
+    if (!isHighTicket) {
+      return copied;
+    }
+
+    return copied.sort((left, right) => {
+      const rightPrice = this.parseDisplayPrice(right.price);
+      const leftPrice = this.parseDisplayPrice(left.price);
+      if (rightPrice !== leftPrice) {
+        return rightPrice - leftPrice;
+      }
+
+      const rightPack = this.extractPackCount(right.title);
+      const leftPack = this.extractPackCount(left.title);
+      if (rightPack !== leftPack) {
+        return rightPack - leftPack;
+      }
+
+      return (right.unitsSold ?? 0) - (left.unitsSold ?? 0);
+    });
+  }
+
+  private extractPackCount(title: string): number {
+    const match = title.match(/pack of\s*(\d+)/i);
+    if (!match) {
+      return 0;
+    }
+
+    const count = Number.parseInt(match[1], 10);
+    return Number.isFinite(count) ? count : 0;
   }
 
   private normalizeKnowledgeSnippet(text: string, fallbackName: string): string {
@@ -959,6 +1218,7 @@ export class SupportAgentService {
     const wantsSweet = /sweet|choco|wafer|hazelnut|strawberry|cappuccino/i.test(query);
     const wantsBanana = /banana/i.test(query);
     const wantsPotato = /potato|patata/i.test(query);
+    const wantsFamily = /family|sharing|party|bundle|combo|gift|bulk|box|movie night/i.test(query);
 
     return products
       .map((product) => {
@@ -1009,6 +1269,27 @@ export class SupportAgentService {
           score -= 6;
         }
 
+        if (wantsFamily) {
+          if (/(bundle|combo|box|tray|gift|family|sharing|movie|assorted|mixed)/i.test(haystack)) {
+            score += 12;
+          }
+
+          const packMatch = haystack.match(/pack of\s*(\d+)/i);
+          const packCount = packMatch ? Number.parseInt(packMatch[1], 10) : 0;
+          if (packCount >= 20) {
+            score += 10;
+          } else if (packCount > 0 && packCount < 20) {
+            score -= 8;
+          }
+
+          const price = this.parseDisplayPrice(product.price);
+          if (price >= 900) {
+            score += 8;
+          } else if (price > 0 && price < 700) {
+            score -= 8;
+          }
+        }
+
         return { product, score };
       })
       .filter((item) => item.score > 0)
@@ -1048,16 +1329,23 @@ export class SupportAgentService {
     return Array.from(phrases).filter(Boolean);
   }
 
-  private buildCustomerProductDescription(product: ProductLookupResult): string {
-    if (product.description && product.description !== "Snakitos snack from uploaded catalog.") {
-      return product.description;
+  private buildCustomerProductDescription(
+    product: ProductLookupResult,
+    savings?: number | null,
+    userMessage?: string,
+  ): string {
+    let description =
+      product.description && product.description !== "Snakitos snack from uploaded catalog."
+        ? product.description
+        : product.productType
+          ? `${product.productType} snack from Snakitos.`
+          : "Snack from Snakitos.";
+
+    if (savings && this.isHighTicketIntent(userMessage ?? "")) {
+      description = `${description} Save PKR ${savings.toFixed(0)} versus buying singles.`;
     }
 
-    if (product.productType) {
-      return `${product.productType} snack from Snakitos.`;
-    }
-
-    return "Snack from Snakitos.";
+    return description;
   }
 
   private parseDisplayPrice(price: string | null | undefined): number {

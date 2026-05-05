@@ -88,7 +88,6 @@ type SendRequest = {
   silent?: boolean;
 };
 
-const STORE_HOME_URL = "https://snakitos.com/";
 const STORE_PRODUCTS_URL = "https://snakitos.com/collections/all";
 
 const COLLECTION_ACTIONS: Array<{ label: string; value: string; blurb: string; href: string }> = [
