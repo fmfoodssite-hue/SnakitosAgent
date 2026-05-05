@@ -564,6 +564,18 @@
   line-height: 1.56;
 }
 
+.savingsBadge {
+  width: fit-content;
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(42, 151, 85, 0.12);
+  color: #1f7a46;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+}
+
 .productLink,
 .policyLink,
 .trackingLink {
@@ -652,6 +664,7 @@
 }
 
 .statusGrid {
+  display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
@@ -700,15 +713,18 @@
 .infoTile {
   display: grid;
   gap: 10px;
+  min-width: 0;
   padding: 14px;
 }
 
 .infoTileHeader {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
   gap: 8px;
   color: #8a5b3c;
   font-size: 0.7rem;
+  line-height: 1.35;
 }
 
 .infoTileIcon,
@@ -729,7 +745,7 @@
   color: #341d12;
   font-size: 0.84rem;
   line-height: 1.45;
-  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .infoTile p,
@@ -744,17 +760,20 @@
   display: flex;
   align-items: flex-start;
   gap: 8px;
+  min-width: 0;
 }
 
 .infoRowText {
   display: grid;
   gap: 3px;
+  flex: 1;
   min-width: 0;
 }
 
 .infoRowText span {
   color: #9d6944;
   font-size: 0.64rem;
+  line-height: 1.35;
 }
 
 .orderItemsSection {
@@ -845,6 +864,21 @@
   }
 }
 
+@media (max-width: 980px) {
+  .orderInfoGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .orderHero {
+    flex-direction: column;
+  }
+
+  .orderTotalCard {
+    width: 100%;
+    text-align: left;
+  }
+}
+
 @media (max-width: 560px) {
   .page {
     padding: 8px 4px 12px;
@@ -909,6 +943,16 @@
 
   .orderCard {
     padding: 14px;
+  }
+
+  .orderInfoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .infoTile,
+  .orderItemsSection,
+  .statusCard {
+    padding: 13px;
   }
 }
 

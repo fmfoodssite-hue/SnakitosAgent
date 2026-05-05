@@ -271,8 +271,13 @@ export class SupportAgentService {
         intent: "order",
         response: await this.buildResponseWithSuggestions({
           type: "fallback",
-          message:
-            "I can check your order for you.\n\nPlease share your order number and the phone number used at checkout.",
+          message: [
+            "I can check your order for you.",
+            "Please type your details in this format:",
+            "Order: #12345",
+            "Phone: 03001234567",
+            "Example: Order #12345, phone 03001234567",
+          ].join("\n\n"),
           userMessage,
           options: [
             { label: "Back", value: "show categories" },
@@ -774,6 +779,24 @@ export class SupportAgentService {
   }
 
   private async buildGreetingResponse(userMessage: string): Promise<string> {
+    if (/^(show categories|collections|menu)$/i.test(userMessage.trim())) {
+      return this.buildResponseWithSuggestions({
+        type: "fallback",
+        message: "Browse the main snack collections below.",
+        userMessage,
+        options: [
+          { label: "Sweet Tooth", value: "Show me Sweet Tooth snacks" },
+          { label: "Multi Grain", value: "Show me Multi Grain snacks" },
+          { label: "Banana Chips", value: "Show me Banana Chips" },
+          { label: "Nachos", value: "Show me Nachos" },
+          { label: "Deals", value: "show best deals" },
+          { label: "Track Order", value: "track my order" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      });
+    }
+
     return this.buildResponseWithSuggestions({
       type: "fallback",
       message: "I can help with products, orders, or policies.",
@@ -946,7 +969,15 @@ export class SupportAgentService {
     const highValueDeals = isDealsRequest
       ? rankedOrOriginal.filter((product) => this.parseDisplayPrice(product.price) >= 1000)
       : [];
-    const selectedProducts = highValueDeals.length > 0 ? highValueDeals : rankedOrOriginal;
+    const selectedProducts =
+      highValueDeals.length > 0
+        ? [
+            ...highValueDeals,
+            ...rankedOrOriginal.filter(
+              (product) => !highValueDeals.some((candidate) => candidate.id === product.id),
+            ),
+          ]
+        : rankedOrOriginal;
     const displayProducts = this.sortProductsForPresentation(selectedProducts, userMessage).slice(
       0,
       DEFAULT_SUGGESTION_LIMIT,
@@ -980,9 +1011,18 @@ export class SupportAgentService {
     const highValueDeals = isDealsRequest
       ? rankedOrOriginal.filter((product) => this.isLargeFormatProduct(product, userMessage))
       : [];
+    const orderedProducts =
+      highValueDeals.length > 0
+        ? [
+            ...highValueDeals,
+            ...rankedOrOriginal.filter(
+              (product) => !highValueDeals.some((candidate) => candidate.id === product.id),
+            ),
+          ]
+        : rankedOrOriginal;
 
     return this.sortProductsForPresentation(
-      highValueDeals.length > 0 ? highValueDeals : rankedOrOriginal,
+      orderedProducts,
       userMessage,
     ).slice(0, DEFAULT_SUGGESTION_LIMIT);
   }
@@ -1073,7 +1113,6 @@ export class SupportAgentService {
       safeOrder.shippingPhone && safeOrder.shippingPhone !== safeOrder.customerPhone
         ? `Shipping phone: ${safeOrder.shippingPhone}`
         : "",
-      safeOrder.customerEmail ? `Email: ${safeOrder.customerEmail}` : "",
     ].filter(Boolean);
 
     const itemLines =
@@ -1126,7 +1165,6 @@ export class SupportAgentService {
         orderName: safeOrder.orderName,
         orderNumber: safeOrder.orderNumber,
         customerName: safeOrder.customerName,
-        customerEmail: safeOrder.customerEmail,
         customerPhone: safeOrder.customerPhone,
         shippingPhone: safeOrder.shippingPhone,
         financialStatus: safeOrder.financialStatus,
@@ -1152,11 +1190,14 @@ export class SupportAgentService {
     policyLink?: string;
     order?: Record<string, unknown>;
     suggestionSeed?: string;
+    skipSuggestions?: boolean;
   }): Promise<string> {
     const baseProducts = input.products ?? [];
     const suggestionStrategy = this.buildSuggestionStrategy(input);
     const suggestions =
-      baseProducts.length > 0
+      input.skipSuggestions
+        ? []
+        : baseProducts.length > 0
         ? baseProducts
         : await this.getSuggestedProductCards(
             suggestionStrategy.query,

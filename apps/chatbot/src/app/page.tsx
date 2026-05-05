@@ -9,7 +9,6 @@ import {
   Gift,
   House,
   Loader2,
-  Mail,
   MessageCircle,
   Package,
   Phone,
@@ -33,6 +32,7 @@ interface Product {
   price?: string;
   description: string;
   link?: string;
+  savings?: string;
 }
 
 interface OrderTracking {
@@ -55,7 +55,6 @@ interface OrderSummary {
   orderName?: string;
   orderNumber?: string;
   customerName?: string | null;
-  customerEmail?: string | null;
   customerPhone?: string | null;
   shippingPhone?: string | null;
   financialStatus?: string;
@@ -359,6 +358,11 @@ export default function PublicChatbot() {
                         <h4>{product.name}</h4>
                         {product.price ? <span>{formatProductPrice(product.price)}</span> : null}
                       </div>
+                      {product.savings ? (
+                        <div className={styles.savingsBadge}>
+                          Save PKR {product.savings} on this purchase
+                        </div>
+                      ) : null}
                       <p>{product.description}</p>
                       <a
                         href={product.link || STORE_PRODUCTS_URL}
@@ -705,6 +709,15 @@ function formatProductPrice(price?: string): string {
   return /^\d/.test(trimmed) ? `PKR ${trimmed}` : trimmed;
 }
 
+function formatOrderHeading(order: OrderSummary): string {
+  const rawHeading = order.orderName?.trim() || "";
+  if (rawHeading) {
+    return rawHeading.startsWith("#") ? `Order ${rawHeading}` : rawHeading;
+  }
+
+  return order.orderNumber ? `Order #${order.orderNumber}` : "Order details";
+}
+
 function renderOrderSummary(order: OrderSummary): React.ReactNode {
   const trackingEntries = (order.tracking ?? []).filter(
     (entry) => entry.number || entry.company || entry.url || entry.status,
@@ -724,7 +737,7 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
       <div className={styles.orderHero}>
         <div className={styles.orderHeroCopy}>
           <span className={styles.orderEyebrow}>Order Summary</span>
-          <h3>{order.orderName || (order.orderNumber ? `Order #${order.orderNumber}` : "Order details")}</h3>
+          <h3>{formatOrderHeading(order)}</h3>
           <p>
             {trackingEntries.length > 0
               ? "Tracking details are ready below."
@@ -782,7 +795,7 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
               {contactRows.map((row) => (
                 <div key={`${row.label}-${row.value}`} className={styles.infoRow}>
                   <span className={styles.infoRowIcon}>
-                    {row.kind === "email" ? <Mail size={14} /> : <Phone size={14} />}
+                    <Phone size={14} />
                   </span>
                   <div className={styles.infoRowText}>
                     <span>{row.label}</span>
@@ -885,19 +898,15 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
 
 function getOrderContactRows(
   order: OrderSummary,
-): Array<{ label: string; value: string; kind: "phone" | "email" }> {
-  const rows: Array<{ label: string; value: string; kind: "phone" | "email" }> = [];
+): Array<{ label: string; value: string; kind: "phone" }> {
+  const rows: Array<{ label: string; value: string; kind: "phone" }> = [];
 
   if (order.customerPhone) {
     rows.push({ label: "Phone", value: order.customerPhone, kind: "phone" });
   }
 
   if (order.shippingPhone && order.shippingPhone !== order.customerPhone) {
-    rows.push({ label: "Shipping phone", value: order.shippingPhone, kind: "phone" });
-  }
-
-  if (order.customerEmail) {
-    rows.push({ label: "Email", value: order.customerEmail, kind: "email" });
+    rows.push({ label: "Shipping", value: order.shippingPhone, kind: "phone" });
   }
 
   return rows;
