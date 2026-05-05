@@ -504,6 +504,72 @@ export class ShopifyService {
       .map((item) => item.product);
   }
 
+  async getQuickRecommendations(query: string, limit = 12): Promise<ProductLookupResult[]> {
+    const normalizedQuery = this.normalizeSearchText(query);
+    const cacheKey = `quick-recommendations:${normalizedQuery}:${limit}`;
+    const cached = getCached<ProductLookupResult[]>(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
+    const uploadedCatalog = this.getUploadedCatalog();
+    if (!normalizedQuery) {
+      return setCached(
+        cacheKey,
+        [...uploadedCatalog]
+          .sort((left, right) => (right.unitsSold ?? 0) - (left.unitsSold ?? 0))
+          .slice(0, limit),
+      );
+    }
+
+    const queryTokens = normalizedQuery.split(" ").filter(Boolean);
+    const queryPhrases = this.expandSearchPhrases(query);
+
+    const results = uploadedCatalog
+      .map((product) => {
+        const haystack = this.normalizeSearchText(
+          [
+            product.title,
+            product.handle,
+            product.description,
+            product.vendor,
+            product.productType,
+            product.tags.join(" "),
+          ]
+            .filter(Boolean)
+            .join(" "),
+        );
+
+        let score = 0;
+        for (const token of queryTokens) {
+          if (haystack.includes(token)) {
+            score += 3;
+          }
+        }
+
+        for (const phrase of queryPhrases) {
+          if (phrase.includes(" ") && haystack.includes(phrase)) {
+            score += 5;
+          }
+        }
+
+        score += Math.min(8, Math.ceil((product.unitsSold ?? 0) / 120));
+
+        return { product, score };
+      })
+      .filter((item) => item.score > 0)
+      .sort((left, right) => {
+        if (right.score !== left.score) {
+          return right.score - left.score;
+        }
+        return (right.product.unitsSold ?? 0) - (left.product.unitsSold ?? 0);
+      })
+      .slice(0, limit)
+      .map((item) => item.product);
+
+    return setCached(cacheKey, results);
+  }
+
   private async searchOrders(query: string): Promise<OrderLookupResult[]> {
     const cacheKey = `orders:${query}`;
     const cached = getCached<OrderLookupResult[]>(cacheKey);

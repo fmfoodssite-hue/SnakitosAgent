@@ -1,4 +1,5 @@
 import policyData from "../data/policies.json";
+import { randomUUID } from "crypto";
 import {
   AgentContext,
   AgentIntent,
@@ -43,24 +44,43 @@ type ProductResponseCard = {
   savings?: string;
 };
 
+type SuggestionStrategy = {
+  mode: "fast" | "full";
+  query: string;
+  rankingMessage: string;
+};
+
 const DEFAULT_SUGGESTION_LIMIT = 8;
+const SESSION_LOOKUP_TIMEOUT_MS = 250;
+
+type ChatSessionState = {
+  canUseStoredContext: boolean;
+  chatId: string;
+  userId: string;
+};
 
 export class SupportAgentService {
   async handleChat(input: ChatRequestInput): Promise<ChatResponsePayload> {
-    const userId = await supabaseService.upsertUser({
-      id: input.userId,
-      email: input.email,
-      phone: normalizePhone(input.phone),
-    });
-    const chatId = await supabaseService.getOrCreateChat(userId, input.chatId);
+    const normalizedPhone = normalizePhone(input.phone);
+    const session = await this.resolveChatSession(input);
+    const { chatId, userId } = session;
 
-    this.runInBackground(supabaseService.addMessage(chatId, "user", input.message));
+    this.runInBackground(
+      this.persistMessage({
+        chatId,
+        content: input.message,
+        email: input.email,
+        phone: normalizedPhone,
+        role: "user",
+        userId,
+      }),
+    );
 
     try {
       if (this.isSensitiveRequest(input.message)) {
         const response =
           "I can help with products, orders, shipping, and store policies, but I can't provide internal system or security information.";
-        this.runInBackground(supabaseService.addMessage(chatId, "bot", response));
+        this.runInBackground(this.persistMessage({ chatId, content: response, role: "bot", userId }));
 
         return {
           response,
@@ -72,11 +92,17 @@ export class SupportAgentService {
 
       const initialIntent = detectIntent(input.message, input.phone);
       const intentResult =
-        initialIntent.intent === "order" && (!initialIntent.orderId || !initialIntent.phone)
+        initialIntent.intent === "order" &&
+        session.canUseStoredContext &&
+        (!initialIntent.orderId || !initialIntent.phone)
           ? this.resolveIntentWithConversationContext(
               input.message,
               input.phone,
-              await this.getOrderContextMessages(chatId, userId),
+              await this.withTimeout(
+                this.getOrderContextMessages(chatId, userId),
+                250,
+                [] as Array<{ role: "user" | "bot"; content: string }>,
+              ),
             )
           : initialIntent;
 
@@ -91,8 +117,8 @@ export class SupportAgentService {
 
       this.runInBackground(
         Promise.allSettled([
-          supabaseService.addMessage(chatId, "bot", safeResponse),
-          supabaseService.logEvent("chat_processed", {
+          this.persistMessage({ chatId, content: safeResponse, role: "bot", userId }),
+          this.logEvent("chat_processed", {
             chatId,
             userId,
             intent: response.intent,
@@ -109,7 +135,7 @@ export class SupportAgentService {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Unknown chat error";
       this.runInBackground(
-        supabaseService.logEvent("chat_error", {
+        this.logEvent("chat_error", {
           chatId,
           userId,
           error: errorMessage,
@@ -120,7 +146,7 @@ export class SupportAgentService {
         "We are having trouble processing your request right now.",
       );
 
-      this.runInBackground(supabaseService.addMessage(chatId, "bot", response));
+      this.runInBackground(this.persistMessage({ chatId, content: response, role: "bot", userId }));
       return {
         response,
         intent: "general",
@@ -128,6 +154,31 @@ export class SupportAgentService {
         userId,
       };
     }
+  }
+
+  private async resolveChatSession(input: ChatRequestInput): Promise<ChatSessionState> {
+    const userId = input.userId?.trim() || randomUUID();
+    const requestedChatId = input.chatId?.trim();
+
+    if (!requestedChatId) {
+      return {
+        canUseStoredContext: false,
+        chatId: randomUUID(),
+        userId,
+      };
+    }
+
+    const canUseStoredContext = await this.withTimeout(
+      supabaseService.chatBelongsToUser(userId, requestedChatId),
+      SESSION_LOOKUP_TIMEOUT_MS,
+      false,
+    );
+
+    return {
+      canUseStoredContext,
+      chatId: canUseStoredContext ? requestedChatId : randomUUID(),
+      userId,
+    };
   }
 
   private async routeIntent(
@@ -148,12 +199,12 @@ export class SupportAgentService {
       return this.handleOrderIntent(intentResult, userMessage, clientKey);
     }
 
-    if (this.isPolicyQuestion(userMessage)) {
-      return this.handlePolicyIntent(userMessage);
-    }
-
     if (intent === "product") {
       return this.handleProductIntent(userMessage, chatId);
+    }
+
+    if (this.isPolicyQuestion(userMessage)) {
+      return this.handlePolicyIntent(userMessage);
     }
 
     return this.handleGeneralIntent(userMessage);
@@ -252,10 +303,12 @@ export class SupportAgentService {
       order = await shopifyService.getVerifiedOrder(intentResult.orderId, intentResult.phone);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Order lookup failed";
-      await supabaseService.logEvent("order_lookup_error", {
-        orderId: intentResult.orderId,
-        error: errorMessage,
-      });
+      this.runInBackground(
+        this.logEvent("order_lookup_error", {
+          orderId: intentResult.orderId,
+          error: errorMessage,
+        }),
+      );
 
       return {
         intent: "order",
@@ -265,11 +318,13 @@ export class SupportAgentService {
 
     if (!order) {
       const failureState = recordOrderVerificationFailure(clientKey ?? "");
-      await supabaseService.logEvent("order_verification_failed", {
-        orderId: intentResult.orderId,
-        remainingAttempts: failureState.remainingAttempts,
-        blocked: failureState.blocked,
-      });
+      this.runInBackground(
+        this.logEvent("order_verification_failed", {
+          orderId: intentResult.orderId,
+          remainingAttempts: failureState.remainingAttempts,
+          blocked: failureState.blocked,
+        }),
+      );
 
       return {
         intent: "order",
@@ -321,9 +376,7 @@ export class SupportAgentService {
     userMessage: string,
     chatId: string,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
-    const recentMessages = this.needsProductConversationContext(userMessage)
-      ? await supabaseService.getRecentMessages(chatId)
-      : [];
+    const recentMessages = await this.getRecentProductContext(chatId, userMessage);
     const productQuery = extractProductQuery(userMessage);
     const referencedProduct = this.resolveReferencedProductFromConversation(
       userMessage,
@@ -348,23 +401,31 @@ export class SupportAgentService {
         products = await shopifyService.searchProducts(productQuery);
       }
 
+      const recommendationQuery = referencedProduct || productQuery || userMessage;
+      const fastRecommendationsPromise = shopifyService
+        .getQuickRecommendations(recommendationQuery, 50)
+        .catch(() => []);
+
       if (
         shouldPreferRecommendations ||
         (products.length === 0 && isStoreBrowsingQuestion) ||
         (!productQuery && !referencedProduct)
       ) {
-        products = await shopifyService.getStorefrontRecommendations(
-          referencedProduct || productQuery || userMessage,
-          50,
+        products = await this.withTimeout(
+          shopifyService.getStorefrontRecommendations(recommendationQuery, 50),
+          1200,
+          await fastRecommendationsPromise,
         );
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Product lookup failed";
-      await supabaseService.logEvent("product_lookup_error", {
-        query: referencedProduct || productQuery || userMessage,
-        chatId,
-        error: errorMessage,
-      });
+      this.runInBackground(
+        this.logEvent("product_lookup_error", {
+          query: referencedProduct || productQuery || userMessage,
+          chatId,
+          error: errorMessage,
+        }),
+      );
 
       const fallbackProducts = await this.getFallbackProductRecommendations(
         referencedProduct || productQuery || userMessage,
@@ -397,10 +458,12 @@ export class SupportAgentService {
         };
       }
 
-      await supabaseService.logEvent("product_not_found", {
-        query: productQuery,
-        chatId,
-      });
+      this.runInBackground(
+        this.logEvent("product_not_found", {
+          query: productQuery,
+          chatId,
+        }),
+      );
 
       return {
         intent: "product",
@@ -433,6 +496,21 @@ export class SupportAgentService {
     return [...userRecentMessages, ...recentMessages];
   }
 
+  private async getRecentProductContext(
+    chatId: string,
+    userMessage: string,
+  ): Promise<Array<{ role: "user" | "bot"; content: string }>> {
+    if (!this.needsProductConversationContext(userMessage)) {
+      return [];
+    }
+
+    return this.withTimeout(
+      supabaseService.getRecentMessages(chatId),
+      200,
+      [] as Array<{ role: "user" | "bot"; content: string }>,
+    );
+  }
+
   private needsProductConversationContext(userMessage: string): boolean {
     return (
       extractSelectionIndex(userMessage) > 0 ||
@@ -462,6 +540,40 @@ export class SupportAgentService {
 
   private runInBackground(task: Promise<unknown>): void {
     void task.catch(() => undefined);
+  }
+
+  private async persistMessage(input: {
+    chatId: string;
+    content: string;
+    email?: string;
+    phone?: string;
+    role: "user" | "bot";
+    userId: string;
+  }): Promise<void> {
+    await supabaseService.upsertUser({
+      id: input.userId,
+      email: input.email,
+      phone: input.phone,
+    });
+    await supabaseService.ensureChat(input.userId, input.chatId);
+    await supabaseService.addMessage(input.chatId, input.role, input.content);
+  }
+
+  private async logEvent(event: string, metadata: Record<string, unknown>): Promise<void> {
+    await supabaseService.logEvent(event, metadata);
+  }
+
+  private async withTimeout<T>(task: Promise<T>, timeoutMs: number, fallback: T): Promise<T> {
+    try {
+      return await Promise.race([
+        task,
+        new Promise<T>((resolve) => {
+          setTimeout(() => resolve(fallback), timeoutMs);
+        }),
+      ]);
+    } catch {
+      return fallback;
+    }
   }
 
   private async getFallbackProductRecommendations(query: string): Promise<ProductLookupResult[]> {
@@ -505,6 +617,15 @@ export class SupportAgentService {
   private async handlePolicyIntent(
     userMessage: string,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
+    const deliveryLocationResponse = await this.buildDeliveryLocationResponse(userMessage);
+    if (deliveryLocationResponse) {
+      return {
+        intent: "general",
+        response: deliveryLocationResponse,
+        data: [],
+      };
+    }
+
     const policyDocument = this.resolvePolicyDocument(userMessage);
 
     if (!policyDocument) {
@@ -531,6 +652,36 @@ export class SupportAgentService {
       response: await this.buildKnowledgeResponse(knowledge, userMessage),
       data: policyDocument,
     };
+  }
+
+  private async buildDeliveryLocationResponse(userMessage: string): Promise<string | null> {
+    if (!this.isDeliveryLocationQuestion(userMessage)) {
+      return null;
+    }
+
+    const location = this.extractDeliveryLocation(userMessage);
+    const locationLine = location
+      ? `Yes, delivery is available in ${location} and across Pakistan.`
+      : "Yes, delivery is available all over Pakistan.";
+
+    const message = [
+      locationLine,
+      "Shipping charges and delivery timing depend on location, order size, and current promotions.",
+      "The final charges are shown at checkout.",
+    ].join("\n\n");
+
+    return this.buildResponseWithSuggestions({
+      type: "policy",
+      message,
+      userMessage,
+      policyLink: "https://snakitos.com/policies/shipping-policy",
+      suggestionSeed: "best family snack bundles",
+      options: [
+        { label: "Shipping Policy", value: "show shipping and refund policy" },
+        { label: "Track Order", value: "track my order" },
+        { label: "Home", value: "home" },
+      ],
+    });
   }
 
   private async handleGeneralIntent(
@@ -596,9 +747,30 @@ export class SupportAgentService {
   }
 
   private isPolicyQuestion(message: string): boolean {
-    return /(policy|policies|privacy|terms|service|return|refund|shipping|delivery|exchange|cancel|cancellation|payment|cookie|cookies|share|sharing|third party|third parties|personal data|personal information|what data|collect|collection|tracking|charges|refund window|damaged|defective)/i.test(
+    return /(policy|policies|privacy|terms|service|return|refund|shipping|delivery|exchange|cancel|cancellation|payment|cookie|cookies|third party|third parties|personal data|personal information|what data|collect|collection|tracking|charges|refund window|damaged|defective)/i.test(
       message,
     );
+  }
+
+  private isDeliveryLocationQuestion(message: string): boolean {
+    return /(delivery|shipping|deliver)\b/i.test(message) && /\b(in|to|for)\b/i.test(message);
+  }
+
+  private extractDeliveryLocation(message: string): string {
+    const match = message.match(
+      /\b(?:in|to|for)\s+([a-z][a-z\s-]{2,})(?:\?|$|,|\.|\s+(?:possible|available|serviceable|delivery|shipping))/i,
+    );
+
+    const raw = match?.[1]?.trim() ?? "";
+    if (!raw) {
+      return "";
+    }
+
+    return raw
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+      .join(" ");
   }
 
   private async buildGreetingResponse(userMessage: string): Promise<string> {
@@ -982,10 +1154,15 @@ export class SupportAgentService {
     suggestionSeed?: string;
   }): Promise<string> {
     const baseProducts = input.products ?? [];
+    const suggestionStrategy = this.buildSuggestionStrategy(input);
     const suggestions =
       baseProducts.length > 0
         ? baseProducts
-        : await this.getSuggestedProductCards(input.suggestionSeed || input.userMessage, input.userMessage);
+        : await this.getSuggestedProductCards(
+            suggestionStrategy.query,
+            suggestionStrategy.rankingMessage,
+            suggestionStrategy.mode,
+          );
 
     return JSON.stringify({
       type: input.type,
@@ -999,24 +1176,139 @@ export class SupportAgentService {
 
   private async getSuggestedProductCards(
     query: string,
-    userMessage: string,
+    rankingMessage: string,
+    mode: "fast" | "full" = "fast",
   ): Promise<ProductResponseCard[]> {
     try {
       const recommendations = await Promise.race([
-        shopifyService.getStorefrontRecommendations(query, DEFAULT_SUGGESTION_LIMIT * 2),
+        mode === "full"
+          ? shopifyService.getStorefrontRecommendations(query, DEFAULT_SUGGESTION_LIMIT * 2)
+          : shopifyService.getQuickRecommendations(query, DEFAULT_SUGGESTION_LIMIT * 2),
         new Promise<ProductLookupResult[]>((resolve) => {
-          setTimeout(() => resolve([]), 1200);
+          setTimeout(() => resolve([]), mode === "full" ? 900 : 350);
         }),
       ]);
 
-      const selected = this.selectProductsForResponse(recommendations, userMessage).slice(
+      const selected = this.selectProductsForResponse(recommendations, rankingMessage).slice(
         0,
         DEFAULT_SUGGESTION_LIMIT,
       );
-      return this.buildProductCards(selected, userMessage);
+      return this.buildProductCards(selected, rankingMessage);
     } catch {
       return [];
     }
+  }
+
+  private buildSuggestionStrategy(input: {
+    type: "product" | "policy" | "mixed" | "fallback";
+    userMessage: string;
+    suggestionSeed?: string;
+    order?: Record<string, unknown>;
+  }): SuggestionStrategy {
+    if (input.suggestionSeed) {
+      return {
+        mode: "full",
+        query: input.suggestionSeed,
+        rankingMessage: input.suggestionSeed,
+      };
+    }
+
+    if (input.type === "product") {
+      return {
+        mode: "full",
+        query: input.userMessage,
+        rankingMessage: input.userMessage,
+      };
+    }
+
+    const orderSuggestionSeed = this.getOrderSuggestionSeed(input.order, input.userMessage);
+    if (orderSuggestionSeed) {
+      return {
+        mode: "full",
+        query: orderSuggestionSeed,
+        rankingMessage: orderSuggestionSeed,
+      };
+    }
+
+    if (this.isPolicyQuestion(input.userMessage)) {
+      const policySuggestionSeed = this.getPolicySuggestionSeed(input.userMessage);
+      return {
+        mode: "full",
+        query: policySuggestionSeed,
+        rankingMessage: policySuggestionSeed,
+      };
+    }
+
+    if (this.looksLikeProductDiscovery(input.userMessage)) {
+      return {
+        mode: "full",
+        query: input.userMessage,
+        rankingMessage: input.userMessage,
+      };
+    }
+
+    return {
+      mode: "fast",
+      query: "best selling snack deals",
+      rankingMessage: "best selling snack deals",
+    };
+  }
+
+  private getOrderSuggestionSeed(
+    order: Record<string, unknown> | undefined,
+    userMessage: string,
+  ): string {
+    const lineItems = Array.isArray(order?.lineItems)
+      ? (order.lineItems as Array<{ title?: string }>)
+      : [];
+    const titles = lineItems
+      .map((item) => item.title?.trim() || "")
+      .filter(Boolean)
+      .slice(0, 3);
+
+    if (titles.length > 0) {
+      return `${titles.join(" ")} reorder bundle`;
+    }
+
+    if (/track|order|delivery|shipment|courier|status/i.test(userMessage)) {
+      return "best selling snack deals";
+    }
+
+    return "";
+  }
+
+  private getPolicySuggestionSeed(userMessage: string): string {
+    if (/(healthy|healthwise|health\s*wise|gluten|wheat free|multi\s*grain|multigrain)/i.test(userMessage)) {
+      return "healthy multigrain snacks";
+    }
+
+    if (/(sweet|wafer|choco|chocolate|dessert)/i.test(userMessage)) {
+      return "sweet tooth snack deals";
+    }
+
+    if (/(banana)/i.test(userMessage)) {
+      return "banana chips best sellers";
+    }
+
+    if (/(nachos|movie|party|sharing|family)/i.test(userMessage)) {
+      return "family snack bundles nachos";
+    }
+
+    if (/(refund|return|exchange|damaged|defective)/i.test(userMessage)) {
+      return "popular snack bundles";
+    }
+
+    if (/(shipping|delivery|tracking|charges|policy)/i.test(userMessage)) {
+      return "best selling snack deals";
+    }
+
+    return "popular snacks";
+  }
+
+  private looksLikeProductDiscovery(message: string): boolean {
+    return /(best|top|recommend|suggest|deal|bundle|combo|snack|snacks|sweet|spicy|salty|crispy|crunchy|healthy|banana|nachos|wafer|gift|family|movie night|tea time)/i.test(
+      message,
+    );
   }
 
   private buildProductCards(
@@ -1025,15 +1317,31 @@ export class SupportAgentService {
   ): ProductResponseCard[] {
     return products.map((product) => {
       const savings = this.estimateSavings(product, products);
+      const priceLabel = this.resolveProductPriceLabel(product);
       return {
         name: product.title,
         description: this.buildCustomerProductDescription(product, savings, userMessage),
-        price: product.price ?? "",
+        price: priceLabel,
         link: product.link,
         cart_link: product.cartLink ?? product.link,
         ...(savings ? { savings: savings.toFixed(0) } : {}),
       };
     });
+  }
+
+  private resolveProductPriceLabel(product: ProductLookupResult): string {
+    if (product.price && this.parseDisplayPrice(product.price) > 0) {
+      return product.price;
+    }
+
+    const variantPrice = product.variants.find(
+      (variant) => this.parseDisplayPrice(variant.price) > 0,
+    )?.price;
+    if (variantPrice) {
+      return variantPrice;
+    }
+
+    return "See store";
   }
 
   private buildProductMessage(

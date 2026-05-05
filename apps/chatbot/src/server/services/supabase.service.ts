@@ -39,7 +39,7 @@ export class SupabaseService {
   }
 
   async getOrCreateChat(userId: string, chatId?: string): Promise<string> {
-    if (chatId) {
+    if (chatId && (await this.chatBelongsToUser(userId, chatId))) {
       return chatId;
     }
 
@@ -49,6 +49,37 @@ export class SupabaseService {
       user_id: userId,
     });
     return newChatId;
+  }
+
+  async chatBelongsToUser(userId: string, chatId: string): Promise<boolean> {
+    if (!userId || !chatId) {
+      return false;
+    }
+
+    const { data, error } = await this.client
+      .from("chats")
+      .select("id")
+      .eq("id", chatId)
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    return !error && Boolean(data?.id);
+  }
+
+  async ensureChat(userId: string, chatId: string): Promise<void> {
+    if (!userId || !chatId) {
+      return;
+    }
+
+    await this.client.from("chats").upsert(
+      {
+        id: chatId,
+        user_id: userId,
+      },
+      {
+        onConflict: "id",
+      },
+    );
   }
 
   async addMessage(chatId: string, role: MessageRole, content: string): Promise<void> {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   Bot,
   ChevronRight,
@@ -89,51 +89,20 @@ type SendRequest = {
 };
 
 const STORE_PRODUCTS_URL = "https://snakitos.com/collections/all";
+const CHAT_SESSION_EVENT = "chat-session-change";
 
-const COLLECTION_ACTIONS: Array<{ label: string; value: string; blurb: string; href: string }> = [
-  {
-    label: "Sweet Tooth",
-    value: "Show me Sweet Tooth snacks",
-    blurb: "Wafer rolls, choco sticks, and chocolate-forward favorites.",
-    href: "https://snakitos.com/collections/sweet-tooth",
-  },
-  {
-    label: "Multi Grain",
-    value: "Show me Multi Grain snacks",
-    blurb: "Stix, chickpea picks, and bolder crunchy flavors.",
-    href: "https://snakitos.com/collections/multi-grain",
-  },
-  {
-    label: "Banana Chips",
-    value: "Show me Banana Chips",
-    blurb: "Sea salt, BBQ, cheese, and achari masti choices.",
-    href: "https://snakitos.com/collections/banana-chips",
-  },
-  {
-    label: "Patata Chips",
-    value: "Show me Patata Chips",
-    blurb: "Masala and salty potato-slims style picks.",
-    href: "https://snakitos.com/collections/patata-chips",
-  },
-  {
-    label: "Deals",
-    value: "show best deals",
-    blurb: "Bundles, mega offers, can trays, and giftable value picks.",
-    href: "https://snakitos.com/collections/deals",
-  },
-  {
-    label: "Nachos",
-    value: "Show me Nachos",
-    blurb: "Paprika and salsa picks for movie-night style snacking.",
-    href: "https://snakitos.com/collections/nachos",
-  },
-  {
-    label: "Snaktory",
-    value: "Show me Snaktory bundles",
-    blurb: "Assorted snack packs and gifting-friendly combinations.",
-    href: "https://snakitos.com/collections/snaktory",
-  },
-];
+type ChatSessionSnapshot = {
+  chatId: string;
+  phone: string;
+  userId: string;
+};
+
+const EMPTY_CHAT_SESSION: ChatSessionSnapshot = Object.freeze({
+  chatId: "",
+  phone: "",
+  userId: "",
+});
+let cachedChatSessionSnapshot: ChatSessionSnapshot = EMPTY_CHAT_SESSION;
 
 const HOME_SHORTCUTS: Array<{
   label: string;
@@ -167,6 +136,80 @@ const HOME_SHORTCUTS: Array<{
   },
 ];
 
+function getEmptyChatSession(): ChatSessionSnapshot {
+  return EMPTY_CHAT_SESSION;
+}
+
+function readChatSessionSnapshot(): ChatSessionSnapshot {
+  if (typeof window === "undefined") {
+    return getEmptyChatSession();
+  }
+
+  const nextSnapshot = {
+    chatId: window.localStorage.getItem("chat_id") || "",
+    phone: window.localStorage.getItem("chat_phone") || "",
+    userId: window.localStorage.getItem("chat_user_id") || "",
+  };
+
+  if (
+    cachedChatSessionSnapshot.chatId === nextSnapshot.chatId &&
+    cachedChatSessionSnapshot.phone === nextSnapshot.phone &&
+    cachedChatSessionSnapshot.userId === nextSnapshot.userId
+  ) {
+    return cachedChatSessionSnapshot;
+  }
+
+  cachedChatSessionSnapshot = nextSnapshot;
+  return cachedChatSessionSnapshot;
+}
+
+function subscribeToChatSession(onStoreChange: () => void): () => void {
+  if (typeof window === "undefined") {
+    return () => undefined;
+  }
+
+  const handleChange = () => onStoreChange();
+  window.addEventListener("storage", handleChange);
+  window.addEventListener(CHAT_SESSION_EVENT, handleChange);
+
+  return () => {
+    window.removeEventListener("storage", handleChange);
+    window.removeEventListener(CHAT_SESSION_EVENT, handleChange);
+  };
+}
+
+function writeChatSession(update: Partial<ChatSessionSnapshot>): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  if (typeof update.userId === "string") {
+    if (update.userId) {
+      window.localStorage.setItem("chat_user_id", update.userId);
+    } else {
+      window.localStorage.removeItem("chat_user_id");
+    }
+  }
+
+  if (typeof update.chatId === "string") {
+    if (update.chatId) {
+      window.localStorage.setItem("chat_id", update.chatId);
+    } else {
+      window.localStorage.removeItem("chat_id");
+    }
+  }
+
+  if (typeof update.phone === "string") {
+    if (update.phone) {
+      window.localStorage.setItem("chat_phone", update.phone);
+    } else {
+      window.localStorage.removeItem("chat_phone");
+    }
+  }
+
+  window.dispatchEvent(new Event(CHAT_SESSION_EVENT));
+}
+
 export default function PublicChatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -178,32 +221,21 @@ export default function PublicChatbot() {
       }),
     },
   ]);
+  const chatSession = useSyncExternalStore(
+    subscribeToChatSession,
+    readChatSessionSnapshot,
+    getEmptyChatSession,
+  );
   const [activeView, setActiveView] = useState<ViewMode>("home");
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [userId, setUserId] = useState("");
-  const [chatId, setChatId] = useState("");
-  const [phone, setPhone] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    let id = localStorage.getItem("chat_user_id");
-    if (!id) {
-      id = uuidv4();
-      localStorage.setItem("chat_user_id", id);
+    if (!chatSession.userId) {
+      writeChatSession({ userId: uuidv4() });
     }
-    setUserId(id);
-
-    const existingChatId = localStorage.getItem("chat_id") || "";
-    if (existingChatId) {
-      setChatId(existingChatId);
-    }
-
-    const existingPhone = localStorage.getItem("chat_phone") || "";
-    if (existingPhone) {
-      setPhone(existingPhone);
-    }
-  }, []);
+  }, [chatSession.userId]);
 
   useEffect(() => {
     if (!scrollRef.current) {
@@ -237,11 +269,15 @@ export default function PublicChatbot() {
         ? request
         : request?.displayText ?? request?.value ?? messageToSend;
     const silent = typeof request === "object" ? Boolean(request.silent) : false;
+    const effectiveUserId = chatSession.userId || uuidv4();
 
-    const detectedPhone = extractPhoneNumber(messageToSend) || phone;
+    if (!chatSession.userId) {
+      writeChatSession({ userId: effectiveUserId });
+    }
+
+    const detectedPhone = extractPhoneNumber(messageToSend) || chatSession.phone;
     if (detectedPhone) {
-      setPhone(detectedPhone);
-      localStorage.setItem("chat_phone", detectedPhone);
+      writeChatSession({ phone: detectedPhone });
     }
 
     if (!request) {
@@ -256,14 +292,18 @@ export default function PublicChatbot() {
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
-        body: JSON.stringify({ message: messageToSend, userId, chatId, phone: detectedPhone }),
+        body: JSON.stringify({
+          message: messageToSend,
+          userId: effectiveUserId,
+          chatId: chatSession.chatId,
+          phone: detectedPhone,
+        }),
         headers: { "Content-Type": "application/json" },
       });
 
       const data = await response.json();
       if (data.chatId) {
-        setChatId(data.chatId);
-        localStorage.setItem("chat_id", data.chatId);
+        writeChatSession({ chatId: data.chatId });
       }
 
       if (data.response) {
@@ -317,7 +357,7 @@ export default function PublicChatbot() {
                     <div className={styles.productMeta}>
                       <div className={styles.productTopRow}>
                         <h4>{product.name}</h4>
-                        {product.price ? <span>PKR {product.price}</span> : null}
+                        {product.price ? <span>{formatProductPrice(product.price)}</span> : null}
                       </div>
                       <p>{product.description}</p>
                       <a
@@ -654,6 +694,15 @@ function formatUserMessageDisplay(content: string):
     title,
     detail,
   };
+}
+
+function formatProductPrice(price?: string): string {
+  const trimmed = price?.trim() || "";
+  if (!trimmed) {
+    return "";
+  }
+
+  return /^\d/.test(trimmed) ? `PKR ${trimmed}` : trimmed;
 }
 
 function renderOrderSummary(order: OrderSummary): React.ReactNode {
