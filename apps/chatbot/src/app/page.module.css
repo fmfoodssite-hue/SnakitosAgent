@@ -33,6 +33,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 14px;
+  flex-wrap: wrap;
   padding: 20px 20px 16px;
   background: linear-gradient(135deg, #ff6919 0%, #ff9328 100%);
   color: #fffdf9;
@@ -92,6 +93,7 @@
   font-size: 0.76rem;
   font-weight: 800;
   transition: background 180ms ease, transform 180ms ease;
+  white-space: nowrap;
 }
 
 .headerLink:hover {
@@ -536,6 +538,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .productTopRow h4 {
@@ -596,6 +599,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .orderHeroCopy {
@@ -854,6 +858,58 @@
     height: calc(100vh - 16px);
     border-radius: 28px;
   }
+
+  .chatHeader {
+    align-items: stretch;
+  }
+
+  .chatIdentity {
+    width: 100%;
+  }
+
+  .headerLink {
+    align-self: flex-start;
+  }
+
+  .assistantBubble,
+  .userBubble,
+  .loadingBubble {
+    max-width: calc(100% - 34px);
+    padding: 14px;
+  }
+
+  .productCard {
+    flex-direction: column;
+  }
+
+  .productIcon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .optionRow {
+    gap: 8px;
+  }
+
+  .optionChip {
+    max-width: 100%;
+  }
+
+  .input {
+    height: 52px;
+    padding-left: 16px;
+    padding-right: 64px;
+    font-size: 0.95rem;
+  }
+
+  .sendButton {
+    width: 40px;
+    height: 40px;
+  }
+
+  .orderCard {
+    padding: 14px;
+  }
 }
 
 @media (max-width: 420px) {
@@ -870,6 +926,15 @@
     padding-bottom: 16px;
   }
 
+  .chatIdentity {
+    align-items: flex-start;
+  }
+
+  .botBadge {
+    width: 42px;
+    height: 42px;
+  }
+
   .shortcutCard {
     padding: 16px;
     gap: 12px;
@@ -884,12 +949,18 @@
     grid-template-columns: 1fr;
   }
 
-  .orderHero {
-    flex-direction: column;
-  }
-
   .orderTotalCard {
     width: 100%;
     text-align: left;
+  }
+
+  .productTopRow span,
+  .orderQty,
+  .statusPill {
+    width: fit-content;
+  }
+
+  .navButton {
+    font-size: 0.78rem;
   }
 }

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Sidebar from "@/components/Sidebar";
+import AdminChrome from "@/components/AdminChrome";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,15 +26,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex bg-[#09090b] text-zinc-100`}
+        className={`${geistSans.variable} ${geistMono.variable} admin-shell bg-[#09090b] text-zinc-100 antialiased`}
       >
-        <Sidebar />
-        <main className="flex-1 min-h-screen relative">
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_20%,#1e1b4b_0%,transparent_50%)] opacity-20 pointer-events-none" />
-          <div className="relative p-8 max-w-7xl mx-auto">
-            {children}
-          </div>
-        </main>
+        <AdminChrome>{children}</AdminChrome>
       </body>
     </html>
   );

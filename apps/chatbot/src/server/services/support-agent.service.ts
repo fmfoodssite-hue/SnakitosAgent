@@ -43,13 +43,13 @@ export class SupportAgentService {
     });
     const chatId = await supabaseService.getOrCreateChat(userId, input.chatId);
 
-    await supabaseService.addMessage(chatId, "user", input.message);
+    this.runInBackground(supabaseService.addMessage(chatId, "user", input.message));
 
     try {
       if (this.isSensitiveRequest(input.message)) {
         const response =
           "I can help with products, orders, shipping, and store policies, but I can't provide internal system or security information.";
-        await supabaseService.addMessage(chatId, "bot", response);
+        this.runInBackground(supabaseService.addMessage(chatId, "bot", response));
 
         return {
           response,
@@ -59,13 +59,16 @@ export class SupportAgentService {
         };
       }
 
-      const recentMessages = await supabaseService.getRecentMessages(chatId);
-      const userRecentMessages = await supabaseService.getRecentMessagesForUser(userId);
-      const intentResult = this.resolveIntentWithConversationContext(
-        input.message,
-        input.phone,
-        [...userRecentMessages, ...recentMessages],
-      );
+      const initialIntent = detectIntent(input.message, input.phone);
+      const intentResult =
+        initialIntent.intent === "order" && (!initialIntent.orderId || !initialIntent.phone)
+          ? this.resolveIntentWithConversationContext(
+              input.message,
+              input.phone,
+              await this.getOrderContextMessages(chatId, userId),
+            )
+          : initialIntent;
+
       const response = await this.routeIntent(
         intentResult.intent,
         intentResult,
@@ -75,12 +78,16 @@ export class SupportAgentService {
       );
       const safeResponse = aiService.sanitizeCustomerResponse(response.response);
 
-      await supabaseService.addMessage(chatId, "bot", safeResponse);
-      await supabaseService.logEvent("chat_processed", {
-        chatId,
-        userId,
-        intent: response.intent,
-      });
+      this.runInBackground(
+        Promise.allSettled([
+          supabaseService.addMessage(chatId, "bot", safeResponse),
+          supabaseService.logEvent("chat_processed", {
+            chatId,
+            userId,
+            intent: response.intent,
+          }),
+        ]),
+      );
 
       return {
         ...response,
@@ -90,17 +97,19 @@ export class SupportAgentService {
       };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Unknown chat error";
-      await supabaseService.logEvent("chat_error", {
-        chatId,
-        userId,
-        error: errorMessage,
-      });
+      this.runInBackground(
+        supabaseService.logEvent("chat_error", {
+          chatId,
+          userId,
+          error: errorMessage,
+        }),
+      );
 
       const response = formatWhatsAppFallback(
         "We are having trouble processing your request right now.",
       );
 
-      await supabaseService.addMessage(chatId, "bot", response);
+      this.runInBackground(supabaseService.addMessage(chatId, "bot", response));
       return {
         response,
         intent: "general",
@@ -136,7 +145,7 @@ export class SupportAgentService {
       return this.handleProductIntent(userMessage, chatId);
     }
 
-    return this.handleGeneralIntent(userMessage, chatId);
+    return this.handleGeneralIntent(userMessage);
   }
 
   private isSensitiveRequest(message: string): boolean {
@@ -304,7 +313,9 @@ export class SupportAgentService {
     userMessage: string,
     chatId: string,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
-    const recentMessages = await supabaseService.getRecentMessages(chatId);
+    const recentMessages = this.needsProductConversationContext(userMessage)
+      ? await supabaseService.getRecentMessages(chatId)
+      : [];
     const productQuery = extractProductQuery(userMessage);
     const referencedProduct = this.resolveReferencedProductFromConversation(
       userMessage,
@@ -345,14 +356,9 @@ export class SupportAgentService {
       );
       if (fallbackProducts.length > 0) {
         const curatedProducts = this.selectProductsForResponse(fallbackProducts, userMessage);
-        const response = await aiService.generateResponse({
-          intent: "product",
-          userMessage,
-          context: { products: curatedProducts },
-        });
         return {
           intent: "product",
-          response,
+          response: this.buildProductResponse(curatedProducts, userMessage),
           data: fallbackProducts,
         };
       }
@@ -369,14 +375,9 @@ export class SupportAgentService {
       );
       if (fallbackProducts.length > 0) {
         const curatedProducts = this.selectProductsForResponse(fallbackProducts, userMessage);
-        const response = await aiService.generateResponse({
-          intent: "product",
-          userMessage,
-          context: { products: curatedProducts },
-        });
         return {
           intent: "product",
-          response,
+          response: this.buildProductResponse(curatedProducts, userMessage),
           data: fallbackProducts,
         };
       }
@@ -397,17 +398,35 @@ export class SupportAgentService {
     }
 
     const curatedProducts = this.selectProductsForResponse(products, userMessage);
-    const response = await aiService.generateResponse({
-      intent: "product",
-      userMessage,
-      context: { products: curatedProducts },
-    });
 
     return {
       intent: "product",
-      response,
+      response: this.buildProductResponse(curatedProducts, userMessage),
       data: products,
     };
+  }
+
+  private async getOrderContextMessages(
+    chatId: string,
+    userId: string,
+  ): Promise<Array<{ role: "user" | "bot"; content: string }>> {
+    const [recentMessages, userRecentMessages] = await Promise.all([
+      supabaseService.getRecentMessages(chatId),
+      supabaseService.getRecentMessagesForUser(userId),
+    ]);
+
+    return [...userRecentMessages, ...recentMessages];
+  }
+
+  private needsProductConversationContext(userMessage: string): boolean {
+    return (
+      extractSelectionIndex(userMessage) > 0 ||
+      /\b(this|that|these|those|same one|first|second|third|last one)\b/i.test(userMessage)
+    );
+  }
+
+  private runInBackground(task: Promise<unknown>): void {
+    void task.catch(() => undefined);
   }
 
   private async getFallbackProductRecommendations(query: string): Promise<ProductLookupResult[]> {
@@ -470,24 +489,17 @@ export class SupportAgentService {
       };
     }
 
-    const response = await aiService.generateResponse({
-      intent: "general",
-      userMessage,
-      context: {
-        knowledge: this.buildPolicyKnowledge(policyDocument, userMessage),
-      },
-    });
+    const knowledge = this.buildPolicyKnowledge(policyDocument, userMessage);
 
     return {
       intent: "general",
-      response,
+      response: this.buildKnowledgeResponse(knowledge, userMessage),
       data: policyDocument,
     };
   }
 
   private async handleGeneralIntent(
     userMessage: string,
-    chatId: string,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
     if (this.isUnclearQuery(userMessage)) {
       return {
@@ -531,19 +543,9 @@ export class SupportAgentService {
       };
     }
 
-    const recentMessages = await supabaseService.getRecentMessages(chatId);
-    const response = await aiService.generateResponse({
-      intent: "general",
-      userMessage,
-      context: {
-        knowledge: relevantKnowledge,
-        recentMessages,
-      },
-    });
-
     return {
       intent: "general",
-      response,
+      response: this.buildKnowledgeResponse(relevantKnowledge, userMessage),
       data: relevantKnowledge,
     };
   }
@@ -799,6 +801,57 @@ export class SupportAgentService {
     }));
   }
 
+  private buildKnowledgeResponse(
+    knowledge: Array<{
+      id: string;
+      name: string;
+      text: string;
+      link: string;
+      type: string;
+      category: string;
+      source: string;
+    }>,
+    userMessage: string,
+  ): string {
+    const topKnowledge = knowledge.slice(0, 3);
+    const policyLink =
+      topKnowledge.find((item) => item.type === "policy" && item.link)?.link ?? "";
+    const type =
+      topKnowledge.length > 0 && topKnowledge.every((item) => item.type === "policy")
+        ? "policy"
+        : "mixed";
+
+    const snippets = topKnowledge
+      .map((item) => this.normalizeKnowledgeSnippet(item.text, item.name))
+      .filter(Boolean)
+      .slice(0, 2);
+
+    const intro = policyLink
+      ? "Here are the details I found from the official policy information."
+      : "Here are the details I found.";
+
+    const message = [intro, ...snippets].join("\n\n");
+    const options = this.isPolicyQuestion(userMessage)
+      ? [
+          { label: "Shipping Policy", value: "show shipping and refund policy" },
+          { label: "Track Order", value: "track my order" },
+          { label: "Home", value: "home" },
+        ]
+      : [
+          { label: "Deals", value: "show best deals" },
+          { label: "Track Order", value: "track my order" },
+          { label: "Home", value: "home" },
+        ];
+
+    return JSON.stringify({
+      type,
+      message,
+      products: [],
+      policy_link: policyLink,
+      options,
+    });
+  }
+
   private buildOrderResponse(order: Partial<NonNullable<AgentContext["order"]>> | undefined): string {
     const safeOrder = order ?? {};
     const contactParts = [
@@ -875,6 +928,24 @@ export class SupportAgentService {
         { label: "Home", value: "home" },
       ],
     });
+  }
+
+  private normalizeKnowledgeSnippet(text: string, fallbackName: string): string {
+    const trimmed = text.replace(/\s+/g, " ").trim();
+    if (!trimmed) {
+      return fallbackName;
+    }
+
+    const withoutPrefix = trimmed
+      .replace(new RegExp(`^${this.escapeRegExp(fallbackName)}\\s+(?:is|explains|contains)\\s+`, "i"), "")
+      .replace(/^this\s+/i, "")
+      .trim();
+
+    return this.shortenPolicyContent(withoutPrefix || trimmed);
+  }
+
+  private escapeRegExp(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
 
   private rankProductsForDisplay(

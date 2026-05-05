@@ -227,7 +227,7 @@ export default function PublicChatbot() {
     }
 
     if (messageToSend.toLowerCase() === "home") {
-      window.location.href = STORE_HOME_URL;
+      setActiveView("home");
       return;
     }
 

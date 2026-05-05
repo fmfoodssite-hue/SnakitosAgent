@@ -61,21 +61,21 @@ export default async function Dashboard() {
   return (
     <div className="space-y-10">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Overview</h1>
           <p className="text-zinc-400 mt-1">Welcome back, here's what's happening with your agent.</p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="relative">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="relative w-full sm:max-w-xs">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
             <input 
               type="text" 
               placeholder="Search data..." 
-              className="bg-white/5 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 w-64 transition-all"
+              className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-10 pr-4 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
             />
           </div>
-          <button className="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2 transition-all shadow-lg shadow-indigo-500/20 active:scale-95">
+          <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition-all shadow-lg shadow-indigo-500/20 active:scale-95 hover:bg-indigo-500 sm:w-auto">
             <Plus className="w-4 h-4" />
             New Report
           </button>
@@ -106,17 +106,17 @@ export default async function Dashboard() {
       {/* Main Content Sections */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Orders from Shopify */}
-        <div className="lg:col-span-2 glass-card rounded-3xl p-8 border-white/5">
-          <div className="flex items-center justify-between mb-8">
+        <div className="glass-card rounded-3xl border-white/5 p-5 sm:p-6 lg:col-span-2 lg:p-8">
+          <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-xl font-semibold">Recent Shopify Orders</h2>
               <p className="text-sm text-zinc-500 mt-1">Latest transactions synced from your store.</p>
             </div>
-            <button className="text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors">View All</button>
+            <button className="text-left text-xs font-medium text-indigo-400 transition-colors hover:text-indigo-300 sm:text-right">View All</button>
           </div>
           
           <div className="overflow-x-auto">
-            <table className="w-full text-left">
+            <table className="w-full min-w-[640px] text-left">
               <thead>
                 <tr className="text-zinc-500 text-xs uppercase tracking-wider border-b border-white/5">
                   <th className="pb-4 font-medium">Order</th>
@@ -158,8 +158,8 @@ export default async function Dashboard() {
         </div>
 
         {/* Live AI Activity from Supabase */}
-        <div className="glass-card rounded-3xl p-8 border-white/5">
-          <div className="flex items-center justify-between mb-6">
+        <div className="glass-card rounded-3xl border-white/5 p-5 sm:p-6 lg:p-8">
+          <div className="mb-6 flex items-center justify-between gap-3">
             <h2 className="text-xl font-semibold">Live AI Activity</h2>
             <div className="flex items-center gap-1.5 bg-emerald-500/10 px-2 py-1 rounded-full">
               <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
@@ -167,15 +167,15 @@ export default async function Dashboard() {
             </div>
           </div>
           
-          <div className="space-y-6">
+          <div className="space-y-5">
             {interactions.length > 0 ? interactions.map((item: any, i) => (
-              <div key={i} className="flex items-start gap-4">
+              <div key={i} className="flex items-start gap-3 sm:gap-4">
                 <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center flex-shrink-0 text-indigo-400">
                   <MessageSquare className="w-5 h-5" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-zinc-200">User Query</p>
-                  <p className="text-xs text-zinc-500 truncate mt-0.5">"{item.query || "Asked a question..."}"</p>
+                  <p className="mt-0.5 line-clamp-2 text-xs text-zinc-500">"{item.query || "Asked a question..."}"</p>
                   <div className="flex items-center gap-2 mt-2">
                     <CheckCircle2 className="w-3 h-3 text-emerald-500" />
                     <span className="text-[10px] text-zinc-500">AI Responded</span>

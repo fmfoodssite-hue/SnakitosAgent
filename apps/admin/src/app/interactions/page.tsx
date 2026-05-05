@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { MessageSquare, User, Clock, Search, Bot } from "lucide-react";
+import { User, Clock, Search, Bot } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 
@@ -71,17 +71,17 @@ export default function InteractionsPage() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-100px)]">
-      <div className="flex items-center justify-between mb-8">
+    <div className="flex min-h-[calc(100vh-120px)] flex-col">
+      <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">User Interactions</h1>
           <p className="text-zinc-400 mt-1">Review all AI chat sessions from your Shopify store.</p>
         </div>
       </div>
 
-      <div className="flex-1 flex gap-8 overflow-hidden">
+      <div className="flex flex-1 flex-col gap-6 overflow-hidden xl:flex-row xl:gap-8">
         {/* Session List */}
-        <div className="w-80 glass-card rounded-3xl overflow-hidden flex flex-col border-white/5">
+        <div className="glass-card flex h-[320px] flex-col overflow-hidden rounded-3xl border-white/5 xl:h-auto xl:w-80 xl:flex-none">
           <div className="p-4 border-b border-white/5 bg-white/[0.02]">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
@@ -124,14 +124,14 @@ export default function InteractionsPage() {
         </div>
 
         {/* Message Log */}
-        <div className="flex-1 glass-card rounded-3xl overflow-hidden flex flex-col border-white/5">
-          <div className="p-6 border-b border-white/5 bg-white/[0.02] flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-indigo-500/10 rounded-2xl flex items-center justify-center text-indigo-400">
+        <div className="glass-card flex min-h-[420px] flex-1 flex-col overflow-hidden rounded-3xl border-white/5">
+          <div className="flex flex-col gap-4 border-b border-white/5 bg-white/[0.02] p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+            <div className="flex min-w-0 items-center gap-4">
+              <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-indigo-500/10 text-indigo-400">
                 <User className="w-6 h-6" />
               </div>
-              <div>
-                <h3 className="font-bold">Session ID: {selectedUser}</h3>
+              <div className="min-w-0">
+                <h3 className="truncate font-bold">Session ID: {selectedUser || "No session selected"}</h3>
                 <div className="flex items-center gap-2 mt-0.5">
                   <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
                   <span className="text-[10px] text-zinc-500 uppercase font-bold tracking-widest">Active Interaction</span>
@@ -140,15 +140,15 @@ export default function InteractionsPage() {
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-8 space-y-8 bg-black/20">
+          <div className="flex-1 space-y-8 overflow-y-auto bg-black/20 p-4 sm:p-6 lg:p-8">
             {messages.map((msg, i) => (
               <div key={i} className="space-y-4">
                 {/* User Message */}
-                <div className="flex items-start gap-4 max-w-[85%]">
+                <div className="flex max-w-full items-start gap-3 sm:max-w-[88%] sm:gap-4">
                   <div className="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center flex-shrink-0">
                     <User className="w-4 h-4 text-zinc-400" />
                   </div>
-                  <div className="bg-zinc-800/50 p-4 rounded-2xl rounded-tl-none border border-white/5">
+                  <div className="min-w-0 rounded-2xl rounded-tl-none border border-white/5 bg-zinc-800/50 p-4">
                     <p className="text-sm text-zinc-300">{msg.query}</p>
                     <div className="mt-2 flex items-center gap-2 opacity-30">
                       <Clock className="w-3 h-3" />
@@ -158,11 +158,11 @@ export default function InteractionsPage() {
                 </div>
 
                 {/* AI Response */}
-                <div className="flex items-start gap-4 max-w-[85%] ml-auto flex-row-reverse">
+                <div className="ml-auto flex max-w-full flex-row-reverse items-start gap-3 sm:max-w-[88%] sm:gap-4">
                   <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center flex-shrink-0">
                     <Bot className="w-4 h-4 text-white" />
                   </div>
-                  <div className="bg-indigo-600/10 p-4 rounded-2xl rounded-tr-none border border-indigo-500/20">
+                  <div className="min-w-0 rounded-2xl rounded-tr-none border border-indigo-500/20 bg-indigo-600/10 p-4">
                     <p className="text-sm text-indigo-100">{msg.response}</p>
                     <div className="mt-2 flex items-center gap-2 opacity-30">
                       <Clock className="w-3 h-3" />

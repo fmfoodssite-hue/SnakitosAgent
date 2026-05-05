@@ -43,21 +43,6 @@ export class SupabaseService {
       return chatId;
     }
 
-    const { data } = await this.client
-      .from("chats")
-      .select("id, created_at")
-      .eq("user_id", userId)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
-    if (data?.id && data.created_at) {
-      const ageMs = Date.now() - new Date(data.created_at).getTime();
-      if (ageMs < 24 * 60 * 60 * 1000) {
-        return data.id;
-      }
-    }
-
     const newChatId = randomUUID();
     await this.client.from("chats").insert({
       id: newChatId,

@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { Bot, Plus, Trash2, Save, FileText, Sparkles, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { cn } from "@/lib/utils";
 
 export default function AiTrainingPage() {
   const [knowledge, setKnowledge] = useState<any[]>([]);
@@ -78,12 +77,12 @@ export default function AiTrainingPage() {
   return (
     <div className="space-y-10">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">AI Training Center</h1>
           <p className="text-zinc-400 mt-1">Teach your agent about your products, policies, and store.</p>
         </div>
-        <div className="flex items-center gap-2 bg-indigo-500/10 text-indigo-400 px-4 py-2 rounded-xl border border-indigo-500/20">
+        <div className="flex w-full items-center justify-center gap-2 rounded-xl border border-indigo-500/20 bg-indigo-500/10 px-4 py-2 text-indigo-400 sm:w-fit sm:justify-start">
           <Sparkles className="w-4 h-4" />
           <span className="text-sm font-bold uppercase tracking-wider">Brain Mode Active</span>
         </div>
@@ -91,7 +90,7 @@ export default function AiTrainingPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Input Section */}
-        <div className="glass-card p-8 rounded-3xl border-white/5 h-fit sticky top-8">
+        <div className="glass-card h-fit rounded-3xl border-white/5 p-5 sm:p-6 lg:sticky lg:top-8 lg:p-8">
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center">
               <Plus className="w-6 h-6 text-white" />
@@ -146,10 +145,10 @@ export default function AiTrainingPage() {
             {loading ? (
               <div className="py-12 text-center text-zinc-500 animate-pulse">Loading brain data...</div>
             ) : knowledge.length > 0 ? knowledge.map((item) => (
-              <div key={item.id} className="glass-card p-6 rounded-2xl border-white/5 group hover:border-white/10 transition-all">
-                <div className="flex items-start justify-between gap-4">
+              <div key={item.id} className="glass-card group rounded-2xl border-white/5 p-5 transition-all hover:border-white/10 sm:p-6">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="mb-2 flex flex-wrap items-center gap-2">
                       <span className="text-[10px] bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
                         Document
                       </span>
@@ -164,7 +163,7 @@ export default function AiTrainingPage() {
                   </div>
                   <button 
                     onClick={() => handleDelete(item.id)}
-                    className="p-2 text-zinc-600 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                    className="self-end rounded-lg p-2 text-zinc-600 transition-all hover:bg-red-400/10 hover:text-red-400 sm:self-start sm:opacity-0 sm:group-hover:opacity-100"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
