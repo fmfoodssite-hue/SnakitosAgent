@@ -518,7 +518,7 @@ export class SupportAgentService {
 
   private needsProductConversationContext(userMessage: string): boolean {
     return (
-      extractSelectionIndex(userMessage) > 0 ||
+      (extractSelectionIndex(userMessage) ?? 0) > 0 ||
       /\b(this|that|these|those|same one|first|second|third|last one)\b/i.test(userMessage)
     );
   }
