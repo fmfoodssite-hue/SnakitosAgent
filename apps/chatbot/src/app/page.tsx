@@ -234,7 +234,7 @@ export default function PublicChatbot() {
       content: JSON.stringify({
         type: "mixed",
         message:
-          "Hello there! I'm your Snakitos AI Assistant.\n\nAsk about snack collections, bundle deals, order tracking, or shipping policies. I can help in English or Urdu.",
+          "Hello there! I'm your Snakitos snack assistant.\n\nAsk about snack collections, bundle deals, gifting picks, order tracking, or shipping policies. I can help in English, Urdu, or Roman Urdu.",
       }),
     },
   ]);

@@ -195,6 +195,15 @@ export class SupportAgentService {
       };
     }
 
+    const prioritySupportResponse = await this.buildPrioritySupportResponse(userMessage);
+    if (prioritySupportResponse) {
+      return {
+        intent: "general",
+        response: prioritySupportResponse,
+        data: [],
+      };
+    }
+
     if (intent === "order") {
       return this.handleOrderIntent(intentResult, userMessage, clientKey);
     }
@@ -208,6 +217,15 @@ export class SupportAgentService {
     }
 
     return this.handleGeneralIntent(userMessage);
+  }
+
+  private async buildPrioritySupportResponse(userMessage: string): Promise<string | null> {
+    const complaintResponse = await this.buildComplaintOrEscalationResponse(userMessage);
+    if (complaintResponse) {
+      return complaintResponse;
+    }
+
+    return this.buildTrustAndPolicyFaqResponse(userMessage);
   }
 
   private isSensitiveRequest(message: string): boolean {
@@ -283,6 +301,7 @@ export class SupportAgentService {
             { label: "Back", value: "show categories" },
             { label: "Home", value: "home" },
           ],
+          skipSuggestions: true,
         }),
       };
     }
@@ -299,6 +318,7 @@ export class SupportAgentService {
             { label: "Back", value: "show categories" },
             { label: "Home", value: "home" },
           ],
+          skipSuggestions: true,
         }),
       };
     }
@@ -343,6 +363,7 @@ export class SupportAgentService {
                 { label: "Back", value: "show categories" },
                 { label: "Home", value: "home" },
               ],
+              skipSuggestions: true,
             })
           : formatWhatsAppFallback(
               "I couldn't match that order with the phone number provided.\n\nPlease double-check both details and try again.",
@@ -381,6 +402,23 @@ export class SupportAgentService {
     userMessage: string,
     chatId: string,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
+    if (this.shouldAskRecommendationFollowUp(userMessage)) {
+      return {
+        intent: "product",
+        response: await this.buildRecommendationFollowUpResponse(userMessage),
+        data: [],
+      };
+    }
+
+    const curatedProductInfoResponse = await this.buildCuratedProductInfoResponse(userMessage);
+    if (curatedProductInfoResponse) {
+      return {
+        intent: "product",
+        response: curatedProductInfoResponse,
+        data: [],
+      };
+    }
+
     const recentMessages = await this.getRecentProductContext(chatId, userMessage);
     const productQuery = extractProductQuery(userMessage);
     const referencedProduct = this.resolveReferencedProductFromConversation(
@@ -701,6 +739,15 @@ export class SupportAgentService {
   private async handleGeneralIntent(
     userMessage: string,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
+    const quickSupportResponse = await this.buildQuickSupportResponse(userMessage);
+    if (quickSupportResponse) {
+      return {
+        intent: "general",
+        response: quickSupportResponse,
+        data: [],
+      };
+    }
+
     if (this.isUnclearQuery(userMessage)) {
       return {
         intent: "general",
@@ -748,6 +795,179 @@ export class SupportAgentService {
       response: await this.buildKnowledgeResponse(relevantKnowledge, userMessage),
       data: relevantKnowledge,
     };
+  }
+
+  private async buildQuickSupportResponse(userMessage: string): Promise<string | null> {
+    return this.buildStoreInfoResponse(userMessage);
+  }
+
+  private async buildComplaintOrEscalationResponse(userMessage: string): Promise<string | null> {
+    const normalized = userMessage.toLowerCase();
+
+    if (
+      /(damaged|broken|wrong order|wrong item|late delivery|missing order|missing product|payment failed|payment issue|refund dispute|angry|complaint|issue with order|website issue|technical issue|wholesale|bulk order)/i.test(
+        normalized,
+      )
+    ) {
+      const message = /(wholesale|bulk order)/i.test(normalized)
+        ? "I’m forwarding this to our support team so they can assist you better with the bulk order 😊"
+        : "We’re sorry about the inconvenience. Please share your order number so we can help quickly. If needed, I’ll connect you with our support team for faster assistance.";
+
+      return this.buildResponseWithSuggestions({
+        type: "fallback",
+        message,
+        userMessage,
+        options: [
+          { label: "Track Order", value: "track my order" },
+          { label: "Policies", value: "show shipping and refund policy" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      });
+    }
+
+    return null;
+  }
+
+  private async buildTrustAndPolicyFaqResponse(userMessage: string): Promise<string | null> {
+    if (/(cash on delivery|cod)/i.test(userMessage)) {
+      return this.buildResponseWithSuggestions({
+        type: "policy",
+        message: "Yes, Cash on Delivery is available across Pakistan.",
+        userMessage,
+        policyLink: "https://snakitos.com/policies/shipping-policy",
+        options: [
+          { label: "Track Order", value: "track my order" },
+          { label: "Shipping Policy", value: "show shipping and refund policy" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      });
+    }
+
+    if (/(same day delivery|same-day delivery)/i.test(userMessage)) {
+      return this.buildResponseWithSuggestions({
+        type: "policy",
+        message:
+          "Same-day delivery is not confirmed in the current Snakitos policy details. Delivery usually takes a few business days depending on location.",
+        userMessage,
+        policyLink: "https://snakitos.com/policies/shipping-policy",
+        options: [
+          { label: "Shipping Policy", value: "show shipping and refund policy" },
+          { label: "Track Order", value: "track my order" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      });
+    }
+
+    if (/(online payment secure|payment secure|safe to pay online|secure payment)/i.test(userMessage)) {
+      return this.buildResponseWithSuggestions({
+        type: "policy",
+        message:
+          "Yes, online payments are handled with standard checkout security. For exact payment and policy details, you can also check the official store policies.",
+        userMessage,
+        policyLink: "https://snakitos.com/policies/terms-of-service",
+        options: [
+          { label: "Policies", value: "show shipping and refund policy" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      });
+    }
+
+    if (/(payment methods|how can i pay|can i pay online|online payment)/i.test(userMessage)) {
+      return this.buildResponseWithSuggestions({
+        type: "policy",
+        message:
+          "Snakitos supports standard checkout payment flows. Cash on Delivery is available, and online payment details appear during checkout.",
+        userMessage,
+        policyLink: "https://snakitos.com/policies/terms-of-service",
+        options: [
+          { label: "Shipping Policy", value: "show shipping and refund policy" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      });
+    }
+
+    if (/(deliver all over pakistan|all over pakistan|delivery all over pakistan|pakistan delivery)/i.test(userMessage)) {
+      return this.buildResponseWithSuggestions({
+        type: "policy",
+        message: "Yes, we deliver all over Pakistan.",
+        userMessage,
+        policyLink: "https://snakitos.com/policies/shipping-policy",
+        options: [
+          { label: "Shipping Policy", value: "show shipping and refund policy" },
+          { label: "Track Order", value: "track my order" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      });
+    }
+
+    if (/(fresh|freshness|are your products fresh)/i.test(userMessage)) {
+      return this.buildResponseWithSuggestions({
+        type: "policy",
+        message: "All products are packed fresh and carefully checked before dispatch.",
+        userMessage,
+        options: [
+          { label: "Deals", value: "show best deals" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      });
+    }
+
+    return null;
+  }
+
+  private async buildStoreInfoResponse(userMessage: string): Promise<string | null> {
+    if (/(what is snakitos|about snakitos)/i.test(userMessage)) {
+      return this.buildResponseWithSuggestions({
+        type: "fallback",
+        message:
+          "Snakitos is a snack store where you can explore sweet snacks, multigrain bites, banana chips, nachos, bundles, and value deals.",
+        userMessage,
+        options: [
+          { label: "Collections", value: "show categories" },
+          { label: "Deals", value: "show best deals" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      });
+    }
+
+    if (/(where are you located|location|physical store|store address)/i.test(userMessage)) {
+      return this.buildResponseWithSuggestions({
+        type: "fallback",
+        message:
+          "I don’t have an exact physical store address in the current Snakitos bot context. Please contact support for the latest location details.",
+        userMessage,
+        options: [
+          { label: "Home", value: "home" },
+          { label: "Policies", value: "show shipping and refund policy" },
+        ],
+        skipSuggestions: true,
+      });
+    }
+
+    if (/(support hours|contact support|customer support|social media|instagram|facebook|whatsapp)/i.test(userMessage)) {
+      return this.buildResponseWithSuggestions({
+        type: "fallback",
+        message:
+          "You can contact Snakitos support on WhatsApp at +92-345-828-3827. If you want, I can also help with orders, shipping, refunds, or product picks right here.",
+        userMessage,
+        options: [
+          { label: "Track Order", value: "track my order" },
+          { label: "Policies", value: "show shipping and refund policy" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      });
+    }
+
+    return null;
   }
 
   private isGreetingOrSmallTalk(message: string): boolean {
@@ -810,7 +1030,8 @@ export class SupportAgentService {
 
     return this.buildResponseWithSuggestions({
       type: "fallback",
-      message: "I can help you find snacks, track orders, and check delivery or policy details.",
+      message:
+        "I'm here to help with snacks, bundles, order tracking, and delivery details. You can chat in English, Urdu, or Roman Urdu.",
       userMessage,
       suggestionSeed: "best snack deals",
       options: [
@@ -823,6 +1044,148 @@ export class SupportAgentService {
         { label: "Home", value: "home" },
       ],
     });
+  }
+
+  private shouldAskRecommendationFollowUp(message: string): boolean {
+    const normalized = message.toLowerCase();
+    const isRecommendationRequest =
+      /\b(recommend|suggest|something for|best for|movie night|gift|gifting|party|ramzan|eid|office snacks|snacks for)\b/i.test(
+        normalized,
+      );
+    const alreadySpecific =
+      /\b(spicy|sweet|mixed|salty|kids|adults|budget|under\s*\d+|rs\.?\s*\d+|imported|banana|nachos|wafer|multigrain|multi grain|family|sharing)\b/i.test(
+        normalized,
+      );
+
+    return isRecommendationRequest && !alreadySpecific;
+  }
+
+  private async buildRecommendationFollowUpResponse(userMessage: string): Promise<string> {
+    const isOccasion =
+      /\b(movie night|gift|gifting|party|ramzan|eid|office snacks|birthday)\b/i.test(
+        userMessage,
+      );
+
+    const message = isOccasion
+      ? "Happy to help. Before I recommend the best picks, how many people will be sharing, and do you prefer spicy, sweet, or mixed snacks?"
+      : "Sure. To recommend the best snacks, tell me your taste preference and budget. For example: spicy under 3000, sweet for gifting, or mixed snacks for 4 people.";
+
+    return this.buildResponseWithSuggestions({
+      type: "fallback",
+      message,
+      userMessage,
+      options: [
+        { label: "Spicy", value: "Recommend spicy snacks" },
+        { label: "Sweet", value: "Recommend sweet snacks" },
+        { label: "Mixed", value: "Recommend mixed snacks" },
+        { label: "Home", value: "home" },
+      ],
+      skipSuggestions: true,
+    });
+  }
+
+  private async buildCuratedProductInfoResponse(userMessage: string): Promise<string | null> {
+    const normalized = userMessage.toLowerCase();
+
+    if (/(what flavors|which flavors|flavors are available|flavours are available)/i.test(normalized)) {
+      const products = await this.getFallbackProductRecommendations("popular snack flavors");
+      const curated = this.selectProductsForResponse(products, "spicy sweet salty cheesy snacks");
+      return this.buildResponseWithSuggestions({
+        type: "product",
+        message:
+          "You can explore spicy, sweet, salty, cheesy, tangy, and chocolatey snack options at Snakitos. Here are a few strong picks to start with.",
+        userMessage,
+        products: this.buildProductCards(curated, userMessage),
+        options: [
+          { label: "Spicy", value: "Which snacks are spicy?" },
+          { label: "Sweet", value: "What are sweet snacks" },
+          { label: "Deals", value: "show best deals" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
+    if (/(which snacks are spicy|spicy snacks|spicy chips|hot snacks)/i.test(normalized)) {
+      const products = await this.getFallbackProductRecommendations("spicy snack best sellers");
+      const curated = this.selectProductsForResponse(products, "spicy snacks");
+      return this.buildResponseWithSuggestions({
+        type: "product",
+        message: "If you love spicy snacks, these are strong picks to start with.",
+        userMessage,
+        products: this.buildProductCards(curated, userMessage),
+        options: [
+          { label: "Deals", value: "show best deals" },
+          { label: "Mixed", value: "Recommend mixed snacks" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
+    if (/(sweet snacks|which snacks are sweet|sweet snack)/i.test(normalized)) {
+      const products = await this.getFallbackProductRecommendations("sweet tooth snack deals");
+      const curated = this.selectProductsForResponse(products, "sweet snacks");
+      return this.buildResponseWithSuggestions({
+        type: "product",
+        message: "If you're in the mood for sweet snacks, these are a great place to start.",
+        userMessage,
+        products: this.buildProductCards(curated, userMessage),
+        options: [
+          { label: "Gift Picks", value: "What is best for gifting?" },
+          { label: "Deals", value: "show best deals" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
+    if (/(best sellers|best seller|trending|popular products)/i.test(normalized)) {
+      const products = await this.getFallbackProductRecommendations("best selling snack deals");
+      const curated = this.selectProductsForResponse(products, "best selling snack deals");
+      return this.buildResponseWithSuggestions({
+        type: "product",
+        message: "These are some of the strongest Snakitos picks shoppers usually go for.",
+        userMessage,
+        products: this.buildProductCards(curated, userMessage),
+        options: [
+          { label: "Deals", value: "show best deals" },
+          { label: "Gift Picks", value: "What is best for gifting?" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
+    if (/(suitable for kids|for kids|kids snacks)/i.test(normalized)) {
+      const products = await this.getFallbackProductRecommendations("sweet mild snacks for kids");
+      const curated = this.selectProductsForResponse(products, "sweet mild snacks");
+      return this.buildResponseWithSuggestions({
+        type: "product",
+        message:
+          "For kids, milder and sweeter snack options are usually the safest place to start. Here are a few snack ideas you can explore.",
+        userMessage,
+        products: this.buildProductCards(curated, userMessage),
+        options: [
+          { label: "Sweet", value: "What are sweet snacks" },
+          { label: "Deals", value: "show best deals" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
+    if (/(halal|vegetarian|vegan|ingredients|expiry duration|expiry|imported or local|imported|local)/i.test(normalized)) {
+      return this.buildResponseWithSuggestions({
+        type: "fallback",
+        message:
+          "I can help check a specific product, but the current catalog does not explicitly confirm that detail across all items. Share the product name and I’ll narrow it down for you.",
+        userMessage,
+        options: [
+          { label: "Banana Chips", value: "Show me Banana Chips" },
+          { label: "Multi Grain", value: "Show me Multi Grain snacks" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      });
+    }
+
+    return null;
   }
 
   private selectRelevantPolicySections(
@@ -1004,11 +1367,12 @@ export class SupportAgentService {
       type: "product",
       message,
       userMessage,
-      products: productPayload,
+      products: [],
       options: [
         { label: "Back", value: "show categories" },
         { label: "Home", value: "home" },
       ],
+      skipSuggestions: true,
     });
   }
 
@@ -1027,7 +1391,7 @@ export class SupportAgentService {
     let message = "I couldn't find exact details, but here's what I know...";
 
     if (bestMatch) {
-      const crispDescription = this.extractDirectProductDescription(bestMatch);
+      const crispDescription = this.extractDirectProductDescription(bestMatch, userMessage);
       const productListLine =
         names.length > 1 ? `I found these close matches: ${names.join(", ")}.` : `I found ${names[0]}.`;
       message = `${message}\n\n${productListLine}\n\n${crispDescription}`;
@@ -1424,16 +1788,36 @@ export class SupportAgentService {
     resolvedQuery: string,
     products: ProductLookupResult[],
   ): boolean {
-    if (!resolvedQuery || products.length === 0 || this.looksLikeProductDiscovery(userMessage)) {
+    if (!resolvedQuery || products.length === 0) {
       return false;
     }
 
-    return /\b(are|is|do|does|did|can|could|would|will|what|which|how|why|ingredient|ingredients|made of|made from|fried|dried|baked|vegan|vegetarian|halal|gluten|spicy|sweet|salty|flavour|flavor)\b/i.test(
+    const asksForFacts = /\b(are|is|do|does|did|can|could|would|will|what|which|how|why|ingredient|ingredients|made of|made from|fried|dried|baked|vegan|vegetarian|halal|gluten|spicy|sweet|salty|flavour|flavor|weight|size|fresh|expiry)\b/i.test(
       userMessage,
     );
+
+    const asksForDiscovery = /\b(best|top|recommend|suggest|deal|bundle|combo|gift|party|movie night|sharing|for kids|for adults|under\s*\d+|rs\.?\s*\d+)\b/i.test(
+      userMessage,
+    );
+
+    return asksForFacts && !asksForDiscovery;
   }
 
-  private extractDirectProductDescription(product: ProductLookupResult): string {
+  private extractDirectProductDescription(
+    product: ProductLookupResult,
+    userMessage: string,
+  ): string {
+    const normalizedMessage = userMessage.toLowerCase();
+    const weightMatch = product.title.match(/(\d+\s*g)\b/i);
+
+    if (/\b(weight|size|how much|kitna|gram|grams|g)\b/i.test(normalizedMessage) && weightMatch) {
+      return `${product.title} comes in ${weightMatch[1]}.`;
+    }
+
+    if (/\b(fried|dried|baked|halal|vegetarian|vegan|ingredients?|expiry|fresh)\b/i.test(normalizedMessage)) {
+      return `The current Snakitos catalog matches ${product.title}, but it does not explicitly confirm that detail. Please check the product page or support for exact confirmation.`;
+    }
+
     const description =
       product.description && product.description !== "Snakitos snack from uploaded catalog."
         ? product.description.trim()

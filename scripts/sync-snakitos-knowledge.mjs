@@ -63,7 +63,28 @@ async function loadLocalCategoryKnowledge() {
   return parsed.map((item) => ({
     title: item.name || item.title || "Category Knowledge",
     content: item.description || item.content || "",
-    source: `snakitos:category:${item.category || "general"}`,
+    sourceType: "shopify",
+    summary: `snakitos:category:${item.category || "general"}`,
+  }));
+}
+
+async function loadCapabilityKnowledge() {
+  const filePath = path.resolve(
+    process.cwd(),
+    "apps/chatbot/src/server/data/capability-knowledge.json",
+  );
+  const raw = await fs.readFile(filePath, "utf8");
+  const parsed = JSON.parse(raw);
+
+  if (!Array.isArray(parsed)) {
+    throw new Error("capability-knowledge.json must contain a top-level array.");
+  }
+
+  return parsed.map((item) => ({
+    title: item.name || item.title || "Capability Knowledge",
+    content: item.description || item.content || "",
+    sourceType: "shopify",
+    summary: `snakitos:capability:${item.category || "general"}`,
   }));
 }
 
@@ -92,7 +113,8 @@ function productDocument(product) {
   return {
     title: product.title,
     content: sections.join("\n"),
-    source: "snakitos:product",
+    sourceType: "shopify",
+    summary: "snakitos:product",
   };
 }
 
@@ -100,7 +122,8 @@ function pageDocument(title, url, body) {
   return {
     title,
     content: [`Page: ${title}`, `URL: ${url}`, body].filter(Boolean).join("\n"),
-    source: "snakitos:page",
+    sourceType: "shopify",
+    summary: "snakitos:page",
   };
 }
 
@@ -135,7 +158,8 @@ async function collectionDocuments(domain) {
     return {
       title: `Collection: ${title || "Store Collection"}`,
       content: `Snakitos collection available at ${url}. Collection handle: ${slug}.`,
-      source: "snakitos:collection",
+      sourceType: "shopify",
+      summary: "snakitos:collection",
     };
   });
 }
@@ -157,6 +181,7 @@ async function main() {
     contactDocument(`https://${STORE_DOMAIN}/pages/contact`),
   ]);
   const localCategoryKnowledge = await loadLocalCategoryKnowledge();
+  const capabilityKnowledge = await loadCapabilityKnowledge();
 
   const storeOverview = {
     title: "Snakitos Store Overview",
@@ -167,12 +192,14 @@ async function main() {
       `Collections include deals, bundle, nachos, banana chips, multi grain, patata chips, sweet tooth, mega discounts, and more.`,
       `Use this knowledge to answer questions about snacks, deals, bundles, products, contact page, shipping policy, and refund policy.`,
     ].join("\n"),
-    source: "snakitos:overview",
+    sourceType: "shopify",
+    summary: "snakitos:overview",
   };
 
   const documents = [
     storeOverview,
     ...localCategoryKnowledge,
+    ...capabilityKnowledge,
     ...policies,
     ...collections,
     ...products,
@@ -181,7 +208,7 @@ async function main() {
   const { error: deleteError } = await supabase
     .from("knowledge_documents")
     .delete()
-    .like("source", "snakitos:%");
+    .eq("source_type", "shopify");
 
   if (deleteError) {
     throw deleteError;
@@ -189,7 +216,15 @@ async function main() {
 
   const { error: insertError } = await supabase
     .from("knowledge_documents")
-    .insert(documents);
+    .insert(
+      documents.map((doc) => ({
+        title: doc.title,
+        content: doc.content,
+        source_type: doc.sourceType ?? "shopify",
+        status: "indexed",
+        summary: doc.summary ?? null,
+      })),
+    );
 
   if (insertError) {
     throw insertError;

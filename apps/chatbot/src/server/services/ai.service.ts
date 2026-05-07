@@ -163,7 +163,7 @@ export class AiService {
       const message =
         typeof parsed.message === "string" && parsed.message.trim()
           ? parsed.message.trim()
-          : "I can help with products, orders, or policies.";
+          : "I can help with snacks, orders, delivery, and store policies.";
 
       const products = Array.isArray(parsed.products)
         ? parsed.products
@@ -214,7 +214,7 @@ export class AiService {
   private buildSafeFallback(): string {
     return JSON.stringify({
       type: "fallback",
-      message: "I can help with products, orders, or policies.",
+      message: "I can help with snacks, orders, delivery, and store policies.",
       products: [],
       policy_link: "",
       options: this.ensureNavigationOptions([]),

@@ -1,5 +1,6 @@
 import { retrieveKnowledge } from "@lib/pinecone";
 import { config } from "../config";
+import capabilityKnowledgeData from "../data/capability-knowledge.json";
 import { KnowledgeDocument } from "../types/chat.types";
 
 const CACHE_TTL_MS = 60_000;
@@ -14,18 +15,20 @@ export class KnowledgeService {
 
   async retrieve(query: string): Promise<KnowledgeDocument[]> {
     const normalizedQuery = query.trim().toLowerCase();
-    if (
-      !normalizedQuery ||
-      !config.openai.apiKey ||
-      !config.pinecone.apiKey ||
-      !config.pinecone.indexName
-    ) {
+    if (!normalizedQuery) {
       return [];
     }
 
     const cached = this.cache.get(normalizedQuery);
     if (cached && cached.expiresAt > Date.now()) {
       return cached.value;
+    }
+
+    const localResults = this.retrieveCapabilityKnowledge(normalizedQuery);
+
+    if (!config.openai.apiKey || !config.pinecone.apiKey || !config.pinecone.indexName) {
+      this.setCache(normalizedQuery, localResults);
+      return localResults;
     }
 
     try {
@@ -41,10 +44,12 @@ export class KnowledgeService {
         source: "pinecone",
       }));
 
-      this.setCache(normalizedQuery, mapped);
-      return mapped;
+      const merged = this.mergeKnowledge(localResults, mapped);
+      this.setCache(normalizedQuery, merged);
+      return merged;
     } catch {
-      return [];
+      this.setCache(normalizedQuery, localResults);
+      return localResults;
     }
   }
 
@@ -79,6 +84,57 @@ export class KnowledgeService {
       value,
       expiresAt: Date.now() + CACHE_TTL_MS,
     });
+  }
+
+  private retrieveCapabilityKnowledge(query: string): KnowledgeDocument[] {
+    const tokens = query.split(/[^a-z0-9]+/).filter((token) => token.length >= 2);
+
+    return capabilityKnowledgeData
+      .map((item) => {
+        const keywordMatches = item.keywords.filter((keyword) => query.includes(keyword.toLowerCase()))
+          .length;
+        const tokenMatches = tokens.filter(
+          (token) =>
+            item.description.toLowerCase().includes(token) ||
+            item.name.toLowerCase().includes(token) ||
+            item.keywords.some((keyword) => keyword.toLowerCase().includes(token)),
+        ).length;
+        const score = keywordMatches * 5 + tokenMatches;
+
+        return {
+          score,
+          document: {
+            id: item.id,
+            name: item.name,
+            text: item.description,
+            link: item.link,
+            type: item.type,
+            category: item.category,
+            source: "capability_doc",
+          } satisfies KnowledgeDocument,
+        };
+      })
+      .filter((item) => item.score > 0)
+      .sort((left, right) => right.score - left.score)
+      .slice(0, 5)
+      .map((item) => item.document);
+  }
+
+  private mergeKnowledge(
+    localResults: KnowledgeDocument[],
+    pineconeResults: KnowledgeDocument[],
+  ): KnowledgeDocument[] {
+    const seen = new Set<string>();
+    const merged = [...localResults, ...pineconeResults].filter((item) => {
+      const key = `${item.source}:${item.id}`;
+      if (seen.has(key)) {
+        return false;
+      }
+      seen.add(key);
+      return true;
+    });
+
+    return merged.slice(0, 6);
   }
 }
 

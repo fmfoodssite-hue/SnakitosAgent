@@ -5,9 +5,16 @@ const ORDER_KEYWORDS = [
   "tracking",
   "track",
   "shipment",
+  "dispatch",
+  "dispatched",
+  "courier",
+  "parcel",
   "where is my parcel",
   "where is my order",
   "order status",
+  "change address",
+  "change my address",
+  "cancel my order",
 ];
 
 const POLICY_KEYWORDS = [
@@ -195,8 +202,8 @@ export function detectIntent(message: string, phone?: string): {
     };
   }
 
-  // Fallback: If a valid order ID or phone is found but no keywords, assume order tracking.
-  if (orderId || normalizedPhone) {
+  // Fallback: a clear order reference alone can imply order tracking.
+  if (orderId) {
     return {
       intent: "order",
       orderId,
