@@ -9,7 +9,7 @@ const nextConfig: NextConfig = {
           {
             key: "Content-Security-Policy",
             value:
-              "frame-ancestors 'self' https://*.myshopify.com https://*.shopify.com;",
+              "frame-ancestors 'self' https://*.myshopify.com https://*.shopify.com https://snakitos.com https://www.snakitos.com;",
           },
         ],
       },
