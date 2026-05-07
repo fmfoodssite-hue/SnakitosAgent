@@ -11,8 +11,23 @@
   font-family: "Poppins", "Segoe UI", sans-serif;
 }
 
+.pageEmbedded {
+  min-height: 100dvh;
+  padding: 0;
+  background:
+    radial-gradient(circle at top left, rgba(255, 156, 59, 0.18), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(255, 111, 33, 0.14), transparent 26%),
+    linear-gradient(180deg, #fff8f1 0%, #fff3e5 54%, #ffe8d0 100%);
+}
+
 .shellWrap {
   width: min(100%, 470px);
+}
+
+.shellWrapEmbedded {
+  width: 100%;
+  max-width: none;
+  height: 100dvh;
 }
 
 .chatShell {
@@ -26,6 +41,14 @@
   box-shadow:
     0 28px 80px rgba(145, 73, 24, 0.18),
     inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.chatShellEmbedded {
+  height: 100dvh;
+  min-height: 100dvh;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
 }
 
 .chatHeader {
@@ -891,6 +914,11 @@
   .chatShell {
     height: calc(100vh - 16px);
     border-radius: 28px;
+  }
+
+  .chatShellEmbedded {
+    height: 100dvh;
+    border-radius: 0;
   }
 
   .chatHeader {

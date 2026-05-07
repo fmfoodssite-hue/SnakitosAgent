@@ -79,6 +79,24 @@ interface Message {
   content: string;
 }
 
+interface ShopifyEmbedContext {
+  shop?: string;
+  brandName?: string;
+  pageUrl?: string;
+  pageTitle?: string;
+  pageType?: string;
+  cartCount?: number;
+  product?: {
+    id?: string | number;
+    title?: string;
+    handle?: string;
+    url?: string;
+    available?: boolean;
+    price?: string | number;
+  } | null;
+  timestamp?: string;
+}
+
 type ViewMode = "home" | "messages";
 
 type SendRequest = {
@@ -220,6 +238,21 @@ export default function PublicChatbot() {
       }),
     },
   ]);
+  const [isEmbedded] = useState(() => {
+    if (typeof window === "undefined") {
+      return false;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    return params.get("embedded") === "1" || window.self !== window.top;
+  });
+  const [embedContext, setEmbedContext] = useState<ShopifyEmbedContext | null>(() => {
+    if (typeof window === "undefined") {
+      return null;
+    }
+
+    return readEmbedContextFromUrl(new URLSearchParams(window.location.search));
+  });
   const chatSession = useSyncExternalStore(
     subscribeToChatSession,
     readChatSessionSnapshot,
@@ -235,6 +268,24 @@ export default function PublicChatbot() {
       writeChatSession({ userId: uuidv4() });
     }
   }, [chatSession.userId]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const handleMessage = (event: MessageEvent) => {
+      const payload = event.data;
+      if (!payload || typeof payload !== "object" || payload.type !== "SHOPIFY_RAG_CONTEXT") {
+        return;
+      }
+
+      setEmbedContext((payload.payload as ShopifyEmbedContext) ?? null);
+    };
+
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
 
   useEffect(() => {
     if (!scrollRef.current) {
@@ -419,9 +470,9 @@ export default function PublicChatbot() {
   };
 
   return (
-    <main className={styles.page}>
-      <div className={styles.shellWrap}>
-        <section className={styles.chatShell}>
+    <main className={`${styles.page} ${isEmbedded ? styles.pageEmbedded : ""}`}>
+      <div className={`${styles.shellWrap} ${isEmbedded ? styles.shellWrapEmbedded : ""}`}>
+        <section className={`${styles.chatShell} ${isEmbedded ? styles.chatShellEmbedded : ""}`}>
           <header className={styles.chatHeader}>
             <div className={styles.chatIdentity}>
               <div className={styles.botBadge}>
@@ -429,17 +480,19 @@ export default function PublicChatbot() {
               </div>
               <div>
                 <h1>Snakitos AI Assistant</h1>
-                <p>How can I help you today?</p>
+                <p>{resolveSubtitle(embedContext, isEmbedded)}</p>
               </div>
             </div>
-            <a
-              href={STORE_PRODUCTS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.headerLink}
-            >
-              Shop
-            </a>
+            {!isEmbedded ? (
+              <a
+                href={STORE_PRODUCTS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.headerLink}
+              >
+                Shop
+              </a>
+            ) : null}
           </header>
 
           <div ref={scrollRef} className={styles.chatBody}>
@@ -563,6 +616,57 @@ export default function PublicChatbot() {
       </div>
     </main>
   );
+}
+
+function readEmbedContextFromUrl(searchParams: URLSearchParams): ShopifyEmbedContext | null {
+  const hasShopifyContext =
+    searchParams.get("source") === "shopify" ||
+    searchParams.get("shop") ||
+    searchParams.get("product_title");
+
+  if (!hasShopifyContext) {
+    return null;
+  }
+
+  return {
+    shop: searchParams.get("shop") ?? undefined,
+    pageUrl: searchParams.get("page_url") ?? undefined,
+    pageTitle: searchParams.get("page_title") ?? undefined,
+    pageType: searchParams.get("page_type") ?? undefined,
+    cartCount: searchParams.get("cart_count")
+      ? Number(searchParams.get("cart_count"))
+      : undefined,
+    product: searchParams.get("product_title")
+      ? {
+          id: searchParams.get("product_id") ?? undefined,
+          handle: searchParams.get("product_handle") ?? undefined,
+          title: searchParams.get("product_title") ?? undefined,
+        }
+      : null,
+  };
+}
+
+function resolveSubtitle(
+  context: ShopifyEmbedContext | null,
+  isEmbedded: boolean,
+): string {
+  if (context?.product?.title) {
+    return `Ask me about ${context.product.title}, delivery, bundles, or order tracking.`;
+  }
+
+  if (context?.pageType === "product") {
+    return "Ask about this product, bundle recommendations, delivery, or tracking.";
+  }
+
+  if (context?.pageType === "cart") {
+    return "I can help with cart questions, checkout confidence, and order support.";
+  }
+
+  if (isEmbedded) {
+    return "Ask about snacks, bundles, delivery, and order tracking.";
+  }
+
+  return "How can I help you today?";
 }
 
 function extractPhoneNumber(value: string): string {
