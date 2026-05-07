@@ -79,7 +79,7 @@ export class SupportAgentService {
     try {
       if (this.isSensitiveRequest(input.message)) {
         const response =
-          "I can help with products, orders, shipping, and store policies, but I can't provide internal system or security information.";
+          "I can help with snacks, orders, delivery, and store policies, but I can't share internal system or security details.";
         this.runInBackground(this.persistMessage({ chatId, content: response, role: "bot", userId }));
 
         return {
@@ -481,10 +481,17 @@ export class SupportAgentService {
     }
 
     const curatedProducts = this.selectProductsForResponse(products, userMessage);
+    const shouldAnswerDirectly = this.shouldAnswerProductQuestionDirectly(
+      userMessage,
+      referencedProduct || productQuery,
+      curatedProducts,
+    );
 
     return {
       intent: "product",
-      response: await this.buildProductResponse(curatedProducts, userMessage),
+      response: shouldAnswerDirectly
+        ? await this.buildDirectProductAnswer(curatedProducts, userMessage)
+        : await this.buildProductResponse(curatedProducts, userMessage),
       data: products,
     };
   }
@@ -638,13 +645,14 @@ export class SupportAgentService {
         intent: "general",
         response: await this.buildResponseWithSuggestions({
           type: "policy",
-          message: "Please contact support.",
+          message: "I couldn't find that exact policy detail right now. Please contact support and we'll help you quickly.",
           userMessage,
           policyLink: "https://snakitos.com/policies/",
           options: [
             { label: "Back", value: "show categories" },
             { label: "Home", value: "home" },
           ],
+          skipSuggestions: true,
         }),
         data: [],
       };
@@ -686,6 +694,7 @@ export class SupportAgentService {
         { label: "Track Order", value: "track my order" },
         { label: "Home", value: "home" },
       ],
+      skipSuggestions: true,
     });
   }
 
@@ -697,7 +706,7 @@ export class SupportAgentService {
         intent: "general",
         response: await this.buildResponseWithSuggestions({
           type: "fallback",
-          message: "I can help with products, orders, or policies.",
+          message: "I can help with snacks, orders, delivery, and store policies.",
           userMessage,
           options: [
             { label: "Deals", value: "show best deals" },
@@ -705,6 +714,7 @@ export class SupportAgentService {
             { label: "Policies", value: "show shipping and refund policy" },
             { label: "Home", value: "home" },
           ],
+          skipSuggestions: true,
         }),
       };
     }
@@ -727,6 +737,7 @@ export class SupportAgentService {
             { label: "Policies", value: "show shipping and refund policy" },
             { label: "Home", value: "home" },
           ],
+          skipSuggestions: true,
         }),
         data: [],
       };
@@ -799,7 +810,7 @@ export class SupportAgentService {
 
     return this.buildResponseWithSuggestions({
       type: "fallback",
-      message: "I can help with products, orders, or policies.",
+      message: "I can help you find snacks, track orders, and check delivery or policy details.",
       userMessage,
       suggestionSeed: "best snack deals",
       options: [
@@ -1001,6 +1012,40 @@ export class SupportAgentService {
     });
   }
 
+  private async buildDirectProductAnswer(
+    products: ProductLookupResult[],
+    userMessage: string,
+  ): Promise<string> {
+    const displayProducts = this.sortProductsForPresentation(products, userMessage).slice(
+      0,
+      Math.min(products.length, 3),
+    );
+    const productPayload = this.buildProductCards(displayProducts, userMessage);
+    const bestMatch = displayProducts[0];
+    const names = displayProducts.map((product) => product.title);
+
+    let message = "I couldn't find exact details, but here's what I know...";
+
+    if (bestMatch) {
+      const crispDescription = this.extractDirectProductDescription(bestMatch);
+      const productListLine =
+        names.length > 1 ? `I found these close matches: ${names.join(", ")}.` : `I found ${names[0]}.`;
+      message = `${message}\n\n${productListLine}\n\n${crispDescription}`;
+    }
+
+    return this.buildResponseWithSuggestions({
+      type: "product",
+      message,
+      userMessage,
+      products: productPayload,
+      options: [
+        { label: "Back", value: "show categories" },
+        { label: "Home", value: "home" },
+      ],
+      skipSuggestions: true,
+    });
+  }
+
   private selectProductsForResponse(
     products: ProductLookupResult[],
     userMessage: string,
@@ -1078,8 +1123,8 @@ export class SupportAgentService {
       .slice(0, 2);
 
     const intro = policyLink
-      ? "Here are the details I found from the official policy information."
-      : "Here are the details I found.";
+      ? "Here’s the quick policy update from Snakitos."
+      : "Here’s what I found.";
 
     const message = [intro, ...snippets].join("\n\n");
     const options = this.isPolicyQuestion(userMessage)
@@ -1100,6 +1145,7 @@ export class SupportAgentService {
       userMessage,
       policyLink,
       options,
+      skipSuggestions: type === "policy",
     });
   }
 
@@ -1193,17 +1239,21 @@ export class SupportAgentService {
     skipSuggestions?: boolean;
   }): Promise<string> {
     const baseProducts = input.products ?? [];
-    const suggestionStrategy = this.buildSuggestionStrategy(input);
+    const suggestionStrategy = this.shouldAttachSuggestions(input)
+      ? this.buildSuggestionStrategy(input)
+      : null;
     const suggestions =
       input.skipSuggestions
         ? []
         : baseProducts.length > 0
         ? baseProducts
-        : await this.getSuggestedProductCards(
-            suggestionStrategy.query,
-            suggestionStrategy.rankingMessage,
-            suggestionStrategy.mode,
-          );
+        : suggestionStrategy
+          ? await this.getSuggestedProductCards(
+              suggestionStrategy.query,
+              suggestionStrategy.rankingMessage,
+              suggestionStrategy.mode,
+            )
+          : [];
 
     return JSON.stringify({
       type: input.type,
@@ -1213,6 +1263,23 @@ export class SupportAgentService {
       policy_link: input.policyLink ?? "",
       options: input.options,
     });
+  }
+
+  private shouldAttachSuggestions(input: {
+    type: "product" | "policy" | "mixed" | "fallback";
+    userMessage: string;
+    suggestionSeed?: string;
+    order?: Record<string, unknown>;
+  }): boolean {
+    if (input.type === "product") {
+      return true;
+    }
+
+    if (input.suggestionSeed || input.order) {
+      return true;
+    }
+
+    return this.looksLikeProductDiscovery(input.userMessage);
   }
 
   private async getSuggestedProductCards(
@@ -1352,6 +1419,37 @@ export class SupportAgentService {
     );
   }
 
+  private shouldAnswerProductQuestionDirectly(
+    userMessage: string,
+    resolvedQuery: string,
+    products: ProductLookupResult[],
+  ): boolean {
+    if (!resolvedQuery || products.length === 0 || this.looksLikeProductDiscovery(userMessage)) {
+      return false;
+    }
+
+    return /\b(are|is|do|does|did|can|could|would|will|what|which|how|why|ingredient|ingredients|made of|made from|fried|dried|baked|vegan|vegetarian|halal|gluten|spicy|sweet|salty|flavour|flavor)\b/i.test(
+      userMessage,
+    );
+  }
+
+  private extractDirectProductDescription(product: ProductLookupResult): string {
+    const description =
+      product.description && product.description !== "Snakitos snack from uploaded catalog."
+        ? product.description.trim()
+        : "";
+
+    if (description) {
+      return /[.!?]$/.test(description) ? description : `${description}.`;
+    }
+
+    if (product.productType) {
+      return `${product.title} is listed as a ${product.productType} snack on Snakitos.`;
+    }
+
+    return `${product.title} is listed on the Snakitos store, but the catalog does not include more detailed product notes.`;
+  }
+
   private buildProductCards(
     products: ProductLookupResult[],
     userMessage: string,
@@ -1397,13 +1495,13 @@ export class SupportAgentService {
           ? ` Estimated savings across these value picks: PKR ${totalSavings.toFixed(0)}.`
           : "";
       return totalCount > 1
-        ? `Best value match: ${bestMatch.name}. I also sorted stronger-value picks from high to low below.${savingsLine}`
-        : `Best value match: ${bestMatch.name}.${savingsLine}`;
+        ? `Best value pick: ${bestMatch.name}. I also added more strong-value options below.${savingsLine}`
+        : `Best value pick: ${bestMatch.name}.${savingsLine}`;
     }
 
     return totalCount > 1
-      ? `Best match: ${bestMatch.name}. I also added more close picks below.`
-      : `Best match: ${bestMatch.name}.`;
+      ? `${bestMatch.name} looks like a strong match. I also added a few close picks below.`
+      : `${bestMatch.name} looks like a strong match.`;
   }
 
   private isHighTicketIntent(userMessage: string): boolean {
