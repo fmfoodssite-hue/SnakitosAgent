@@ -759,17 +759,16 @@ export class SupportAgentService {
     if (this.isUnclearQuery(userMessage)) {
       return {
         intent: "general",
-        response: await this.buildResponseWithSuggestions({
-          type: "fallback",
-          message: "I can help with snacks, orders, delivery, and store policies.",
+        response: await this.buildGeneralPlaybookResponse({
           userMessage,
+          answer: "I can help with snacks, orders, delivery, and store policies.",
+          type: "fallback",
           options: [
             { label: "Deals", value: "show best deals" },
             { label: "Track Order", value: "track my order" },
             { label: "Policies", value: "show shipping and refund policy" },
             { label: "Home", value: "home" },
           ],
-          skipSuggestions: true,
         }),
       };
     }
@@ -783,16 +782,16 @@ export class SupportAgentService {
     if (relevantKnowledge.length === 0) {
       return {
         intent: "general",
-        response: await this.buildResponseWithSuggestions({
-          type: "fallback",
-          message: "I couldn't find exact details, but here's what I know...",
+        response: await this.buildGeneralPlaybookResponse({
           userMessage,
+          answer: "I couldn't find exact details right now.",
+          assistLine: "If you want, I can help with products, delivery, refunds, or order tracking.",
+          type: "fallback",
           options: [
             { label: "Deals", value: "show best deals" },
             { label: "Policies", value: "show shipping and refund policy" },
             { label: "Home", value: "home" },
           ],
-          skipSuggestions: true,
         }),
         data: [],
       };
@@ -839,91 +838,107 @@ export class SupportAgentService {
 
   private async buildTrustAndPolicyFaqResponse(userMessage: string): Promise<string | null> {
     if (/(cash on delivery|cod)/i.test(userMessage)) {
-      return this.buildResponseWithSuggestions({
-        type: "policy",
-        message: "Yes, Cash on Delivery is available across Pakistan.",
+      return this.buildGeneralPlaybookResponse({
         userMessage,
+        answer: "Yes, Cash on Delivery is available across Pakistan.",
+        assistLine: "If you want, I can also help with delivery timing or order tracking.",
+        type: "policy",
         policyLink: "https://snakitos.com/policies/shipping-policy",
         options: [
           { label: "Track Order", value: "track my order" },
           { label: "Shipping Policy", value: "show shipping and refund policy" },
           { label: "Home", value: "home" },
         ],
-        skipSuggestions: true,
+      });
+    }
+
+    if (
+      /(same day|same-day)/i.test(userMessage) &&
+      /karachi/i.test(userMessage) &&
+      /(advance|advance payment|paid|prepaid|online payment)/i.test(userMessage)
+    ) {
+      return this.buildGeneralPlaybookResponse({
+        userMessage,
+        answer: "Yes, same-day delivery is possible in Karachi with advance payment.",
+        assistLine: "Delivery timing can still depend on order confirmation time and area coverage.",
+        type: "policy",
+        policyLink: "https://snakitos.com/policies/shipping-policy",
+        options: [
+          { label: "Shipping Policy", value: "show shipping and refund policy" },
+          { label: "Track Order", value: "track my order" },
+          { label: "Home", value: "home" },
+        ],
       });
     }
 
     if (/(same day delivery|same-day delivery)/i.test(userMessage)) {
-      return this.buildResponseWithSuggestions({
-        type: "policy",
-        message:
-          "Same-day delivery is not confirmed in the current Snakitos policy details. Delivery usually takes a few business days depending on location.",
+      return this.buildGeneralPlaybookResponse({
         userMessage,
+        answer: "Same-day delivery is not confirmed in the current Snakitos policy details.",
+        assistLine: "Delivery usually takes a few business days depending on location.",
+        type: "policy",
         policyLink: "https://snakitos.com/policies/shipping-policy",
         options: [
           { label: "Shipping Policy", value: "show shipping and refund policy" },
           { label: "Track Order", value: "track my order" },
           { label: "Home", value: "home" },
         ],
-        skipSuggestions: true,
       });
     }
 
     if (/(online payment secure|payment secure|safe to pay online|secure payment)/i.test(userMessage)) {
-      return this.buildResponseWithSuggestions({
-        type: "policy",
-        message:
-          "Yes, online payments are handled with standard checkout security. For exact payment and policy details, you can also check the official store policies.",
+      return this.buildGeneralPlaybookResponse({
         userMessage,
+        answer: "Yes, online payments are handled with standard checkout security.",
+        assistLine: "You can also check the official store policies for exact payment details.",
+        type: "policy",
         policyLink: "https://snakitos.com/policies/terms-of-service",
         options: [
           { label: "Policies", value: "show shipping and refund policy" },
           { label: "Home", value: "home" },
         ],
-        skipSuggestions: true,
       });
     }
 
     if (/(payment methods|how can i pay|can i pay online|online payment)/i.test(userMessage)) {
-      return this.buildResponseWithSuggestions({
-        type: "policy",
-        message:
-          "Snakitos supports standard checkout payment flows. Cash on Delivery is available, and online payment details appear during checkout.",
+      return this.buildGeneralPlaybookResponse({
         userMessage,
+        answer: "Snakitos supports standard checkout payment flows, and Cash on Delivery is available.",
+        assistLine: "Online payment details appear during checkout.",
+        type: "policy",
         policyLink: "https://snakitos.com/policies/terms-of-service",
         options: [
           { label: "Shipping Policy", value: "show shipping and refund policy" },
           { label: "Home", value: "home" },
         ],
-        skipSuggestions: true,
       });
     }
 
     if (/(deliver all over pakistan|all over pakistan|delivery all over pakistan|pakistan delivery)/i.test(userMessage)) {
-      return this.buildResponseWithSuggestions({
-        type: "policy",
-        message: "Yes, we deliver all over Pakistan.",
+      return this.buildGeneralPlaybookResponse({
         userMessage,
+        answer: "Yes, we deliver all over Pakistan.",
+        assistLine: "If you want, I can also help with shipping policy or order tracking.",
+        type: "policy",
         policyLink: "https://snakitos.com/policies/shipping-policy",
         options: [
           { label: "Shipping Policy", value: "show shipping and refund policy" },
           { label: "Track Order", value: "track my order" },
           { label: "Home", value: "home" },
         ],
-        skipSuggestions: true,
       });
     }
 
     if (/(fresh|freshness|are your products fresh)/i.test(userMessage)) {
-      return this.buildResponseWithSuggestions({
-        type: "policy",
-        message: "All products are packed fresh and carefully checked before dispatch.",
+      return this.buildGeneralPlaybookResponse({
         userMessage,
+        answer: "All products are packed fresh and carefully checked before dispatch.",
+        assistLine: "If you want, I can also help with expiry details for a specific snack.",
+        type: "policy",
         options: [
           { label: "Deals", value: "show best deals" },
           { label: "Home", value: "home" },
         ],
-        skipSuggestions: true,
       });
     }
 
@@ -932,17 +947,17 @@ export class SupportAgentService {
 
   private async buildStoreInfoResponse(userMessage: string): Promise<string | null> {
     if (/(what is snakitos|about snakitos)/i.test(userMessage)) {
-      return this.buildResponseWithSuggestions({
-        type: "fallback",
-        message:
-          "Snakitos is a snack store where you can explore sweet snacks, multigrain bites, banana chips, nachos, bundles, and value deals.",
+      return this.buildGeneralPlaybookResponse({
         userMessage,
+        answer:
+          "Snakitos is a snack store where you can explore sweet snacks, multigrain bites, banana chips, nachos, bundles, and value deals.",
+        assistLine: "If you want, I can show collections or help you pick the best snacks.",
+        type: "fallback",
         options: [
           { label: "Collections", value: "show categories" },
           { label: "Deals", value: "show best deals" },
           { label: "Home", value: "home" },
         ],
-        skipSuggestions: true,
       });
     }
 
@@ -961,17 +976,16 @@ export class SupportAgentService {
     }
 
     if (/(support hours|contact support|customer support|social media|instagram|facebook|whatsapp)/i.test(userMessage)) {
-      return this.buildResponseWithSuggestions({
-        type: "fallback",
-        message:
-          "You can contact Snakitos support on WhatsApp at +92-345-828-3827. If you want, I can also help with orders, shipping, refunds, or product picks right here.",
+      return this.buildGeneralPlaybookResponse({
         userMessage,
+        answer: "You can contact Snakitos support on WhatsApp at +92-345-828-3827.",
+        assistLine: "I can also help with orders, shipping, refunds, or product picks right here.",
+        type: "fallback",
         options: [
           { label: "Track Order", value: "track my order" },
           { label: "Policies", value: "show shipping and refund policy" },
           { label: "Home", value: "home" },
         ],
-        skipSuggestions: true,
       });
     }
 
@@ -1667,6 +1681,26 @@ export class SupportAgentService {
       products: suggestions,
       policy_link: input.policyLink ?? "",
       options: input.options,
+    });
+  }
+
+  private async buildGeneralPlaybookResponse(input: {
+    userMessage: string;
+    answer: string;
+    assistLine?: string;
+    type: "fallback" | "policy" | "product" | "mixed";
+    policyLink?: string;
+    options: Array<{ label: string; value: string }>;
+  }): Promise<string> {
+    const message = [input.answer.trim(), input.assistLine?.trim()].filter(Boolean).join("\n\n");
+
+    return this.buildResponseWithSuggestions({
+      type: input.type,
+      message,
+      userMessage: input.userMessage,
+      policyLink: input.policyLink,
+      options: input.options,
+      skipSuggestions: true,
     });
   }
 
