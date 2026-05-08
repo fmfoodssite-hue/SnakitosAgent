@@ -1,4 +1,5 @@
 import policyData from "../data/policies.json";
+import productMetadata from "../data/product-metadata.json";
 import { randomUUID } from "crypto";
 import {
   AgentContext,
@@ -48,6 +49,13 @@ type SuggestionStrategy = {
   mode: "fast" | "full";
   query: string;
   rankingMessage: string;
+};
+
+type ProductMetadataRule = {
+  matchAny: string[];
+  halal?: boolean;
+  expiry?: string;
+  ingredientsSummary?: string;
 };
 
 const DEFAULT_SUGGESTION_LIMIT = 8;
@@ -1170,11 +1178,44 @@ export class SupportAgentService {
       });
     }
 
-    if (/(halal|vegetarian|vegan|ingredients|expiry duration|expiry|imported or local|imported|local)/i.test(normalized)) {
+    if (
+      /\b(all|every|full|complete)\b/i.test(normalized) &&
+      /\b(weight|weights|size|sizes|kitna gram|kitne gram|grams?|pack size|pack sizes|specification|specifications)\b/i.test(
+        normalized,
+      )
+    ) {
+      return await this.buildAllWeightSpecificationsResponse(userMessage);
+    }
+
+    if (
+      /\b(weight|weights|size|sizes|kitna gram|kitne gram|grams?|pack size|pack sizes)\b/i.test(
+        normalized,
+      ) &&
+      !this.hasSpecificProductDetailTarget(userMessage)
+    ) {
       return this.buildResponseWithSuggestions({
         type: "fallback",
         message:
-          "I can help check a specific product, but the current catalog does not explicitly confirm that detail across all items. Share the product name and I’ll narrow it down for you.",
+          "I can check the exact pack size for a specific item. Just send the product name, like Coco Choco, Banana Chips, or Multigrain Stix.",
+        userMessage,
+        options: [
+          { label: "Coco Choco", value: "What is the weight of Coco Choco?" },
+          { label: "Banana Chips", value: "What is the weight of Banana Chips?" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      });
+    }
+
+    if (
+      /(halal|vegetarian|vegan|ingredients|expiry duration|expiry|expiry details|imported or local|imported|local)/i.test(
+        normalized,
+      ) &&
+      !this.hasSpecificProductDetailTarget(userMessage)
+    ) {
+      return this.buildResponseWithSuggestions({
+        type: "fallback",
+        message: this.buildGeneralProductDetailAnswer(normalized),
         userMessage,
         options: [
           { label: "Banana Chips", value: "Show me Banana Chips" },
@@ -1808,23 +1849,66 @@ export class SupportAgentService {
     userMessage: string,
   ): string {
     const normalizedMessage = userMessage.toLowerCase();
-    const weightMatch = product.title.match(/(\d+\s*g)\b/i);
+    const weightMatch = this.extractProductWeight(product);
+    const metadata = this.getProductMetadata(product);
+    const productDescription = this.getMeaningfulProductDescription(product);
 
     if (/\b(weight|size|how much|kitna|gram|grams|g)\b/i.test(normalizedMessage) && weightMatch) {
-      return `${product.title} comes in ${weightMatch[1]}.`;
+      return productDescription
+        ? `${productDescription} ${product.title} comes in ${weightMatch}.`
+        : `${product.title} comes in ${weightMatch}.`;
     }
 
-    if (/\b(fried|dried|baked|halal|vegetarian|vegan|ingredients?|expiry|fresh)\b/i.test(normalizedMessage)) {
-      return `The current Snakitos catalog matches ${product.title}, but it does not explicitly confirm that detail. Please check the product page or support for exact confirmation.`;
+    if (/\bhalal\b/i.test(normalizedMessage)) {
+      if (typeof metadata.halal === "boolean") {
+        return metadata.halal
+          ? productDescription
+            ? `${productDescription} Yes, ${product.title} is halal.`
+            : `Yes, ${product.title} is halal.`
+          : `${product.title} is not marked as halal in the current product metadata.`;
+      }
+
+      return `I found ${product.title}, but the current catalog does not explicitly confirm halal status. Please check the product page or ask support for exact confirmation.`;
     }
 
-    const description =
-      product.description && product.description !== "Snakitos snack from uploaded catalog."
-        ? product.description.trim()
-        : "";
+    if (/\b(vegetarian|vegan)\b/i.test(normalizedMessage)) {
+      return `I found ${product.title}, but the current catalog does not explicitly confirm whether it is vegetarian or vegan. Please check the product page or ask support for exact confirmation.`;
+    }
 
-    if (description) {
-      return /[.!?]$/.test(description) ? description : `${description}.`;
+    if (/\b(ingredients?|made of|made from)\b/i.test(normalizedMessage)) {
+      if (metadata.ingredientsSummary) {
+        return productDescription
+          ? `${productDescription} It is usually made with ${metadata.ingredientsSummary.toLowerCase()}`
+          : `${product.title} is usually made with ${metadata.ingredientsSummary.toLowerCase()}`;
+      }
+
+      if (productDescription) {
+        return `${productDescription} The product description does not list the full ingredients clearly, so please check the product page or ask support for the exact ingredient list.`;
+      }
+
+      return `I found ${product.title}, but the current catalog does not list the full ingredients clearly here. Please open the product page or ask support for the exact ingredient list.`;
+    }
+
+    if (/\b(expiry|shelf life|fresh)\b/i.test(normalizedMessage)) {
+      if (metadata.expiry) {
+        return productDescription
+          ? `${productDescription} ${product.title} usually has an expiry of ${metadata.expiry}.`
+          : `${product.title} usually has an expiry of ${metadata.expiry}.`;
+      }
+
+      return `I found ${product.title}, but the current catalog does not clearly confirm the exact expiry or shelf-life details here. Please check the product page or ask support for exact confirmation.`;
+    }
+
+    if (/\b(fried|dried|baked)\b/i.test(normalizedMessage)) {
+      if (productDescription) {
+        return `${productDescription} The product description does not explicitly confirm whether it is fried, dried, or baked.`;
+      }
+
+      return `I found ${product.title}, but the current catalog does not explicitly confirm whether it is fried, dried, or baked. Please check the product page or ask support for exact confirmation.`;
+    }
+
+    if (productDescription) {
+      return productDescription;
     }
 
     if (product.productType) {
@@ -1832,6 +1916,119 @@ export class SupportAgentService {
     }
 
     return `${product.title} is listed on the Snakitos store, but the catalog does not include more detailed product notes.`;
+  }
+
+  private hasSpecificProductDetailTarget(userMessage: string): boolean {
+    const candidate = extractProductQuery(userMessage)
+      .toLowerCase()
+      .replace(
+        /\b(what|which|is|are|the|of|for|a|an|do|does|can|you|your|show|list|tell|me|all|every|full|complete|product|products|snack|snacks|item|items|weight|weights|size|sizes|specification|specifications|pack|packs|gram|grams|g|kg|ml|l|halal|vegetarian|vegan|ingredients?|expiry|duration|details|fresh|imported|local|fried|dried|baked|made|from|made of|made from|status)\b/g,
+        " ",
+      )
+      .replace(/\s+/g, " ")
+      .trim();
+
+    return candidate.split(" ").filter(Boolean).length >= 1;
+  }
+
+  private async buildAllWeightSpecificationsResponse(userMessage: string): Promise<string> {
+    const products = await this.getFallbackProductRecommendations("store snack catalog");
+    const weightedProducts = this.selectProductsForResponse(
+      products.filter((product) => this.extractProductWeight(product)),
+      userMessage,
+    ).slice(0, 6);
+
+    const weights = Array.from(
+      new Set(
+        weightedProducts
+          .map((product) => this.extractProductWeight(product))
+          .filter((weight): weight is string => Boolean(weight)),
+      ),
+    );
+
+    const weightSummary =
+      weights.length > 0
+        ? `Common pack sizes I found in the current catalog include ${weights.join(", ")}.`
+        : "I found product pack sizes in the catalog, but not for every item.";
+
+    return this.buildResponseWithSuggestions({
+      type: "product",
+      message: `${weightSummary} Here are a few product examples with their weights.`,
+      userMessage,
+      products: this.buildProductCards(weightedProducts, userMessage),
+      options: [
+        { label: "Coco Choco", value: "What is the weight of Coco Choco?" },
+        { label: "Banana Chips", value: "What is the weight of Banana Chips?" },
+        { label: "Home", value: "home" },
+      ],
+      skipSuggestions: true,
+    });
+  }
+
+  private extractProductWeight(product: ProductLookupResult): string | null {
+    const titleWeightMatch = product.title.match(/(\d+(?:\.\d+)?)\s*(kg|g|ml|l)\b/i);
+    if (titleWeightMatch) {
+      return `${titleWeightMatch[1]}${titleWeightMatch[2].toLowerCase()}`;
+    }
+
+    const descriptionWeightMatch = product.description?.match(/(\d+(?:\.\d+)?)\s*(kg|g|ml|l)\b/i);
+    if (descriptionWeightMatch) {
+      return `${descriptionWeightMatch[1]}${descriptionWeightMatch[2].toLowerCase()}`;
+    }
+
+    return null;
+  }
+
+  private getMeaningfulProductDescription(product: ProductLookupResult): string | null {
+    const description = (product.description ?? "").trim();
+    if (!description || description === "Snakitos snack from uploaded catalog.") {
+      return null;
+    }
+
+    return /[.!?]$/.test(description) ? description : `${description}.`;
+  }
+
+  private buildGeneralProductDetailAnswer(normalizedMessage: string): string {
+    if (/\bhalal\b/i.test(normalizedMessage)) {
+      return "Yes, all Snakitos products are marked halal in the current product metadata.";
+    }
+
+    if (/\b(vegetarian|vegan)\b/i.test(normalizedMessage)) {
+      return "I can help check a specific snack, but the current catalog does not clearly confirm vegetarian or vegan status across all items. Share the product name and I'll narrow it down for you.";
+    }
+
+    if (/\bingredients?\b/i.test(normalizedMessage)) {
+      return "Ingredients vary by snack. Common bases include corn, potato, banana, multigrain blends, chickpea, wafer, and chocolate fillings. Share a product name and I'll narrow it down for you.";
+    }
+
+    if (/\b(expiry duration|expiry)\b/i.test(normalizedMessage)) {
+      return "Banana Chips usually have an expiry of 3 months. Most remaining Snakitos products usually have an expiry of 1 year.";
+    }
+
+    if (/\b(imported or local|imported|local)\b/i.test(normalizedMessage)) {
+      return "I can help check a specific snack, but the current catalog does not clearly label every item as imported or local. Share the product name and I'll narrow it down for you.";
+    }
+
+    return "I can help check a specific product, but the current catalog does not explicitly confirm that detail across all items. Share the product name and I'll narrow it down for you.";
+  }
+
+  private getProductMetadata(product: ProductLookupResult): {
+    halal?: boolean;
+    expiry?: string;
+    ingredientsSummary?: string;
+  } {
+    const title = `${product.title} ${product.productType ?? ""}`.toLowerCase();
+    const rules = (productMetadata.rules ?? []) as ProductMetadataRule[];
+    const matchedRule = rules.find((rule) =>
+      rule.matchAny.some((keyword) => title.includes(keyword.toLowerCase())),
+    );
+
+    return {
+      halal: matchedRule?.halal ?? productMetadata.defaults?.halal,
+      expiry: matchedRule?.expiry ?? productMetadata.defaults?.expiry,
+      ingredientsSummary:
+        matchedRule?.ingredientsSummary ?? productMetadata.defaults?.ingredientsSummary,
+    };
   }
 
   private buildProductCards(

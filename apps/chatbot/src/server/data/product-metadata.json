@@ -1,0 +1,51 @@
+{
+  "defaults": {
+    "halal": true,
+    "expiry": "1 year",
+    "ingredientsSummary": "Ingredients vary by snack, but most products use a simple snack base with seasoning or filling."
+  },
+  "rules": [
+    {
+      "matchAny": ["banana chips", "banana chip"],
+      "halal": true,
+      "expiry": "3 months",
+      "ingredientsSummary": "Banana slices, edible oil, and flavor seasoning."
+    },
+    {
+      "matchAny": ["multigrain stix", "multi grain stix", "stix peri peri", "stix lemon and chilli", "stix salty", "stix hot & spicy", "stix masala"],
+      "halal": true,
+      "expiry": "1 year",
+      "ingredientsSummary": "Multigrain base with seasoning."
+    },
+    {
+      "matchAny": ["coco choco"],
+      "halal": true,
+      "expiry": "1 year",
+      "ingredientsSummary": "Crunchy biscuit shell with chocolate filling."
+    },
+    {
+      "matchAny": ["nachos", "salsa", "paprika"],
+      "halal": true,
+      "expiry": "1 year",
+      "ingredientsSummary": "Corn-based nachos with flavor seasoning."
+    },
+    {
+      "matchAny": ["wafer rolls", "wafer"],
+      "halal": true,
+      "expiry": "1 year",
+      "ingredientsSummary": "Crispy wafer rolls with flavored cream filling."
+    },
+    {
+      "matchAny": ["patata", "potato slims", "potato snacks"],
+      "halal": true,
+      "expiry": "1 year",
+      "ingredientsSummary": "Potato base, edible oil, and seasoning."
+    },
+    {
+      "matchAny": ["chickpea puffs", "chickpea"],
+      "halal": true,
+      "expiry": "1 year",
+      "ingredientsSummary": "Chickpea-based puff snack with seasoning."
+    }
+  ]
+}
