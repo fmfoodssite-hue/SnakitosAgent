@@ -54,6 +54,8 @@ type SuggestionStrategy = {
 type ProductMetadataRule = {
   matchAny: string[];
   halal?: boolean;
+  halalCertificate?: string;
+  halalCertificateMessage?: string;
   expiry?: string;
   ingredientsSummary?: string;
 };
@@ -410,6 +412,29 @@ export class SupportAgentService {
     userMessage: string,
     chatId: string,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
+    if (
+      /\b(certificate|certification|halal certificate|certificate chahiye|certificate chaiye|certificate do)\b/i.test(
+        userMessage,
+      ) &&
+      !this.hasSpecificProductDetailTarget(userMessage)
+    ) {
+      return {
+        intent: "product",
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message:
+            "Yes, our products are halal and approved by Pakistan Halal Authority (PHA) and Sindh. If you need the halal certificate, our support team can share it on request.",
+          userMessage,
+          options: [
+            { label: "Contact Support", value: "How can I contact support?" },
+            { label: "Home", value: "home" },
+          ],
+          skipSuggestions: true,
+        }),
+        data: [],
+      };
+    }
+
     if (this.shouldAskRecommendationFollowUp(userMessage)) {
       return {
         intent: "product",
@@ -805,6 +830,19 @@ export class SupportAgentService {
   }
 
   private async buildQuickSupportResponse(userMessage: string): Promise<string | null> {
+    if (/\b(certificate|certification|certificate chahiye|certificate chaiye|certificate do)\b/i.test(userMessage)) {
+      return this.buildGeneralPlaybookResponse({
+        userMessage,
+        answer: "Yes, our products are halal and approved by Pakistan Halal Authority (PHA) and Sindh. If you need the halal certificate, our support team can share it on request.",
+        assistLine: "If you want, I can also help you contact support right away.",
+        type: "fallback",
+        options: [
+          { label: "Contact Support", value: "How can I contact support?" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
     return this.buildStoreInfoResponse(userMessage);
   }
 
@@ -837,7 +875,7 @@ export class SupportAgentService {
   }
 
   private async buildTrustAndPolicyFaqResponse(userMessage: string): Promise<string | null> {
-    if (/(cash on delivery|cod)/i.test(userMessage)) {
+    if (/(cash on delivery|cod|cod hai|cash on delivery hai|cash delivery)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
         answer: "Yes, Cash on Delivery is available across Pakistan.",
@@ -854,8 +892,10 @@ export class SupportAgentService {
 
     if (
       /(same day|same-day)/i.test(userMessage) &&
-      /karachi/i.test(userMessage) &&
-      /(advance|advance payment|paid|prepaid|online payment)/i.test(userMessage)
+      /(karachi|karachi mein|karachi me)/i.test(userMessage) &&
+      /(advance|advance payment|advance pe|advance pay|paid|prepaid|online payment|pehle payment)/i.test(
+        userMessage,
+      )
     ) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
@@ -871,7 +911,7 @@ export class SupportAgentService {
       });
     }
 
-    if (/(same day delivery|same-day delivery)/i.test(userMessage)) {
+    if (/(same day delivery|same-day delivery|same day hai|same-day hai)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
         answer: "Same-day delivery is not confirmed in the current Snakitos policy details.",
@@ -900,7 +940,7 @@ export class SupportAgentService {
       });
     }
 
-    if (/(payment methods|how can i pay|can i pay online|online payment)/i.test(userMessage)) {
+    if (/(payment methods|how can i pay|can i pay online|online payment|payment kaise karein|payment kese karain|online pay kar sakte hain)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
         answer: "Snakitos supports standard checkout payment flows, and Cash on Delivery is available.",
@@ -914,7 +954,7 @@ export class SupportAgentService {
       });
     }
 
-    if (/(deliver all over pakistan|all over pakistan|delivery all over pakistan|pakistan delivery)/i.test(userMessage)) {
+    if (/(deliver all over pakistan|all over pakistan|delivery all over pakistan|pakistan delivery|poore pakistan|saray pakistan|pakistan mein delivery|pakistan me delivery)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
         answer: "Yes, we deliver all over Pakistan.",
@@ -929,7 +969,7 @@ export class SupportAgentService {
       });
     }
 
-    if (/(fresh|freshness|are your products fresh)/i.test(userMessage)) {
+    if (/(fresh|freshness|are your products fresh|fresh hain|fresh hai|taaza hain|taaza hai)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
         answer: "All products are packed fresh and carefully checked before dispatch.",
@@ -975,7 +1015,7 @@ export class SupportAgentService {
       });
     }
 
-    if (/(support hours|contact support|customer support|social media|instagram|facebook|whatsapp)/i.test(userMessage)) {
+    if (/(support hours|contact support|customer support|social media|instagram|facebook|whatsapp|whatsapp number|contact number|support number)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
         answer: "You can contact Snakitos support on WhatsApp at +92-345-828-3827.",
@@ -1109,7 +1149,7 @@ export class SupportAgentService {
   private async buildCuratedProductInfoResponse(userMessage: string): Promise<string | null> {
     const normalized = userMessage.toLowerCase();
 
-    if (/(what flavors|which flavors|flavors are available|flavours are available)/i.test(normalized)) {
+    if (/(what flavors|which flavors|flavors are available|flavours are available|kon se flavors hain|kya flavors hain|flavour kya hain)/i.test(normalized)) {
       const products = await this.getFallbackProductRecommendations("popular snack flavors");
       const curated = this.selectProductsForResponse(products, "spicy sweet salty cheesy snacks");
       return this.buildResponseWithSuggestions({
@@ -1127,7 +1167,7 @@ export class SupportAgentService {
       });
     }
 
-    if (/(which snacks are spicy|spicy snacks|spicy chips|hot snacks)/i.test(normalized)) {
+    if (/(which snacks are spicy|spicy snacks|spicy chips|hot snacks|teekhay snacks|teekha snacks|spicy chips chahiye)/i.test(normalized)) {
       const products = await this.getFallbackProductRecommendations("spicy snack best sellers");
       const curated = this.selectProductsForResponse(products, "spicy snacks");
       return this.buildResponseWithSuggestions({
@@ -1143,7 +1183,7 @@ export class SupportAgentService {
       });
     }
 
-    if (/(sweet snacks|which snacks are sweet|sweet snack)/i.test(normalized)) {
+    if (/(sweet snacks|which snacks are sweet|sweet snack|meethay snacks|meetha snack|sweet chahiye)/i.test(normalized)) {
       const products = await this.getFallbackProductRecommendations("sweet tooth snack deals");
       const curated = this.selectProductsForResponse(products, "sweet snacks");
       return this.buildResponseWithSuggestions({
@@ -1159,7 +1199,7 @@ export class SupportAgentService {
       });
     }
 
-    if (/(best sellers|best seller|trending|popular products)/i.test(normalized)) {
+    if (/(best sellers|best seller|trending|popular products|best seller dikhao|popular snacks|trending snacks)/i.test(normalized)) {
       const products = await this.getFallbackProductRecommendations("best selling snack deals");
       const curated = this.selectProductsForResponse(products, "best selling snack deals");
       return this.buildResponseWithSuggestions({
@@ -1175,7 +1215,7 @@ export class SupportAgentService {
       });
     }
 
-    if (/(suitable for kids|for kids|kids snacks)/i.test(normalized)) {
+    if (/(suitable for kids|for kids|kids snacks|bachon ke liye snacks|kids ke liye snacks)/i.test(normalized)) {
       const products = await this.getFallbackProductRecommendations("sweet mild snacks for kids");
       const curated = this.selectProductsForResponse(products, "sweet mild snacks");
       return this.buildResponseWithSuggestions({
@@ -1194,7 +1234,7 @@ export class SupportAgentService {
 
     if (
       /\b(all|every|full|complete)\b/i.test(normalized) &&
-      /\b(weight|weights|size|sizes|kitna gram|kitne gram|grams?|pack size|pack sizes|specification|specifications)\b/i.test(
+      /\b(weight|weights|size|sizes|wazan|kitna gram|kitne gram|grams?|pack size|pack sizes|specification|specifications)\b/i.test(
         normalized,
       )
     ) {
@@ -1202,7 +1242,7 @@ export class SupportAgentService {
     }
 
     if (
-      /\b(weight|weights|size|sizes|kitna gram|kitne gram|grams?|pack size|pack sizes)\b/i.test(
+      /\b(weight|weights|size|sizes|wazan|kitna gram|kitne gram|grams?|pack size|pack sizes)\b/i.test(
         normalized,
       ) &&
       !this.hasSpecificProductDetailTarget(userMessage)
@@ -1222,7 +1262,7 @@ export class SupportAgentService {
     }
 
     if (
-      /(halal|vegetarian|vegan|ingredients|expiry duration|expiry|expiry details|imported or local|imported|local)/i.test(
+      /(halal certificate|certificate|certification|certificate chahiye|certificate chaiye|certificate do|halal|halaal|halal hain|halal hai|vegetarian|vegan|ingredients|ingredients kya hain|expiry duration|expiry|expiry details|expiry kitni hai|imported or local|imported|local)/i.test(
         normalized,
       ) &&
       !this.hasSpecificProductDetailTarget(userMessage)
@@ -1867,7 +1907,7 @@ export class SupportAgentService {
       return false;
     }
 
-    const asksForFacts = /\b(are|is|do|does|did|can|could|would|will|what|which|how|why|ingredient|ingredients|made of|made from|fried|dried|baked|vegan|vegetarian|halal|gluten|spicy|sweet|salty|flavour|flavor|weight|size|fresh|expiry)\b/i.test(
+    const asksForFacts = /\b(are|is|do|does|did|can|could|would|will|what|which|how|why|ingredient|ingredients|made of|made from|fried|dried|baked|vegan|vegetarian|halal|halaal|gluten|spicy|sweet|salty|flavour|flavor|weight|wazan|size|fresh|expiry|kitna|kitni)\b/i.test(
       userMessage,
     );
 
@@ -1887,19 +1927,27 @@ export class SupportAgentService {
     const metadata = this.getProductMetadata(product);
     const productDescription = this.getMeaningfulProductDescription(product);
 
-    if (/\b(weight|size|how much|kitna|gram|grams|g)\b/i.test(normalizedMessage) && weightMatch) {
+    if (/\b(weight|wazan|size|how much|kitna|gram|grams|g)\b/i.test(normalizedMessage) && weightMatch) {
       return productDescription
         ? `${productDescription} ${product.title} comes in ${weightMatch}.`
         : `${product.title} comes in ${weightMatch}.`;
     }
 
-    if (/\bhalal\b/i.test(normalizedMessage)) {
+    if (/\b(certificate|certification|halal certificate|certificate chahiye|certificate chaiye|certificate do)\b/i.test(normalizedMessage)) {
+      if (metadata.halalCertificateMessage) {
+        return productDescription
+          ? `${productDescription} ${metadata.halalCertificateMessage}`
+          : metadata.halalCertificateMessage;
+      }
+    }
+
+    if (/\b(halal|halaal)\b/i.test(normalizedMessage)) {
       if (typeof metadata.halal === "boolean") {
         return metadata.halal
           ? productDescription
-            ? `${productDescription} Yes, ${product.title} is halal.`
-            : `Yes, ${product.title} is halal.`
-          : `${product.title} is not marked as halal in the current product metadata.`;
+            ? `${productDescription} Yes, ${product.title} is halal and approved by Pakistan Halal Authority (PHA) and Sindh. If you need the halal certificate, our support team can share it on request.`
+            : `Yes, ${product.title} is halal and approved by Pakistan Halal Authority (PHA) and Sindh. If you need the halal certificate, our support team can share it on request.`
+          : `${product.title} is not marked as halal in the current product details.`;
       }
 
       return `I found ${product.title}, but the current catalog does not explicitly confirm halal status. Please check the product page or ask support for exact confirmation.`;
@@ -1909,7 +1957,7 @@ export class SupportAgentService {
       return `I found ${product.title}, but the current catalog does not explicitly confirm whether it is vegetarian or vegan. Please check the product page or ask support for exact confirmation.`;
     }
 
-    if (/\b(ingredients?|made of|made from)\b/i.test(normalizedMessage)) {
+    if (/\b(ingredients?|made of|made from|ingredients kya hain)\b/i.test(normalizedMessage)) {
       if (metadata.ingredientsSummary) {
         return productDescription
           ? `${productDescription} It is usually made with ${metadata.ingredientsSummary.toLowerCase()}`
@@ -1923,7 +1971,7 @@ export class SupportAgentService {
       return `I found ${product.title}, but the current catalog does not list the full ingredients clearly here. Please open the product page or ask support for the exact ingredient list.`;
     }
 
-    if (/\b(expiry|shelf life|fresh)\b/i.test(normalizedMessage)) {
+    if (/\b(expiry|shelf life|fresh|expiry kitni|kitni expiry)\b/i.test(normalizedMessage)) {
       if (metadata.expiry) {
         return productDescription
           ? `${productDescription} ${product.title} usually has an expiry of ${metadata.expiry}.`
@@ -1956,7 +2004,7 @@ export class SupportAgentService {
     const candidate = extractProductQuery(userMessage)
       .toLowerCase()
       .replace(
-        /\b(what|which|is|are|the|of|for|a|an|do|does|can|you|your|show|list|tell|me|all|every|full|complete|product|products|snack|snacks|item|items|weight|weights|size|sizes|specification|specifications|pack|packs|gram|grams|g|kg|ml|l|halal|vegetarian|vegan|ingredients?|expiry|duration|details|fresh|imported|local|fried|dried|baked|made|from|made of|made from|status)\b/g,
+        /\b(what|which|is|are|the|of|for|a|an|do|does|can|you|your|show|list|tell|me|all|every|full|complete|hai|hain|kya|kiya|ka|ki|ke|mein|me|wali|wala|walay|chahiye|chaiye|do|dein|dena|product|products|snack|snacks|item|items|weight|weights|wazan|size|sizes|specification|specifications|pack|packs|gram|grams|g|kg|ml|l|halal|halaal|certificate|certification|vegetarian|vegan|ingredients?|expiry|duration|details|fresh|imported|local|fried|dried|baked|made|from|made of|made from|status)\b/g,
         " ",
       )
       .replace(/\s+/g, " ")
@@ -2023,19 +2071,23 @@ export class SupportAgentService {
   }
 
   private buildGeneralProductDetailAnswer(normalizedMessage: string): string {
-    if (/\bhalal\b/i.test(normalizedMessage)) {
-      return "Yes, all Snakitos products are marked halal in the current product metadata.";
+    if (/\b(certificate|certification|halal certificate|certificate chahiye|certificate chaiye|certificate do)\b/i.test(normalizedMessage)) {
+      return "Yes, our products are halal and approved by Pakistan Halal Authority (PHA) and Sindh. If you need the halal certificate, our support team can share it on request.";
+    }
+
+    if (/\b(halal|halaal|halal hain|halal hai)\b/i.test(normalizedMessage)) {
+      return "Yes, our products are halal and approved by Pakistan Halal Authority (PHA) and Sindh. If you need the halal certificate, our support team can share it on request.";
     }
 
     if (/\b(vegetarian|vegan)\b/i.test(normalizedMessage)) {
       return "I can help check a specific snack, but the current catalog does not clearly confirm vegetarian or vegan status across all items. Share the product name and I'll narrow it down for you.";
     }
 
-    if (/\bingredients?\b/i.test(normalizedMessage)) {
+    if (/\b(ingredients?|ingredients kya hain)\b/i.test(normalizedMessage)) {
       return "Ingredients vary by snack. Common bases include corn, potato, banana, multigrain blends, chickpea, wafer, and chocolate fillings. Share a product name and I'll narrow it down for you.";
     }
 
-    if (/\b(expiry duration|expiry)\b/i.test(normalizedMessage)) {
+    if (/\b(expiry duration|expiry|expiry kitni hai|kitni expiry)\b/i.test(normalizedMessage)) {
       return "Banana Chips usually have an expiry of 3 months. Most remaining Snakitos products usually have an expiry of 1 year.";
     }
 
@@ -2048,6 +2100,8 @@ export class SupportAgentService {
 
   private getProductMetadata(product: ProductLookupResult): {
     halal?: boolean;
+    halalCertificate?: string;
+    halalCertificateMessage?: string;
     expiry?: string;
     ingredientsSummary?: string;
   } {
@@ -2059,6 +2113,9 @@ export class SupportAgentService {
 
     return {
       halal: matchedRule?.halal ?? productMetadata.defaults?.halal,
+      halalCertificate: matchedRule?.halalCertificate ?? productMetadata.defaults?.halalCertificate,
+      halalCertificateMessage:
+        matchedRule?.halalCertificateMessage ?? productMetadata.defaults?.halalCertificateMessage,
       expiry: matchedRule?.expiry ?? productMetadata.defaults?.expiry,
       ingredientsSummary:
         matchedRule?.ingredientsSummary ?? productMetadata.defaults?.ingredientsSummary,

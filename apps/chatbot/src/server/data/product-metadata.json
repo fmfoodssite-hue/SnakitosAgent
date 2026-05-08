@@ -1,6 +1,8 @@
 {
   "defaults": {
     "halal": true,
+    "halalCertificate": "available_on_request",
+    "halalCertificateMessage": "Approved by Pakistan Halal Authority (PHA) and Sindh. If you need the halal certificate, our support team can share it on request.",
     "expiry": "1 year",
     "ingredientsSummary": "Ingredients vary by snack, but most products use a simple snack base with seasoning or filling."
   },
