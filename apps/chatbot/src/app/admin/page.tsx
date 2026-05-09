@@ -1,4 +1,17 @@
-import React from "react";
+import {
+  Bot,
+  CheckCircle2,
+  Clock,
+  LayoutDashboard,
+  LogOut,
+  MessageSquare,
+  Search,
+  Settings,
+  ShoppingBag,
+  TrendingUp,
+  Users,
+  Zap,
+} from "lucide-react";
 import { supabaseService } from "@/server/services/supabase.service";
 
 type AuditRow = {
@@ -16,7 +29,7 @@ export const dynamic = "force-dynamic";
 
 async function getAuditRows(): Promise<AuditRow[]> {
   try {
-    const logs = await supabaseService.getRecentLogs(100);
+    const logs = await supabaseService.getRecentLogs(120);
 
     return logs
       .filter((row) => String(row.event ?? "") === "chat_processed")
@@ -44,31 +57,9 @@ async function getAuditRows(): Promise<AuditRow[]> {
 }
 
 function formatDuration(ms: number): string {
-  if (!ms || ms < 1000) {
-    return `${ms || 0}ms`;
-  }
-
+  if (!ms) return "0ms";
+  if (ms < 1000) return `${ms}ms`;
   return `${(ms / 1000).toFixed(1)}s`;
-}
-
-function statCard(label: string, value: string, accent: string) {
-  return (
-    <div
-      key={label}
-      style={{
-        background: "linear-gradient(180deg, rgba(30,41,59,0.88), rgba(15,23,42,0.95))",
-        border: "1px solid rgba(148,163,184,0.18)",
-        borderRadius: 20,
-        padding: 24,
-        boxShadow: "0 10px 30px rgba(2, 6, 23, 0.28)",
-      }}
-    >
-      <div style={{ color: "#94a3b8", fontSize: 13, fontWeight: 600, letterSpacing: "0.02em" }}>
-        {label}
-      </div>
-      <div style={{ color: accent, fontSize: 30, fontWeight: 800, marginTop: 10 }}>{value}</div>
-    </div>
-  );
 }
 
 export default async function AdminDashboard() {
@@ -81,202 +72,267 @@ export default async function AdminDashboard() {
     ? Math.round((rows.filter((row) => row.status === "success").length / rows.length) * 100)
     : 0;
 
+  const stats = [
+    {
+      label: "Total Conversations",
+      value: `${sessionCount}`,
+      change: `${rows.length} replies`,
+      icon: MessageSquare,
+      color: "text-emerald-500",
+      bg: "bg-emerald-500/10",
+    },
+    {
+      label: "Avg Response Time",
+      value: formatDuration(avgResponseMs),
+      change: rows.length > 0 ? "Live audit" : "No data",
+      icon: Clock,
+      color: "text-blue-500",
+      bg: "bg-blue-500/10",
+    },
+    {
+      label: "AI Success Rate",
+      value: `${successRate}%`,
+      change: rows.length > 0 ? "From logs" : "Awaiting chats",
+      icon: TrendingUp,
+      color: "text-purple-500",
+      bg: "bg-purple-500/10",
+    },
+    {
+      label: "Shopify Sync",
+      value: "Connected",
+      change: "Chatbot panel",
+      icon: ShoppingBag,
+      color: "text-amber-500",
+      bg: "bg-amber-500/10",
+    },
+  ];
+
+  const menuItems = [
+    { icon: LayoutDashboard, label: "Dashboard", href: "/admin", active: true },
+    { icon: ShoppingBag, label: "Orders", href: "/admin" },
+    { icon: Users, label: "Customers", href: "/admin" },
+    { icon: Bot, label: "AI Training", href: "/admin" },
+    { icon: MessageSquare, label: "Interactions", href: "/admin" },
+    { icon: Settings, label: "Settings", href: "/admin" },
+  ];
+
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        background:
-          "radial-gradient(circle at top, rgba(37,99,235,0.16), transparent 28%), linear-gradient(180deg, #020617 0%, #0f172a 55%, #111827 100%)",
-        color: "#f8fafc",
-        padding: "32px 16px",
-        fontFamily:
-          "var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
-      }}
-    >
-      <div style={{ maxWidth: 1180, margin: "0 auto" }}>
-        <header
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            gap: 16,
-            marginBottom: 36,
-            flexWrap: "wrap",
-          }}
-        >
-          <div>
-            <h1
-              style={{
-                margin: 0,
-                fontSize: 48,
-                lineHeight: 1.05,
-                fontWeight: 800,
-                letterSpacing: "-0.03em",
-              }}
-            >
-              Agent Control Center
-            </h1>
-            <p style={{ margin: "12px 0 0", color: "#94a3b8", fontSize: 18 }}>
-              Real-time monitoring and tracking
-            </p>
-          </div>
-          <div
-            style={{
-              border: "1px solid rgba(148,163,184,0.2)",
-              background: "rgba(15,23,42,0.82)",
-              borderRadius: 16,
-              padding: "14px 18px",
-            }}
-          >
-            <div
-              style={{
-                color: "#94a3b8",
-                fontSize: 11,
-                textTransform: "uppercase",
-                letterSpacing: "0.16em",
-                marginBottom: 6,
-                fontWeight: 700,
-              }}
-            >
-              Status
+    <div className="flex min-h-screen w-full bg-[#09090b] text-zinc-100">
+      <aside className="sticky top-0 hidden h-screen w-64 flex-col border-r border-white/5 bg-[#09090b] md:flex">
+        <div className="p-6">
+          <div className="flex items-center gap-3 px-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
+              <Zap className="h-5 w-5 fill-current text-white" />
             </div>
-            <div style={{ color: "#4ade80", fontWeight: 700, fontSize: 15 }}>Operational</div>
+            <span className="text-xl font-bold tracking-tight">Agent Admin</span>
+          </div>
+        </div>
+
+        <nav className="flex-1 space-y-1 px-4 py-4">
+          {menuItems.map((item) => (
+            <a
+              key={item.label}
+              href={item.href}
+              className={`group flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-200 ${
+                item.active
+                  ? "bg-white/5 text-white"
+                  : "text-zinc-400 hover:bg-white/5 hover:text-white"
+              }`}
+            >
+              <item.icon
+                className={`h-5 w-5 transition-transform duration-200 group-hover:scale-110 ${
+                  item.active ? "text-indigo-400" : "text-zinc-500"
+                }`}
+              />
+              <span className="font-medium">{item.label}</span>
+              {item.active ? (
+                <div className="ml-auto h-5 w-1 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.5)]" />
+              ) : null}
+            </a>
+          ))}
+        </nav>
+
+        <div className="mt-auto space-y-2 p-4">
+          <a
+            href="/admin/login"
+            className="group flex w-full items-center gap-3 rounded-xl px-4 py-3 text-zinc-400 transition-all duration-200 hover:bg-red-500/5 hover:text-red-400"
+          >
+            <LogOut className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
+            <span className="font-medium">Logout</span>
+          </a>
+
+          <div className="rounded-2xl border border-indigo-500/20 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 p-4">
+            <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-indigo-400">Status</p>
+            <div className="flex items-center gap-2">
+              <div className="h-2 w-2 rounded-full bg-emerald-500" />
+              <p className="text-sm font-medium text-zinc-300">AI Agent Online</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <main className="relative min-h-screen flex-1">
+        <div className="pointer-events-none absolute left-0 top-0 h-full w-full bg-[radial-gradient(circle_at_30%_20%,#1e1b4b_0%,transparent_50%)] opacity-20" />
+
+        <header className="sticky top-0 z-30 border-b border-white/5 bg-[#09090b]/90 backdrop-blur md:hidden">
+          <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
+            <div className="flex items-center gap-2">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
+                <Zap className="h-5 w-5 fill-current text-white" />
+              </div>
+              <span className="text-sm font-semibold tracking-tight text-white">Agent Admin</span>
+            </div>
           </div>
         </header>
 
-        <section
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-            gap: 18,
-            marginBottom: 32,
-          }}
-        >
-          {statCard("Total Conversations", `${sessionCount}`, "#60a5fa")}
-          {statCard("Avg Response Time", formatDuration(avgResponseMs), "#34d399")}
-          {statCard("AI Success Rate", `${successRate}%`, "#c084fc")}
-          {statCard("Audit Source", rows.length > 0 ? "Live" : "No data", "#fb923c")}
-        </section>
+        <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 md:px-8 md:py-8">
+          <div className="space-y-10">
+            <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-center">
+              <div>
+                <h1 className="text-3xl font-bold tracking-tight">Overview</h1>
+                <p className="mt-1 text-zinc-400">Welcome back, here&apos;s what&apos;s happening with your agent.</p>
+              </div>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <div className="relative w-full sm:max-w-xs">
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+                  <input
+                    type="text"
+                    placeholder="Search data..."
+                    className="w-full rounded-xl border border-white/10 bg-white/5 py-2 pl-10 pr-4 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
+                  />
+                </div>
+                <a
+                  href="/admin/login"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition-all shadow-lg shadow-indigo-500/20 active:scale-95 hover:bg-indigo-500 sm:w-auto"
+                >
+                  <Zap className="h-4 w-4" />
+                  Admin Access
+                </a>
+              </div>
+            </div>
 
-        <section
-          style={{
-            background: "rgba(15,23,42,0.7)",
-            border: "1px solid rgba(148,163,184,0.16)",
-            borderRadius: 24,
-            overflow: "hidden",
-            boxShadow: "0 12px 36px rgba(2, 6, 23, 0.26)",
-          }}
-        >
-          <div
-            style={{
-              padding: 24,
-              borderBottom: "1px solid rgba(148,163,184,0.12)",
-              background: "rgba(2,6,23,0.24)",
-            }}
-          >
-            <h2 style={{ margin: 0, fontSize: 28, fontWeight: 800 }}>Live Chat Tracking</h2>
-            <p style={{ margin: "8px 0 0", color: "#94a3b8", fontSize: 15 }}>
-              Latest captured user queries and bot replies.
-            </p>
-          </div>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+              {stats.map((stat) => (
+                <div
+                  key={stat.label}
+                  className="glass-card group rounded-2xl p-6 transition-all duration-300 hover:border-white/20"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className={`${stat.bg} rounded-xl p-3`}>
+                      <stat.icon className={`${stat.color} h-6 w-6`} />
+                    </div>
+                    <div className="rounded-full bg-emerald-500/10 px-2 py-1 text-xs font-semibold text-emerald-500">
+                      {stat.change}
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <p className="text-sm font-medium text-zinc-400">{stat.label}</p>
+                    <h3 className="mt-1 text-2xl font-bold">{stat.value}</h3>
+                  </div>
+                </div>
+              ))}
+            </div>
 
-          <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 860 }}>
-              <thead>
-                <tr style={{ background: "rgba(15,23,42,0.92)" }}>
-                  {["Time", "User", "Query", "Agent Response"].map((label) => (
-                    <th
-                      key={label}
-                      style={{
-                        textAlign: "left",
-                        padding: "16px 18px",
-                        color: "#94a3b8",
-                        fontSize: 13,
-                        fontWeight: 700,
-                        letterSpacing: "0.03em",
-                      }}
-                    >
-                      {label}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {rows.length > 0 ? (
-                  rows.slice(0, 20).map((row) => (
-                    <tr key={row.id} style={{ borderTop: "1px solid rgba(148,163,184,0.12)" }}>
-                      <td
-                        style={{
-                          padding: "16px 18px",
-                          color: "#cbd5e1",
-                          fontSize: 13,
-                          whiteSpace: "nowrap",
-                          verticalAlign: "top",
-                        }}
-                      >
-                        {new Date(row.createdAt).toLocaleString()}
-                      </td>
-                      <td style={{ padding: "16px 18px", verticalAlign: "top" }}>
-                        <span
-                          style={{
-                            display: "inline-block",
-                            padding: "6px 10px",
-                            borderRadius: 999,
-                            background: "rgba(59,130,246,0.14)",
-                            color: "#93c5fd",
-                            fontSize: 12,
-                            fontWeight: 700,
-                          }}
-                        >
-                          {row.userId}
-                        </span>
-                      </td>
-                      <td
-                        style={{
-                          padding: "16px 18px",
-                          color: "#e2e8f0",
-                          fontSize: 14,
-                          lineHeight: 1.5,
-                          maxWidth: 300,
-                          verticalAlign: "top",
-                        }}
-                      >
-                        {row.query}
-                      </td>
-                      <td
-                        style={{
-                          padding: "16px 18px",
-                          color: "#94a3b8",
-                          fontSize: 14,
-                          lineHeight: 1.5,
-                          maxWidth: 420,
-                          verticalAlign: "top",
-                        }}
-                      >
-                        {row.response}
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td
-                      colSpan={4}
-                      style={{
-                        padding: 32,
-                        textAlign: "center",
-                        color: "#94a3b8",
-                        fontSize: 15,
-                      }}
-                    >
-                      No live chat logs found yet.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+            <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
+              <div className="glass-card rounded-3xl border-white/5 p-5 sm:p-6 lg:col-span-2 lg:p-8">
+                <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h2 className="text-xl font-semibold">Live Chat Tracking</h2>
+                    <p className="mt-1 text-sm text-zinc-500">Latest chatbot audit logs from real user conversations.</p>
+                  </div>
+                  <a className="text-left text-xs font-medium text-indigo-400 transition-colors hover:text-indigo-300 sm:text-right" href="/admin">
+                    Refresh
+                  </a>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[720px] text-left">
+                    <thead>
+                      <tr className="border-b border-white/5 text-xs uppercase tracking-wider text-zinc-500">
+                        <th className="pb-4 font-medium">Time</th>
+                        <th className="pb-4 font-medium">User</th>
+                        <th className="pb-4 font-medium">Query</th>
+                        <th className="pb-4 font-medium">Agent Response</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {rows.length > 0 ? (
+                        rows.slice(0, 20).map((row) => (
+                          <tr key={row.id} className="group transition-colors hover:bg-white/[0.02]">
+                            <td className="py-4 text-sm text-zinc-400">
+                              {new Date(row.createdAt).toLocaleTimeString()}
+                            </td>
+                            <td className="py-4">
+                              <span className="rounded bg-blue-500/10 px-2 py-1 text-xs text-blue-400">
+                                {row.userId}
+                              </span>
+                            </td>
+                            <td className="max-w-xs truncate py-4 text-sm text-zinc-300">{row.query}</td>
+                            <td className="max-w-xs truncate py-4 text-sm text-zinc-500 italic">
+                              {row.response}
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={4} className="py-12 text-center text-sm text-zinc-500">
+                            No live chat logs found yet.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div className="glass-card rounded-3xl border-white/5 p-5 sm:p-6 lg:p-8">
+                <div className="mb-6 flex items-center justify-between gap-3">
+                  <h2 className="text-xl font-semibold">Live AI Activity</h2>
+                  <div className="flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2 py-1">
+                    <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-[10px] font-bold uppercase text-emerald-500">Live</span>
+                  </div>
+                </div>
+
+                <div className="space-y-5">
+                  {rows.length > 0 ? (
+                    rows.slice(0, 5).map((item) => (
+                      <div key={item.id} className="flex items-start gap-3 sm:gap-4">
+                        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-indigo-500/20 bg-indigo-500/10 text-indigo-400">
+                          <MessageSquare className="h-5 w-5" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium text-zinc-200">User Query</p>
+                          <p className="mt-0.5 line-clamp-2 text-xs text-zinc-500">"{item.query || "Asked a question..."}"</p>
+                          <div className="mt-2 flex items-center gap-2">
+                            <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                            <span className="text-[10px] text-zinc-500">
+                              {item.status === "success" ? "AI Responded" : "Needs review"}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="py-12 text-center text-sm text-zinc-500">
+                      <Bot className="mx-auto mb-2 h-8 w-8 opacity-20" />
+                      <p>Waiting for interactions...</p>
+                    </div>
+                  )}
+                </div>
+
+                <a
+                  href="/admin/login"
+                  className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-white/5 py-3 text-sm font-medium text-zinc-300 transition-all hover:bg-white/10"
+                >
+                  <Clock className="h-4 w-4" />
+                  View History
+                </a>
+              </div>
+            </div>
           </div>
-        </section>
-      </div>
-    </main>
+        </div>
+      </main>
+    </div>
   );
 }
