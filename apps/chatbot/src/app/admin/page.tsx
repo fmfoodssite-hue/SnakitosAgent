@@ -1,5 +1,4 @@
 import React from "react";
-import { MessageSquare, TimerReset, ShieldCheck, Database } from "lucide-react";
 import { supabaseService } from "@/server/services/supabase.service";
 
 type AuditRow = {
@@ -52,6 +51,26 @@ function formatDuration(ms: number): string {
   return `${(ms / 1000).toFixed(1)}s`;
 }
 
+function statCard(label: string, value: string, accent: string) {
+  return (
+    <div
+      key={label}
+      style={{
+        background: "linear-gradient(180deg, rgba(30,41,59,0.88), rgba(15,23,42,0.95))",
+        border: "1px solid rgba(148,163,184,0.18)",
+        borderRadius: 20,
+        padding: 24,
+        boxShadow: "0 10px 30px rgba(2, 6, 23, 0.28)",
+      }}
+    >
+      <div style={{ color: "#94a3b8", fontSize: 13, fontWeight: 600, letterSpacing: "0.02em" }}>
+        {label}
+      </div>
+      <div style={{ color: accent, fontSize: 30, fontWeight: 800, marginTop: 10 }}>{value}</div>
+    </div>
+  );
+}
+
 export default async function AdminDashboard() {
   const rows = await getAuditRows();
   const sessionCount = new Set(rows.map((row) => row.chatId)).size;
@@ -62,81 +81,193 @@ export default async function AdminDashboard() {
     ? Math.round((rows.filter((row) => row.status === "success").length / rows.length) * 100)
     : 0;
 
-  const stats = [
-    { label: "Total Conversations", value: `${sessionCount}`, icon: MessageSquare, color: "text-blue-400" },
-    { label: "Avg Response Time", value: formatDuration(avgResponseMs), icon: TimerReset, color: "text-emerald-400" },
-    { label: "AI Success Rate", value: `${successRate}%`, icon: ShieldCheck, color: "text-purple-400" },
-    { label: "Audit Source", value: rows.length > 0 ? "Live" : "No data", icon: Database, color: "text-orange-400" },
-  ];
-
   return (
-    <main className="min-h-screen bg-[#0f172a] p-8 text-white">
-      <div className="mx-auto max-w-6xl">
-        <header className="mb-12 flex items-center justify-between">
+    <main
+      style={{
+        minHeight: "100vh",
+        background:
+          "radial-gradient(circle at top, rgba(37,99,235,0.16), transparent 28%), linear-gradient(180deg, #020617 0%, #0f172a 55%, #111827 100%)",
+        color: "#f8fafc",
+        padding: "32px 16px",
+        fontFamily:
+          "var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
+      }}
+    >
+      <div style={{ maxWidth: 1180, margin: "0 auto" }}>
+        <header
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            gap: 16,
+            marginBottom: 36,
+            flexWrap: "wrap",
+          }}
+        >
           <div>
-            <h1 className="bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-3xl font-bold text-transparent">
+            <h1
+              style={{
+                margin: 0,
+                fontSize: 48,
+                lineHeight: 1.05,
+                fontWeight: 800,
+                letterSpacing: "-0.03em",
+              }}
+            >
               Agent Control Center
             </h1>
-            <p className="mt-1 text-slate-400">Real-time monitoring and tracking</p>
+            <p style={{ margin: "12px 0 0", color: "#94a3b8", fontSize: 18 }}>
+              Real-time monitoring and tracking
+            </p>
           </div>
-          <div className="rounded-lg border border-slate-700 bg-slate-800 px-4 py-2">
-            <span className="block text-xs uppercase text-slate-500">Status</span>
-            <span className="font-medium text-green-400">Operational</span>
+          <div
+            style={{
+              border: "1px solid rgba(148,163,184,0.2)",
+              background: "rgba(15,23,42,0.82)",
+              borderRadius: 16,
+              padding: "14px 18px",
+            }}
+          >
+            <div
+              style={{
+                color: "#94a3b8",
+                fontSize: 11,
+                textTransform: "uppercase",
+                letterSpacing: "0.16em",
+                marginBottom: 6,
+                fontWeight: 700,
+              }}
+            >
+              Status
+            </div>
+            <div style={{ color: "#4ade80", fontWeight: 700, fontSize: 15 }}>Operational</div>
           </div>
         </header>
 
-        <div className="mb-12 grid grid-cols-1 gap-6 md:grid-cols-4">
-          {stats.map((stat) => (
-            <div
-              key={stat.label}
-              className="rounded-2xl border border-slate-700/50 bg-slate-800/50 p-6 backdrop-blur-sm"
-            >
-              <div className="flex items-center gap-3">
-                <stat.icon className={`h-5 w-5 ${stat.color}`} />
-                <span className="text-sm font-medium text-slate-400">{stat.label}</span>
-              </div>
-              <div className={`mt-3 text-2xl font-bold ${stat.color}`}>{stat.value}</div>
-            </div>
-          ))}
-        </div>
+        <section
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: 18,
+            marginBottom: 32,
+          }}
+        >
+          {statCard("Total Conversations", `${sessionCount}`, "#60a5fa")}
+          {statCard("Avg Response Time", formatDuration(avgResponseMs), "#34d399")}
+          {statCard("AI Success Rate", `${successRate}%`, "#c084fc")}
+          {statCard("Audit Source", rows.length > 0 ? "Live" : "No data", "#fb923c")}
+        </section>
 
-        <div className="overflow-hidden rounded-2xl border border-slate-700/50 bg-slate-800/30">
-          <div className="border-b border-slate-700/50 p-6">
-            <h2 className="text-xl font-semibold">Live Chat Tracking</h2>
-            <p className="mt-1 text-sm text-slate-400">Latest captured user queries and bot replies.</p>
+        <section
+          style={{
+            background: "rgba(15,23,42,0.7)",
+            border: "1px solid rgba(148,163,184,0.16)",
+            borderRadius: 24,
+            overflow: "hidden",
+            boxShadow: "0 12px 36px rgba(2, 6, 23, 0.26)",
+          }}
+        >
+          <div
+            style={{
+              padding: 24,
+              borderBottom: "1px solid rgba(148,163,184,0.12)",
+              background: "rgba(2,6,23,0.24)",
+            }}
+          >
+            <h2 style={{ margin: 0, fontSize: 28, fontWeight: 800 }}>Live Chat Tracking</h2>
+            <p style={{ margin: "8px 0 0", color: "#94a3b8", fontSize: 15 }}>
+              Latest captured user queries and bot replies.
+            </p>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
+          <div style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 860 }}>
               <thead>
-                <tr className="bg-slate-900/50 text-sm text-slate-400">
-                  <th className="p-4 font-medium">Time</th>
-                  <th className="p-4 font-medium">User</th>
-                  <th className="p-4 font-medium">Query</th>
-                  <th className="p-4 font-medium">Agent Response</th>
+                <tr style={{ background: "rgba(15,23,42,0.92)" }}>
+                  {["Time", "User", "Query", "Agent Response"].map((label) => (
+                    <th
+                      key={label}
+                      style={{
+                        textAlign: "left",
+                        padding: "16px 18px",
+                        color: "#94a3b8",
+                        fontSize: 13,
+                        fontWeight: 700,
+                        letterSpacing: "0.03em",
+                      }}
+                    >
+                      {label}
+                    </th>
+                  ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-700/30">
+              <tbody>
                 {rows.length > 0 ? (
                   rows.slice(0, 20).map((row) => (
-                    <tr key={row.id} className="transition-colors hover:bg-slate-700/20">
-                      <td className="whitespace-nowrap p-4 text-sm text-slate-400">
-                        {new Date(row.createdAt).toLocaleTimeString()}
+                    <tr key={row.id} style={{ borderTop: "1px solid rgba(148,163,184,0.12)" }}>
+                      <td
+                        style={{
+                          padding: "16px 18px",
+                          color: "#cbd5e1",
+                          fontSize: 13,
+                          whiteSpace: "nowrap",
+                          verticalAlign: "top",
+                        }}
+                      >
+                        {new Date(row.createdAt).toLocaleString()}
                       </td>
-                      <td className="p-4">
-                        <span className="rounded bg-blue-500/10 px-2 py-1 text-xs text-blue-400">
+                      <td style={{ padding: "16px 18px", verticalAlign: "top" }}>
+                        <span
+                          style={{
+                            display: "inline-block",
+                            padding: "6px 10px",
+                            borderRadius: 999,
+                            background: "rgba(59,130,246,0.14)",
+                            color: "#93c5fd",
+                            fontSize: 12,
+                            fontWeight: 700,
+                          }}
+                        >
                           {row.userId}
                         </span>
                       </td>
-                      <td className="max-w-xs truncate p-4 text-sm text-slate-300">{row.query}</td>
-                      <td className="max-w-xs truncate p-4 text-sm italic text-slate-500">
+                      <td
+                        style={{
+                          padding: "16px 18px",
+                          color: "#e2e8f0",
+                          fontSize: 14,
+                          lineHeight: 1.5,
+                          maxWidth: 300,
+                          verticalAlign: "top",
+                        }}
+                      >
+                        {row.query}
+                      </td>
+                      <td
+                        style={{
+                          padding: "16px 18px",
+                          color: "#94a3b8",
+                          fontSize: 14,
+                          lineHeight: 1.5,
+                          maxWidth: 420,
+                          verticalAlign: "top",
+                        }}
+                      >
                         {row.response}
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={4} className="p-10 text-center text-sm text-slate-500">
+                    <td
+                      colSpan={4}
+                      style={{
+                        padding: 32,
+                        textAlign: "center",
+                        color: "#94a3b8",
+                        fontSize: 15,
+                      }}
+                    >
                       No live chat logs found yet.
                     </td>
                   </tr>
@@ -144,7 +275,7 @@ export default async function AdminDashboard() {
               </tbody>
             </table>
           </div>
-        </div>
+        </section>
       </div>
     </main>
   );
