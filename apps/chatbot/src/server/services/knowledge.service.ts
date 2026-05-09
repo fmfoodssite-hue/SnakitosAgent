@@ -2,6 +2,7 @@ import { retrieveKnowledge } from "@lib/pinecone";
 import { config } from "../config";
 import capabilityKnowledgeData from "../data/capability-knowledge.json";
 import generalQueryRagData from "../data/general-query-rag.json";
+import storeFaqKnowledgeData from "../data/store-faq-knowledge.json";
 import { KnowledgeDocument } from "../types/chat.types";
 
 const CACHE_TTL_MS = 60_000;
@@ -18,6 +19,8 @@ type LocalGeneralKnowledgeItem = {
   source: string;
   hints?: string[];
 };
+
+type StoreFaqKnowledgeItem = LocalGeneralKnowledgeItem;
 
 export class KnowledgeService {
   private readonly cache = new Map<
@@ -128,7 +131,11 @@ export class KnowledgeService {
   private retrieveLocalKnowledge(query: string): KnowledgeDocument[] {
     const capabilityResults = this.retrieveCapabilityKnowledge(query);
     const generalResults = this.retrieveGeneralKnowledge(query);
-    return this.mergeKnowledge(capabilityResults, generalResults);
+    const storeFaqResults = this.retrieveStoreFaqKnowledge(query);
+    return this.mergeKnowledge(
+      this.mergeKnowledge(storeFaqResults, capabilityResults),
+      generalResults,
+    );
   }
 
   private retrieveCapabilityKnowledge(query: string): KnowledgeDocument[] {
@@ -193,6 +200,67 @@ export class KnowledgeService {
           (/\b(contact|support|whatsapp)\b/.test(query) && /support|contact/.test(loweredText) ? 8 : 0);
 
         const score = keywordMatches * 6 + tokenMatches + phraseBoost;
+
+        return {
+          score,
+          document: {
+            id: item.id,
+            name: item.name,
+            text: item.text,
+            link: item.link,
+            type: item.type,
+            category: item.category,
+            source: item.source,
+          } satisfies KnowledgeDocument,
+        };
+      })
+      .filter((item) => item.score > 1)
+      .sort((left, right) => right.score - left.score)
+      .slice(0, 6)
+      .map((item) => item.document);
+  }
+
+  private retrieveStoreFaqKnowledge(query: string): KnowledgeDocument[] {
+    const tokens = query.split(/[^a-z0-9]+/).filter((token) => token.length >= 2);
+    const docs = storeFaqKnowledgeData as StoreFaqKnowledgeItem[];
+
+    return docs
+      .map((item) => {
+        const loweredText = item.text.toLowerCase();
+        const loweredName = item.name.toLowerCase();
+        const loweredCategory = item.category.toLowerCase();
+        const loweredHints = (item.hints ?? []).map((hint) => hint.toLowerCase());
+
+        const keywordMatches = loweredHints.filter(
+          (hint) => query.includes(hint) || hint.includes(query),
+        ).length;
+        const tokenMatches = tokens.filter(
+          (token) =>
+            loweredText.includes(token) ||
+            loweredName.includes(token) ||
+            loweredCategory.includes(token) ||
+            loweredHints.some((hint) => hint.includes(token)),
+        ).length;
+
+        const phraseBoost =
+          (/\b(halal|halaal|certificate|pha)\b/.test(query) && /halal/.test(loweredCategory) ? 10 : 0) +
+          (/\b(delivery|shipping|courier|track|dispatch|cod|cash on delivery)\b/.test(query) &&
+          /delivery|payment|order-support/.test(loweredCategory)
+            ? 10
+            : 0) +
+          (/\b(expiry|shelf life|ingredients|weight|wazan|pack size|fresh)\b/.test(query) &&
+          /product-facts|trust-support/.test(loweredCategory)
+            ? 10
+            : 0) +
+          (/\b(contact|support|whatsapp|wholesale|bulk)\b/.test(query) &&
+          /support|support-escalation/.test(loweredCategory)
+            ? 10
+            : 0) +
+          (/\b(store|brand|about|physical|location)\b/.test(query) && /store-faq/.test(loweredCategory)
+            ? 10
+            : 0);
+
+        const score = keywordMatches * 7 + tokenMatches + phraseBoost;
 
         return {
           score,
