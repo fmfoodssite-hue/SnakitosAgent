@@ -849,9 +849,31 @@ export class SupportAgentService {
 
   private async buildComplaintOrEscalationResponse(userMessage: string): Promise<string | null> {
     const normalized = userMessage.toLowerCase();
+    const hasFrustrationSignal =
+      /(angry|annoyed|confused|upset|frustrated|not clear|not happy|issue|problem|complaint|why is this not clear)/i.test(
+        normalized,
+      );
+    const hasSensitiveSupportTopic =
+      /(official website|real store|who owns|brand|deliver|delivery|refund|return|payment|courier|track|parcel|support|policy|late|confirmation|tomorrow|order not placed)/i.test(
+        normalized,
+      );
+
+    if (hasFrustrationSignal && hasSensitiveSupportTopic) {
+      return this.buildResponseWithSuggestions({
+        type: "fallback",
+        message:
+          "I’m sorry this feels unclear. I’m forwarding this to our support team so they can help you properly and quickly.",
+        userMessage,
+        options: [
+          { label: "Contact Support", value: "How can I contact support?" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      });
+    }
 
     if (
-      /(damaged|broken|wrong order|wrong item|late delivery|missing order|missing product|payment failed|payment issue|refund dispute|angry|complaint|issue with order|website issue|technical issue|wholesale|bulk order)/i.test(
+      /(damaged|broken|wrong order|wrong item|wrong product|late delivery|missing order|missing product|payment failed|payment issue|payment deducted|order not placed|refund dispute|angry|complaint|issue with order|website issue|technical issue|wholesale|bulk order)/i.test(
         normalized,
       )
     ) {
@@ -876,6 +898,150 @@ export class SupportAgentService {
   }
 
   private async buildTrustAndPolicyFaqResponse(userMessage: string): Promise<string | null> {
+    if (/(which courier do you use|courier service|courier company|kon sa courier|courier konsa hai)/i.test(userMessage)) {
+      return this.buildGeneralPlaybookResponse({
+        userMessage,
+        answer: "Courier handling can vary depending on the order and delivery area.",
+        assistLine: "If tracking is available, the details are usually shared after confirmation or dispatch.",
+        type: "policy",
+        policyLink: "https://snakitos.com/policies/shipping-policy",
+        options: [
+          { label: "Shipping Policy", value: "show shipping and refund policy" },
+          { label: "Track Order", value: "track my order" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
+    if (/(how do i track my parcel|track my parcel|track parcel|parcel tracking|tracking details|track shipment)/i.test(userMessage)) {
+      return this.buildGeneralPlaybookResponse({
+        userMessage,
+        answer: "If tracking is available for your order, the tracking details are usually shared after confirmation or dispatch.",
+        assistLine: "If you want me to check a specific order, just send your order number and phone number.",
+        type: "policy",
+        policyLink: "https://snakitos.com/policies/shipping-policy",
+        options: [
+          { label: "Track Order", value: "track my order" },
+          { label: "Shipping Policy", value: "show shipping and refund policy" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
+    if (/(late delivery|delivery late|why is my delivry late|why is my delivery late|parcel late)/i.test(userMessage)) {
+      return this.buildGeneralPlaybookResponse({
+        userMessage,
+        answer: "Delivery timing can vary because of location, courier availability, weather, public holidays, or order volume.",
+        assistLine: "If you want, I can also help you check a specific order status.",
+        type: "policy",
+        policyLink: "https://snakitos.com/policies/shipping-policy",
+        options: [
+          { label: "Track Order", value: "track my order" },
+          { label: "Shipping Policy", value: "show shipping and refund policy" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
+    if (/(do you accept opened items|opened items|opened product return|opened pack return)/i.test(userMessage)) {
+      return this.buildGeneralPlaybookResponse({
+        userMessage,
+        answer: "Opened or used items may not qualify unless the active return policy allows it.",
+        assistLine: "If you want, I can also show the return policy or help you contact support.",
+        type: "policy",
+        policyLink: "https://snakitos.com/policies/refund-policy",
+        options: [
+          { label: "Refund Policy", value: "show shipping and refund policy" },
+          { label: "Contact Support", value: "How can I contact support?" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
+    if (/(return an item|retrn an item|how can i return an item|return item process)/i.test(userMessage)) {
+      return this.buildGeneralPlaybookResponse({
+        userMessage,
+        answer: "To return an item, please contact support with your order number, item details, and the issue.",
+        assistLine: "If the return is eligible under the policy, the team will guide you through the next steps.",
+        type: "policy",
+        policyLink: "https://snakitos.com/policies/refund-policy",
+        options: [
+          { label: "Refund Policy", value: "show shipping and refund policy" },
+          { label: "Contact Support", value: "How can I contact support?" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
+    if (/(can i add item after ordering|add item after ordering|add more items after order)/i.test(userMessage)) {
+      return this.buildGeneralPlaybookResponse({
+        userMessage,
+        answer: "That usually depends on whether the order has already been processed.",
+        assistLine: "Please contact support quickly with your order details so they can check what is still possible.",
+        type: "policy",
+        options: [
+          { label: "Contact Support", value: "How can I contact support?" },
+          { label: "Track Order", value: "track my order" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
+    if (/(can i change address after order|change address after order|change delivery address after order)/i.test(userMessage)) {
+      return this.buildGeneralPlaybookResponse({
+        userMessage,
+        answer: "Address changes are usually possible only before the order is fully processed or dispatched.",
+        assistLine: "Please contact support as soon as possible with your order details.",
+        type: "policy",
+        options: [
+          { label: "Contact Support", value: "How can I contact support?" },
+          { label: "Track Order", value: "track my order" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
+    if (/(can i cancel my order|cancel my order|cancel order)/i.test(userMessage)) {
+      return this.buildGeneralPlaybookResponse({
+        userMessage,
+        answer: "Order cancellation usually depends on whether the order has already been processed or dispatched.",
+        assistLine: "Please contact support quickly with your order details so they can guide you properly.",
+        type: "policy",
+        options: [
+          { label: "Contact Support", value: "How can I contact support?" },
+          { label: "Track Order", value: "track my order" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
+    if (/(do i need account to order|need account to order|account zaroori hai order ke liye)/i.test(userMessage)) {
+      return this.buildGeneralPlaybookResponse({
+        userMessage,
+        answer: "I don't have a confirmed account requirement in the active store details right now.",
+        assistLine: "If you want, support can confirm the latest checkout requirement for you.",
+        type: "fallback",
+        options: [
+          { label: "Contact Support", value: "How can I contact support?" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
+    if (/(did not get confirmation|didn't get confirmation|no confirmation|order confirmation nahi mili)/i.test(userMessage)) {
+      return this.buildGeneralPlaybookResponse({
+        userMessage,
+        answer: "If you did not receive confirmation, support can help verify whether the order was placed successfully.",
+        assistLine: "Please keep your order details or payment reference ready if you have them.",
+        type: "fallback",
+        options: [
+          { label: "Contact Support", value: "How can I contact support?" },
+          { label: "Track Order", value: "track my order" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
     if (/(cash on delivery|cod|cod hai|cash on delivery hai|cash delivery)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
@@ -987,7 +1153,7 @@ export class SupportAgentService {
   }
 
   private async buildStoreInfoResponse(userMessage: string): Promise<string | null> {
-    if (/(what is snakitos|about snakitos)/i.test(userMessage)) {
+    if (/(what is snakitos|about snakitos|what is your store about|tell me about your brand|brand ke bare mein|brand ke bare me|store ke bare mein|store ke bare me|are you a real store|can i trust this website|official website|ye store real hai|store real hai|real store ho|real hai|what makes your store different|what makes your brand different|who owns this brand)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
         answer:
@@ -1002,7 +1168,7 @@ export class SupportAgentService {
       });
     }
 
-    if (/(where are you located|location|physical store|store address)/i.test(userMessage)) {
+    if (/(where are you located|location|physical store|store address|do you have a physical shop|physical shop hai|shop kahan hai|store kahan hai)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
         answer: "I don't have the latest physical store address in the bot right now.",
@@ -1015,7 +1181,7 @@ export class SupportAgentService {
       });
     }
 
-    if (/(support hours|contact support|customer support|social media|instagram|facebook|whatsapp|whatsapp number|contact number|support number)/i.test(userMessage)) {
+    if (/(support hours|contact support|customer support|social media|instagram|facebook|whatsapp|whatsapp number|contact number|support number|support kaise contact karun|support kaise contact karon|support kese contact karun|support kese contact karon)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
         answer: "You can contact Snakitos support on WhatsApp at +92-345-828-3827.",
@@ -1582,8 +1748,8 @@ export class SupportAgentService {
       .slice(0, 2);
 
     const intro = policyLink
-      ? "Here’s the quick policy update from Snakitos."
-      : "Here’s what I found.";
+      ? "Here is the quick policy update from Snakitos."
+      : "Here is what I found for you.";
 
     const message = [intro, ...snippets].join("\n\n");
     const options = this.isPolicyQuestion(userMessage)
@@ -2315,8 +2481,12 @@ export class SupportAgentService {
     }
 
     const withoutPrefix = trimmed
+      .replace(/^for questions like ['"].+?['"], use the .+? policy\.\s*/i, "")
+      .replace(/^the chatbot should .+? instead of guessing\.\s*/i, "")
       .replace(new RegExp(`^${this.escapeRegExp(fallbackName)}\\s+(?:is|explains|contains)\\s+`, "i"), "")
       .replace(/^this\s+/i, "")
+      .replace(/\s*if the customer needs a specific order update.+$/i, "")
+      .replace(/\s*if the information is not confirmed in the knowledge base.+$/i, "")
       .trim();
 
     return this.shortenPolicyContent(withoutPrefix || trimmed);

@@ -2,19 +2,18 @@ import { AgentIntent } from "../types/chat.types";
 import { extractOrderReference, extractPhoneNumber, normalizePhone } from "./validation.util";
 
 const ORDER_KEYWORDS = [
-  "tracking",
-  "track",
-  "shipment",
-  "dispatch",
-  "dispatched",
-  "courier",
-  "parcel",
-  "where is my parcel",
+  "track my order",
+  "track order",
+  "where is my order",
   "where is my order",
   "order status",
   "change address",
   "change my address",
   "cancel my order",
+  "cancel order",
+  "my order dispatched",
+  "has my order been dispatched",
+  "change my delivery address",
 ];
 
 const POLICY_KEYWORDS = [
@@ -39,6 +38,53 @@ const POLICY_KEYWORDS = [
   "payment",
   "methods",
   "how to pay",
+];
+
+const GENERAL_KEYWORDS = [
+  "about",
+  "brand",
+  "real store",
+  "trust",
+  "physical store",
+  "store address",
+  "location",
+  "contact support",
+  "support number",
+  "whatsapp number",
+  "contact number",
+  "about snakitos",
+  "what is snakitos",
+  "brand ke bare",
+  "brand ke bare mein",
+  "support kaise",
+  "support kese",
+  "real ho",
+  "real store ho",
+  "store real hai",
+  "ye store real hai",
+  "official website",
+  "official site",
+  "who owns this brand",
+  "what makes your store different",
+  "physical shop",
+  "courier",
+  "track my parcel",
+  "how do i track my parcel",
+  "how can i track my parcel",
+  "late delivery",
+  "delivery late",
+  "why is my delivery late",
+  "delivry late",
+  "wrong product",
+  "return an item",
+  "retrn an item",
+  "opened items",
+  "add item after ordering",
+  "change address after order",
+  "do i need account to order",
+  "did not get confirmation",
+  "order not placed",
+  "payment deducted",
 ];
 
 const PRODUCT_KEYWORDS = [
@@ -126,7 +172,6 @@ const PRODUCT_KEYWORDS = [
   "wafers",
   "chocolate",
   "choco",
-  "store",
   "catalog",
   "sharing",
   "party",
@@ -186,6 +231,7 @@ export function detectIntent(message: string, phone?: string): {
   const normalizedPhone = normalizePhone(phone) || extractPhoneNumber(message);
 
   const hasOrderKeywords = ORDER_KEYWORDS.some((keyword) => normalizedMessage.includes(keyword));
+  const hasGeneralKeywords = GENERAL_KEYWORDS.some((keyword) => normalizedMessage.includes(keyword));
   const hasProductKeywords = 
     PRODUCT_KEYWORDS.some((keyword) => normalizedMessage.includes(keyword)) ||
     PRODUCT_BROWSING_PATTERNS.some((pattern) => pattern.test(message));
@@ -196,6 +242,14 @@ export function detectIntent(message: string, phone?: string): {
     return {
       intent: "order",
       orderId,
+      phone: normalizedPhone,
+    };
+  }
+
+  if (hasGeneralKeywords) {
+    return {
+      intent: "general",
+      orderId: "",
       phone: normalizedPhone,
     };
   }
