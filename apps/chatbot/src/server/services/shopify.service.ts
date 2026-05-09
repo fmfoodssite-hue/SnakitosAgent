@@ -66,7 +66,6 @@ type UploadedCatalogProduct = {
 const cache = new Map<string, CacheEntry<unknown>>();
 const DEFAULT_TTL_MS = 60_000;
 const STOREFRONT_BASE_URL = "https://snakitos.com";
-const DEALS_MIN_PRICE = 1500;
 const SEARCH_ALIAS_GROUPS: Record<string, string[]> = {
   "sweet tooth": ["sweet snacks", "wafer rolls", "choco stick", "chocolate snacks"],
   "multi grain": ["multigrain", "stix", "chickpea puffs", "healthy snacks", "healthwise snacks"],
@@ -438,7 +437,7 @@ export class ShopifyService {
 
         const productPrice = parsePriceValue(product.price);
         if (isDealsRequest && productPrice !== null) {
-          if (productPrice >= DEALS_MIN_PRICE) {
+          if (productPrice >= 1000) {
             score += 16;
           } else {
             score -= 14;
@@ -496,7 +495,7 @@ export class ShopifyService {
     const highValueDeals = isDealsRequest
       ? scoredProducts.filter((item) => {
           const price = parsePriceValue(item.product.price);
-          return price !== null && price >= DEALS_MIN_PRICE;
+          return price !== null && price >= 1000;
         })
       : [];
 
