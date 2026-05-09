@@ -71,7 +71,6 @@ type ChatSessionState = {
 
 export class SupportAgentService {
   async handleChat(input: ChatRequestInput): Promise<ChatResponsePayload> {
-    const startedAt = Date.now();
     const normalizedPhone = normalizePhone(input.phone);
     const session = await this.resolveChatSession(input);
     const { chatId, userId } = session;
@@ -130,15 +129,9 @@ export class SupportAgentService {
         Promise.allSettled([
           this.persistMessage({ chatId, content: safeResponse, role: "bot", userId }),
           this.logEvent("chat_processed", {
-            ...this.buildChatAuditMetadata({
-              chatId,
-              data: response.data,
-              intent: response.intent,
-              response: safeResponse,
-              responseTimeMs: Date.now() - startedAt,
-              userId,
-              userMessage: input.message,
-            }),
+            chatId,
+            userId,
+            intent: response.intent,
           }),
         ]),
       );
@@ -154,11 +147,8 @@ export class SupportAgentService {
       this.runInBackground(
         this.logEvent("chat_error", {
           chatId,
-          error: errorMessage,
-          responseTimeMs: Date.now() - startedAt,
-          status: "failure",
           userId,
-          userMessage: input.message,
+          error: errorMessage,
         }),
       );
 
@@ -633,142 +623,6 @@ export class SupportAgentService {
 
   private runInBackground(task: Promise<unknown>): void {
     void task.catch(() => undefined);
-  }
-
-  private buildChatAuditMetadata(input: {
-    chatId: string;
-    data?: unknown;
-    intent: AgentIntent;
-    response: string;
-    responseTimeMs: number;
-    userId: string;
-    userMessage: string;
-  }): Record<string, unknown> {
-    const retrievedContext = this.extractKnowledgeAuditContext(input.data);
-    const matchedProducts = this.extractProductAuditContext(input.data);
-
-    if (input.intent === "general") {
-      return {
-        chatId: input.chatId,
-        detailsSummary:
-          retrievedContext.length > 0
-            ? `Answered using ${retrievedContext.length} knowledge match${retrievedContext.length === 1 ? "" : "es"}.`
-            : "Answered using the general support flow.",
-        intent: input.intent,
-        response: input.response,
-        responseSource:
-          retrievedContext.length > 0 ? "knowledge_retrieval" : "general_support_flow",
-        responseTimeMs: input.responseTimeMs,
-        retrievedContext,
-        sourceLabel:
-          retrievedContext.length > 0
-            ? this.resolveKnowledgeSourceLabel(retrievedContext)
-            : "General support",
-        status: "success",
-        userId: input.userId,
-        userMessage: input.userMessage,
-      };
-    }
-
-    if (input.intent === "product") {
-      return {
-        chatId: input.chatId,
-        detailsSummary:
-          matchedProducts.length > 0
-            ? `Matched ${matchedProducts.length} product${matchedProducts.length === 1 ? "" : "s"} from the catalog or recommendation flow.`
-            : "Answered using the product support flow.",
-        intent: input.intent,
-        matchedProducts,
-        response: input.response,
-        responseSource: "product_lookup",
-        responseTimeMs: input.responseTimeMs,
-        sourceLabel: "Catalog lookup",
-        status: "success",
-        userId: input.userId,
-        userMessage: input.userMessage,
-      };
-    }
-
-    return {
-      chatId: input.chatId,
-      detailsSummary: "Answered using verified order support data.",
-      intent: input.intent,
-      response: input.response,
-      responseSource: "order_lookup",
-      responseTimeMs: input.responseTimeMs,
-      sourceLabel: "Order support",
-      status: "success",
-      userId: input.userId,
-      userMessage: input.userMessage,
-    };
-  }
-
-  private extractKnowledgeAuditContext(data: unknown): Array<Record<string, string>> {
-    if (!Array.isArray(data)) {
-      return [];
-    }
-
-    return data
-      .filter(
-        (item) =>
-          item &&
-          typeof item === "object" &&
-          "name" in item &&
-          "source" in item &&
-          "category" in item,
-      )
-      .slice(0, 6)
-      .map((item, index) => {
-        const entry = item as Record<string, unknown>;
-        return {
-          category: String(entry.category ?? "general"),
-          id: String(entry.id ?? `knowledge-${index}`),
-          link: String(entry.link ?? ""),
-          name: String(entry.name ?? "Knowledge match"),
-          source: String(entry.source ?? "unknown"),
-          type: String(entry.type ?? "knowledge"),
-        };
-      });
-  }
-
-  private resolveKnowledgeSourceLabel(context: Array<Record<string, string>>): string {
-    const sources = new Set(context.map((item) => item.source));
-    if (sources.has("pinecone")) {
-      return "RAG + Pinecone";
-    }
-    if (sources.has("general_query_pack")) {
-      return "General query RAG";
-    }
-    if (sources.has("capability_doc")) {
-      return "Capability knowledge";
-    }
-    return "Knowledge retrieval";
-  }
-
-  private extractProductAuditContext(data: unknown): Array<Record<string, string>> {
-    if (!Array.isArray(data)) {
-      return [];
-    }
-
-    return data
-      .filter(
-        (item) =>
-          item &&
-          typeof item === "object" &&
-          "title" in item &&
-          ("link" in item || "handle" in item),
-      )
-      .slice(0, 6)
-      .map((item, index) => {
-        const entry = item as ProductLookupResult;
-        return {
-          id: entry.id || `product-${index}`,
-          link: entry.link || "",
-          name: entry.title || "Product",
-          source: entry.source || "shopify",
-          type: entry.productType || "product",
-        };
-      });
   }
 
   private async persistMessage(input: {
