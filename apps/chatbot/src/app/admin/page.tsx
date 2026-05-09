@@ -1,4 +1,5 @@
 import {
+  ArrowUpRight,
   Bot,
   CheckCircle2,
   Clock,
@@ -12,6 +13,7 @@ import {
   Users,
   Zap,
 } from "lucide-react";
+import { shopifyService } from "@/server/services/shopify.service";
 import { supabaseService } from "@/server/services/supabase.service";
 
 type AuditRow = {
@@ -62,8 +64,26 @@ function formatDuration(ms: number): string {
   return `${(ms / 1000).toFixed(1)}s`;
 }
 
+function formatOrderAmount(amount: string, currencyCode: string): string {
+  const value = Number.parseFloat(amount);
+  if (!Number.isFinite(value)) {
+    return amount || "0";
+  }
+
+  return new Intl.NumberFormat("en-PK", {
+    style: "currency",
+    currency: currencyCode || "PKR",
+    maximumFractionDigits: 0,
+  }).format(value);
+}
+
 export default async function AdminDashboard() {
-  const rows = await getAuditRows();
+  const [orders, rows, statsData] = await Promise.all([
+    shopifyService.getRecentOrders(8).catch(() => []),
+    getAuditRows(),
+    shopifyService.getStoreStats().catch(() => ({} as Record<string, number>)),
+  ]);
+
   const sessionCount = new Set(rows.map((row) => row.chatId)).size;
   const avgResponseMs = rows.length
     ? Math.round(rows.reduce((sum, row) => sum + row.responseTimeMs, 0) / rows.length)
@@ -74,9 +94,25 @@ export default async function AdminDashboard() {
 
   const stats = [
     {
-      label: "Total Conversations",
+      label: "Total Orders",
+      value: `${statsData.orderCount ?? orders.length ?? 0}`,
+      change: orders.length > 0 ? `${orders.length} recent` : "Awaiting sync",
+      icon: ShoppingBag,
+      color: "text-blue-500",
+      bg: "bg-blue-500/10",
+    },
+    {
+      label: "Active Customers",
       value: `${sessionCount}`,
-      change: `${rows.length} replies`,
+      change: rows.length > 0 ? "Live sessions" : "No active chats",
+      icon: Users,
+      color: "text-purple-500",
+      bg: "bg-purple-500/10",
+    },
+    {
+      label: "AI Interactions",
+      value: `${rows.length}`,
+      change: rows.length > 0 ? `${successRate}% success` : "Awaiting chats",
       icon: MessageSquare,
       color: "text-emerald-500",
       bg: "bg-emerald-500/10",
@@ -84,24 +120,8 @@ export default async function AdminDashboard() {
     {
       label: "Avg Response Time",
       value: formatDuration(avgResponseMs),
-      change: rows.length > 0 ? "Live audit" : "No data",
-      icon: Clock,
-      color: "text-blue-500",
-      bg: "bg-blue-500/10",
-    },
-    {
-      label: "AI Success Rate",
-      value: `${successRate}%`,
-      change: rows.length > 0 ? "From logs" : "Awaiting chats",
+      change: rows.length > 0 ? "From live audit" : "No data yet",
       icon: TrendingUp,
-      color: "text-purple-500",
-      bg: "bg-purple-500/10",
-    },
-    {
-      label: "Shopify Sync",
-      value: "Connected",
-      change: "Chatbot panel",
-      icon: ShoppingBag,
       color: "text-amber-500",
       bg: "bg-amber-500/10",
     },
@@ -121,7 +141,7 @@ export default async function AdminDashboard() {
       <aside className="sticky top-0 hidden h-screen w-64 flex-col border-r border-white/5 bg-[#09090b] md:flex">
         <div className="p-6">
           <div className="flex items-center gap-3 px-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
+            <div className="bg-gradient-premium flex h-8 w-8 items-center justify-center rounded-lg">
               <Zap className="h-5 w-5 fill-current text-white" />
             </div>
             <span className="text-xl font-bold tracking-tight">Agent Admin</span>
@@ -161,10 +181,10 @@ export default async function AdminDashboard() {
             <span className="font-medium">Logout</span>
           </a>
 
-          <div className="rounded-2xl border border-indigo-500/20 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 p-4">
+          <div className="glass-card rounded-2xl border border-indigo-500/20 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 p-4">
             <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-indigo-400">Status</p>
             <div className="flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-emerald-500" />
+              <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
               <p className="text-sm font-medium text-zinc-300">AI Agent Online</p>
             </div>
           </div>
@@ -177,7 +197,7 @@ export default async function AdminDashboard() {
         <header className="sticky top-0 z-30 border-b border-white/5 bg-[#09090b]/90 backdrop-blur md:hidden">
           <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
             <div className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
+              <div className="bg-gradient-premium flex h-9 w-9 items-center justify-center rounded-xl">
                 <Zap className="h-5 w-5 fill-current text-white" />
               </div>
               <span className="text-sm font-semibold tracking-tight text-white">Agent Admin</span>
@@ -221,7 +241,8 @@ export default async function AdminDashboard() {
                     <div className={`${stat.bg} rounded-xl p-3`}>
                       <stat.icon className={`${stat.color} h-6 w-6`} />
                     </div>
-                    <div className="rounded-full bg-emerald-500/10 px-2 py-1 text-xs font-semibold text-emerald-500">
+                    <div className="flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-1 text-xs font-semibold text-emerald-500">
+                      <ArrowUpRight className="h-3 w-3" />
                       {stat.change}
                     </div>
                   </div>
@@ -237,46 +258,56 @@ export default async function AdminDashboard() {
               <div className="glass-card rounded-3xl border-white/5 p-5 sm:p-6 lg:col-span-2 lg:p-8">
                 <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <h2 className="text-xl font-semibold">Live Chat Tracking</h2>
-                    <p className="mt-1 text-sm text-zinc-500">Latest chatbot audit logs from real user conversations.</p>
+                    <h2 className="text-xl font-semibold">Recent Shopify Orders</h2>
+                    <p className="mt-1 text-sm text-zinc-500">Latest transactions synced from your store.</p>
                   </div>
-                  <a className="text-left text-xs font-medium text-indigo-400 transition-colors hover:text-indigo-300 sm:text-right" href="/admin">
-                    Refresh
+                  <a
+                    className="text-left text-xs font-medium text-indigo-400 transition-colors hover:text-indigo-300 sm:text-right"
+                    href="/admin"
+                  >
+                    View All
                   </a>
                 </div>
 
                 <div className="overflow-x-auto">
-                  <table className="w-full min-w-[720px] text-left">
+                  <table className="w-full min-w-[640px] text-left">
                     <thead>
                       <tr className="border-b border-white/5 text-xs uppercase tracking-wider text-zinc-500">
-                        <th className="pb-4 font-medium">Time</th>
-                        <th className="pb-4 font-medium">User</th>
-                        <th className="pb-4 font-medium">Query</th>
-                        <th className="pb-4 font-medium">Agent Response</th>
+                        <th className="pb-4 font-medium">Order</th>
+                        <th className="pb-4 font-medium">Customer</th>
+                        <th className="pb-4 font-medium">Status</th>
+                        <th className="pb-4 text-right font-medium">Amount</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
-                      {rows.length > 0 ? (
-                        rows.slice(0, 20).map((row) => (
-                          <tr key={row.id} className="group transition-colors hover:bg-white/[0.02]">
-                            <td className="py-4 text-sm text-zinc-400">
-                              {new Date(row.createdAt).toLocaleTimeString()}
-                            </td>
+                      {orders.length > 0 ? (
+                        orders.map((order) => (
+                          <tr key={order.id} className="group transition-colors hover:bg-white/[0.02]">
+                            <td className="py-4 text-sm font-medium">{order.orderName}</td>
+                            <td className="py-4 text-sm text-zinc-400">{order.customerName ?? "Guest"}</td>
                             <td className="py-4">
-                              <span className="rounded bg-blue-500/10 px-2 py-1 text-xs text-blue-400">
-                                {row.userId}
+                              <span
+                                className={`rounded-full px-2 py-1 text-[10px] font-bold uppercase ${
+                                  order.financialStatus.toLowerCase() === "paid"
+                                    ? "bg-emerald-500/10 text-emerald-500"
+                                    : "bg-amber-500/10 text-amber-500"
+                                }`}
+                              >
+                                {order.financialStatus}
                               </span>
                             </td>
-                            <td className="max-w-xs truncate py-4 text-sm text-zinc-300">{row.query}</td>
-                            <td className="max-w-xs truncate py-4 text-sm text-zinc-500 italic">
-                              {row.response}
+                            <td className="py-4 text-right text-sm font-bold">
+                              {formatOrderAmount(order.totalAmount, order.currencyCode)}
                             </td>
                           </tr>
                         ))
                       ) : (
                         <tr>
                           <td colSpan={4} className="py-12 text-center text-sm text-zinc-500">
-                            No live chat logs found yet.
+                            <div className="flex flex-col items-center gap-2">
+                              <ShoppingBag className="h-8 w-8 opacity-20" />
+                              <p>No orders found. Check your Shopify API keys.</p>
+                            </div>
                           </td>
                         </tr>
                       )}
@@ -289,7 +320,7 @@ export default async function AdminDashboard() {
                 <div className="mb-6 flex items-center justify-between gap-3">
                   <h2 className="text-xl font-semibold">Live AI Activity</h2>
                   <div className="flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2 py-1">
-                    <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
                     <span className="text-[10px] font-bold uppercase text-emerald-500">Live</span>
                   </div>
                 </div>
