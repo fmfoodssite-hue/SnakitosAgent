@@ -786,7 +786,8 @@ export class SupportAgentService {
         intent: "general",
         response: await this.buildGeneralPlaybookResponse({
           userMessage,
-          answer: "I can help with snacks, orders, delivery, and store policies.",
+          answer: "Sure, I can help with snacks, orders, delivery, and store policies.",
+          assistLine: "Just tell me what you need, and I'll keep it simple.",
           type: "fallback",
           options: [
             { label: "Deals", value: "show best deals" },
@@ -809,8 +810,8 @@ export class SupportAgentService {
         intent: "general",
         response: await this.buildGeneralPlaybookResponse({
           userMessage,
-          answer: "I couldn't find exact details right now.",
-          assistLine: "If you want, I can help with products, delivery, refunds, or order tracking.",
+          answer: "I don't have the exact detail right now, but I'm happy to help.",
+          assistLine: "If you want, I can still help with products, delivery, refunds, or order tracking.",
           type: "fallback",
           options: [
             { label: "Deals", value: "show best deals" },
@@ -833,8 +834,8 @@ export class SupportAgentService {
     if (/\b(certificate|certification|certificate chahiye|certificate chaiye|certificate do)\b/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
-        answer: "Yes, our products are halal and approved by Pakistan Halal Authority (PHA) and Sindh. If you need the halal certificate, our support team can share it on request.",
-        assistLine: "If you want, I can also help you contact support right away.",
+        answer: "Yes, our products are halal and approved by Pakistan Halal Authority (PHA) and Sindh.",
+        assistLine: "If you need the halal certificate, our support team can share it on request.",
         type: "fallback",
         options: [
           { label: "Contact Support", value: "How can I contact support?" },
@@ -914,7 +915,7 @@ export class SupportAgentService {
     if (/(same day delivery|same-day delivery|same day hai|same-day hai)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
-        answer: "Same-day delivery is not confirmed in the current Snakitos policy details.",
+        answer: "Same-day delivery isn't confirmed in the current Snakitos policy details.",
         assistLine: "Delivery usually takes a few business days depending on location.",
         type: "policy",
         policyLink: "https://snakitos.com/policies/shipping-policy",
@@ -943,7 +944,7 @@ export class SupportAgentService {
     if (/(payment methods|how can i pay|can i pay online|online payment|payment kaise karein|payment kese karain|online pay kar sakte hain)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
-        answer: "Snakitos supports standard checkout payment flows, and Cash on Delivery is available.",
+        answer: "You can pay through the standard Snakitos checkout flow, and Cash on Delivery is available too.",
         assistLine: "Online payment details appear during checkout.",
         type: "policy",
         policyLink: "https://snakitos.com/policies/terms-of-service",
@@ -972,7 +973,7 @@ export class SupportAgentService {
     if (/(fresh|freshness|are your products fresh|fresh hain|fresh hai|taaza hain|taaza hai)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
-        answer: "All products are packed fresh and carefully checked before dispatch.",
+        answer: "Yes, our products are packed fresh and carefully checked before dispatch.",
         assistLine: "If you want, I can also help with expiry details for a specific snack.",
         type: "policy",
         options: [
@@ -991,7 +992,7 @@ export class SupportAgentService {
         userMessage,
         answer:
           "Snakitos is a snack store where you can explore sweet snacks, multigrain bites, banana chips, nachos, bundles, and value deals.",
-        assistLine: "If you want, I can show collections or help you pick the best snacks.",
+        assistLine: "If you want, I can show collections or help you pick the best snacks for your mood or budget.",
         type: "fallback",
         options: [
           { label: "Collections", value: "show categories" },
@@ -1002,16 +1003,15 @@ export class SupportAgentService {
     }
 
     if (/(where are you located|location|physical store|store address)/i.test(userMessage)) {
-      return this.buildResponseWithSuggestions({
-        type: "fallback",
-        message:
-          "I don’t have an exact physical store address in the current Snakitos bot context. Please contact support for the latest location details.",
+      return this.buildGeneralPlaybookResponse({
         userMessage,
+        answer: "I don't have the latest physical store address in the bot right now.",
+        assistLine: "If you want, support can share the latest location details for you.",
+        type: "fallback",
         options: [
           { label: "Home", value: "home" },
           { label: "Policies", value: "show shipping and refund policy" },
         ],
-        skipSuggestions: true,
       });
     }
 
@@ -1019,7 +1019,7 @@ export class SupportAgentService {
       return this.buildGeneralPlaybookResponse({
         userMessage,
         answer: "You can contact Snakitos support on WhatsApp at +92-345-828-3827.",
-        assistLine: "I can also help with orders, shipping, refunds, or product picks right here.",
+        assistLine: "And if you want, I can still help with orders, shipping, refunds, or product picks right here.",
         type: "fallback",
         options: [
           { label: "Track Order", value: "track my order" },
