@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const basePath = "/apps/admin";
+const basePath = "/admin";
 
 const nextConfig: NextConfig = {
   basePath,

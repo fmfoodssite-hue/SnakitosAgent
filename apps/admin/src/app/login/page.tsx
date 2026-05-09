@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Zap, Lock, ArrowRight, ShieldAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-const adminBasePath = process.env.NEXT_PUBLIC_ADMIN_BASE_PATH || "/apps/admin";
+const adminBasePath = process.env.NEXT_PUBLIC_ADMIN_BASE_PATH || "/admin";
 
 export default function LoginPage() {
   const [password, setPassword] = useState("");

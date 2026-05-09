@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-const adminBasePath = "/apps/admin";
+const adminBasePath = "/admin";
 
 export async function POST() {
   const cookieStore = await cookies();

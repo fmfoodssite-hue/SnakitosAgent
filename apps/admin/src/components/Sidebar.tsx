@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const adminBasePath = process.env.NEXT_PUBLIC_ADMIN_BASE_PATH || "/apps/admin";
+const adminBasePath = process.env.NEXT_PUBLIC_ADMIN_BASE_PATH || "/admin";
 
 const menuItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/" },

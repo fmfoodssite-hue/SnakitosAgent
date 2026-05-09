@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const adminBasePath = "/apps/admin";
+const adminBasePath = "/admin";
 
 // Next.js 16 uses proxy.ts (renamed from middleware.ts)
 // The export must be named "proxy" in this file
