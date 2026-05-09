@@ -71,6 +71,7 @@ type ChatSessionState = {
 
 export class SupportAgentService {
   async handleChat(input: ChatRequestInput): Promise<ChatResponsePayload> {
+    const startedAt = Date.now();
     const normalizedPhone = normalizePhone(input.phone);
     const session = await this.resolveChatSession(input);
     const { chatId, userId } = session;
@@ -129,9 +130,15 @@ export class SupportAgentService {
         Promise.allSettled([
           this.persistMessage({ chatId, content: safeResponse, role: "bot", userId }),
           this.logEvent("chat_processed", {
-            chatId,
-            userId,
-            intent: response.intent,
+            ...this.buildChatAuditMetadata({
+              chatId,
+              data: response.data,
+              intent: response.intent,
+              response: safeResponse,
+              responseTimeMs: Date.now() - startedAt,
+              userId,
+              userMessage: input.message,
+            }),
           }),
         ]),
       );
@@ -147,8 +154,11 @@ export class SupportAgentService {
       this.runInBackground(
         this.logEvent("chat_error", {
           chatId,
-          userId,
           error: errorMessage,
+          responseTimeMs: Date.now() - startedAt,
+          status: "failure",
+          userId,
+          userMessage: input.message,
         }),
       );
 
@@ -623,6 +633,86 @@ export class SupportAgentService {
 
   private runInBackground(task: Promise<unknown>): void {
     void task.catch(() => undefined);
+  }
+
+  private buildChatAuditMetadata(input: {
+    chatId: string;
+    data?: unknown;
+    intent: AgentIntent;
+    response: string;
+    responseTimeMs: number;
+    userId: string;
+    userMessage: string;
+  }): Record<string, unknown> {
+    const retrievedContext = this.extractKnowledgeAuditContext(input.data);
+
+    return {
+      chatId: input.chatId,
+      detailsSummary:
+        input.intent === "general" && retrievedContext.length > 0
+          ? `Answered using ${retrievedContext.length} retrieved knowledge matches.`
+          : input.intent === "product"
+            ? "Answered using product search or recommendation flow."
+            : input.intent === "order"
+              ? "Answered using order support flow."
+              : "Answered using support flow.",
+      intent: input.intent,
+      response: input.response,
+      responseTimeMs: input.responseTimeMs,
+      retrievedContext,
+      sourceLabel:
+        input.intent === "general" && retrievedContext.length > 0
+          ? this.resolveKnowledgeSourceLabel(retrievedContext)
+          : input.intent === "product"
+            ? "Catalog lookup"
+            : input.intent === "order"
+              ? "Order support"
+              : "General support",
+      status: "success",
+      userId: input.userId,
+      userMessage: input.userMessage,
+    };
+  }
+
+  private extractKnowledgeAuditContext(data: unknown): Array<Record<string, string>> {
+    if (!Array.isArray(data)) {
+      return [];
+    }
+
+    return data
+      .filter(
+        (item) =>
+          item &&
+          typeof item === "object" &&
+          "name" in item &&
+          "source" in item,
+      )
+      .slice(0, 6)
+      .map((item, index) => {
+        const entry = item as Record<string, unknown>;
+        return {
+          category: String(entry.category ?? "general"),
+          id: String(entry.id ?? `knowledge-${index}`),
+          link: String(entry.link ?? ""),
+          name: String(entry.name ?? "Knowledge match"),
+          source: String(entry.source ?? "unknown"),
+          type: String(entry.type ?? "knowledge"),
+        };
+      });
+  }
+
+  private resolveKnowledgeSourceLabel(context: Array<Record<string, string>>): string {
+    const sources = new Set(context.map((item) => item.source));
+    if (sources.has("pinecone")) {
+      return "RAG + Pinecone";
+    }
+    if (sources.has("general_query_pack")) {
+      return "General query RAG";
+    }
+    if (sources.has("capability_doc")) {
+      return "Capability knowledge";
+    }
+    return "Knowledge retrieval";
   }
 
   private async persistMessage(input: {
