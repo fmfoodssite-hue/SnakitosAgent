@@ -1,0 +1,114 @@
+{
+  "Stix Hot & Spicy": {
+    "cross_sell": [
+      "Stix Peri Peri",
+      "Nachos Salsa",
+      "Choco Stick Chocolate"
+    ],
+    "upsell": [
+      "Flavor Fiesta Bundle",
+      "Multi Grain Stix - Can Tray 5 +1"
+    ]
+  },
+  "Stix Peri Peri": {
+    "cross_sell": [
+      "Stix Lemon & Chilli",
+      "Patata Masala"
+    ],
+    "upsell": [
+      "Flavor Fiesta Bundle",
+      "Multi Grain Stix - Can Tray 5 +1"
+    ]
+  },
+  "Nachos Salsa": {
+    "cross_sell": [
+      "Nachos Paprika",
+      "Movie Night Bundle"
+    ],
+    "upsell": [
+      "Movie Night Nachos Bundle",
+      "Party Pleaser Bundle"
+    ]
+  },
+  "Patata Masala": {
+    "cross_sell": [
+      "Patata Salty",
+      "Stix Masala"
+    ],
+    "upsell": [
+      "All Time Favorites",
+      "Snaktory Patata Chips - Masala & Salty"
+    ]
+  },
+  "Banana Chips Sea Salt": {
+    "cross_sell": [
+      "Banana Chips BBQ",
+      "Wafer Rolls Hazelnut"
+    ],
+    "upsell": [
+      "Office Snack Box",
+      "Flavor Fiesta Bundle"
+    ]
+  },
+  "Choco Stick Chocolate": {
+    "cross_sell": [
+      "Choco Stick Strawberry",
+      "Wafer Rolls Hazelnut"
+    ],
+    "upsell": [
+      "Choco Lovers Bundle",
+      "Choco Mania Bundle"
+    ]
+  },
+  "Wafer Rolls Hazelnut": {
+    "cross_sell": [
+      "Wafer Rolls Cappuccino",
+      "Choco Lovers Bundle"
+    ],
+    "upsell": [
+      "Choco Lovers Bundle",
+      "Ultimate Mega Snack Box"
+    ]
+  },
+  "ChickPea Puffs": {
+    "cross_sell": [
+      "Stix Salty",
+      "Patata Salty"
+    ],
+    "upsell": [
+      "Office Snack Box",
+      "Snack Sampler Deal"
+    ]
+  },
+  "Kids Fun Box": {
+    "cross_sell": [
+      "Choco Sticks",
+      "Wafer Rolls",
+      "Patata Salty"
+    ],
+    "upsell": [
+      "Ultimate Mega Snack Box"
+    ]
+  },
+  "Office Snack Box": {
+    "cross_sell": [
+      "All Time Favorites",
+      "Banana Chips",
+      "Wafer Rolls"
+    ],
+    "upsell": [
+      "Ultimate Mega Snack Box"
+    ]
+  },
+  "Movie Night Bundle": {
+    "cross_sell": [
+      "Stix Party",
+      "Nachos",
+      "Patata"
+    ],
+    "upsell": [
+      "Party Pleaser Bundle",
+      "Ultimate Mega Snack Box"
+    ]
+  }
+}

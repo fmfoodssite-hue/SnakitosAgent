@@ -2,6 +2,10 @@ import { retrieveKnowledge } from "@lib/pinecone";
 import { config } from "../config";
 import capabilityKnowledgeData from "../data/capability-knowledge.json";
 import generalQueryRagData from "../data/general-query-rag.json";
+import snakitosGeneralTrainingData from "../data/snakitos-rag-pack/01-general-query-training-dataset.json";
+import snakitosProductFaqData from "../data/snakitos-rag-pack/02-product-faq-dataset.json";
+import snakitosProductRecommendationData from "../data/snakitos-rag-pack/03-product-recommendation-dataset.json";
+import snakitosProductRecordsData from "../data/snakitos-rag-pack/15-product-records.json";
 import storeFaqKnowledgeData from "../data/store-faq-knowledge.json";
 import { KnowledgeDocument } from "../types/chat.types";
 
@@ -21,6 +25,54 @@ type LocalGeneralKnowledgeItem = {
 };
 
 type StoreFaqKnowledgeItem = LocalGeneralKnowledgeItem;
+type SnakitosGeneralTrainingItem = {
+  id: string;
+  intent: string;
+  language: string;
+  user_query: string;
+  ideal_answer: string;
+  recommended_products?: string[];
+  follow_up_question?: string;
+};
+type SnakitosFaqItem = {
+  question: string;
+  answer: string;
+  category: string;
+  related_products?: string[];
+  safe_upsell?: string;
+  escalation_required?: boolean;
+};
+type SnakitosRecommendationItem = {
+  id: string;
+  trigger_type: string;
+  trigger_value: string;
+  response_style: string;
+  primary_recommendations?: string[];
+  bundle_priority?: string[];
+  balancing_add_on?: string;
+  follow_up_question?: string;
+};
+type SnakitosProductRecordItem = {
+  product_name: string;
+  category: string;
+  flavor_type: string;
+  taste_tags?: string[];
+  occasion_tags?: string[];
+  price_tags?: string[];
+  product_type: string;
+  safety_tags?: string[];
+  kids_friendly: string;
+  spice_level: string;
+  storage: string;
+  stock_status: string;
+  upsell_products?: string[];
+  cross_sell_products?: string[];
+  bundle_upgrade?: string;
+  frequently_bought_with?: string[];
+  best_seller?: boolean;
+  high_margin?: boolean;
+  trending?: boolean;
+};
 
 export class KnowledgeService {
   private readonly cache = new Map<
@@ -117,6 +169,15 @@ export class KnowledgeService {
       [/\b(pakistan mein delivery|pakistan me delivery|poore pakistan|saray pakistan)\b/i, ["delivery all over pakistan"]],
       [/\b(contact number|support number|whatsapp number)\b/i, ["contact support", "whatsapp"]],
       [/\b(refund|return|exchange)\b/i, ["refund", "return", "exchange"]],
+      [/\b(kids|bachon|bache|school lunch)\b/i, ["kids", "school lunch", "kids fun box"]],
+      [/\b(office|work|team)\b/i, ["office", "office snack box"]],
+      [/\b(movie night|netflix|gaming|party snacks)\b/i, ["movie night", "gaming", "netflix", "movie night nachos bundle"]],
+      [/\b(gift|gifting|corporate gifting)\b/i, ["gift", "gift box", "ultimate mega snack box"]],
+      [/\b(bundle|combo|box|deal)\b/i, ["bundle", "combo", "deal", "value"]],
+      [/\b(under 500|500 ke andar|rs\.?\s*500)\b/i, ["under_500", "budget"]],
+      [/\b(under 1000|1000 ke andar|rs\.?\s*1000)\b/i, ["under_1000", "budget"]],
+      [/\b(under 2000|2000 ke andar|rs\.?\s*2000)\b/i, ["under_2000", "budget"]],
+      [/\b(above 3000|over 3000|rs\.?\s*3000)\b/i, ["above_3000", "budget"]],
     ];
 
     for (const [pattern, values] of synonymMap) {
@@ -132,9 +193,22 @@ export class KnowledgeService {
     const capabilityResults = this.retrieveCapabilityKnowledge(query);
     const generalResults = this.retrieveGeneralKnowledge(query);
     const storeFaqResults = this.retrieveStoreFaqKnowledge(query);
+    const snakitosGeneralTrainingResults = this.retrieveSnakitosGeneralTraining(query);
+    const snakitosFaqResults = this.retrieveSnakitosFaqKnowledge(query);
+    const snakitosRecommendationResults = this.retrieveSnakitosRecommendationKnowledge(query);
+    const snakitosProductRecordResults = this.retrieveSnakitosProductRecordKnowledge(query);
     return this.mergeKnowledge(
-      this.mergeKnowledge(storeFaqResults, capabilityResults),
-      generalResults,
+      this.mergeKnowledge(
+        this.mergeKnowledge(
+          this.mergeKnowledge(
+            this.mergeKnowledge(snakitosFaqResults, snakitosRecommendationResults),
+            snakitosProductRecordResults,
+          ),
+          snakitosGeneralTrainingResults,
+        ),
+        this.mergeKnowledge(this.mergeKnowledge(storeFaqResults, capabilityResults), generalResults),
+      ),
+      [],
     );
   }
 
@@ -278,6 +352,195 @@ export class KnowledgeService {
       .filter((item) => item.score > 1)
       .sort((left, right) => right.score - left.score)
       .slice(0, 6)
+      .map((item) => item.document);
+  }
+
+  private retrieveSnakitosGeneralTraining(query: string): KnowledgeDocument[] {
+    const tokens = query.split(/[^a-z0-9_]+/).filter((token) => token.length >= 2);
+    const docs = snakitosGeneralTrainingData as SnakitosGeneralTrainingItem[];
+
+    return docs
+      .map((item) => {
+        const haystack = [
+          item.user_query,
+          item.ideal_answer,
+          item.intent,
+          item.language,
+          ...(item.recommended_products ?? []),
+          item.follow_up_question ?? "",
+        ]
+          .join(" ")
+          .toLowerCase();
+
+        const tokenMatches = tokens.filter((token) => haystack.includes(token)).length;
+        const phraseBoost =
+          (haystack.includes(query) ? 10 : 0) +
+          ((item.language === "roman_urdu" && /\b(bhai|acha|chahiye|andar|ke liye)\b/.test(query)) ? 6 : 0);
+        const score = tokenMatches * 3 + phraseBoost;
+
+        return {
+          score,
+          document: {
+            id: item.id,
+            name: `Training: ${item.intent}`,
+            text: `${item.user_query}\n${item.ideal_answer}`,
+            link: "https://snakitos.com",
+            type: "knowledge",
+            category: `training_${item.intent}`,
+            source: "snakitos_training",
+          } satisfies KnowledgeDocument,
+        };
+      })
+      .filter((item) => item.score > 2)
+      .sort((left, right) => right.score - left.score)
+      .slice(0, 4)
+      .map((item) => item.document);
+  }
+
+  private retrieveSnakitosFaqKnowledge(query: string): KnowledgeDocument[] {
+    const tokens = query.split(/[^a-z0-9_]+/).filter((token) => token.length >= 2);
+    const docs = snakitosProductFaqData as SnakitosFaqItem[];
+
+    return docs
+      .map((item, index) => {
+        const haystack = [
+          item.question,
+          item.answer,
+          item.category,
+          ...(item.related_products ?? []),
+          item.safe_upsell ?? "",
+        ]
+          .join(" ")
+          .toLowerCase();
+        const tokenMatches = tokens.filter((token) => haystack.includes(token)).length;
+        const phraseBoost = haystack.includes(query) || query.includes(item.question.toLowerCase()) ? 12 : 0;
+        const score = tokenMatches * 4 + phraseBoost;
+
+        return {
+          score,
+          document: {
+            id: `snakitos-faq-${index + 1}`,
+            name: item.question,
+            text: item.answer,
+            link: "https://snakitos.com",
+            type: "faq",
+            category: item.category.toLowerCase().replace(/[^a-z0-9]+/g, "_"),
+            source: "snakitos_faq",
+          } satisfies KnowledgeDocument,
+        };
+      })
+      .filter((item) => item.score > 2)
+      .sort((left, right) => right.score - left.score)
+      .slice(0, 6)
+      .map((item) => item.document);
+  }
+
+  private retrieveSnakitosRecommendationKnowledge(query: string): KnowledgeDocument[] {
+    const tokens = query.split(/[^a-z0-9_]+/).filter((token) => token.length >= 2);
+    const docs = snakitosProductRecommendationData as SnakitosRecommendationItem[];
+
+    return docs
+      .map((item) => {
+        const haystack = [
+          item.trigger_type,
+          item.trigger_value,
+          item.response_style,
+          ...(item.primary_recommendations ?? []),
+          ...(item.bundle_priority ?? []),
+          item.balancing_add_on ?? "",
+          item.follow_up_question ?? "",
+        ]
+          .join(" ")
+          .toLowerCase();
+        const tokenMatches = tokens.filter((token) => haystack.includes(token)).length;
+        const phraseBoost = haystack.includes(query) ? 12 : 0;
+        const score = tokenMatches * 4 + phraseBoost;
+
+        return {
+          score,
+          document: {
+            id: item.id,
+            name: `Recommendation: ${item.trigger_type} ${item.trigger_value}`,
+            text: [
+              `Trigger: ${item.trigger_type}=${item.trigger_value}`,
+              `Primary: ${(item.primary_recommendations ?? []).join(", ")}`,
+              `Bundles: ${(item.bundle_priority ?? []).join(", ")}`,
+              item.balancing_add_on ? `Add-on: ${item.balancing_add_on}` : "",
+              item.follow_up_question ?? "",
+            ]
+              .filter(Boolean)
+              .join("\n"),
+            link: "https://snakitos.com/collections/all",
+            type: "intent",
+            category: `recommendation_${item.trigger_type}`,
+            source: "snakitos_recommendation",
+          } satisfies KnowledgeDocument,
+        };
+      })
+      .filter((item) => item.score > 2)
+      .sort((left, right) => right.score - left.score)
+      .slice(0, 5)
+      .map((item) => item.document);
+  }
+
+  private retrieveSnakitosProductRecordKnowledge(query: string): KnowledgeDocument[] {
+    const tokens = query.split(/[^a-z0-9_]+/).filter((token) => token.length >= 2);
+    const docs = snakitosProductRecordsData as SnakitosProductRecordItem[];
+
+    return docs
+      .map((item, index) => {
+        const haystack = [
+          item.product_name,
+          item.category,
+          item.flavor_type,
+          item.product_type,
+          item.kids_friendly,
+          item.spice_level,
+          item.storage,
+          item.stock_status,
+          ...(item.taste_tags ?? []),
+          ...(item.occasion_tags ?? []),
+          ...(item.price_tags ?? []),
+          ...(item.safety_tags ?? []),
+          ...(item.upsell_products ?? []),
+          ...(item.cross_sell_products ?? []),
+          item.bundle_upgrade ?? "",
+          ...(item.frequently_bought_with ?? []),
+        ]
+          .join(" ")
+          .toLowerCase();
+        const tokenMatches = tokens.filter((token) => haystack.includes(token)).length;
+        const phraseBoost =
+          (query.includes(item.product_name.toLowerCase()) ? 15 : 0) +
+          (item.best_seller && /\b(best|seller|popular)\b/.test(query) ? 6 : 0) +
+          (item.trending && /\b(trending|new|popular)\b/.test(query) ? 4 : 0);
+        const score = tokenMatches * 3 + phraseBoost;
+
+        return {
+          score,
+          document: {
+            id: `snakitos-product-record-${index + 1}`,
+            name: item.product_name,
+            text: [
+              `${item.product_name} is a ${item.flavor_type} ${item.category} snack.`,
+              `Taste tags: ${(item.taste_tags ?? []).join(", ")}.`,
+              `Occasions: ${(item.occasion_tags ?? []).join(", ")}.`,
+              `Upsell: ${(item.upsell_products ?? []).join(", ")}.`,
+              `Cross-sell: ${(item.cross_sell_products ?? []).join(", ")}.`,
+              item.bundle_upgrade ? `Bundle upgrade: ${item.bundle_upgrade}.` : "",
+            ]
+              .filter(Boolean)
+              .join(" "),
+            link: "https://snakitos.com/collections/all",
+            type: "product",
+            category: item.category.toLowerCase().replace(/[^a-z0-9]+/g, "_"),
+            source: "snakitos_product_record",
+          } satisfies KnowledgeDocument,
+        };
+      })
+      .filter((item) => item.score > 2)
+      .sort((left, right) => right.score - left.score)
+      .slice(0, 5)
       .map((item) => item.document);
   }
 

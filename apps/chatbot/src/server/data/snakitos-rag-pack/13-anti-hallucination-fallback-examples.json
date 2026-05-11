@@ -1,0 +1,42 @@
+[
+  {
+    "use_case": "unknown_ingredients",
+    "fallback": "Ingredients vary by product. Please check the product page or packaging for the exact ingredient list. If you share the product name, I can help guide you."
+  },
+  {
+    "use_case": "unknown_allergens",
+    "fallback": "Allergen information can vary by product. Please check the packaging for the most accurate allergen details. If you have a serious allergy, please confirm with support before placing the order."
+  },
+  {
+    "use_case": "unknown_vegan_status",
+    "fallback": "I'm not fully sure about that information, and I don't want to misguide you. Please check the packaging or confirm with support before ordering."
+  },
+  {
+    "use_case": "unknown_nutrition",
+    "fallback": "I don't have confirmed nutrition details for that product right now, so I'd recommend checking the packaging or product page for the exact values."
+  },
+  {
+    "use_case": "unknown_shelf_life",
+    "fallback": "I don't want to guess the exact shelf life. Please check the product packaging for the most accurate date and storage guidance."
+  },
+  {
+    "use_case": "unknown_stock_restock_date",
+    "fallback": "I can help check current availability, but I can't confirm an exact restock date unless it is officially updated."
+  },
+  {
+    "use_case": "refund_approval_request",
+    "fallback": "I can guide you on the refund process, but I can't approve refunds in chat. Please share your order details and proof with support for review."
+  },
+  {
+    "use_case": "delivery_date_request",
+    "fallback": "Delivery time depends on your city and courier service, so I don't want to promise an exact date. The best estimate will appear at checkout or from support after dispatch."
+  },
+  {
+    "use_case": "certificate_number_request",
+    "fallback": "I can share the certification overview, but I don't have confirmed certificate numbers in chat. Please contact support if you need official documentation."
+  },
+  {
+    "use_case": "order_tracking_request",
+    "fallback": "Please use the Track Order option or share your order details with support."
+  }
+]

@@ -1,0 +1,222 @@
+[
+  {
+    "id": "rec-spicy-001",
+    "trigger_type": "taste",
+    "trigger_value": "spicy",
+    "response_style": "friendly_sales",
+    "primary_recommendations": [
+      "Stix Hot & Spicy",
+      "Stix Peri Peri",
+      "Stix Lemon & Chilli",
+      "Nachos Salsa",
+      "Nachos Paprika",
+      "Banana Chips Achari Masti"
+    ],
+    "bundle_priority": [
+      "Movie Night Nachos Bundle",
+      "Flavor Fiesta Bundle",
+      "Party Pleaser Bundle"
+    ],
+    "balancing_add_on": "Choco Stick Chocolate",
+    "follow_up_question": "Would you like a single spicy snack or a bundle for better value?"
+  },
+  {
+    "id": "rec-sweet-001",
+    "trigger_type": "taste",
+    "trigger_value": "sweet",
+    "response_style": "friendly_sales",
+    "primary_recommendations": [
+      "Choco Stick Chocolate",
+      "Choco Stick Strawberry",
+      "Coco Choco Can",
+      "Wafer Rolls Hazelnut",
+      "Wafer Rolls Strawberry",
+      "Wafer Rolls Cappuccino"
+    ],
+    "bundle_priority": [
+      "Choco Lovers Bundle",
+      "Choco Mania Bundle"
+    ],
+    "balancing_add_on": "Patata Salty",
+    "follow_up_question": "Would you like a sweet bundle or a few single picks?"
+  },
+  {
+    "id": "rec-mild-001",
+    "trigger_type": "taste",
+    "trigger_value": "mild_salty",
+    "response_style": "friendly_sales",
+    "primary_recommendations": [
+      "Patata Salty",
+      "Banana Chips Sea Salt",
+      "ChickPea Puffs",
+      "Stix Salty"
+    ],
+    "bundle_priority": [
+      "Office Snack Box",
+      "Kids Fun Box"
+    ],
+    "balancing_add_on": "Choco Stick Strawberry",
+    "follow_up_question": "Do you want kids-friendly or office-friendly options?"
+  },
+  {
+    "id": "rec-crunchy-001",
+    "trigger_type": "taste",
+    "trigger_value": "crunchy",
+    "response_style": "friendly_sales",
+    "primary_recommendations": [
+      "Patata Masala",
+      "Patata Salty",
+      "Stix Peri Peri",
+      "Nachos Salsa",
+      "Banana Chips Sea Salt",
+      "ChickPea Puffs"
+    ],
+    "bundle_priority": [
+      "Snack Sampler Deal",
+      "Crunch Munch Combo"
+    ],
+    "balancing_add_on": "Wafer Rolls Hazelnut",
+    "follow_up_question": "Do you want spicy crunchy snacks or more mild crunchy ones?"
+  },
+  {
+    "id": "rec-budget-500",
+    "trigger_type": "budget",
+    "trigger_value": "under_500",
+    "response_style": "value_first",
+    "primary_recommendations": [
+      "Choco Stick Chocolate",
+      "Patata Salty",
+      "Stix Peri Peri",
+      "ChickPea Puffs",
+      "Banana Chips Sea Salt",
+      "Wafer Rolls Hazelnut"
+    ],
+    "bundle_priority": [],
+    "balancing_add_on": "",
+    "follow_up_question": "Would you like sweet, spicy, or mixed picks under Rs. 500?"
+  },
+  {
+    "id": "rec-budget-1000",
+    "trigger_type": "budget",
+    "trigger_value": "under_1000",
+    "response_style": "value_first",
+    "primary_recommendations": [
+      "Nachos Pack Of 10",
+      "Snaktory Snack Pack",
+      "Snaktory Patata Chips - Masala & Salty"
+    ],
+    "bundle_priority": [
+      "Snaktory Snack Pack"
+    ],
+    "balancing_add_on": "Choco Stick Chocolate",
+    "follow_up_question": "Do you want a savory combo or a mixed starter box?"
+  },
+  {
+    "id": "rec-budget-2000",
+    "trigger_type": "budget",
+    "trigger_value": "under_2000",
+    "response_style": "value_first",
+    "primary_recommendations": [
+      "All Time Favorites",
+      "Choco Lovers Bundle",
+      "Office Snack Box",
+      "Movie Night Nachos Bundle",
+      "Snack Sampler Deal"
+    ],
+    "bundle_priority": [
+      "All Time Favorites",
+      "Snack Sampler Deal",
+      "Movie Night Nachos Bundle"
+    ],
+    "balancing_add_on": "",
+    "follow_up_question": "Which matters more to you: variety, spicy flavor, or gifting?"
+  },
+  {
+    "id": "rec-budget-3000-plus",
+    "trigger_type": "budget",
+    "trigger_value": "above_3000",
+    "response_style": "value_first",
+    "primary_recommendations": [
+      "Ultimate Mega Snack Box",
+      "Flavor Fiesta Bundle",
+      "Party Pleaser Bundle",
+      "Crunch Munch Combo"
+    ],
+    "bundle_priority": [
+      "Ultimate Mega Snack Box",
+      "Party Pleaser Bundle",
+      "Flavor Fiesta Bundle"
+    ],
+    "balancing_add_on": "",
+    "follow_up_question": "Is this for gifting, a party, or a family snack stock-up?"
+  },
+  {
+    "id": "rec-occasion-movie-night",
+    "trigger_type": "occasion",
+    "trigger_value": "movie night",
+    "response_style": "occasion_first",
+    "primary_recommendations": [
+      "Nachos Salsa",
+      "Patata Masala",
+      "Stix Peri Peri"
+    ],
+    "bundle_priority": [
+      "Movie Night Nachos Bundle",
+      "Party Pleaser Bundle"
+    ],
+    "balancing_add_on": "Choco Stick Chocolate",
+    "follow_up_question": "How many people are you buying for?"
+  },
+  {
+    "id": "rec-occasion-kids",
+    "trigger_type": "occasion",
+    "trigger_value": "kids",
+    "response_style": "occasion_first",
+    "primary_recommendations": [
+      "Choco Stick Chocolate",
+      "Coco Choco Can",
+      "Wafer Rolls Strawberry",
+      "Patata Salty"
+    ],
+    "bundle_priority": [
+      "Kids Fun Box",
+      "Choco Lovers Bundle"
+    ],
+    "balancing_add_on": "",
+    "follow_up_question": "Do you want mostly sweet snacks or a balanced kids mix?"
+  },
+  {
+    "id": "rec-occasion-office",
+    "trigger_type": "occasion",
+    "trigger_value": "office",
+    "response_style": "occasion_first",
+    "primary_recommendations": [
+      "Banana Chips Sea Salt",
+      "Wafer Rolls Cappuccino",
+      "ChickPea Puffs"
+    ],
+    "bundle_priority": [
+      "Office Snack Box",
+      "All Time Favorites"
+    ],
+    "balancing_add_on": "",
+    "follow_up_question": "Is this for one person or for team sharing?"
+  },
+  {
+    "id": "rec-occasion-gift",
+    "trigger_type": "occasion",
+    "trigger_value": "gift",
+    "response_style": "occasion_first",
+    "primary_recommendations": [
+      "Wafer Rolls Hazelnut",
+      "Coco Choco Can"
+    ],
+    "bundle_priority": [
+      "Ultimate Mega Snack Box",
+      "All Time Favorites",
+      "Choco Lovers Bundle"
+    ],
+    "balancing_add_on": "",
+    "follow_up_question": "Would you like a premium gift box or a budget-friendly gift bundle?"
+  }
+]

@@ -1,0 +1,75 @@
+{
+  "taste_tags": [
+    "spicy",
+    "mild",
+    "sweet",
+    "salty",
+    "chocolate",
+    "fruity",
+    "masala",
+    "tangy",
+    "crunchy",
+    "savory"
+  ],
+  "occasion_tags": [
+    "kids",
+    "office",
+    "movie night",
+    "family",
+    "party",
+    "gift",
+    "tea time",
+    "school lunch",
+    "travel",
+    "gaming",
+    "netflix"
+  ],
+  "price_tags": [
+    "under_500",
+    "under_1000",
+    "under_2000",
+    "above_3000"
+  ],
+  "product_type_tags": [
+    "single_pack",
+    "pack_of_6",
+    "combo",
+    "bundle",
+    "family_pack",
+    "party_pack",
+    "gift_box"
+  ],
+  "safety_tags": [
+    "kids_friendly",
+    "spicy_caution",
+    "allergy_check_required",
+    "sweet_snack",
+    "savory_snack"
+  ],
+  "metadata_filtering_guide": {
+    "exact_product_match_fields": [
+      "product_name"
+    ],
+    "category_fields": [
+      "category",
+      "product_type"
+    ],
+    "discovery_fields": [
+      "taste_tags",
+      "occasion_tags",
+      "price_tags",
+      "best_seller",
+      "trending"
+    ],
+    "compliance_fields": [
+      "kids_friendly",
+      "safety_tags",
+      "spice_level"
+    ],
+    "operations_fields": [
+      "stock_status",
+      "product_url",
+      "image_url"
+    ]
+  }
+}

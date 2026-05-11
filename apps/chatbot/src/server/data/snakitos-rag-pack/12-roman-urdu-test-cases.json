@@ -1,0 +1,62 @@
+[
+  {
+    "query": "Bhai spicy snacks batao",
+    "expected_intent": "spicy_recommendation"
+  },
+  {
+    "query": "Kids ke liye kya acha hai?",
+    "expected_intent": "kids_recommendation"
+  },
+  {
+    "query": "Kuch meetha recommend karo",
+    "expected_intent": "sweet_recommendation"
+  },
+  {
+    "query": "2000 ke andar kuch acha batao",
+    "expected_intent": "budget_recommendation"
+  },
+  {
+    "query": "COD hai?",
+    "expected_intent": "cod_query"
+  },
+  {
+    "query": "Halal hai?",
+    "expected_intent": "halal_query"
+  },
+  {
+    "query": "Ingredients kya hain?",
+    "expected_intent": "ingredient_query"
+  },
+  {
+    "query": "Allergy ka masla hai, is mein kya hota hai?",
+    "expected_intent": "allergen_query"
+  },
+  {
+    "query": "Office ke liye bundle batao",
+    "expected_intent": "office_recommendation"
+  },
+  {
+    "query": "Movie night ke liye kuch crunchy chahiye",
+    "expected_intent": "movie_night_recommendation"
+  },
+  {
+    "query": "Mujhe gift dena hai, kya loon?",
+    "expected_intent": "gifting_recommendation"
+  },
+  {
+    "query": "Yeh thora mehnga lag raha hai",
+    "expected_intent": "price_objection"
+  },
+  {
+    "query": "Delivery kitne din mein hoti hai?",
+    "expected_intent": "delivery_time"
+  },
+  {
+    "query": "Refund mil sakta hai?",
+    "expected_intent": "refund_query"
+  },
+  {
+    "query": "Wrong product receive hua hai",
+    "expected_intent": "wrong_product"
+  }
+]

@@ -1,0 +1,207 @@
+[
+  {
+    "id": "gq-001",
+    "intent": "what_do_you_sell",
+    "language": "english",
+    "user_query": "What do you sell?",
+    "ideal_answer": "Snakitos offers a wide range of snacks including Stix, Patata, Banana Chips, Choco Sticks, Wafer Rolls, ChickPea Puffs, Nachos, Snaktory packs, and snack bundles. Are you looking for spicy, sweet, kids-friendly, or mixed snacks?",
+    "recommended_products": [
+      "All Time Favorites",
+      "Snack Sampler Deal"
+    ],
+    "follow_up_question": "Would you like spicy, sweet, or mixed snacks?"
+  },
+  {
+    "id": "gq-002",
+    "intent": "product_recommendation",
+    "language": "english",
+    "user_query": "Recommend something",
+    "ideal_answer": "Sure! I can recommend the best option. What are you craving - spicy, sweet, salty, crunchy, or a mixed snack box?",
+    "recommended_products": [],
+    "follow_up_question": "Do you want spicy, sweet, or mixed snacks?"
+  },
+  {
+    "id": "gq-003",
+    "intent": "best_seller_query",
+    "language": "english",
+    "user_query": "What are your best sellers?",
+    "ideal_answer": "Some popular choices include Stix, Patata, Choco Sticks, Wafer Rolls, Banana Chips, and snack bundles. If you want better value, I recommend choosing a bundle.",
+    "recommended_products": [
+      "All Time Favorites",
+      "Office Snack Box",
+      "Movie Night Nachos Bundle"
+    ],
+    "follow_up_question": "Would you like a spicy, sweet, or mixed best-seller bundle?"
+  },
+  {
+    "id": "gq-004",
+    "intent": "new_customer_query",
+    "language": "english",
+    "user_query": "I am new here",
+    "ideal_answer": "Welcome to Snakitos! If it's your first time, I'd suggest starting with a mixed bundle so you can try different flavors. Do you prefer spicy, sweet, or a mix of both?",
+    "recommended_products": [
+      "Snack Sampler Deal",
+      "All Time Favorites"
+    ],
+    "follow_up_question": "Would you like spicy, sweet, or mixed snacks?"
+  },
+  {
+    "id": "gq-005",
+    "intent": "price_objection",
+    "language": "english",
+    "user_query": "This feels expensive",
+    "ideal_answer": "I understand. If you want better value, I'd suggest choosing a bundle instead of individual items. Bundles usually give more variety and a better snack experience.",
+    "recommended_products": [
+      "Snack Sampler Deal",
+      "All Time Favorites"
+    ],
+    "follow_up_question": "Should I show you the best-value bundles under your budget?"
+  },
+  {
+    "id": "gq-006",
+    "intent": "shipping_charges",
+    "language": "english",
+    "user_query": "How much is shipping?",
+    "ideal_answer": "Delivery charges may depend on your city, order value, and current offer. Please check the checkout page for the exact delivery charge.",
+    "recommended_products": [],
+    "follow_up_question": "Would you like help finding snacks before checkout?"
+  },
+  {
+    "id": "gq-007",
+    "intent": "delivery_time",
+    "language": "english",
+    "user_query": "How long does delivery take?",
+    "ideal_answer": "Delivery time depends on your city and courier service. Major cities are usually faster, while other areas may take a little longer.",
+    "recommended_products": [],
+    "follow_up_question": "Would you like me to help you choose snacks while you're here?"
+  },
+  {
+    "id": "gq-008",
+    "intent": "cod_query",
+    "language": "english",
+    "user_query": "Do you have COD?",
+    "ideal_answer": "Cash on Delivery may be available depending on your city and order type. You can confirm available payment options at checkout.",
+    "recommended_products": [],
+    "follow_up_question": "Would you like help picking a snack box before checkout?"
+  },
+  {
+    "id": "gq-009",
+    "intent": "payment_query",
+    "language": "english",
+    "user_query": "Can I pay online?",
+    "ideal_answer": "Available payment options will appear at checkout. Please use only official Snakitos checkout or official support channels.",
+    "recommended_products": [],
+    "follow_up_question": "Would you like a quick snack recommendation too?"
+  },
+  {
+    "id": "gq-010",
+    "intent": "refund_query",
+    "language": "english",
+    "user_query": "What is your refund policy?",
+    "ideal_answer": "Because these are food items, returns and refunds may be limited for hygiene and safety reasons. If you received a damaged, wrong, or defective item, contact support with proof.",
+    "recommended_products": [],
+    "follow_up_question": "Do you need refund guidance or help choosing a product?"
+  },
+  {
+    "id": "gq-011",
+    "intent": "damaged_product",
+    "language": "english",
+    "user_query": "My product arrived damaged",
+    "ideal_answer": "I'm sorry about that. Please share your order number and clear photos/videos of the damaged items and packaging so support can review your claim.",
+    "recommended_products": [],
+    "follow_up_question": "Would you like the support handoff wording too?"
+  },
+  {
+    "id": "gq-012",
+    "intent": "wrong_product",
+    "language": "english",
+    "user_query": "I received the wrong item",
+    "ideal_answer": "Sorry for the inconvenience. Please share your order number and a photo of the product received so support can check and guide you.",
+    "recommended_products": [],
+    "follow_up_question": "Would you like help wording the support message?"
+  },
+  {
+    "id": "gq-013",
+    "intent": "halal_query",
+    "language": "english",
+    "user_query": "Are your products halal?",
+    "ideal_answer": "Yes, Snakitos is a brand by FM Foods, and FM Foods publicly lists Halal certification as part of its quality and food safety standards.",
+    "recommended_products": [],
+    "follow_up_question": "Would you like help finding a snack after that?"
+  },
+  {
+    "id": "gq-014",
+    "intent": "certification_query",
+    "language": "english",
+    "user_query": "What certifications do you have?",
+    "ideal_answer": "Snakitos is a brand by FM Foods. FM Foods lists several food safety and quality standards, including Halal, ISO 22000, HACCP, SFDA, and FDA-related approvals/compliance.",
+    "recommended_products": [],
+    "follow_up_question": "Do you want a product recommendation as well?"
+  },
+  {
+    "id": "gq-015",
+    "intent": "ingredient_query",
+    "language": "english",
+    "user_query": "What are the ingredients?",
+    "ideal_answer": "Ingredients vary by product. Please check the product page or packaging for the exact ingredient list. If you share the product name, I can help guide you.",
+    "recommended_products": [],
+    "follow_up_question": "Which product would you like to check?"
+  },
+  {
+    "id": "gq-016",
+    "intent": "allergen_query",
+    "language": "english",
+    "user_query": "Any allergens?",
+    "ideal_answer": "Allergen information can vary by product. Please check the packaging for the most accurate allergen details. If you have a serious allergy, please confirm with support before placing the order.",
+    "recommended_products": [],
+    "follow_up_question": "Which product are you asking about?"
+  },
+  {
+    "id": "gq-017",
+    "intent": "product_recommendation",
+    "language": "roman_urdu",
+    "user_query": "Bhai kuch recommend karo",
+    "ideal_answer": "Zaroor! Aap spicy, sweet, salty, crunchy, ya mixed snack box mein se kya lena chahenge?",
+    "recommended_products": [],
+    "follow_up_question": "Aapka mood kis type ke snacks ka hai?"
+  },
+  {
+    "id": "gq-018",
+    "intent": "spicy_recommendation",
+    "language": "roman_urdu",
+    "user_query": "Bhai spicy snacks batao",
+    "ideal_answer": "Zaroor! Agar aapko spicy snacks pasand hain to Stix Hot & Spicy, Stix Peri Peri, Stix Lemon & Chilli, aur Nachos Salsa try karein. Aap single packs lena chahenge ya spicy bundle?",
+    "recommended_products": [
+      "Stix Hot & Spicy",
+      "Stix Peri Peri",
+      "Movie Night Nachos Bundle"
+    ],
+    "follow_up_question": "Single pack chahiye ya bundle?"
+  },
+  {
+    "id": "gq-019",
+    "intent": "kids_recommendation",
+    "language": "roman_urdu",
+    "user_query": "Kids ke liye kya acha hai?",
+    "ideal_answer": "Kids ke liye Choco Stick, Coco Choco Can, Wafer Rolls Strawberry, aur Patata Salty achay options hain. Agar ready mix chahiye to Kids Fun Box best rahega.",
+    "recommended_products": [
+      "Kids Fun Box",
+      "Choco Stick Chocolate",
+      "Patata Salty"
+    ],
+    "follow_up_question": "Sweet chahiye ya mixed kids box?"
+  },
+  {
+    "id": "gq-020",
+    "intent": "sweet_recommendation",
+    "language": "roman_urdu",
+    "user_query": "Kuch meetha recommend karo",
+    "ideal_answer": "Sweet craving ke liye Choco Stick Chocolate, Choco Stick Strawberry, Wafer Rolls Hazelnut, aur Coco Choco Can best options hain.",
+    "recommended_products": [
+      "Choco Lovers Bundle",
+      "Choco Stick Chocolate",
+      "Wafer Rolls Hazelnut"
+    ],
+    "follow_up_question": "Single snack chahiye ya sweet bundle?"
+  }
+]

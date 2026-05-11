@@ -1,0 +1,1933 @@
+[
+  {
+    "product_name": "Stix Hot & Spicy",
+    "category": "Multigrain Stix",
+    "price": "225",
+    "size": "50g",
+    "flavor_type": "spicy",
+    "taste_tags": [
+      "spicy",
+      "masala",
+      "crunchy",
+      "savory"
+    ],
+    "occasion_tags": [
+      "movie night",
+      "gaming",
+      "netflix",
+      "office"
+    ],
+    "price_tags": [
+      "under_500"
+    ],
+    "product_type": "single_pack",
+    "safety_tags": [
+      "spicy_caution",
+      "savory_snack"
+    ],
+    "kids_friendly": "no",
+    "spice_level": "high",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Stix Bundle",
+      "Multi Grain Stix - Can Tray 5 +1"
+    ],
+    "cross_sell_products": [
+      "Stix Peri Peri",
+      "Nachos Salsa",
+      "Choco Stick Chocolate"
+    ],
+    "bundle_upgrade": "Flavor Fiesta Bundle",
+    "frequently_bought_with": [
+      "Choco Stick Chocolate",
+      "Nachos Salsa"
+    ],
+    "best_seller": true,
+    "high_margin": true,
+    "trending": true
+  },
+  {
+    "product_name": "Stix Peri Peri",
+    "category": "Multigrain Stix",
+    "price": "217.43",
+    "size": "50g",
+    "flavor_type": "spicy",
+    "taste_tags": [
+      "spicy",
+      "tangy",
+      "masala",
+      "crunchy",
+      "savory"
+    ],
+    "occasion_tags": [
+      "movie night",
+      "gaming",
+      "office",
+      "travel"
+    ],
+    "price_tags": [
+      "under_500"
+    ],
+    "product_type": "single_pack",
+    "safety_tags": [
+      "spicy_caution",
+      "savory_snack"
+    ],
+    "kids_friendly": "no",
+    "spice_level": "medium_high",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Stix Bundle",
+      "Multi Grain Stix - Can Tray 5 +1"
+    ],
+    "cross_sell_products": [
+      "Stix Lemon & Chilli",
+      "Patata Masala"
+    ],
+    "bundle_upgrade": "Flavor Fiesta Bundle",
+    "frequently_bought_with": [
+      "Patata Masala",
+      "Wafer Rolls Hazelnut"
+    ],
+    "best_seller": true,
+    "high_margin": true,
+    "trending": true
+  },
+  {
+    "product_name": "Stix Lemon & Chilli",
+    "category": "Multigrain Stix",
+    "price": "210.36",
+    "size": "50g",
+    "flavor_type": "spicy",
+    "taste_tags": [
+      "spicy",
+      "tangy",
+      "crunchy",
+      "savory"
+    ],
+    "occasion_tags": [
+      "movie night",
+      "travel",
+      "office"
+    ],
+    "price_tags": [
+      "under_500"
+    ],
+    "product_type": "single_pack",
+    "safety_tags": [
+      "spicy_caution",
+      "savory_snack"
+    ],
+    "kids_friendly": "no",
+    "spice_level": "medium",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Stix Bundle"
+    ],
+    "cross_sell_products": [
+      "Stix Peri Peri",
+      "Nachos Salsa"
+    ],
+    "bundle_upgrade": "Flavor Fiesta Bundle",
+    "frequently_bought_with": [
+      "Patata Salty"
+    ],
+    "best_seller": false,
+    "high_margin": true,
+    "trending": true
+  },
+  {
+    "product_name": "Stix Salty",
+    "category": "Multigrain Stix",
+    "price": "214.90",
+    "size": "50g",
+    "flavor_type": "mild_salty",
+    "taste_tags": [
+      "mild",
+      "salty",
+      "crunchy",
+      "savory"
+    ],
+    "occasion_tags": [
+      "office",
+      "tea time",
+      "school lunch",
+      "travel"
+    ],
+    "price_tags": [
+      "under_500"
+    ],
+    "product_type": "single_pack",
+    "safety_tags": [
+      "kids_friendly",
+      "savory_snack"
+    ],
+    "kids_friendly": "yes",
+    "spice_level": "low",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Multi Grain Stix - Can Tray 5 +1"
+    ],
+    "cross_sell_products": [
+      "ChickPea Puffs",
+      "Patata Salty"
+    ],
+    "bundle_upgrade": "Office Snack Box",
+    "frequently_bought_with": [
+      "Wafer Rolls Hazelnut"
+    ],
+    "best_seller": false,
+    "high_margin": true,
+    "trending": false
+  },
+  {
+    "product_name": "Stix Masala",
+    "category": "Multigrain Stix",
+    "price": "225",
+    "size": "50g",
+    "flavor_type": "savory",
+    "taste_tags": [
+      "masala",
+      "salty",
+      "crunchy",
+      "savory"
+    ],
+    "occasion_tags": [
+      "office",
+      "movie night",
+      "travel"
+    ],
+    "price_tags": [
+      "under_500"
+    ],
+    "product_type": "single_pack",
+    "safety_tags": [
+      "savory_snack"
+    ],
+    "kids_friendly": "maybe",
+    "spice_level": "medium",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Multi Grain Stix - Can Tray 5 +1"
+    ],
+    "cross_sell_products": [
+      "Patata Masala",
+      "Nachos Paprika"
+    ],
+    "bundle_upgrade": "All Time Favorites",
+    "frequently_bought_with": [
+      "Banana Chips Sea Salt"
+    ],
+    "best_seller": false,
+    "high_margin": true,
+    "trending": false
+  },
+  {
+    "product_name": "Nachos Salsa",
+    "category": "Nachos",
+    "price": "48.88",
+    "size": "50g",
+    "flavor_type": "spicy",
+    "taste_tags": [
+      "spicy",
+      "tangy",
+      "crunchy",
+      "savory"
+    ],
+    "occasion_tags": [
+      "movie night",
+      "party",
+      "gaming",
+      "netflix"
+    ],
+    "price_tags": [
+      "under_500"
+    ],
+    "product_type": "single_pack",
+    "safety_tags": [
+      "spicy_caution",
+      "savory_snack"
+    ],
+    "kids_friendly": "no",
+    "spice_level": "medium",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Nachos Pack Of 10",
+      "Movie Night Nachos Bundle"
+    ],
+    "cross_sell_products": [
+      "Nachos Paprika",
+      "Movie Night Bundle"
+    ],
+    "bundle_upgrade": "Movie Night Nachos Bundle",
+    "frequently_bought_with": [
+      "Patata Masala",
+      "Choco Stick Chocolate"
+    ],
+    "best_seller": true,
+    "high_margin": false,
+    "trending": true
+  },
+  {
+    "product_name": "Nachos Paprika",
+    "category": "Nachos",
+    "price": "48.88",
+    "size": "50g",
+    "flavor_type": "savory",
+    "taste_tags": [
+      "mild",
+      "masala",
+      "crunchy",
+      "savory"
+    ],
+    "occasion_tags": [
+      "movie night",
+      "party",
+      "gaming",
+      "netflix"
+    ],
+    "price_tags": [
+      "under_500"
+    ],
+    "product_type": "single_pack",
+    "safety_tags": [
+      "savory_snack"
+    ],
+    "kids_friendly": "maybe",
+    "spice_level": "medium_low",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Nachos Pack Of 10",
+      "Movie Night Nachos Bundle"
+    ],
+    "cross_sell_products": [
+      "Nachos Salsa",
+      "Patata Salty"
+    ],
+    "bundle_upgrade": "Movie Night Nachos Bundle",
+    "frequently_bought_with": [
+      "Wafer Rolls Strawberry"
+    ],
+    "best_seller": true,
+    "high_margin": false,
+    "trending": true
+  },
+  {
+    "product_name": "Patata Masala",
+    "category": "Potato Snacks",
+    "price": "213.97",
+    "size": "50g",
+    "flavor_type": "savory",
+    "taste_tags": [
+      "masala",
+      "salty",
+      "crunchy",
+      "savory"
+    ],
+    "occasion_tags": [
+      "movie night",
+      "office",
+      "travel",
+      "tea time"
+    ],
+    "price_tags": [
+      "under_500"
+    ],
+    "product_type": "single_pack",
+    "safety_tags": [
+      "savory_snack"
+    ],
+    "kids_friendly": "maybe",
+    "spice_level": "medium",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Snaktory Patata Chips - Masala & Salty"
+    ],
+    "cross_sell_products": [
+      "Patata Salty",
+      "Stix Masala"
+    ],
+    "bundle_upgrade": "All Time Favorites",
+    "frequently_bought_with": [
+      "Nachos Salsa"
+    ],
+    "best_seller": true,
+    "high_margin": true,
+    "trending": true
+  },
+  {
+    "product_name": "Patata Salty",
+    "category": "Potato Snacks",
+    "price": "214.46",
+    "size": "50g",
+    "flavor_type": "mild_salty",
+    "taste_tags": [
+      "mild",
+      "salty",
+      "crunchy",
+      "savory"
+    ],
+    "occasion_tags": [
+      "kids",
+      "office",
+      "tea time",
+      "school lunch",
+      "travel"
+    ],
+    "price_tags": [
+      "under_500"
+    ],
+    "product_type": "single_pack",
+    "safety_tags": [
+      "kids_friendly",
+      "savory_snack"
+    ],
+    "kids_friendly": "yes",
+    "spice_level": "low",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Snaktory Patata Chips - Masala & Salty"
+    ],
+    "cross_sell_products": [
+      "ChickPea Puffs",
+      "Wafer Rolls Strawberry"
+    ],
+    "bundle_upgrade": "Kids Fun Box",
+    "frequently_bought_with": [
+      "Choco Stick Strawberry"
+    ],
+    "best_seller": true,
+    "high_margin": true,
+    "trending": true
+  },
+  {
+    "product_name": "Banana Chips Sea Salt",
+    "category": "Banana Chips",
+    "price": "379.84",
+    "size": "100g",
+    "flavor_type": "mild_salty",
+    "taste_tags": [
+      "mild",
+      "salty",
+      "crunchy",
+      "savory"
+    ],
+    "occasion_tags": [
+      "office",
+      "tea time",
+      "travel",
+      "family"
+    ],
+    "price_tags": [
+      "under_500"
+    ],
+    "product_type": "single_pack",
+    "safety_tags": [
+      "kids_friendly",
+      "savory_snack"
+    ],
+    "kids_friendly": "yes",
+    "spice_level": "low",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Flavor Fiesta Bundle"
+    ],
+    "cross_sell_products": [
+      "Banana Chips BBQ",
+      "Wafer Rolls Hazelnut"
+    ],
+    "bundle_upgrade": "Office Snack Box",
+    "frequently_bought_with": [
+      "Wafer Rolls Cappuccino"
+    ],
+    "best_seller": true,
+    "high_margin": true,
+    "trending": true
+  },
+  {
+    "product_name": "Banana Chips BBQ",
+    "category": "Banana Chips",
+    "price": "369.05",
+    "size": "100g",
+    "flavor_type": "savory",
+    "taste_tags": [
+      "salty",
+      "masala",
+      "crunchy",
+      "savory"
+    ],
+    "occasion_tags": [
+      "movie night",
+      "office",
+      "travel"
+    ],
+    "price_tags": [
+      "under_500"
+    ],
+    "product_type": "single_pack",
+    "safety_tags": [
+      "savory_snack"
+    ],
+    "kids_friendly": "maybe",
+    "spice_level": "medium_low",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Flavor Fiesta Bundle"
+    ],
+    "cross_sell_products": [
+      "Banana Chips Sea Salt",
+      "Nachos Salsa"
+    ],
+    "bundle_upgrade": "Movie Night Bundle",
+    "frequently_bought_with": [
+      "Wafer Rolls Strawberry"
+    ],
+    "best_seller": false,
+    "high_margin": true,
+    "trending": false
+  },
+  {
+    "product_name": "Banana Chips Achari Masti",
+    "category": "Banana Chips",
+    "price": "393.63",
+    "size": "100g",
+    "flavor_type": "spicy",
+    "taste_tags": [
+      "spicy",
+      "tangy",
+      "masala",
+      "crunchy",
+      "savory"
+    ],
+    "occasion_tags": [
+      "movie night",
+      "travel",
+      "gaming"
+    ],
+    "price_tags": [
+      "under_500"
+    ],
+    "product_type": "single_pack",
+    "safety_tags": [
+      "spicy_caution",
+      "savory_snack"
+    ],
+    "kids_friendly": "no",
+    "spice_level": "medium_high",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Flavor Fiesta Bundle"
+    ],
+    "cross_sell_products": [
+      "Stix Peri Peri",
+      "Choco Stick Chocolate"
+    ],
+    "bundle_upgrade": "Crunch Munch Combo",
+    "frequently_bought_with": [
+      "Wafer Rolls Hazelnut"
+    ],
+    "best_seller": false,
+    "high_margin": true,
+    "trending": true
+  },
+  {
+    "product_name": "ChickPea Puffs",
+    "category": "Snacks",
+    "price": "214.49",
+    "size": "70g",
+    "flavor_type": "mild_salty",
+    "taste_tags": [
+      "mild",
+      "salty",
+      "crunchy",
+      "savory"
+    ],
+    "occasion_tags": [
+      "office",
+      "school lunch",
+      "travel",
+      "tea time"
+    ],
+    "price_tags": [
+      "under_500"
+    ],
+    "product_type": "single_pack",
+    "safety_tags": [
+      "kids_friendly",
+      "savory_snack",
+      "allergy_check_required"
+    ],
+    "kids_friendly": "yes",
+    "spice_level": "low",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Office Snack Box"
+    ],
+    "cross_sell_products": [
+      "Stix Salty",
+      "Patata Salty"
+    ],
+    "bundle_upgrade": "Snack Sampler Deal",
+    "frequently_bought_with": [
+      "Wafer Rolls Cappuccino"
+    ],
+    "best_seller": true,
+    "high_margin": true,
+    "trending": false
+  },
+  {
+    "product_name": "Choco Stick Chocolate",
+    "category": "Sweet Snacks",
+    "price": "184.07",
+    "size": "35g",
+    "flavor_type": "sweet",
+    "taste_tags": [
+      "sweet",
+      "chocolate",
+      "crunchy"
+    ],
+    "occasion_tags": [
+      "kids",
+      "gift",
+      "tea time",
+      "school lunch"
+    ],
+    "price_tags": [
+      "under_500"
+    ],
+    "product_type": "single_pack",
+    "safety_tags": [
+      "sweet_snack",
+      "kids_friendly",
+      "allergy_check_required"
+    ],
+    "kids_friendly": "yes",
+    "spice_level": "none",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Choco Lovers Bundle",
+      "Choco Mania Bundle"
+    ],
+    "cross_sell_products": [
+      "Choco Stick Strawberry",
+      "Wafer Rolls Hazelnut"
+    ],
+    "bundle_upgrade": "Kids Fun Box",
+    "frequently_bought_with": [
+      "Patata Salty"
+    ],
+    "best_seller": true,
+    "high_margin": true,
+    "trending": true
+  },
+  {
+    "product_name": "Choco Stick Strawberry",
+    "category": "Sweet Snacks",
+    "price": "179.83",
+    "size": "35g",
+    "flavor_type": "sweet",
+    "taste_tags": [
+      "sweet",
+      "fruity",
+      "crunchy"
+    ],
+    "occasion_tags": [
+      "kids",
+      "gift",
+      "school lunch",
+      "tea time"
+    ],
+    "price_tags": [
+      "under_500"
+    ],
+    "product_type": "single_pack",
+    "safety_tags": [
+      "sweet_snack",
+      "kids_friendly",
+      "allergy_check_required"
+    ],
+    "kids_friendly": "yes",
+    "spice_level": "none",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Choco Lovers Bundle",
+      "Kids Fun Box"
+    ],
+    "cross_sell_products": [
+      "Choco Stick Chocolate",
+      "Patata Salty"
+    ],
+    "bundle_upgrade": "Kids Fun Box",
+    "frequently_bought_with": [
+      "Wafer Rolls Strawberry"
+    ],
+    "best_seller": false,
+    "high_margin": true,
+    "trending": true
+  },
+  {
+    "product_name": "Coco Choco Can",
+    "category": "Sweet Snacks",
+    "price": "210.06",
+    "size": "70g",
+    "flavor_type": "sweet",
+    "taste_tags": [
+      "sweet",
+      "chocolate",
+      "crunchy"
+    ],
+    "occasion_tags": [
+      "kids",
+      "gift",
+      "tea time",
+      "family"
+    ],
+    "price_tags": [
+      "under_500"
+    ],
+    "product_type": "single_pack",
+    "safety_tags": [
+      "sweet_snack",
+      "kids_friendly",
+      "allergy_check_required"
+    ],
+    "kids_friendly": "yes",
+    "spice_level": "none",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Choco Mania Bundle"
+    ],
+    "cross_sell_products": [
+      "Wafer Rolls Hazelnut",
+      "Patata Salty"
+    ],
+    "bundle_upgrade": "Kids Fun Box",
+    "frequently_bought_with": [
+      "Wafer Rolls Strawberry"
+    ],
+    "best_seller": true,
+    "high_margin": true,
+    "trending": true
+  },
+  {
+    "product_name": "Wafer Rolls Hazelnut",
+    "category": "Sweet Snacks",
+    "price": "380.41",
+    "size": "80g",
+    "flavor_type": "sweet",
+    "taste_tags": [
+      "sweet",
+      "chocolate",
+      "crunchy"
+    ],
+    "occasion_tags": [
+      "gift",
+      "tea time",
+      "office",
+      "family"
+    ],
+    "price_tags": [
+      "under_500"
+    ],
+    "product_type": "single_pack",
+    "safety_tags": [
+      "sweet_snack",
+      "allergy_check_required"
+    ],
+    "kids_friendly": "yes",
+    "spice_level": "none",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Choco Lovers Bundle",
+      "Snaktory Wafer Rolls Collection"
+    ],
+    "cross_sell_products": [
+      "Wafer Rolls Cappuccino",
+      "Choco Lovers Bundle"
+    ],
+    "bundle_upgrade": "Choco Lovers Bundle",
+    "frequently_bought_with": [
+      "Banana Chips Sea Salt"
+    ],
+    "best_seller": true,
+    "high_margin": true,
+    "trending": true
+  },
+  {
+    "product_name": "Wafer Rolls Strawberry",
+    "category": "Sweet Snacks",
+    "price": "378.86",
+    "size": "80g",
+    "flavor_type": "sweet",
+    "taste_tags": [
+      "sweet",
+      "fruity",
+      "crunchy"
+    ],
+    "occasion_tags": [
+      "kids",
+      "gift",
+      "tea time",
+      "school lunch"
+    ],
+    "price_tags": [
+      "under_500"
+    ],
+    "product_type": "single_pack",
+    "safety_tags": [
+      "sweet_snack",
+      "kids_friendly",
+      "allergy_check_required"
+    ],
+    "kids_friendly": "yes",
+    "spice_level": "none",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Choco Mania Bundle",
+      "Kids Fun Box"
+    ],
+    "cross_sell_products": [
+      "Choco Stick Strawberry",
+      "Patata Salty"
+    ],
+    "bundle_upgrade": "Kids Fun Box",
+    "frequently_bought_with": [
+      "Coco Choco Can"
+    ],
+    "best_seller": false,
+    "high_margin": true,
+    "trending": true
+  },
+  {
+    "product_name": "Wafer Rolls Cappuccino",
+    "category": "Sweet Snacks",
+    "price": "384.44",
+    "size": "80g",
+    "flavor_type": "sweet",
+    "taste_tags": [
+      "sweet",
+      "crunchy"
+    ],
+    "occasion_tags": [
+      "office",
+      "tea time",
+      "gift",
+      "family"
+    ],
+    "price_tags": [
+      "under_500"
+    ],
+    "product_type": "single_pack",
+    "safety_tags": [
+      "sweet_snack",
+      "allergy_check_required"
+    ],
+    "kids_friendly": "maybe",
+    "spice_level": "none",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Snaktory Wafer Rolls Collection",
+      "Choco Lovers Bundle"
+    ],
+    "cross_sell_products": [
+      "Wafer Rolls Hazelnut",
+      "Banana Chips Sea Salt"
+    ],
+    "bundle_upgrade": "Office Snack Box",
+    "frequently_bought_with": [
+      "ChickPea Puffs"
+    ],
+    "best_seller": true,
+    "high_margin": true,
+    "trending": false
+  },
+  {
+    "product_name": "Wafer Rolls Dark Chocolate",
+    "category": "Sweet Snacks",
+    "price": "391.16",
+    "size": "80g",
+    "flavor_type": "sweet",
+    "taste_tags": [
+      "sweet",
+      "chocolate",
+      "crunchy"
+    ],
+    "occasion_tags": [
+      "gift",
+      "tea time",
+      "family"
+    ],
+    "price_tags": [
+      "under_500"
+    ],
+    "product_type": "single_pack",
+    "safety_tags": [
+      "sweet_snack",
+      "allergy_check_required"
+    ],
+    "kids_friendly": "yes",
+    "spice_level": "none",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Choco Lovers Bundle"
+    ],
+    "cross_sell_products": [
+      "Choco Stick Chocolate",
+      "Patata Salty"
+    ],
+    "bundle_upgrade": "Choco Lovers Bundle",
+    "frequently_bought_with": [
+      "Banana Chips BBQ"
+    ],
+    "best_seller": false,
+    "high_margin": true,
+    "trending": false
+  },
+  {
+    "product_name": "Nachos Pack Of 10",
+    "category": "Nachos",
+    "price": "500",
+    "size": "10 x 50g",
+    "flavor_type": "mixed_savory",
+    "taste_tags": [
+      "crunchy",
+      "savory",
+      "spicy",
+      "mild"
+    ],
+    "occasion_tags": [
+      "party",
+      "movie night",
+      "family",
+      "gaming",
+      "netflix"
+    ],
+    "price_tags": [
+      "under_1000"
+    ],
+    "product_type": "pack_of_6",
+    "safety_tags": [
+      "savory_snack"
+    ],
+    "kids_friendly": "maybe",
+    "spice_level": "mixed",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Movie Night Nachos Bundle"
+    ],
+    "cross_sell_products": [
+      "Stix Party",
+      "Patata Salty"
+    ],
+    "bundle_upgrade": "Party Pleaser Bundle",
+    "frequently_bought_with": [
+      "Choco Stick Chocolate"
+    ],
+    "best_seller": true,
+    "high_margin": false,
+    "trending": true
+  },
+  {
+    "product_name": "Multi Grain Stix - Can Tray 5 +1",
+    "category": "Multigrain Stix",
+    "price": "1250",
+    "size": "6-can tray",
+    "flavor_type": "mixed_savory",
+    "taste_tags": [
+      "crunchy",
+      "savory",
+      "spicy",
+      "mild"
+    ],
+    "occasion_tags": [
+      "office",
+      "party",
+      "family",
+      "gift"
+    ],
+    "price_tags": [
+      "under_2000"
+    ],
+    "product_type": "bundle",
+    "safety_tags": [
+      "savory_snack"
+    ],
+    "kids_friendly": "maybe",
+    "spice_level": "mixed",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Flavor Fiesta Bundle"
+    ],
+    "cross_sell_products": [
+      "Nachos Pack Of 10",
+      "Wafer Rolls Hazelnut"
+    ],
+    "bundle_upgrade": "All Time Favorites",
+    "frequently_bought_with": [
+      "Coco Choco Can"
+    ],
+    "best_seller": false,
+    "high_margin": true,
+    "trending": false
+  },
+  {
+    "product_name": "Snaktory Patata Chips - Masala & Salty",
+    "category": "Potato Snacks",
+    "price": "775",
+    "size": "combo pack",
+    "flavor_type": "mixed_savory",
+    "taste_tags": [
+      "salty",
+      "masala",
+      "crunchy",
+      "savory"
+    ],
+    "occasion_tags": [
+      "office",
+      "family",
+      "travel",
+      "tea time"
+    ],
+    "price_tags": [
+      "under_1000"
+    ],
+    "product_type": "combo",
+    "safety_tags": [
+      "savory_snack"
+    ],
+    "kids_friendly": "yes",
+    "spice_level": "mixed_low_medium",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "All Time Favorites"
+    ],
+    "cross_sell_products": [
+      "ChickPea Puffs",
+      "Wafer Rolls Strawberry"
+    ],
+    "bundle_upgrade": "Office Snack Box",
+    "frequently_bought_with": [
+      "Choco Stick Chocolate"
+    ],
+    "best_seller": false,
+    "high_margin": true,
+    "trending": false
+  },
+  {
+    "product_name": "Snaktory Wafer Rolls Collection",
+    "category": "Sweet Snacks",
+    "price": "1300",
+    "size": "collection box",
+    "flavor_type": "sweet",
+    "taste_tags": [
+      "sweet",
+      "chocolate",
+      "fruity",
+      "crunchy"
+    ],
+    "occasion_tags": [
+      "gift",
+      "family",
+      "office",
+      "tea time"
+    ],
+    "price_tags": [
+      "under_2000"
+    ],
+    "product_type": "gift_box",
+    "safety_tags": [
+      "sweet_snack",
+      "allergy_check_required"
+    ],
+    "kids_friendly": "yes",
+    "spice_level": "none",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Choco Lovers Bundle"
+    ],
+    "cross_sell_products": [
+      "Coco Choco Can",
+      "Banana Chips Sea Salt"
+    ],
+    "bundle_upgrade": "Ultimate Mega Snack Box",
+    "frequently_bought_with": [
+      "Patata Salty"
+    ],
+    "best_seller": false,
+    "high_margin": true,
+    "trending": false
+  },
+  {
+    "product_name": "Snakitos Snaktory",
+    "category": "Snacks",
+    "price": "1125",
+    "size": "mixed box",
+    "flavor_type": "mixed",
+    "taste_tags": [
+      "spicy",
+      "sweet",
+      "salty",
+      "crunchy",
+      "savory"
+    ],
+    "occasion_tags": [
+      "family",
+      "gift",
+      "office",
+      "party"
+    ],
+    "price_tags": [
+      "under_2000"
+    ],
+    "product_type": "bundle",
+    "safety_tags": [
+      "allergy_check_required"
+    ],
+    "kids_friendly": "maybe",
+    "spice_level": "mixed",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "All Time Favorites"
+    ],
+    "cross_sell_products": [
+      "Snaktory Indulgence",
+      "Snaktory Snack Pack"
+    ],
+    "bundle_upgrade": "Ultimate Mega Snack Box",
+    "frequently_bought_with": [
+      "Wafer Rolls Hazelnut"
+    ],
+    "best_seller": false,
+    "high_margin": true,
+    "trending": false
+  },
+  {
+    "product_name": "Snakitos Snaktory Indulgence",
+    "category": "Snacks",
+    "price": "1125",
+    "size": "mixed premium box",
+    "flavor_type": "mixed",
+    "taste_tags": [
+      "sweet",
+      "crunchy",
+      "savory"
+    ],
+    "occasion_tags": [
+      "gift",
+      "office",
+      "family"
+    ],
+    "price_tags": [
+      "under_2000"
+    ],
+    "product_type": "bundle",
+    "safety_tags": [
+      "allergy_check_required"
+    ],
+    "kids_friendly": "yes",
+    "spice_level": "mixed_low",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Choco Lovers Bundle"
+    ],
+    "cross_sell_products": [
+      "Snaktory Wafer Rolls Collection",
+      "Banana Chips Sea Salt"
+    ],
+    "bundle_upgrade": "Ultimate Mega Snack Box",
+    "frequently_bought_with": [
+      "Choco Stick Chocolate"
+    ],
+    "best_seller": false,
+    "high_margin": true,
+    "trending": false
+  },
+  {
+    "product_name": "Snakitos Snaktory Snack Pack",
+    "category": "Snacks",
+    "price": "775",
+    "size": "mixed mini pack",
+    "flavor_type": "mixed",
+    "taste_tags": [
+      "spicy",
+      "sweet",
+      "salty",
+      "crunchy"
+    ],
+    "occasion_tags": [
+      "office",
+      "travel",
+      "family"
+    ],
+    "price_tags": [
+      "under_1000"
+    ],
+    "product_type": "combo",
+    "safety_tags": [
+      "allergy_check_required"
+    ],
+    "kids_friendly": "maybe",
+    "spice_level": "mixed",
+    "ingredients": "Check product page or packaging for exact ingredients.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "check_live_stock",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Snack Sampler Deal"
+    ],
+    "cross_sell_products": [
+      "Patata Salty",
+      "Choco Stick Chocolate"
+    ],
+    "bundle_upgrade": "All Time Favorites",
+    "frequently_bought_with": [
+      "Wafer Rolls Hazelnut"
+    ],
+    "best_seller": false,
+    "high_margin": true,
+    "trending": false
+  },
+  {
+    "product_name": "Kids Fun Box",
+    "category": "Bundles",
+    "price": "1499",
+    "size": "bundle",
+    "flavor_type": "sweet_mild_mix",
+    "taste_tags": [
+      "sweet",
+      "mild",
+      "crunchy"
+    ],
+    "occasion_tags": [
+      "kids",
+      "school lunch",
+      "gift",
+      "family"
+    ],
+    "price_tags": [
+      "under_2000"
+    ],
+    "product_type": "bundle",
+    "safety_tags": [
+      "kids_friendly",
+      "allergy_check_required"
+    ],
+    "kids_friendly": "yes",
+    "spice_level": "low",
+    "ingredients": "Bundle contents may vary. Check included product pages or packaging.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "bundle_logic",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Ultimate Mega Snack Box"
+    ],
+    "cross_sell_products": [
+      "Choco Sticks",
+      "Wafer Rolls",
+      "Patata Salty"
+    ],
+    "bundle_upgrade": "Ultimate Mega Snack Box",
+    "frequently_bought_with": [
+      "Coco Choco Can"
+    ],
+    "best_seller": false,
+    "high_margin": true,
+    "trending": true
+  },
+  {
+    "product_name": "Office Snack Box",
+    "category": "Bundles",
+    "price": "1899",
+    "size": "bundle",
+    "flavor_type": "mixed_mild",
+    "taste_tags": [
+      "salty",
+      "sweet",
+      "crunchy",
+      "savory"
+    ],
+    "occasion_tags": [
+      "office",
+      "tea time",
+      "travel",
+      "family"
+    ],
+    "price_tags": [
+      "under_2000"
+    ],
+    "product_type": "bundle",
+    "safety_tags": [
+      "allergy_check_required"
+    ],
+    "kids_friendly": "yes",
+    "spice_level": "mixed_low_medium",
+    "ingredients": "Bundle contents may vary. Check included product pages or packaging.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "bundle_logic",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "All Time Favorites"
+    ],
+    "cross_sell_products": [
+      "Banana Chips",
+      "Wafer Rolls",
+      "ChickPea Puffs"
+    ],
+    "bundle_upgrade": "Ultimate Mega Snack Box",
+    "frequently_bought_with": [
+      "Snaktory Snack Pack"
+    ],
+    "best_seller": true,
+    "high_margin": true,
+    "trending": true
+  },
+  {
+    "product_name": "Movie Night Nachos Bundle",
+    "category": "Bundles",
+    "price": "1850",
+    "size": "bundle",
+    "flavor_type": "savory_spicy_mix",
+    "taste_tags": [
+      "spicy",
+      "mild",
+      "crunchy",
+      "savory"
+    ],
+    "occasion_tags": [
+      "movie night",
+      "gaming",
+      "netflix",
+      "party"
+    ],
+    "price_tags": [
+      "under_2000"
+    ],
+    "product_type": "bundle",
+    "safety_tags": [
+      "savory_snack"
+    ],
+    "kids_friendly": "maybe",
+    "spice_level": "mixed_medium",
+    "ingredients": "Bundle contents may vary. Check included product pages or packaging.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "bundle_logic",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Party Pleaser Bundle"
+    ],
+    "cross_sell_products": [
+      "Stix Party",
+      "Nachos",
+      "Patata"
+    ],
+    "bundle_upgrade": "Party Pleaser Bundle",
+    "frequently_bought_with": [
+      "Choco Stick Chocolate"
+    ],
+    "best_seller": true,
+    "high_margin": true,
+    "trending": true
+  },
+  {
+    "product_name": "Snack Sampler Deal",
+    "category": "Bundles",
+    "price": "1699",
+    "size": "bundle",
+    "flavor_type": "mixed",
+    "taste_tags": [
+      "spicy",
+      "sweet",
+      "salty",
+      "crunchy"
+    ],
+    "occasion_tags": [
+      "new customer",
+      "office",
+      "family",
+      "gift"
+    ],
+    "price_tags": [
+      "under_2000"
+    ],
+    "product_type": "bundle",
+    "safety_tags": [
+      "allergy_check_required"
+    ],
+    "kids_friendly": "maybe",
+    "spice_level": "mixed",
+    "ingredients": "Bundle contents may vary. Check included product pages or packaging.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "bundle_logic",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "All Time Favorites"
+    ],
+    "cross_sell_products": [
+      "Snaktory Snack Pack",
+      "Banana Chips Sea Salt"
+    ],
+    "bundle_upgrade": "All Time Favorites",
+    "frequently_bought_with": [
+      "Wafer Rolls Hazelnut"
+    ],
+    "best_seller": true,
+    "high_margin": true,
+    "trending": true
+  },
+  {
+    "product_name": "All Time Favorites",
+    "category": "Bundles",
+    "price": "1999",
+    "size": "bundle",
+    "flavor_type": "mixed",
+    "taste_tags": [
+      "spicy",
+      "sweet",
+      "salty",
+      "crunchy",
+      "savory"
+    ],
+    "occasion_tags": [
+      "family",
+      "gift",
+      "office",
+      "party"
+    ],
+    "price_tags": [
+      "under_2000"
+    ],
+    "product_type": "bundle",
+    "safety_tags": [
+      "allergy_check_required"
+    ],
+    "kids_friendly": "maybe",
+    "spice_level": "mixed",
+    "ingredients": "Bundle contents may vary. Check included product pages or packaging.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "bundle_logic",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Flavor Fiesta Bundle"
+    ],
+    "cross_sell_products": [
+      "Office Snack Box",
+      "Choco Lovers Bundle"
+    ],
+    "bundle_upgrade": "Ultimate Mega Snack Box",
+    "frequently_bought_with": [
+      "Banana Chips Sea Salt"
+    ],
+    "best_seller": true,
+    "high_margin": true,
+    "trending": true
+  },
+  {
+    "product_name": "Choco Lovers Bundle",
+    "category": "Bundles",
+    "price": "1799",
+    "size": "bundle",
+    "flavor_type": "sweet",
+    "taste_tags": [
+      "sweet",
+      "chocolate",
+      "fruity",
+      "crunchy"
+    ],
+    "occasion_tags": [
+      "gift",
+      "kids",
+      "tea time",
+      "family"
+    ],
+    "price_tags": [
+      "under_2000"
+    ],
+    "product_type": "bundle",
+    "safety_tags": [
+      "sweet_snack",
+      "allergy_check_required"
+    ],
+    "kids_friendly": "yes",
+    "spice_level": "none",
+    "ingredients": "Bundle contents may vary. Check included product pages or packaging.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "bundle_logic",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Choco Mania Bundle"
+    ],
+    "cross_sell_products": [
+      "Wafer Rolls Hazelnut",
+      "Patata Salty"
+    ],
+    "bundle_upgrade": "Ultimate Mega Snack Box",
+    "frequently_bought_with": [
+      "Banana Chips Sea Salt"
+    ],
+    "best_seller": true,
+    "high_margin": true,
+    "trending": true
+  },
+  {
+    "product_name": "Choco Mania Bundle",
+    "category": "Bundles",
+    "price": "1950",
+    "size": "bundle",
+    "flavor_type": "sweet",
+    "taste_tags": [
+      "sweet",
+      "chocolate",
+      "fruity",
+      "crunchy"
+    ],
+    "occasion_tags": [
+      "gift",
+      "kids",
+      "family",
+      "party"
+    ],
+    "price_tags": [
+      "under_2000"
+    ],
+    "product_type": "bundle",
+    "safety_tags": [
+      "sweet_snack",
+      "allergy_check_required"
+    ],
+    "kids_friendly": "yes",
+    "spice_level": "none",
+    "ingredients": "Bundle contents may vary. Check included product pages or packaging.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "bundle_logic",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Ultimate Mega Snack Box"
+    ],
+    "cross_sell_products": [
+      "Patata Salty",
+      "Banana Chips Sea Salt"
+    ],
+    "bundle_upgrade": "Ultimate Mega Snack Box",
+    "frequently_bought_with": [
+      "Wafer Rolls Hazelnut"
+    ],
+    "best_seller": true,
+    "high_margin": true,
+    "trending": true
+  },
+  {
+    "product_name": "Flavor Fiesta Bundle",
+    "category": "Bundles",
+    "price": "3299",
+    "size": "large bundle",
+    "flavor_type": "mixed",
+    "taste_tags": [
+      "spicy",
+      "sweet",
+      "salty",
+      "crunchy",
+      "savory"
+    ],
+    "occasion_tags": [
+      "gift",
+      "party",
+      "family",
+      "office"
+    ],
+    "price_tags": [
+      "above_3000"
+    ],
+    "product_type": "party_pack",
+    "safety_tags": [
+      "allergy_check_required"
+    ],
+    "kids_friendly": "maybe",
+    "spice_level": "mixed",
+    "ingredients": "Bundle contents may vary. Check included product pages or packaging.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "bundle_logic",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Ultimate Mega Snack Box"
+    ],
+    "cross_sell_products": [
+      "Party Pleaser Bundle",
+      "Choco Lovers Bundle"
+    ],
+    "bundle_upgrade": "Ultimate Mega Snack Box",
+    "frequently_bought_with": [
+      "Movie Night Nachos Bundle"
+    ],
+    "best_seller": true,
+    "high_margin": true,
+    "trending": true
+  },
+  {
+    "product_name": "Party Pleaser Bundle",
+    "category": "Bundles",
+    "price": "3499",
+    "size": "party bundle",
+    "flavor_type": "mixed_savory",
+    "taste_tags": [
+      "spicy",
+      "salty",
+      "crunchy",
+      "savory"
+    ],
+    "occasion_tags": [
+      "party",
+      "family",
+      "movie night",
+      "gaming"
+    ],
+    "price_tags": [
+      "above_3000"
+    ],
+    "product_type": "party_pack",
+    "safety_tags": [
+      "allergy_check_required"
+    ],
+    "kids_friendly": "maybe",
+    "spice_level": "mixed_medium",
+    "ingredients": "Bundle contents may vary. Check included product pages or packaging.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "bundle_logic",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Ultimate Mega Snack Box"
+    ],
+    "cross_sell_products": [
+      "Movie Night Bundle",
+      "Flavor Fiesta Bundle"
+    ],
+    "bundle_upgrade": "Ultimate Mega Snack Box",
+    "frequently_bought_with": [
+      "Choco Lovers Bundle"
+    ],
+    "best_seller": true,
+    "high_margin": true,
+    "trending": true
+  },
+  {
+    "product_name": "Crunch Munch Combo",
+    "category": "Bundles",
+    "price": "3199",
+    "size": "large combo",
+    "flavor_type": "mixed_crunchy",
+    "taste_tags": [
+      "spicy",
+      "sweet",
+      "salty",
+      "crunchy"
+    ],
+    "occasion_tags": [
+      "party",
+      "office",
+      "family",
+      "travel"
+    ],
+    "price_tags": [
+      "above_3000"
+    ],
+    "product_type": "family_pack",
+    "safety_tags": [
+      "allergy_check_required"
+    ],
+    "kids_friendly": "maybe",
+    "spice_level": "mixed",
+    "ingredients": "Bundle contents may vary. Check included product pages or packaging.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "bundle_logic",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [
+      "Ultimate Mega Snack Box"
+    ],
+    "cross_sell_products": [
+      "Flavor Fiesta Bundle",
+      "Office Snack Box"
+    ],
+    "bundle_upgrade": "Ultimate Mega Snack Box",
+    "frequently_bought_with": [
+      "Wafer Rolls Hazelnut"
+    ],
+    "best_seller": false,
+    "high_margin": true,
+    "trending": true
+  },
+  {
+    "product_name": "Ultimate Mega Snack Box",
+    "category": "Bundles",
+    "price": "3999",
+    "size": "mega box",
+    "flavor_type": "mixed",
+    "taste_tags": [
+      "spicy",
+      "sweet",
+      "salty",
+      "crunchy",
+      "savory"
+    ],
+    "occasion_tags": [
+      "gift",
+      "party",
+      "family",
+      "office",
+      "movie night"
+    ],
+    "price_tags": [
+      "above_3000"
+    ],
+    "product_type": "gift_box",
+    "safety_tags": [
+      "allergy_check_required"
+    ],
+    "kids_friendly": "maybe",
+    "spice_level": "mixed",
+    "ingredients": "Bundle contents may vary. Check included product pages or packaging.",
+    "allergens": "Check packaging for accurate allergen details.",
+    "nutrition_facts": "Check packaging for exact nutrition facts.",
+    "shelf_life": "Check packaging for exact shelf life.",
+    "storage": "Store in a cool and dry place.",
+    "stock_status": "bundle_logic",
+    "product_url": "https://snakitos.com",
+    "image_url": "",
+    "upsell_products": [],
+    "cross_sell_products": [
+      "Flavor Fiesta Bundle",
+      "Party Pleaser Bundle"
+    ],
+    "bundle_upgrade": "",
+    "frequently_bought_with": [
+      "Movie Night Nachos Bundle"
+    ],
+    "best_seller": true,
+    "high_margin": true,
+    "trending": true
+  }
+]

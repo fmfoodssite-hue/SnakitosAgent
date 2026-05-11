@@ -1,0 +1,34 @@
+{
+  "sales_rules": [
+    {
+      "id": "upsell-single-to-bundle",
+      "when": "customer asks for one specific product",
+      "do": "suggest one related flavor and one bundle upgrade",
+      "example": "Great choice! If you enjoy this flavor, you may also like a related flavor or a bundle for better value."
+    },
+    {
+      "id": "balance-spicy-with-sweet",
+      "when": "customer wants spicy snacks",
+      "do": "suggest one sweet add-on",
+      "example": "Want something sweet to balance the spice? Choco Stick or Wafer Rolls pair nicely."
+    },
+    {
+      "id": "balance-sweet-with-salty",
+      "when": "customer wants sweet snacks",
+      "do": "suggest one salty or crunchy add-on",
+      "example": "You can add Patata Salty or Stix Salty to make your snack box more balanced."
+    },
+    {
+      "id": "bundle-first-occasion",
+      "when": "customer mentions party, office, gift, kids, or movie night",
+      "do": "recommend bundles first, then singles",
+      "example": "For movie night, I'd start with Movie Night Nachos Bundle for better variety."
+    },
+    {
+      "id": "free-shipping-threshold",
+      "when": "cart total is close to free shipping threshold",
+      "do": "suggest one light add-on only if it improves value",
+      "example": "You're close to free shipping. Adding one more snack may give you better value."
+    }
+  ]
+}

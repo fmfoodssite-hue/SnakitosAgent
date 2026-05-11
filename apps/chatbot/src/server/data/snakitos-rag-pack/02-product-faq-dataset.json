@@ -1,0 +1,214 @@
+[
+  {
+    "question": "What do you sell?",
+    "answer": "Snakitos offers a wide range of snacks including Stix, Patata, Banana Chips, Choco Sticks, Wafer Rolls, ChickPea Puffs, Nachos, Snaktory packs, and snack bundles. Are you looking for spicy, sweet, kids-friendly, or mixed snacks?",
+    "category": "General brand questions",
+    "related_products": [
+      "Snack Sampler Deal",
+      "All Time Favorites"
+    ],
+    "safe_upsell": "Snack Sampler Deal",
+    "escalation_required": false
+  },
+  {
+    "question": "Which snacks are spicy?",
+    "answer": "For spicy options, try Stix Hot & Spicy, Stix Peri Peri, Stix Lemon & Chilli, Nachos Salsa, Nachos Paprika, or Banana Chips Achari Masti.",
+    "category": "Product questions",
+    "related_products": [
+      "Stix Hot & Spicy",
+      "Stix Peri Peri",
+      "Movie Night Nachos Bundle"
+    ],
+    "safe_upsell": "Movie Night Nachos Bundle",
+    "escalation_required": false
+  },
+  {
+    "question": "Which snacks are sweet?",
+    "answer": "Sweet picks include Choco Stick Chocolate, Choco Stick Strawberry, Coco Choco Can, Wafer Rolls Hazelnut, Wafer Rolls Strawberry, and Wafer Rolls Cappuccino.",
+    "category": "Product questions",
+    "related_products": [
+      "Choco Lovers Bundle",
+      "Choco Mania Bundle"
+    ],
+    "safe_upsell": "Choco Lovers Bundle",
+    "escalation_required": false
+  },
+  {
+    "question": "Are your snacks halal?",
+    "answer": "Yes, Snakitos is a brand by FM Foods, and FM Foods publicly lists Halal certification as part of its quality and food safety standards.",
+    "category": "Halal questions",
+    "related_products": [],
+    "safe_upsell": "",
+    "escalation_required": false
+  },
+  {
+    "question": "What certifications do you have?",
+    "answer": "Snakitos is a brand by FM Foods. FM Foods lists several food safety and quality standards, including Halal, ISO 22000, HACCP, SFDA, and FDA-related approvals/compliance.",
+    "category": "Certification questions",
+    "related_products": [],
+    "safe_upsell": "",
+    "escalation_required": false
+  },
+  {
+    "question": "What are the ingredients in this snack?",
+    "answer": "Ingredients vary by product. Please check the product page or packaging for the exact ingredient list. If you share the product name, I can help guide you.",
+    "category": "Ingredients",
+    "related_products": [],
+    "safe_upsell": "",
+    "escalation_required": false
+  },
+  {
+    "question": "Does this contain allergens?",
+    "answer": "Allergen information can vary by product. Please check the packaging for the most accurate allergen details. If you have a serious allergy, please confirm with support before placing the order.",
+    "category": "Allergens",
+    "related_products": [],
+    "safe_upsell": "",
+    "escalation_required": true
+  },
+  {
+    "question": "Is this vegan?",
+    "answer": "I'm not fully sure about that information, and I don't want to misguide you. Please check the packaging or confirm with support before ordering.",
+    "category": "Vegan/vegetarian",
+    "related_products": [],
+    "safe_upsell": "",
+    "escalation_required": true
+  },
+  {
+    "question": "Which snacks are good for kids?",
+    "answer": "Kids usually enjoy Choco Stick Chocolate, Choco Stick Strawberry, Coco Choco Can, Wafer Rolls Strawberry, and Patata Salty. If you want a ready option, Kids Fun Box is a strong pick.",
+    "category": "Kids safety",
+    "related_products": [
+      "Kids Fun Box",
+      "Choco Stick Chocolate",
+      "Patata Salty"
+    ],
+    "safe_upsell": "Kids Fun Box",
+    "escalation_required": false
+  },
+  {
+    "question": "Is this very spicy?",
+    "answer": "Spice level depends on the product. Stix Hot & Spicy is a stronger spicy option, while Stix Lemon & Chilli and Nachos Paprika are usually easier starting points.",
+    "category": "Spicy level",
+    "related_products": [
+      "Stix Hot & Spicy",
+      "Stix Lemon & Chilli",
+      "Nachos Paprika"
+    ],
+    "safe_upsell": "Movie Night Nachos Bundle",
+    "escalation_required": false
+  },
+  {
+    "question": "How much are delivery charges?",
+    "answer": "Delivery charges may depend on your city, order value, and current offer. Please check the checkout page for the exact delivery charge.",
+    "category": "Delivery charges",
+    "related_products": [],
+    "safe_upsell": "",
+    "escalation_required": false
+  },
+  {
+    "question": "How long does delivery take?",
+    "answer": "Delivery time depends on your city and courier service. Major cities are usually faster, while other areas may take a little longer.",
+    "category": "Shipping",
+    "related_products": [],
+    "safe_upsell": "",
+    "escalation_required": false
+  },
+  {
+    "question": "Do you offer COD?",
+    "answer": "Cash on Delivery may be available depending on your city and order type. You can confirm available payment options at checkout.",
+    "category": "COD",
+    "related_products": [],
+    "safe_upsell": "",
+    "escalation_required": false
+  },
+  {
+    "question": "Can I pay online?",
+    "answer": "Available payment options will appear at checkout. Please use only official Snakitos checkout or official support channels.",
+    "category": "Online payment",
+    "related_products": [],
+    "safe_upsell": "",
+    "escalation_required": false
+  },
+  {
+    "question": "Can I get a refund?",
+    "answer": "Because these are food items, returns and refunds may be limited for hygiene and safety reasons. If you received a damaged, wrong, or defective item, contact support with proof.",
+    "category": "Refunds",
+    "related_products": [],
+    "safe_upsell": "",
+    "escalation_required": true
+  },
+  {
+    "question": "Can I return snacks if I change my mind?",
+    "answer": "Because these are food items, returns may be limited for hygiene and safety reasons. Please contact support if there is a damaged, wrong, or defective item.",
+    "category": "Returns",
+    "related_products": [],
+    "safe_upsell": "",
+    "escalation_required": true
+  },
+  {
+    "question": "My product is damaged",
+    "answer": "I'm sorry about that. Please share your order number and clear photos/videos of the damaged items and packaging so support can review your claim.",
+    "category": "Damaged product",
+    "related_products": [],
+    "safe_upsell": "",
+    "escalation_required": true
+  },
+  {
+    "question": "You sent the wrong item",
+    "answer": "Sorry for the inconvenience. Please share your order number and a photo of the product received so support can check and guide you.",
+    "category": "Wrong product",
+    "related_products": [],
+    "safe_upsell": "",
+    "escalation_required": true
+  },
+  {
+    "question": "Do you have discounts or coupons?",
+    "answer": "Available discounts and coupon offers can change, so the best place to confirm them is the current product page, cart, or checkout.",
+    "category": "Discounts",
+    "related_products": [
+      "Snack Sampler Deal",
+      "All Time Favorites"
+    ],
+    "safe_upsell": "Snack Sampler Deal",
+    "escalation_required": false
+  },
+  {
+    "question": "Do you take bulk or corporate orders?",
+    "answer": "For bulk orders, corporate gifting, or event orders, please contact support so the team can guide you properly.",
+    "category": "Bulk orders",
+    "related_products": [
+      "Party Pleaser Bundle",
+      "Ultimate Mega Snack Box"
+    ],
+    "safe_upsell": "Party Pleaser Bundle",
+    "escalation_required": true
+  },
+  {
+    "question": "Are your snacks fresh?",
+    "answer": "Snakitos products should be handled as fresh stock, but for exact dates please check the packaging after delivery.",
+    "category": "Freshness",
+    "related_products": [],
+    "safe_upsell": "",
+    "escalation_required": false
+  },
+  {
+    "question": "How should I store the snacks?",
+    "answer": "Please keep them in a cool and dry place, and always check the product packaging for exact storage guidance.",
+    "category": "Storage",
+    "related_products": [],
+    "safe_upsell": "",
+    "escalation_required": false
+  },
+  {
+    "question": "This is too expensive",
+    "answer": "I understand. If you want better value, I'd suggest choosing a bundle instead of individual items. Bundles usually give more variety and a better snack experience.",
+    "category": "Price objections",
+    "related_products": [
+      "Snack Sampler Deal",
+      "All Time Favorites",
+      "Office Snack Box"
+    ],
+    "safe_upsell": "All Time Favorites",
+    "escalation_required": false
+  }
+]

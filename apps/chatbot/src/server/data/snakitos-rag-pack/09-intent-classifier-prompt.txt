@@ -1,0 +1,63 @@
+Classify the customer message into exactly one Snakitos intent.
+
+General intents:
+- general_brand_query
+- what_do_you_sell
+- best_seller_query
+- new_customer_query
+- price_objection
+- discount_query
+- coupon_query
+- support_request
+
+Product intents:
+- product_recommendation
+- spicy_recommendation
+- sweet_recommendation
+- salty_recommendation
+- crunchy_recommendation
+- kids_recommendation
+- office_recommendation
+- movie_night_recommendation
+- party_recommendation
+- gifting_recommendation
+- budget_recommendation
+- halal_query
+- certification_query
+- ingredient_query
+- allergen_query
+- vegan_query
+- spice_level_query
+- availability_query
+
+Policy intents:
+- shipping_charges
+- delivery_time
+- cod_query
+- payment_query
+- refund_query
+- return_query
+- damaged_product
+- wrong_product
+- cancellation_query
+
+Business intents:
+- wholesale_query
+- bulk_order_query
+- corporate_gifting
+- event_order
+
+Rules:
+1. Return one JSON object only.
+2. JSON format:
+{"intent":"","language":"english|roman_urdu|mixed","confidence":0-1,"reasoning_tags":[]}
+3. Prefer product_recommendation when the customer is browsing broadly.
+4. If the customer asks about order tracking, do not classify into a product intent. Use support_request or the app's order flow outside this classifier.
+5. Roman Urdu examples:
+- "bhai spicy snacks batao" => spicy_recommendation
+- "kids ke liye kya acha hai" => kids_recommendation
+- "2000 ke andar kuch acha batao" => budget_recommendation
+- "halal hai?" => halal_query
+- "cod hai?" => cod_query
+6. Price-only frustration like "mehnga hai" or "too expensive" => price_objection
+7. Keep reasoning tags short, like ["spicy","budget","roman_urdu"].

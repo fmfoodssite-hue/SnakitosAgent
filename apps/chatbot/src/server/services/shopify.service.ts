@@ -1,4 +1,5 @@
 import { config } from "../config";
+import snakitosProductRecords from "../data/snakitos-rag-pack/15-product-records.json";
 import uploadedCatalog from "../data/uploaded-product-catalog.json";
 import {
   OrderLookupResult,
@@ -63,6 +64,32 @@ type UploadedCatalogProduct = {
   description?: string | null;
 };
 
+type SnakitosProductRecord = {
+  product_name: string;
+  category: string;
+  price: string;
+  size: string;
+  flavor_type: string;
+  taste_tags?: string[];
+  occasion_tags?: string[];
+  price_tags?: string[];
+  product_type: string;
+  safety_tags?: string[];
+  kids_friendly: string;
+  spice_level: string;
+  storage: string;
+  stock_status: string;
+  product_url: string;
+  image_url: string;
+  upsell_products?: string[];
+  cross_sell_products?: string[];
+  bundle_upgrade?: string;
+  frequently_bought_with?: string[];
+  best_seller?: boolean;
+  high_margin?: boolean;
+  trending?: boolean;
+};
+
 const cache = new Map<string, CacheEntry<unknown>>();
 const DEFAULT_TTL_MS = 60_000;
 const STOREFRONT_BASE_URL = "https://snakitos.com";
@@ -110,6 +137,14 @@ function parsePriceValue(price: string | null | undefined): number | null {
 
 function uniqueStrings(values: string[]): string[] {
   return Array.from(new Set(values.map((value) => value.trim()).filter(Boolean)));
+}
+
+function normalizeProductRecordTitle(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function sanitizeCustomerFacingDescription(value: string | null | undefined): string | null {
@@ -962,6 +997,13 @@ export class ShopifyService {
   }
 
   private getUploadedCatalog(): ProductLookupResult[] {
+    const ragProductRecords = snakitosProductRecords as SnakitosProductRecord[];
+    const ragByTitle = new Map(
+      ragProductRecords.map((product) => [
+        this.normalizeSearchText(normalizeProductRecordTitle(product.product_name)),
+        product,
+      ]),
+    );
     const treeProducts = getCanonicalTreeProducts();
     const treeByTitle = new Map(
       treeProducts.map((product) => [this.normalizeSearchText(product.title), product]),
@@ -971,6 +1013,7 @@ export class ShopifyService {
       (product, index) => {
         const normalizedTitle = this.normalizeSearchText(product.title);
         const canonical = treeByTitle.get(normalizedTitle);
+        const ragRecord = ragByTitle.get(normalizedTitle);
         const handle = canonical
           ? canonical.link.split("/").filter(Boolean).pop() ?? this.slugify(product.title)
           : this.slugify(product.title);
@@ -983,13 +1026,19 @@ export class ShopifyService {
           cartLink: canonical?.link ?? `${STOREFRONT_BASE_URL}/collections/all`,
           status: "ACTIVE",
           source: "uploaded_catalog" as const,
-          price: product.price,
+          price: product.price ?? ragRecord?.price ?? null,
           description:
-            canonical?.description ?? sanitizeCustomerFacingDescription(product.description),
+            canonical?.description ??
+            this.buildRagProductDescription(ragRecord) ??
+            sanitizeCustomerFacingDescription(product.description),
           vendor: typeof product.vendor === "string" ? product.vendor : null,
-          productType: canonical?.productType ?? product.productType ?? null,
+          productType: canonical?.productType ?? ragRecord?.category ?? product.productType ?? null,
           tags: Array.from(
-            new Set([...(canonical?.tags ?? []), ...(product.tags ?? [])].filter(Boolean)),
+            new Set([
+              ...(canonical?.tags ?? []),
+              ...(product.tags ?? []),
+              ...this.buildRagProductTags(ragRecord),
+            ].filter(Boolean)),
           ),
           availability: product.availability ?? "unknown",
           totalInventory: null,
@@ -1026,7 +1075,87 @@ export class ShopifyService {
         variants: [],
       }));
 
-    return [...mergedUploadedProducts, ...treeOnlyProducts];
+    const ragOnlyProducts = ragProductRecords
+      .filter(
+        (product) =>
+          !existingTitles.has(
+            this.normalizeSearchText(normalizeProductRecordTitle(product.product_name)),
+          ),
+      )
+      .map((product, index) => ({
+        id: `rag-${index + 1}`,
+        title: product.product_name,
+        handle: this.slugify(product.product_name),
+        link:
+          product.product_url && /^https?:\/\//i.test(product.product_url)
+            ? product.product_url
+            : `${STOREFRONT_BASE_URL}/collections/all`,
+        cartLink:
+          product.product_url && /^https?:\/\//i.test(product.product_url)
+            ? product.product_url
+            : `${STOREFRONT_BASE_URL}/collections/all`,
+        status: "ACTIVE",
+        source: "uploaded_catalog" as const,
+        price: product.price || null,
+        description: this.buildRagProductDescription(product),
+        vendor: "snakitos",
+        productType: product.category,
+        tags: this.buildRagProductTags(product),
+        availability: product.stock_status === "out_of_stock" ? ("out_of_stock" as const) : ("unknown" as const),
+        totalInventory: null,
+        orderCount: null,
+        unitsSold: null,
+        variants: [],
+      }));
+
+    return [...mergedUploadedProducts, ...treeOnlyProducts, ...ragOnlyProducts];
+  }
+
+  private buildRagProductDescription(product: SnakitosProductRecord | undefined): string | null {
+    if (!product) {
+      return null;
+    }
+
+    return [
+      `${product.product_name} is a ${product.flavor_type} ${product.category} snack.`,
+      product.size ? `Size: ${product.size}.` : "",
+      product.taste_tags?.length ? `Taste: ${product.taste_tags.join(", ")}.` : "",
+      product.occasion_tags?.length ? `Good for: ${product.occasion_tags.join(", ")}.` : "",
+      product.bundle_upgrade ? `Bundle upgrade: ${product.bundle_upgrade}.` : "",
+      product.cross_sell_products?.length
+        ? `Pairs well with: ${product.cross_sell_products.slice(0, 3).join(", ")}.`
+        : "",
+      product.kids_friendly === "yes" ? "Kids-friendly option." : "",
+      product.best_seller ? "Best seller." : "",
+      product.trending ? "Trending pick." : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+  }
+
+  private buildRagProductTags(product: SnakitosProductRecord | undefined): string[] {
+    if (!product) {
+      return [];
+    }
+
+    return uniqueStrings([
+      product.category,
+      product.flavor_type,
+      product.product_type,
+      product.kids_friendly,
+      product.spice_level,
+      ...(product.taste_tags ?? []),
+      ...(product.occasion_tags ?? []),
+      ...(product.price_tags ?? []),
+      ...(product.safety_tags ?? []),
+      ...(product.upsell_products ?? []),
+      ...(product.cross_sell_products ?? []),
+      ...(product.frequently_bought_with ?? []),
+      product.bundle_upgrade ?? "",
+      product.best_seller ? "best_seller" : "",
+      product.trending ? "trending" : "",
+      product.high_margin ? "high_margin" : "",
+    ]);
   }
 
   private mergeCatalogs(

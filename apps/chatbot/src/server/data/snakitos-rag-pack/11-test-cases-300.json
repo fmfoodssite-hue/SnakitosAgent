@@ -1,0 +1,2888 @@
+[
+  {
+    "id": "tc-001",
+    "query": "What do you sell?",
+    "expected_intent": "what_do_you_sell",
+    "expected_products": [
+      "Snack Sampler Deal"
+    ],
+    "notes": "brand overview"
+  },
+  {
+    "id": "tc-002",
+    "query": "Recommend something",
+    "expected_intent": "product_recommendation",
+    "expected_products": [],
+    "notes": "broad discovery"
+  },
+  {
+    "id": "tc-003",
+    "query": "Best seller?",
+    "expected_intent": "best_seller_query",
+    "expected_products": [
+      "All Time Favorites"
+    ],
+    "notes": "should upsell bundle"
+  },
+  {
+    "id": "tc-004",
+    "query": "I am new here",
+    "expected_intent": "new_customer_query",
+    "expected_products": [
+      "Snack Sampler Deal"
+    ],
+    "notes": "first-time shopper"
+  },
+  {
+    "id": "tc-005",
+    "query": "This is expensive",
+    "expected_intent": "price_objection",
+    "expected_products": [
+      "All Time Favorites"
+    ],
+    "notes": "value recovery"
+  },
+  {
+    "id": "tc-006",
+    "query": "Do you have halal certification?",
+    "expected_intent": "certification_query",
+    "expected_products": [],
+    "notes": "careful compliance answer"
+  },
+  {
+    "id": "tc-007",
+    "query": "Are the snacks halal?",
+    "expected_intent": "halal_query",
+    "expected_products": [],
+    "notes": "safe halal answer"
+  },
+  {
+    "id": "tc-008",
+    "query": "What are the ingredients in Patata?",
+    "expected_intent": "ingredient_query",
+    "expected_products": [],
+    "notes": "must not guess"
+  },
+  {
+    "id": "tc-009",
+    "query": "Any allergens in Wafer Rolls?",
+    "expected_intent": "allergen_query",
+    "expected_products": [],
+    "notes": "must not guess"
+  },
+  {
+    "id": "tc-010",
+    "query": "Do you have COD?",
+    "expected_intent": "cod_query",
+    "expected_products": [],
+    "notes": "policy"
+  },
+  {
+    "id": "tc-011",
+    "query": "How much is shipping?",
+    "expected_intent": "shipping_charges",
+    "expected_products": [],
+    "notes": "policy"
+  },
+  {
+    "id": "tc-012",
+    "query": "How long does delivery take?",
+    "expected_intent": "delivery_time",
+    "expected_products": [],
+    "notes": "policy"
+  },
+  {
+    "id": "tc-013",
+    "query": "Can I pay online?",
+    "expected_intent": "payment_query",
+    "expected_products": [],
+    "notes": "policy"
+  },
+  {
+    "id": "tc-014",
+    "query": "Can I get a refund?",
+    "expected_intent": "refund_query",
+    "expected_products": [],
+    "notes": "policy"
+  },
+  {
+    "id": "tc-015",
+    "query": "I got a damaged product",
+    "expected_intent": "damaged_product",
+    "expected_products": [],
+    "notes": "support escalation"
+  },
+  {
+    "id": "tc-016",
+    "query": "You sent the wrong product",
+    "expected_intent": "wrong_product",
+    "expected_products": [],
+    "notes": "support escalation"
+  },
+  {
+    "id": "tc-017",
+    "query": "Do you do bulk orders?",
+    "expected_intent": "bulk_order_query",
+    "expected_products": [
+      "Party Pleaser Bundle"
+    ],
+    "notes": "business intent"
+  },
+  {
+    "id": "tc-018",
+    "query": "Corporate gifting options?",
+    "expected_intent": "corporate_gifting",
+    "expected_products": [
+      "Ultimate Mega Snack Box"
+    ],
+    "notes": "business intent"
+  },
+  {
+    "id": "tc-019",
+    "query": "Can you suggest snacks under Rs. 2000?",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "All Time Favorites",
+      "Choco Lovers Bundle",
+      "Office Snack Box",
+      "Movie Night Nachos Bundle",
+      "Snack Sampler Deal"
+    ],
+    "notes": "budget discovery"
+  },
+  {
+    "id": "tc-020",
+    "query": "Best snacks for movie night?",
+    "expected_intent": "movie_night_recommendation",
+    "expected_products": [
+      "Movie Night Nachos Bundle",
+      "Nachos Salsa",
+      "Stix Peri Peri"
+    ],
+    "notes": "occasion"
+  },
+  {
+    "id": "tc-021",
+    "query": "I want spicy snacks",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Hot & Spicy",
+      "Stix Peri Peri",
+      "Stix Lemon & Chilli",
+      "Nachos Salsa",
+      "Nachos Paprika",
+      "Banana Chips Achari Masti"
+    ],
+    "notes": "taste intent"
+  },
+  {
+    "id": "tc-022",
+    "query": "Show me spicy options",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Hot & Spicy",
+      "Stix Peri Peri",
+      "Stix Lemon & Chilli",
+      "Nachos Salsa",
+      "Nachos Paprika",
+      "Banana Chips Achari Masti"
+    ],
+    "notes": "taste intent"
+  },
+  {
+    "id": "tc-023",
+    "query": "Recommend spicy snacks",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Hot & Spicy",
+      "Stix Peri Peri",
+      "Stix Lemon & Chilli",
+      "Nachos Salsa",
+      "Nachos Paprika",
+      "Banana Chips Achari Masti"
+    ],
+    "notes": "taste intent"
+  },
+  {
+    "id": "tc-024",
+    "query": "I want sweet snacks",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Stick Chocolate",
+      "Choco Stick Strawberry",
+      "Coco Choco Can",
+      "Wafer Rolls Hazelnut",
+      "Wafer Rolls Strawberry",
+      "Wafer Rolls Cappuccino"
+    ],
+    "notes": "taste intent"
+  },
+  {
+    "id": "tc-025",
+    "query": "Show me sweet options",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Stick Chocolate",
+      "Choco Stick Strawberry",
+      "Coco Choco Can",
+      "Wafer Rolls Hazelnut",
+      "Wafer Rolls Strawberry",
+      "Wafer Rolls Cappuccino"
+    ],
+    "notes": "taste intent"
+  },
+  {
+    "id": "tc-026",
+    "query": "Recommend sweet snacks",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Stick Chocolate",
+      "Choco Stick Strawberry",
+      "Coco Choco Can",
+      "Wafer Rolls Hazelnut",
+      "Wafer Rolls Strawberry",
+      "Wafer Rolls Cappuccino"
+    ],
+    "notes": "taste intent"
+  },
+  {
+    "id": "tc-027",
+    "query": "I want salty snacks",
+    "expected_intent": "salty_recommendation",
+    "expected_products": [
+      "Patata Salty",
+      "Banana Chips Sea Salt",
+      "ChickPea Puffs",
+      "Stix Salty"
+    ],
+    "notes": "taste intent"
+  },
+  {
+    "id": "tc-028",
+    "query": "Show me salty options",
+    "expected_intent": "salty_recommendation",
+    "expected_products": [
+      "Patata Salty",
+      "Banana Chips Sea Salt",
+      "ChickPea Puffs",
+      "Stix Salty"
+    ],
+    "notes": "taste intent"
+  },
+  {
+    "id": "tc-029",
+    "query": "Recommend salty snacks",
+    "expected_intent": "salty_recommendation",
+    "expected_products": [
+      "Patata Salty",
+      "Banana Chips Sea Salt",
+      "ChickPea Puffs",
+      "Stix Salty"
+    ],
+    "notes": "taste intent"
+  },
+  {
+    "id": "tc-030",
+    "query": "I want crunchy snacks",
+    "expected_intent": "crunchy_recommendation",
+    "expected_products": [
+      "Patata Masala",
+      "Stix Peri Peri",
+      "Nachos Salsa",
+      "Banana Chips Sea Salt",
+      "ChickPea Puffs"
+    ],
+    "notes": "taste intent"
+  },
+  {
+    "id": "tc-031",
+    "query": "Show me crunchy options",
+    "expected_intent": "crunchy_recommendation",
+    "expected_products": [
+      "Patata Masala",
+      "Stix Peri Peri",
+      "Nachos Salsa",
+      "Banana Chips Sea Salt",
+      "ChickPea Puffs"
+    ],
+    "notes": "taste intent"
+  },
+  {
+    "id": "tc-032",
+    "query": "Recommend crunchy snacks",
+    "expected_intent": "crunchy_recommendation",
+    "expected_products": [
+      "Patata Masala",
+      "Stix Peri Peri",
+      "Nachos Salsa",
+      "Banana Chips Sea Salt",
+      "ChickPea Puffs"
+    ],
+    "notes": "taste intent"
+  },
+  {
+    "id": "tc-033",
+    "query": "I want mixed snacks",
+    "expected_intent": "product_recommendation",
+    "expected_products": [],
+    "notes": "taste intent"
+  },
+  {
+    "id": "tc-034",
+    "query": "Show me mixed options",
+    "expected_intent": "product_recommendation",
+    "expected_products": [],
+    "notes": "taste intent"
+  },
+  {
+    "id": "tc-035",
+    "query": "Recommend mixed snacks",
+    "expected_intent": "product_recommendation",
+    "expected_products": [],
+    "notes": "taste intent"
+  },
+  {
+    "id": "tc-036",
+    "query": "Recommend snacks for kids",
+    "expected_intent": "kids_recommendation",
+    "expected_products": [
+      "Kids Fun Box",
+      "Choco Stick Chocolate",
+      "Wafer Rolls Strawberry"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-037",
+    "query": "What should I buy for kids",
+    "expected_intent": "kids_recommendation",
+    "expected_products": [
+      "Kids Fun Box",
+      "Choco Stick Chocolate",
+      "Wafer Rolls Strawberry"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-038",
+    "query": "Best snacks for kids",
+    "expected_intent": "kids_recommendation",
+    "expected_products": [
+      "Kids Fun Box",
+      "Choco Stick Chocolate",
+      "Wafer Rolls Strawberry"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-039",
+    "query": "Suggest something for kids",
+    "expected_intent": "kids_recommendation",
+    "expected_products": [
+      "Kids Fun Box",
+      "Choco Stick Chocolate",
+      "Wafer Rolls Strawberry"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-040",
+    "query": "I need snacks for kids",
+    "expected_intent": "kids_recommendation",
+    "expected_products": [
+      "Kids Fun Box",
+      "Choco Stick Chocolate",
+      "Wafer Rolls Strawberry"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-041",
+    "query": "Recommend snacks for office",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Office Snack Box",
+      "Banana Chips Sea Salt",
+      "ChickPea Puffs"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-042",
+    "query": "What should I buy for office",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Office Snack Box",
+      "Banana Chips Sea Salt",
+      "ChickPea Puffs"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-043",
+    "query": "Best snacks for office",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Office Snack Box",
+      "Banana Chips Sea Salt",
+      "ChickPea Puffs"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-044",
+    "query": "Suggest something for office",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Office Snack Box",
+      "Banana Chips Sea Salt",
+      "ChickPea Puffs"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-045",
+    "query": "I need snacks for office",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Office Snack Box",
+      "Banana Chips Sea Salt",
+      "ChickPea Puffs"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-046",
+    "query": "Recommend snacks for movie night",
+    "expected_intent": "movie_night_recommendation",
+    "expected_products": [
+      "Movie Night Nachos Bundle",
+      "Nachos Salsa",
+      "Stix Peri Peri"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-047",
+    "query": "What should I buy for movie night",
+    "expected_intent": "movie_night_recommendation",
+    "expected_products": [
+      "Movie Night Nachos Bundle",
+      "Nachos Salsa",
+      "Stix Peri Peri"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-048",
+    "query": "Best snacks for movie night",
+    "expected_intent": "movie_night_recommendation",
+    "expected_products": [
+      "Movie Night Nachos Bundle",
+      "Nachos Salsa",
+      "Stix Peri Peri"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-049",
+    "query": "Suggest something for movie night",
+    "expected_intent": "movie_night_recommendation",
+    "expected_products": [
+      "Movie Night Nachos Bundle",
+      "Nachos Salsa",
+      "Stix Peri Peri"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-050",
+    "query": "I need snacks for movie night",
+    "expected_intent": "movie_night_recommendation",
+    "expected_products": [
+      "Movie Night Nachos Bundle",
+      "Nachos Salsa",
+      "Stix Peri Peri"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-051",
+    "query": "Recommend snacks for party",
+    "expected_intent": "party_recommendation",
+    "expected_products": [
+      "Party Pleaser Bundle",
+      "Flavor Fiesta Bundle",
+      "Ultimate Mega Snack Box"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-052",
+    "query": "What should I buy for party",
+    "expected_intent": "party_recommendation",
+    "expected_products": [
+      "Party Pleaser Bundle",
+      "Flavor Fiesta Bundle",
+      "Ultimate Mega Snack Box"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-053",
+    "query": "Best snacks for party",
+    "expected_intent": "party_recommendation",
+    "expected_products": [
+      "Party Pleaser Bundle",
+      "Flavor Fiesta Bundle",
+      "Ultimate Mega Snack Box"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-054",
+    "query": "Suggest something for party",
+    "expected_intent": "party_recommendation",
+    "expected_products": [
+      "Party Pleaser Bundle",
+      "Flavor Fiesta Bundle",
+      "Ultimate Mega Snack Box"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-055",
+    "query": "I need snacks for party",
+    "expected_intent": "party_recommendation",
+    "expected_products": [
+      "Party Pleaser Bundle",
+      "Flavor Fiesta Bundle",
+      "Ultimate Mega Snack Box"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-056",
+    "query": "Recommend snacks for gift",
+    "expected_intent": "gifting_recommendation",
+    "expected_products": [
+      "Ultimate Mega Snack Box",
+      "All Time Favorites",
+      "Choco Lovers Bundle"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-057",
+    "query": "What should I buy for gift",
+    "expected_intent": "gifting_recommendation",
+    "expected_products": [
+      "Ultimate Mega Snack Box",
+      "All Time Favorites",
+      "Choco Lovers Bundle"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-058",
+    "query": "Best snacks for gift",
+    "expected_intent": "gifting_recommendation",
+    "expected_products": [
+      "Ultimate Mega Snack Box",
+      "All Time Favorites",
+      "Choco Lovers Bundle"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-059",
+    "query": "Suggest something for gift",
+    "expected_intent": "gifting_recommendation",
+    "expected_products": [
+      "Ultimate Mega Snack Box",
+      "All Time Favorites",
+      "Choco Lovers Bundle"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-060",
+    "query": "I need snacks for gift",
+    "expected_intent": "gifting_recommendation",
+    "expected_products": [
+      "Ultimate Mega Snack Box",
+      "All Time Favorites",
+      "Choco Lovers Bundle"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-061",
+    "query": "Recommend snacks for tea time",
+    "expected_intent": "product_recommendation",
+    "expected_products": [
+      "Wafer Rolls Hazelnut",
+      "Patata Salty",
+      "Banana Chips Sea Salt"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-062",
+    "query": "What should I buy for tea time",
+    "expected_intent": "product_recommendation",
+    "expected_products": [
+      "Wafer Rolls Hazelnut",
+      "Patata Salty",
+      "Banana Chips Sea Salt"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-063",
+    "query": "Best snacks for tea time",
+    "expected_intent": "product_recommendation",
+    "expected_products": [
+      "Wafer Rolls Hazelnut",
+      "Patata Salty",
+      "Banana Chips Sea Salt"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-064",
+    "query": "Suggest something for tea time",
+    "expected_intent": "product_recommendation",
+    "expected_products": [
+      "Wafer Rolls Hazelnut",
+      "Patata Salty",
+      "Banana Chips Sea Salt"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-065",
+    "query": "I need snacks for tea time",
+    "expected_intent": "product_recommendation",
+    "expected_products": [
+      "Wafer Rolls Hazelnut",
+      "Patata Salty",
+      "Banana Chips Sea Salt"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-066",
+    "query": "Recommend snacks for gaming",
+    "expected_intent": "product_recommendation",
+    "expected_products": [
+      "Movie Night Nachos Bundle",
+      "Nachos Salsa",
+      "Patata Masala"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-067",
+    "query": "What should I buy for gaming",
+    "expected_intent": "product_recommendation",
+    "expected_products": [
+      "Movie Night Nachos Bundle",
+      "Nachos Salsa",
+      "Patata Masala"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-068",
+    "query": "Best snacks for gaming",
+    "expected_intent": "product_recommendation",
+    "expected_products": [
+      "Movie Night Nachos Bundle",
+      "Nachos Salsa",
+      "Patata Masala"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-069",
+    "query": "Suggest something for gaming",
+    "expected_intent": "product_recommendation",
+    "expected_products": [
+      "Movie Night Nachos Bundle",
+      "Nachos Salsa",
+      "Patata Masala"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-070",
+    "query": "I need snacks for gaming",
+    "expected_intent": "product_recommendation",
+    "expected_products": [
+      "Movie Night Nachos Bundle",
+      "Nachos Salsa",
+      "Patata Masala"
+    ],
+    "notes": "occasion phrasing"
+  },
+  {
+    "id": "tc-071",
+    "query": "Show me snacks under Rs. 500",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "Choco Stick Chocolate",
+      "Patata Salty",
+      "Stix Peri Peri",
+      "ChickPea Puffs",
+      "Banana Chips Sea Salt",
+      "Wafer Rolls Hazelnut"
+    ],
+    "notes": "budget intent"
+  },
+  {
+    "id": "tc-072",
+    "query": "Recommend snacks under Rs. 500",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "Choco Stick Chocolate",
+      "Patata Salty",
+      "Stix Peri Peri",
+      "ChickPea Puffs",
+      "Banana Chips Sea Salt",
+      "Wafer Rolls Hazelnut"
+    ],
+    "notes": "budget intent"
+  },
+  {
+    "id": "tc-073",
+    "query": "Best bundle under Rs. 500",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "Choco Stick Chocolate",
+      "Patata Salty",
+      "Stix Peri Peri",
+      "ChickPea Puffs",
+      "Banana Chips Sea Salt",
+      "Wafer Rolls Hazelnut"
+    ],
+    "notes": "budget bundle"
+  },
+  {
+    "id": "tc-074",
+    "query": "Kuch acha under Rs. 500",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "Choco Stick Chocolate",
+      "Patata Salty",
+      "Stix Peri Peri",
+      "ChickPea Puffs",
+      "Banana Chips Sea Salt",
+      "Wafer Rolls Hazelnut"
+    ],
+    "notes": "mixed language"
+  },
+  {
+    "id": "tc-075",
+    "query": "Show me snacks under Rs. 1000",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "Snaktory Snack Pack",
+      "Nachos Pack Of 10",
+      "Snaktory Patata Chips - Masala & Salty"
+    ],
+    "notes": "budget intent"
+  },
+  {
+    "id": "tc-076",
+    "query": "Recommend snacks under Rs. 1000",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "Snaktory Snack Pack",
+      "Nachos Pack Of 10",
+      "Snaktory Patata Chips - Masala & Salty"
+    ],
+    "notes": "budget intent"
+  },
+  {
+    "id": "tc-077",
+    "query": "Best bundle under Rs. 1000",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "Snaktory Snack Pack",
+      "Nachos Pack Of 10",
+      "Snaktory Patata Chips - Masala & Salty"
+    ],
+    "notes": "budget bundle"
+  },
+  {
+    "id": "tc-078",
+    "query": "Kuch acha under Rs. 1000",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "Snaktory Snack Pack",
+      "Nachos Pack Of 10",
+      "Snaktory Patata Chips - Masala & Salty"
+    ],
+    "notes": "mixed language"
+  },
+  {
+    "id": "tc-079",
+    "query": "Show me snacks under Rs. 2000",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "All Time Favorites",
+      "Choco Lovers Bundle",
+      "Office Snack Box",
+      "Movie Night Nachos Bundle",
+      "Snack Sampler Deal"
+    ],
+    "notes": "budget intent"
+  },
+  {
+    "id": "tc-080",
+    "query": "Recommend snacks under Rs. 2000",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "All Time Favorites",
+      "Choco Lovers Bundle",
+      "Office Snack Box",
+      "Movie Night Nachos Bundle",
+      "Snack Sampler Deal"
+    ],
+    "notes": "budget intent"
+  },
+  {
+    "id": "tc-081",
+    "query": "Best bundle under Rs. 2000",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "All Time Favorites",
+      "Choco Lovers Bundle",
+      "Office Snack Box",
+      "Movie Night Nachos Bundle",
+      "Snack Sampler Deal"
+    ],
+    "notes": "budget bundle"
+  },
+  {
+    "id": "tc-082",
+    "query": "Kuch acha under Rs. 2000",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "All Time Favorites",
+      "Choco Lovers Bundle",
+      "Office Snack Box",
+      "Movie Night Nachos Bundle",
+      "Snack Sampler Deal"
+    ],
+    "notes": "mixed language"
+  },
+  {
+    "id": "tc-083",
+    "query": "Show me snacks above Rs. 3000",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "Ultimate Mega Snack Box",
+      "Flavor Fiesta Bundle",
+      "Party Pleaser Bundle",
+      "Crunch Munch Combo"
+    ],
+    "notes": "budget intent"
+  },
+  {
+    "id": "tc-084",
+    "query": "Recommend snacks above Rs. 3000",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "Ultimate Mega Snack Box",
+      "Flavor Fiesta Bundle",
+      "Party Pleaser Bundle",
+      "Crunch Munch Combo"
+    ],
+    "notes": "budget intent"
+  },
+  {
+    "id": "tc-085",
+    "query": "Best bundle above Rs. 3000",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "Ultimate Mega Snack Box",
+      "Flavor Fiesta Bundle",
+      "Party Pleaser Bundle",
+      "Crunch Munch Combo"
+    ],
+    "notes": "budget bundle"
+  },
+  {
+    "id": "tc-086",
+    "query": "Kuch acha above Rs. 3000",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "Ultimate Mega Snack Box",
+      "Flavor Fiesta Bundle",
+      "Party Pleaser Bundle",
+      "Crunch Munch Combo"
+    ],
+    "notes": "mixed language"
+  },
+  {
+    "id": "tc-087",
+    "query": "Tell me about Stix Hot & Spicy",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Hot & Spicy"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-088",
+    "query": "Is Stix Hot & Spicy good?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Hot & Spicy"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-089",
+    "query": "Recommend something like Stix Hot & Spicy",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Hot & Spicy"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-090",
+    "query": "What pairs well with Stix Hot & Spicy?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Hot & Spicy"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-091",
+    "query": "Tell me about Stix Peri Peri",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Peri Peri"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-092",
+    "query": "Is Stix Peri Peri good?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Peri Peri"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-093",
+    "query": "Recommend something like Stix Peri Peri",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Peri Peri"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-094",
+    "query": "What pairs well with Stix Peri Peri?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Peri Peri"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-095",
+    "query": "Tell me about Stix Lemon & Chilli",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Lemon & Chilli"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-096",
+    "query": "Is Stix Lemon & Chilli good?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Lemon & Chilli"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-097",
+    "query": "Recommend something like Stix Lemon & Chilli",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Lemon & Chilli"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-098",
+    "query": "What pairs well with Stix Lemon & Chilli?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Lemon & Chilli"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-099",
+    "query": "Tell me about Nachos Salsa",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Nachos Salsa"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-100",
+    "query": "Is Nachos Salsa good?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Nachos Salsa"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-101",
+    "query": "Recommend something like Nachos Salsa",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Nachos Salsa"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-102",
+    "query": "What pairs well with Nachos Salsa?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Nachos Salsa"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-103",
+    "query": "Tell me about Nachos Paprika",
+    "expected_intent": "crunchy_recommendation",
+    "expected_products": [
+      "Nachos Paprika"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-104",
+    "query": "Is Nachos Paprika good?",
+    "expected_intent": "crunchy_recommendation",
+    "expected_products": [
+      "Nachos Paprika"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-105",
+    "query": "Recommend something like Nachos Paprika",
+    "expected_intent": "crunchy_recommendation",
+    "expected_products": [
+      "Nachos Paprika"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-106",
+    "query": "What pairs well with Nachos Paprika?",
+    "expected_intent": "crunchy_recommendation",
+    "expected_products": [
+      "Nachos Paprika"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-107",
+    "query": "Tell me about Patata Masala",
+    "expected_intent": "crunchy_recommendation",
+    "expected_products": [
+      "Patata Masala"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-108",
+    "query": "Is Patata Masala good?",
+    "expected_intent": "crunchy_recommendation",
+    "expected_products": [
+      "Patata Masala"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-109",
+    "query": "Recommend something like Patata Masala",
+    "expected_intent": "crunchy_recommendation",
+    "expected_products": [
+      "Patata Masala"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-110",
+    "query": "What pairs well with Patata Masala?",
+    "expected_intent": "crunchy_recommendation",
+    "expected_products": [
+      "Patata Masala"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-111",
+    "query": "Tell me about Patata Salty",
+    "expected_intent": "salty_recommendation",
+    "expected_products": [
+      "Patata Salty"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-112",
+    "query": "Is Patata Salty good?",
+    "expected_intent": "salty_recommendation",
+    "expected_products": [
+      "Patata Salty"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-113",
+    "query": "Recommend something like Patata Salty",
+    "expected_intent": "salty_recommendation",
+    "expected_products": [
+      "Patata Salty"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-114",
+    "query": "What pairs well with Patata Salty?",
+    "expected_intent": "salty_recommendation",
+    "expected_products": [
+      "Patata Salty"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-115",
+    "query": "Tell me about Banana Chips Sea Salt",
+    "expected_intent": "salty_recommendation",
+    "expected_products": [
+      "Banana Chips Sea Salt"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-116",
+    "query": "Is Banana Chips Sea Salt good?",
+    "expected_intent": "salty_recommendation",
+    "expected_products": [
+      "Banana Chips Sea Salt"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-117",
+    "query": "Recommend something like Banana Chips Sea Salt",
+    "expected_intent": "salty_recommendation",
+    "expected_products": [
+      "Banana Chips Sea Salt"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-118",
+    "query": "What pairs well with Banana Chips Sea Salt?",
+    "expected_intent": "salty_recommendation",
+    "expected_products": [
+      "Banana Chips Sea Salt"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-119",
+    "query": "Tell me about Banana Chips Achari Masti",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Banana Chips Achari Masti"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-120",
+    "query": "Is Banana Chips Achari Masti good?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Banana Chips Achari Masti"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-121",
+    "query": "Recommend something like Banana Chips Achari Masti",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Banana Chips Achari Masti"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-122",
+    "query": "What pairs well with Banana Chips Achari Masti?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Banana Chips Achari Masti"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-123",
+    "query": "Tell me about ChickPea Puffs",
+    "expected_intent": "salty_recommendation",
+    "expected_products": [
+      "ChickPea Puffs"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-124",
+    "query": "Is ChickPea Puffs good?",
+    "expected_intent": "salty_recommendation",
+    "expected_products": [
+      "ChickPea Puffs"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-125",
+    "query": "Recommend something like ChickPea Puffs",
+    "expected_intent": "salty_recommendation",
+    "expected_products": [
+      "ChickPea Puffs"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-126",
+    "query": "What pairs well with ChickPea Puffs?",
+    "expected_intent": "salty_recommendation",
+    "expected_products": [
+      "ChickPea Puffs"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-127",
+    "query": "Tell me about Choco Stick Chocolate",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Stick Chocolate"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-128",
+    "query": "Is Choco Stick Chocolate good?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Stick Chocolate"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-129",
+    "query": "Recommend something like Choco Stick Chocolate",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Stick Chocolate"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-130",
+    "query": "What pairs well with Choco Stick Chocolate?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Stick Chocolate"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-131",
+    "query": "Tell me about Choco Stick Strawberry",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Stick Strawberry"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-132",
+    "query": "Is Choco Stick Strawberry good?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Stick Strawberry"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-133",
+    "query": "Recommend something like Choco Stick Strawberry",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Stick Strawberry"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-134",
+    "query": "What pairs well with Choco Stick Strawberry?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Stick Strawberry"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-135",
+    "query": "Tell me about Coco Choco Can",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Coco Choco Can"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-136",
+    "query": "Is Coco Choco Can good?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Coco Choco Can"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-137",
+    "query": "Recommend something like Coco Choco Can",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Coco Choco Can"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-138",
+    "query": "What pairs well with Coco Choco Can?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Coco Choco Can"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-139",
+    "query": "Tell me about Wafer Rolls Hazelnut",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Wafer Rolls Hazelnut"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-140",
+    "query": "Is Wafer Rolls Hazelnut good?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Wafer Rolls Hazelnut"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-141",
+    "query": "Recommend something like Wafer Rolls Hazelnut",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Wafer Rolls Hazelnut"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-142",
+    "query": "What pairs well with Wafer Rolls Hazelnut?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Wafer Rolls Hazelnut"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-143",
+    "query": "Tell me about Wafer Rolls Strawberry",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Wafer Rolls Strawberry"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-144",
+    "query": "Is Wafer Rolls Strawberry good?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Wafer Rolls Strawberry"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-145",
+    "query": "Recommend something like Wafer Rolls Strawberry",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Wafer Rolls Strawberry"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-146",
+    "query": "What pairs well with Wafer Rolls Strawberry?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Wafer Rolls Strawberry"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-147",
+    "query": "Tell me about Wafer Rolls Cappuccino",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Wafer Rolls Cappuccino"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-148",
+    "query": "Is Wafer Rolls Cappuccino good?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Wafer Rolls Cappuccino"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-149",
+    "query": "Recommend something like Wafer Rolls Cappuccino",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Wafer Rolls Cappuccino"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-150",
+    "query": "What pairs well with Wafer Rolls Cappuccino?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Wafer Rolls Cappuccino"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-151",
+    "query": "Tell me about Office Snack Box",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Office Snack Box"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-152",
+    "query": "Is Office Snack Box good?",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Office Snack Box"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-153",
+    "query": "Recommend something like Office Snack Box",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Office Snack Box"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-154",
+    "query": "What pairs well with Office Snack Box?",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Office Snack Box"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-155",
+    "query": "Tell me about Kids Fun Box",
+    "expected_intent": "kids_recommendation",
+    "expected_products": [
+      "Kids Fun Box"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-156",
+    "query": "Is Kids Fun Box good?",
+    "expected_intent": "kids_recommendation",
+    "expected_products": [
+      "Kids Fun Box"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-157",
+    "query": "Recommend something like Kids Fun Box",
+    "expected_intent": "kids_recommendation",
+    "expected_products": [
+      "Kids Fun Box"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-158",
+    "query": "What pairs well with Kids Fun Box?",
+    "expected_intent": "kids_recommendation",
+    "expected_products": [
+      "Kids Fun Box"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-159",
+    "query": "Tell me about Movie Night Nachos Bundle",
+    "expected_intent": "movie_night_recommendation",
+    "expected_products": [
+      "Movie Night Nachos Bundle"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-160",
+    "query": "Is Movie Night Nachos Bundle good?",
+    "expected_intent": "movie_night_recommendation",
+    "expected_products": [
+      "Movie Night Nachos Bundle"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-161",
+    "query": "Recommend something like Movie Night Nachos Bundle",
+    "expected_intent": "movie_night_recommendation",
+    "expected_products": [
+      "Movie Night Nachos Bundle"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-162",
+    "query": "What pairs well with Movie Night Nachos Bundle?",
+    "expected_intent": "movie_night_recommendation",
+    "expected_products": [
+      "Movie Night Nachos Bundle"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-163",
+    "query": "Tell me about Choco Lovers Bundle",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Lovers Bundle"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-164",
+    "query": "Is Choco Lovers Bundle good?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Lovers Bundle"
+    ],
+    "notes": "exact product query"
+  },
+  {
+    "id": "tc-165",
+    "query": "Recommend something like Choco Lovers Bundle",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Lovers Bundle"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-166",
+    "query": "What pairs well with Choco Lovers Bundle?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Lovers Bundle"
+    ],
+    "notes": "cross-sell query"
+  },
+  {
+    "id": "tc-167",
+    "query": "Bhai spicy snacks batao",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Hot & Spicy",
+      "Stix Peri Peri",
+      "Stix Lemon & Chilli",
+      "Nachos Salsa",
+      "Nachos Paprika",
+      "Banana Chips Achari Masti"
+    ],
+    "notes": "roman urdu"
+  },
+  {
+    "id": "tc-168",
+    "query": "Bhai spicy snacks batao please",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Hot & Spicy",
+      "Stix Peri Peri",
+      "Stix Lemon & Chilli",
+      "Nachos Salsa",
+      "Nachos Paprika",
+      "Banana Chips Achari Masti"
+    ],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-169",
+    "query": "Bhai spicy snacks batao?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Hot & Spicy",
+      "Stix Peri Peri",
+      "Stix Lemon & Chilli",
+      "Nachos Salsa",
+      "Nachos Paprika",
+      "Banana Chips Achari Masti"
+    ],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-170",
+    "query": "Kuch meetha chahiye",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Stick Chocolate",
+      "Choco Stick Strawberry",
+      "Coco Choco Can",
+      "Wafer Rolls Hazelnut",
+      "Wafer Rolls Strawberry",
+      "Wafer Rolls Cappuccino"
+    ],
+    "notes": "roman urdu"
+  },
+  {
+    "id": "tc-171",
+    "query": "Kuch meetha chahiye please",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Stick Chocolate",
+      "Choco Stick Strawberry",
+      "Coco Choco Can",
+      "Wafer Rolls Hazelnut",
+      "Wafer Rolls Strawberry",
+      "Wafer Rolls Cappuccino"
+    ],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-172",
+    "query": "Kuch meetha chahiye?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Stick Chocolate",
+      "Choco Stick Strawberry",
+      "Coco Choco Can",
+      "Wafer Rolls Hazelnut",
+      "Wafer Rolls Strawberry",
+      "Wafer Rolls Cappuccino"
+    ],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-173",
+    "query": "Kids ke liye snacks batao",
+    "expected_intent": "kids_recommendation",
+    "expected_products": [
+      "Kids Fun Box",
+      "Choco Stick Chocolate",
+      "Wafer Rolls Strawberry"
+    ],
+    "notes": "roman urdu"
+  },
+  {
+    "id": "tc-174",
+    "query": "Kids ke liye snacks batao please",
+    "expected_intent": "kids_recommendation",
+    "expected_products": [
+      "Kids Fun Box",
+      "Choco Stick Chocolate",
+      "Wafer Rolls Strawberry"
+    ],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-175",
+    "query": "Kids ke liye snacks batao?",
+    "expected_intent": "kids_recommendation",
+    "expected_products": [
+      "Kids Fun Box",
+      "Choco Stick Chocolate",
+      "Wafer Rolls Strawberry"
+    ],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-176",
+    "query": "Office ke liye bundle batao",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Office Snack Box",
+      "Banana Chips Sea Salt",
+      "ChickPea Puffs"
+    ],
+    "notes": "roman urdu"
+  },
+  {
+    "id": "tc-177",
+    "query": "Office ke liye bundle batao please",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Office Snack Box",
+      "Banana Chips Sea Salt",
+      "ChickPea Puffs"
+    ],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-178",
+    "query": "Office ke liye bundle batao?",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Office Snack Box",
+      "Banana Chips Sea Salt",
+      "ChickPea Puffs"
+    ],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-179",
+    "query": "Movie night ke liye kya acha hai",
+    "expected_intent": "movie_night_recommendation",
+    "expected_products": [
+      "Movie Night Nachos Bundle",
+      "Nachos Salsa",
+      "Stix Peri Peri"
+    ],
+    "notes": "roman urdu"
+  },
+  {
+    "id": "tc-180",
+    "query": "Movie night ke liye kya acha hai please",
+    "expected_intent": "movie_night_recommendation",
+    "expected_products": [
+      "Movie Night Nachos Bundle",
+      "Nachos Salsa",
+      "Stix Peri Peri"
+    ],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-181",
+    "query": "Movie night ke liye kya acha hai?",
+    "expected_intent": "movie_night_recommendation",
+    "expected_products": [
+      "Movie Night Nachos Bundle",
+      "Nachos Salsa",
+      "Stix Peri Peri"
+    ],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-182",
+    "query": "Party ke liye snacks chahiye",
+    "expected_intent": "party_recommendation",
+    "expected_products": [
+      "Party Pleaser Bundle",
+      "Flavor Fiesta Bundle",
+      "Ultimate Mega Snack Box"
+    ],
+    "notes": "roman urdu"
+  },
+  {
+    "id": "tc-183",
+    "query": "Party ke liye snacks chahiye please",
+    "expected_intent": "party_recommendation",
+    "expected_products": [
+      "Party Pleaser Bundle",
+      "Flavor Fiesta Bundle",
+      "Ultimate Mega Snack Box"
+    ],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-184",
+    "query": "Party ke liye snacks chahiye?",
+    "expected_intent": "party_recommendation",
+    "expected_products": [
+      "Party Pleaser Bundle",
+      "Flavor Fiesta Bundle",
+      "Ultimate Mega Snack Box"
+    ],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-185",
+    "query": "Gift dena hai, kya loon",
+    "expected_intent": "gifting_recommendation",
+    "expected_products": [
+      "Ultimate Mega Snack Box",
+      "All Time Favorites",
+      "Choco Lovers Bundle"
+    ],
+    "notes": "roman urdu"
+  },
+  {
+    "id": "tc-186",
+    "query": "Gift dena hai, kya loon please",
+    "expected_intent": "gifting_recommendation",
+    "expected_products": [
+      "Ultimate Mega Snack Box",
+      "All Time Favorites",
+      "Choco Lovers Bundle"
+    ],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-187",
+    "query": "Gift dena hai, kya loon?",
+    "expected_intent": "gifting_recommendation",
+    "expected_products": [
+      "Ultimate Mega Snack Box",
+      "All Time Favorites",
+      "Choco Lovers Bundle"
+    ],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-188",
+    "query": "500 ke andar kuch batao",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "Choco Stick Chocolate",
+      "Patata Salty",
+      "Stix Peri Peri",
+      "ChickPea Puffs",
+      "Banana Chips Sea Salt",
+      "Wafer Rolls Hazelnut"
+    ],
+    "notes": "roman urdu"
+  },
+  {
+    "id": "tc-189",
+    "query": "500 ke andar kuch batao please",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "Choco Stick Chocolate",
+      "Patata Salty",
+      "Stix Peri Peri",
+      "ChickPea Puffs",
+      "Banana Chips Sea Salt",
+      "Wafer Rolls Hazelnut"
+    ],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-190",
+    "query": "500 ke andar kuch batao?",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "Choco Stick Chocolate",
+      "Patata Salty",
+      "Stix Peri Peri",
+      "ChickPea Puffs",
+      "Banana Chips Sea Salt",
+      "Wafer Rolls Hazelnut"
+    ],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-191",
+    "query": "1000 ke andar combos batao",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "Snaktory Snack Pack",
+      "Nachos Pack Of 10",
+      "Snaktory Patata Chips - Masala & Salty"
+    ],
+    "notes": "roman urdu"
+  },
+  {
+    "id": "tc-192",
+    "query": "1000 ke andar combos batao please",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "Snaktory Snack Pack",
+      "Nachos Pack Of 10",
+      "Snaktory Patata Chips - Masala & Salty"
+    ],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-193",
+    "query": "1000 ke andar combos batao?",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "Snaktory Snack Pack",
+      "Nachos Pack Of 10",
+      "Snaktory Patata Chips - Masala & Salty"
+    ],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-194",
+    "query": "2000 ke andar bundle batao",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "All Time Favorites",
+      "Choco Lovers Bundle",
+      "Office Snack Box",
+      "Movie Night Nachos Bundle",
+      "Snack Sampler Deal"
+    ],
+    "notes": "roman urdu"
+  },
+  {
+    "id": "tc-195",
+    "query": "2000 ke andar bundle batao please",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "All Time Favorites",
+      "Choco Lovers Bundle",
+      "Office Snack Box",
+      "Movie Night Nachos Bundle",
+      "Snack Sampler Deal"
+    ],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-196",
+    "query": "2000 ke andar bundle batao?",
+    "expected_intent": "budget_recommendation",
+    "expected_products": [
+      "All Time Favorites",
+      "Choco Lovers Bundle",
+      "Office Snack Box",
+      "Movie Night Nachos Bundle",
+      "Snack Sampler Deal"
+    ],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-197",
+    "query": "COD hai?",
+    "expected_intent": "cod_query",
+    "expected_products": [],
+    "notes": "roman urdu"
+  },
+  {
+    "id": "tc-198",
+    "query": "COD hai? please",
+    "expected_intent": "cod_query",
+    "expected_products": [],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-199",
+    "query": "COD hai??",
+    "expected_intent": "cod_query",
+    "expected_products": [],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-200",
+    "query": "Refund mil sakta hai?",
+    "expected_intent": "refund_query",
+    "expected_products": [],
+    "notes": "roman urdu"
+  },
+  {
+    "id": "tc-201",
+    "query": "Refund mil sakta hai? please",
+    "expected_intent": "refund_query",
+    "expected_products": [],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-202",
+    "query": "Refund mil sakta hai??",
+    "expected_intent": "refund_query",
+    "expected_products": [],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-203",
+    "query": "Halal hai?",
+    "expected_intent": "halal_query",
+    "expected_products": [],
+    "notes": "roman urdu"
+  },
+  {
+    "id": "tc-204",
+    "query": "Halal hai? please",
+    "expected_intent": "halal_query",
+    "expected_products": [],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-205",
+    "query": "Halal hai??",
+    "expected_intent": "halal_query",
+    "expected_products": [],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-206",
+    "query": "Ingredients kya hain?",
+    "expected_intent": "ingredient_query",
+    "expected_products": [],
+    "notes": "roman urdu"
+  },
+  {
+    "id": "tc-207",
+    "query": "Ingredients kya hain? please",
+    "expected_intent": "ingredient_query",
+    "expected_products": [],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-208",
+    "query": "Ingredients kya hain??",
+    "expected_intent": "ingredient_query",
+    "expected_products": [],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-209",
+    "query": "Allergy ho to kaunsa safe hai?",
+    "expected_intent": "allergen_query",
+    "expected_products": [],
+    "notes": "roman urdu"
+  },
+  {
+    "id": "tc-210",
+    "query": "Allergy ho to kaunsa safe hai? please",
+    "expected_intent": "allergen_query",
+    "expected_products": [],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-211",
+    "query": "Allergy ho to kaunsa safe hai??",
+    "expected_intent": "allergen_query",
+    "expected_products": [],
+    "notes": "roman urdu variation"
+  },
+  {
+    "id": "tc-212",
+    "query": "Stix Hot & Spicy vs Stix Peri Peri",
+    "expected_intent": "product_recommendation",
+    "expected_products": [],
+    "notes": "comparison needs guided recommendation"
+  },
+  {
+    "id": "tc-213",
+    "query": "Patata Salty vs Banana Chips Sea Salt",
+    "expected_intent": "product_recommendation",
+    "expected_products": [],
+    "notes": "comparison needs guided recommendation"
+  },
+  {
+    "id": "tc-214",
+    "query": "Choco Stick Chocolate vs Wafer Rolls Hazelnut",
+    "expected_intent": "product_recommendation",
+    "expected_products": [],
+    "notes": "comparison needs guided recommendation"
+  },
+  {
+    "id": "tc-215",
+    "query": "Office Snack Box vs All Time Favorites",
+    "expected_intent": "product_recommendation",
+    "expected_products": [],
+    "notes": "comparison needs guided recommendation"
+  },
+  {
+    "id": "tc-216",
+    "query": "Choco Lovers Bundle vs Choco Mania Bundle",
+    "expected_intent": "product_recommendation",
+    "expected_products": [],
+    "notes": "comparison needs guided recommendation"
+  },
+  {
+    "id": "tc-217",
+    "query": "Are you a real brand?",
+    "expected_intent": "general_brand_query",
+    "expected_products": [],
+    "notes": "general trust or business"
+  },
+  {
+    "id": "tc-218",
+    "query": "Can I trust Snakitos?",
+    "expected_intent": "general_brand_query",
+    "expected_products": [],
+    "notes": "general trust or business"
+  },
+  {
+    "id": "tc-219",
+    "query": "What makes your store different?",
+    "expected_intent": "general_brand_query",
+    "expected_products": [],
+    "notes": "general trust or business"
+  },
+  {
+    "id": "tc-220",
+    "query": "Do you have a physical shop?",
+    "expected_intent": "general_brand_query",
+    "expected_products": [],
+    "notes": "general trust or business"
+  },
+  {
+    "id": "tc-221",
+    "query": "How can I contact support?",
+    "expected_intent": "support_request",
+    "expected_products": [],
+    "notes": "general trust or business"
+  },
+  {
+    "id": "tc-222",
+    "query": "Do you have coupons?",
+    "expected_intent": "discount_query",
+    "expected_products": [],
+    "notes": "general trust or business"
+  },
+  {
+    "id": "tc-223",
+    "query": "Any discounts running?",
+    "expected_intent": "discount_query",
+    "expected_products": [],
+    "notes": "general trust or business"
+  },
+  {
+    "id": "tc-224",
+    "query": "Do you offer corporate gifting?",
+    "expected_intent": "corporate_gifting",
+    "expected_products": [],
+    "notes": "general trust or business"
+  },
+  {
+    "id": "tc-225",
+    "query": "Can I order for an event?",
+    "expected_intent": "event_order",
+    "expected_products": [],
+    "notes": "general trust or business"
+  },
+  {
+    "id": "tc-226",
+    "query": "Can you handle a large office order?",
+    "expected_intent": "bulk_order_query",
+    "expected_products": [],
+    "notes": "general trust or business"
+  },
+  {
+    "id": "tc-227",
+    "query": "Is Crunch Munch Combo good for party?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Crunch Munch Combo"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-228",
+    "query": "Is Ultimate Mega Snack Box good for gift?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Ultimate Mega Snack Box"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-229",
+    "query": "Is Stix Hot & Spicy good for movie night?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Hot & Spicy"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-230",
+    "query": "Is Stix Peri Peri good for movie night?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Peri Peri"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-231",
+    "query": "Is Stix Lemon & Chilli good for movie night?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Lemon & Chilli"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-232",
+    "query": "Is Stix Salty good for office?",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Stix Salty"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-233",
+    "query": "Is Stix Masala good for office?",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Stix Masala"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-234",
+    "query": "Is Nachos Salsa good for movie night?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Nachos Salsa"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-235",
+    "query": "Is Nachos Paprika good for movie night?",
+    "expected_intent": "product_recommendation",
+    "expected_products": [
+      "Nachos Paprika"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-236",
+    "query": "Is Patata Masala good for movie night?",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Patata Masala"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-237",
+    "query": "Is Patata Salty good for kids?",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Patata Salty"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-238",
+    "query": "Is Banana Chips Sea Salt good for office?",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Banana Chips Sea Salt"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-239",
+    "query": "Is Banana Chips BBQ good for movie night?",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Banana Chips BBQ"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-240",
+    "query": "Is Banana Chips Achari Masti good for movie night?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Banana Chips Achari Masti"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-241",
+    "query": "Is ChickPea Puffs good for office?",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "ChickPea Puffs"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-242",
+    "query": "Is Choco Stick Chocolate good for kids?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Stick Chocolate"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-243",
+    "query": "Is Choco Stick Strawberry good for kids?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Stick Strawberry"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-244",
+    "query": "Is Coco Choco Can good for kids?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Coco Choco Can"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-245",
+    "query": "Is Wafer Rolls Hazelnut good for gift?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Wafer Rolls Hazelnut"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-246",
+    "query": "Is Wafer Rolls Strawberry good for kids?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Wafer Rolls Strawberry"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-247",
+    "query": "Is Wafer Rolls Cappuccino good for office?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Wafer Rolls Cappuccino"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-248",
+    "query": "Is Wafer Rolls Dark Chocolate good for gift?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Wafer Rolls Dark Chocolate"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-249",
+    "query": "Is Nachos Pack Of 10 good for party?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Nachos Pack Of 10"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-250",
+    "query": "Is Multi Grain Stix - Can Tray 5 +1 good for office?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Multi Grain Stix - Can Tray 5 +1"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-251",
+    "query": "Is Snaktory Patata Chips - Masala & Salty good for office?",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Snaktory Patata Chips - Masala & Salty"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-252",
+    "query": "Is Snaktory Wafer Rolls Collection good for gift?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Snaktory Wafer Rolls Collection"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-253",
+    "query": "Is Snakitos Snaktory good for family?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Snakitos Snaktory"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-254",
+    "query": "Is Snakitos Snaktory Indulgence good for gift?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Snakitos Snaktory Indulgence"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-255",
+    "query": "Is Snakitos Snaktory Snack Pack good for office?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Snakitos Snaktory Snack Pack"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-256",
+    "query": "Is Kids Fun Box good for kids?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Kids Fun Box"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-257",
+    "query": "Is Office Snack Box good for office?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Office Snack Box"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-258",
+    "query": "Is Movie Night Nachos Bundle good for movie night?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Movie Night Nachos Bundle"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-259",
+    "query": "Is Snack Sampler Deal good for new customer?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Snack Sampler Deal"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-260",
+    "query": "Is All Time Favorites good for family?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "All Time Favorites"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-261",
+    "query": "Is Choco Lovers Bundle good for gift?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Lovers Bundle"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-262",
+    "query": "Is Choco Mania Bundle good for gift?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Mania Bundle"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-263",
+    "query": "Is Flavor Fiesta Bundle good for gift?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Flavor Fiesta Bundle"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-264",
+    "query": "Is Party Pleaser Bundle good for party?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Party Pleaser Bundle"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-265",
+    "query": "Is Crunch Munch Combo good for party?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Crunch Munch Combo"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-266",
+    "query": "Is Ultimate Mega Snack Box good for gift?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Ultimate Mega Snack Box"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-267",
+    "query": "Is Stix Hot & Spicy good for movie night?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Hot & Spicy"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-268",
+    "query": "Is Stix Peri Peri good for movie night?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Peri Peri"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-269",
+    "query": "Is Stix Lemon & Chilli good for movie night?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Stix Lemon & Chilli"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-270",
+    "query": "Is Stix Salty good for office?",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Stix Salty"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-271",
+    "query": "Is Stix Masala good for office?",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Stix Masala"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-272",
+    "query": "Is Nachos Salsa good for movie night?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Nachos Salsa"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-273",
+    "query": "Is Nachos Paprika good for movie night?",
+    "expected_intent": "product_recommendation",
+    "expected_products": [
+      "Nachos Paprika"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-274",
+    "query": "Is Patata Masala good for movie night?",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Patata Masala"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-275",
+    "query": "Is Patata Salty good for kids?",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Patata Salty"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-276",
+    "query": "Is Banana Chips Sea Salt good for office?",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Banana Chips Sea Salt"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-277",
+    "query": "Is Banana Chips BBQ good for movie night?",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Banana Chips BBQ"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-278",
+    "query": "Is Banana Chips Achari Masti good for movie night?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Banana Chips Achari Masti"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-279",
+    "query": "Is ChickPea Puffs good for office?",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "ChickPea Puffs"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-280",
+    "query": "Is Choco Stick Chocolate good for kids?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Stick Chocolate"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-281",
+    "query": "Is Choco Stick Strawberry good for kids?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Stick Strawberry"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-282",
+    "query": "Is Coco Choco Can good for kids?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Coco Choco Can"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-283",
+    "query": "Is Wafer Rolls Hazelnut good for gift?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Wafer Rolls Hazelnut"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-284",
+    "query": "Is Wafer Rolls Strawberry good for kids?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Wafer Rolls Strawberry"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-285",
+    "query": "Is Wafer Rolls Cappuccino good for office?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Wafer Rolls Cappuccino"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-286",
+    "query": "Is Wafer Rolls Dark Chocolate good for gift?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Wafer Rolls Dark Chocolate"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-287",
+    "query": "Is Nachos Pack Of 10 good for party?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Nachos Pack Of 10"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-288",
+    "query": "Is Multi Grain Stix - Can Tray 5 +1 good for office?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Multi Grain Stix - Can Tray 5 +1"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-289",
+    "query": "Is Snaktory Patata Chips - Masala & Salty good for office?",
+    "expected_intent": "office_recommendation",
+    "expected_products": [
+      "Snaktory Patata Chips - Masala & Salty"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-290",
+    "query": "Is Snaktory Wafer Rolls Collection good for gift?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Snaktory Wafer Rolls Collection"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-291",
+    "query": "Is Snakitos Snaktory good for family?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Snakitos Snaktory"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-292",
+    "query": "Is Snakitos Snaktory Indulgence good for gift?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Snakitos Snaktory Indulgence"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-293",
+    "query": "Is Snakitos Snaktory Snack Pack good for office?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Snakitos Snaktory Snack Pack"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-294",
+    "query": "Is Kids Fun Box good for kids?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Kids Fun Box"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-295",
+    "query": "Is Office Snack Box good for office?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Office Snack Box"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-296",
+    "query": "Is Movie Night Nachos Bundle good for movie night?",
+    "expected_intent": "spicy_recommendation",
+    "expected_products": [
+      "Movie Night Nachos Bundle"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-297",
+    "query": "Is Snack Sampler Deal good for new customer?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Snack Sampler Deal"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-298",
+    "query": "Is All Time Favorites good for family?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "All Time Favorites"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-299",
+    "query": "Is Choco Lovers Bundle good for gift?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Lovers Bundle"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  },
+  {
+    "id": "tc-300",
+    "query": "Is Choco Mania Bundle good for gift?",
+    "expected_intent": "sweet_recommendation",
+    "expected_products": [
+      "Choco Mania Bundle"
+    ],
+    "notes": "auto-filled product/occasion coverage"
+  }
+]
