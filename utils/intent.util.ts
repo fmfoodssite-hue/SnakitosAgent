@@ -1,6 +1,14 @@
 import { AgentIntent } from "../types/chat.types";
 import { extractOrderReference, extractPhoneNumber, normalizePhone } from "./validation.util";
 
+function normalizeIntentTypos(message: string): string {
+  return message
+    .toLowerCase()
+    .replace(/\borde\b/g, "order")
+    .replace(/\bproducy\b/g, "product")
+    .replace(/\bproduc\b/g, "product");
+}
+
 const ORDER_KEYWORDS = [
   "order",
   "tracking",
@@ -24,16 +32,21 @@ const PRODUCT_KEYWORDS = [
   "buy",
 ];
 
+const BUDGET_REPLY_PATTERN =
+  /^(?:under|below|around|upto|up to|rs\.?|pkr)?\s*\d{3,5}(?:\s*(?:ke\s+andar|mein|me|under|rs|pkr))?\s*$/i;
+
 export function detectIntent(message: string, phone?: string): {
   intent: AgentIntent;
   orderId: string;
   phone: string;
 } {
-  const normalizedMessage = message.toLowerCase();
+  const normalizedMessage = normalizeIntentTypos(message);
   const orderId = extractOrderReference(message);
   const normalizedPhone = normalizePhone(phone) || extractPhoneNumber(message);
+  const hasOrderKeywords = ORDER_KEYWORDS.some((keyword) => normalizedMessage.includes(keyword));
+  const looksLikeBudgetReply = BUDGET_REPLY_PATTERN.test(normalizedMessage);
 
-  if (orderId || ORDER_KEYWORDS.some((keyword) => normalizedMessage.includes(keyword))) {
+  if ((orderId || hasOrderKeywords) && !(looksLikeBudgetReply && !hasOrderKeywords)) {
     return {
       intent: "order",
       orderId,

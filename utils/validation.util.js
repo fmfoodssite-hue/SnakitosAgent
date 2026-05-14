@@ -43,7 +43,7 @@ export function extractOrderReference(message) {
     if (explicitHash) {
         return normalizeOrderReference(`#${explicitHash[1]}`);
     }
-    const orderPhrase = withoutPhones.match(/\b(?:order(?:\s*(?:id|number|no\.?))?|id|tracking(?:\s*id)?)\s*[:#-]?\s*([A-Z0-9-]{3,})/i);
+    const orderPhrase = withoutPhones.match(/\b(?:orde?r(?:\s*(?:id|number|no\.?))?|id|tracking(?:\s*id)?)\s*[:#-]?\s*([A-Z0-9-]{3,})/i);
     if (orderPhrase) {
         const raw = orderPhrase[1];
         if (/^\d+$/.test(raw)) {
@@ -51,7 +51,7 @@ export function extractOrderReference(message) {
         }
         return normalizeOrderReference(raw.startsWith("#") ? raw : `#${raw}`);
     }
-    const reverseOrderPhrase = withoutPhones.match(/\b([A-Z0-9-]{3,})\s*(?:order(?:\s*(?:id|number|no\.?))?|tracking(?:\s*id)?|id)\b/i);
+    const reverseOrderPhrase = withoutPhones.match(/\b([A-Z0-9-]{3,})\s*(?:orde?r(?:\s*(?:id|number|no\.?))?|tracking(?:\s*id)?|id)\b/i);
     if (reverseOrderPhrase) {
         const raw = reverseOrderPhrase[1];
         return /^\d+$/.test(raw) ? `#${raw}` : normalizeOrderReference(raw.startsWith("#") ? raw : `#${raw}`);

@@ -447,7 +447,14 @@ export class SupportAgentService {
     const budgetMatch =
       userMessage.match(/(?:under|below|andar|rs\.?|pkr)\s*(\d{3,5})/i) ??
       userMessage.match(/\b(\d{3,5})\s*(?:ke\s+andar|mein|me|under)\b/i);
-    const budget = budgetMatch?.[1] ?? "";
+    const isBudgetFollowUp =
+      state.pending_action === "show_more_products" ||
+      state.last_intent === "best_deals" ||
+      state.last_intent === "bundle_deals" ||
+      state.last_intent === "budget_recommendation" ||
+      state.last_intent.endsWith("_recommendation");
+    const bareBudgetMatch = isBudgetFollowUp ? normalized.match(/^(\d{3,5})$/) : null;
+    const budget = budgetMatch?.[1] ?? bareBudgetMatch?.[1] ?? "";
     const category = this.extractKnownCategory(userMessage);
 
     if (/^(back|home|take me back|main categories|show categories)$/i.test(normalized)) {

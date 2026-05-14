@@ -692,8 +692,9 @@ function extractOrderReference(value: string): string {
     return orderPhrase[1].startsWith("#") ? orderPhrase[1] : `#${orderPhrase[1]}`;
   }
 
+  const hasOrderContext = /\b(order|tracking|track|parcel|shipment)\b/i.test(value);
   const bareDigits = withoutPhones.match(/\b(\d{4,})\b/);
-  return bareDigits ? `#${bareDigits[1]}` : "";
+  return hasOrderContext && bareDigits ? `#${bareDigits[1]}` : "";
 }
 
 function buildAutoClickText(value: string, fallbackLabel: string): string {

@@ -60,7 +60,7 @@ export function extractOrderReference(message: string): string {
   }
 
   const orderPhrase = withoutPhones.match(
-    /\b(?:order(?:\s*(?:id|number|no\.?))?|id|tracking(?:\s*id)?)\s*[:#-]?\s*([A-Z0-9-]{3,})/i,
+    /\b(?:orde?r(?:\s*(?:id|number|no\.?))?|id|tracking(?:\s*id)?)\s*[:#-]?\s*([A-Z0-9-]{3,})/i,
   );
   if (orderPhrase) {
     const raw = orderPhrase[1];
@@ -71,7 +71,7 @@ export function extractOrderReference(message: string): string {
   }
 
   const reverseOrderPhrase = withoutPhones.match(
-    /\b([A-Z0-9-]{3,})\s*(?:order(?:\s*(?:id|number|no\.?))?|tracking(?:\s*id)?|id)\b/i,
+    /\b([A-Z0-9-]{3,})\s*(?:orde?r(?:\s*(?:id|number|no\.?))?|tracking(?:\s*id)?|id)\b/i,
   );
   if (reverseOrderPhrase) {
     const raw = reverseOrderPhrase[1];
