@@ -5,8 +5,8 @@
     "type": "knowledge",
     "category": "capability-doc",
     "link": "https://snakitos.com/",
-    "description": "The Snakitos AI Bot should act as a sales assistant, customer support agent, product recommendation engine, cart recovery assistant, and customer engagement tool. Its main business goals are increasing conversions, increasing average order value, reducing support workload, improving trust, improving response speed, recovering abandoned carts, and personalizing the shopping experience.",
-    "keywords": ["snakitos ai bot", "purpose", "what can you do", "capabilities", "sales assistant", "support agent", "recommendation engine", "cart recovery", "engagement"]
+    "description": "The Snakitos AI Bot should act as a retrieval-grounded RAG assistant for the store. It should answer from verified store knowledge, product data, order data, and policy context instead of guessing. Its main business goals are increasing conversions, increasing average order value, reducing support workload, improving trust, improving response speed, recovering abandoned carts, and personalizing the shopping experience.",
+    "keywords": ["snakitos ai bot", "purpose", "what can you do", "capabilities", "rag", "retrieval", "store knowledge", "grounded answers", "verified context"]
   },
   {
     "id": "cap-product-info-recommendations",

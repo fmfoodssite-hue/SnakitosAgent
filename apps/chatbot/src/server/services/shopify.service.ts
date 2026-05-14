@@ -21,6 +21,11 @@ type CacheEntry<T> = {
   value: T;
 };
 
+type RecentOrderPopularity = {
+  orderCount: number;
+  unitsSold: number;
+};
+
 type GraphQlResponse<T> = {
   data?: T;
   errors?: Array<{ message: string }>;
@@ -987,13 +992,78 @@ export class ShopifyService {
 
   private async getRecommendationCatalog(): Promise<ProductLookupResult[]> {
     const uploadedProducts = this.getUploadedCatalog();
+    const popularityMap = await this.getRecentOrderPopularityMap();
 
     try {
       const storefrontProducts = await this.getStorefrontCatalog();
-      return this.mergeCatalogs(uploadedProducts, storefrontProducts);
+      return this.applyRecentOrderPopularity(
+        this.mergeCatalogs(uploadedProducts, storefrontProducts),
+        popularityMap,
+      );
     } catch {
-      return uploadedProducts;
+      return this.applyRecentOrderPopularity(uploadedProducts, popularityMap);
     }
+  }
+
+  private async getRecentOrderPopularityMap(): Promise<Map<string, RecentOrderPopularity>> {
+    const cacheKey = "recent-order-popularity:10";
+    const cached = getCached<Array<[string, RecentOrderPopularity]>>(cacheKey);
+    if (cached) {
+      return new Map(cached);
+    }
+
+    try {
+      const recentOrders = await this.getRecentOrders(10);
+      const popularity = new Map<string, RecentOrderPopularity>();
+
+      for (const order of recentOrders) {
+        const countedTitles = new Set<string>();
+        for (const item of order.lineItems) {
+          const normalizedTitle = this.normalizeSearchText(item.title);
+          if (!normalizedTitle) {
+            continue;
+          }
+
+          const existing = popularity.get(normalizedTitle) ?? { orderCount: 0, unitsSold: 0 };
+          const quantity = Number.isFinite(item.quantity) ? item.quantity : 0;
+
+          popularity.set(normalizedTitle, {
+            orderCount: existing.orderCount + (countedTitles.has(normalizedTitle) ? 0 : 1),
+            unitsSold: existing.unitsSold + Math.max(quantity, 0),
+          });
+
+          countedTitles.add(normalizedTitle);
+        }
+      }
+
+      setCached(cacheKey, Array.from(popularity.entries()), 5 * DEFAULT_TTL_MS);
+      return popularity;
+    } catch {
+      return new Map();
+    }
+  }
+
+  private applyRecentOrderPopularity(
+    products: ProductLookupResult[],
+    popularityMap: Map<string, RecentOrderPopularity>,
+  ): ProductLookupResult[] {
+    if (popularityMap.size === 0) {
+      return products;
+    }
+
+    return products.map((product) => {
+      const normalizedTitle = this.normalizeSearchText(product.title);
+      const popularity = popularityMap.get(normalizedTitle);
+      if (!popularity) {
+        return product;
+      }
+
+      return {
+        ...product,
+        orderCount: popularity.orderCount,
+        unitsSold: popularity.unitsSold,
+      };
+    });
   }
 
   private getUploadedCatalog(): ProductLookupResult[] {

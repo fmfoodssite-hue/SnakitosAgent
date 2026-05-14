@@ -1,5 +1,6 @@
 import policyData from "../data/policies.json";
 import productMetadata from "../data/product-metadata.json";
+import trainingGuideReference from "../data/snakitos-training-guide-reference.json";
 import { randomUUID } from "crypto";
 import {
   AgentContext,
@@ -69,12 +70,130 @@ type ChatSessionState = {
   userId: string;
 };
 
+type ConversationState = {
+  last_intent: string;
+  last_topic: string;
+  pending_action: string;
+  last_category: string;
+  last_budget: string;
+  last_taste: string;
+  last_occasion: string;
+  last_recommended_products: string[];
+  last_policy_topic: string;
+  last_support_issue: string;
+};
+
+type SnakitosIntent =
+  | "greeting"
+  | "what_do_you_sell"
+  | "general_brand_query"
+  | "main_categories"
+  | "new_customer_query"
+  | "best_seller_query"
+  | "support_request"
+  | "fallback_unknown"
+  | "product_category_query"
+  | "product_specific_query"
+  | "product_recommendation"
+  | "spicy_recommendation"
+  | "sweet_recommendation"
+  | "salty_recommendation"
+  | "mild_recommendation"
+  | "crunchy_recommendation"
+  | "kids_recommendation"
+  | "office_recommendation"
+  | "movie_night_recommendation"
+  | "gifting_recommendation"
+  | "party_recommendation"
+  | "tea_time_recommendation"
+  | "gaming_netflix_recommendation"
+  | "budget_recommendation"
+  | "product_availability"
+  | "product_restock"
+  | "product_storage"
+  | "product_freshness"
+  | "price_objection"
+  | "halal_query"
+  | "certification_query"
+  | "ingredient_query"
+  | "allergen_query"
+  | "vegan_vegetarian_query"
+  | "spice_level_query"
+  | "nutrition_query"
+  | "best_deals"
+  | "bundle_deals"
+  | "discount_query"
+  | "coupon_not_working"
+  | "free_shipping_query"
+  | "cart_completion"
+  | "confused_customer"
+  | "repeat_purchase"
+  | "upsell_request"
+  | "cross_sell_request"
+  | "shipping_policy"
+  | "shipping_refund_policy"
+  | "delivery_charges"
+  | "delivery_time"
+  | "delivery_city"
+  | "same_day_delivery"
+  | "address_change"
+  | "delayed_order"
+  | "cod_query"
+  | "online_payment"
+  | "whatsapp_order"
+  | "payment_failed"
+  | "secure_payment"
+  | "return_request"
+  | "refund_request"
+  | "refund_time"
+  | "replacement_request"
+  | "damaged_product"
+  | "wrong_product"
+  | "exchange_flavor"
+  | "cancellation_query"
+  | "wholesale_query"
+  | "bulk_discount"
+  | "corporate_gifting"
+  | "event_order"
+  | "order_tracking"
+  | "confirmation_continue"
+  | "back_home";
+
+type ClassifiedIntent = {
+  intent: SnakitosIntent;
+  language: "english" | "roman_urdu" | "mixed";
+  budget?: string;
+  category?: string;
+  productName?: string;
+  taste?: string;
+  occasion?: string;
+};
+
+const DEFAULT_CONVERSATION_STATE: ConversationState = {
+  last_intent: "",
+  last_topic: "",
+  pending_action: "",
+  last_category: "",
+  last_budget: "",
+  last_taste: "",
+  last_occasion: "",
+  last_recommended_products: [],
+  last_policy_topic: "",
+  last_support_issue: "",
+};
+
+const conversationStateStore = new Map<string, ConversationState>();
+const FREE_SHIPPING_THRESHOLD =
+  Number((trainingGuideReference as { conversion_rules?: { free_shipping_threshold?: number } })
+    .conversion_rules?.free_shipping_threshold) || 2500;
+
 export class SupportAgentService {
   async handleChat(input: ChatRequestInput): Promise<ChatResponsePayload> {
     const startedAt = Date.now();
     const normalizedPhone = normalizePhone(input.phone);
     const session = await this.resolveChatSession(input);
     const { chatId, userId } = session;
+    const conversationState = this.getConversationState(chatId, userId);
 
     this.runInBackground(
       this.persistMessage({
@@ -117,13 +236,22 @@ export class SupportAgentService {
             )
           : initialIntent;
 
-      const response = await this.routeIntent(
-        intentResult.intent,
-        intentResult,
-        input.message,
-        chatId,
-        input.clientKey,
-      );
+      const response =
+        (await this.routeStructuredIntent(
+          input.message,
+          chatId,
+          userId,
+          input.clientKey,
+          conversationState,
+          intentResult,
+        )) ??
+        (await this.routeIntent(
+          intentResult.intent,
+          intentResult,
+          input.message,
+          chatId,
+          input.clientKey,
+        ));
       const safeResponse = aiService.sanitizeCustomerResponse(response.response);
 
       this.runInBackground(
@@ -237,6 +365,1458 @@ export class SupportAgentService {
     }
 
     return this.handleGeneralIntent(userMessage);
+  }
+
+  private getConversationState(chatId: string, userId: string): ConversationState {
+    const key = this.getConversationStateKey(chatId, userId);
+    const existing = conversationStateStore.get(key);
+    if (existing) {
+      return existing;
+    }
+
+    const next = { ...DEFAULT_CONVERSATION_STATE };
+    conversationStateStore.set(key, next);
+    return next;
+  }
+
+  private saveConversationState(
+    chatId: string,
+    userId: string,
+    updates: Partial<ConversationState>,
+  ): ConversationState {
+    const key = this.getConversationStateKey(chatId, userId);
+    const next = {
+      ...this.getConversationState(chatId, userId),
+      ...updates,
+    };
+    conversationStateStore.set(key, next);
+    return next;
+  }
+
+  private getConversationStateKey(chatId: string, userId: string): string {
+    if (userId) {
+      return `user::${userId}`;
+    }
+
+    return `chat::${chatId || "guest"}`;
+  }
+
+  private async routeStructuredIntent(
+    userMessage: string,
+    chatId: string,
+    userId: string,
+    clientKey: string | undefined,
+    state: ConversationState,
+    orderIntentResult: ReturnType<typeof detectIntent>,
+  ): Promise<Omit<ChatResponsePayload, "chatId" | "userId"> | null> {
+    const classified = this.classifySnakitosIntent(userMessage, state);
+
+    if (classified.intent === "fallback_unknown") {
+      return null;
+    }
+
+    if (classified.intent === "order_tracking") {
+      const orderResult =
+        orderIntentResult.intent === "order"
+          ? orderIntentResult
+          : detectIntent(userMessage, "");
+      const response = await this.handleOrderIntent(orderResult, userMessage, clientKey);
+      this.saveConversationState(chatId, userId, {
+        last_intent: classified.intent,
+        last_topic: "order_tracking",
+        pending_action: "",
+      });
+      return response;
+    }
+
+    const response = await this.handleSnakitosStructuredIntent(classified, userMessage, chatId);
+    if (!response) {
+      return null;
+    }
+
+    this.saveConversationState(chatId, userId, this.buildStateUpdateFromIntent(classified, response));
+    return response;
+  }
+
+  private classifySnakitosIntent(
+    userMessage: string,
+    state: ConversationState,
+  ): ClassifiedIntent {
+    const normalized = userMessage.trim().toLowerCase();
+    const language = this.detectSnakitosLanguage(userMessage);
+    const budgetMatch =
+      userMessage.match(/(?:under|below|andar|rs\.?|pkr)\s*(\d{3,5})/i) ??
+      userMessage.match(/\b(\d{3,5})\s*(?:ke\s+andar|mein|me|under)\b/i);
+    const budget = budgetMatch?.[1] ?? "";
+    const category = this.extractKnownCategory(userMessage);
+
+    if (/^(back|home|take me back|main categories|show categories)$/i.test(normalized)) {
+      return { intent: "back_home", language };
+    }
+
+    if (
+      /^(sure|yes|ok|okay|continue|show me|han|haan|acha|theek|yes please)$/i.test(normalized) &&
+      state.pending_action
+    ) {
+      return { intent: "confirmation_continue", language };
+    }
+
+    if (/^(hi|hello|hey|assalamualaikum|salam)$/i.test(normalized)) {
+      return { intent: "greeting", language };
+    }
+
+    if (/(where is my order|track my order|mera order kahan hai|order kahan hai|track order)/i.test(normalized)) {
+      return { intent: "order_tracking", language };
+    }
+
+    if (/(talk to agent|human support|talk to support|support chahiye|agent se baat|whatsapp support)/i.test(normalized)) {
+      return { intent: "support_request", language };
+    }
+
+    if (/(shipping and refund policy|shipping refund policy|shipping & refund)/i.test(normalized)) {
+      return { intent: "shipping_refund_policy", language };
+    }
+
+    if (/(what do you sell|what snacks do you have|what products are available)/i.test(normalized)) {
+      return { intent: "what_do_you_sell", language };
+    }
+
+    if (/(new customer|first time|pehli dafa|first order)/i.test(normalized)) {
+      return { intent: "new_customer_query", language };
+    }
+
+    if (/(best sellers|best seller|popular snacks|popular items)/i.test(normalized)) {
+      return { intent: "best_seller_query", language };
+    }
+
+    if (/(show me best deals|best deals|snack deals|best value|bundles|deals available|combo deals|value packs)/i.test(normalized)) {
+      return { intent: "best_deals", language };
+    }
+
+    if (/(recommend something|what should i buy|suggest snacks|recommend me)/i.test(normalized)) {
+      return { intent: "product_recommendation", language };
+    }
+
+    if (/(spicy snacks|spicy snack|bhai spicy snacks batao|teekha|teekay)/i.test(normalized)) {
+      return { intent: "spicy_recommendation", language, taste: "spicy" };
+    }
+
+    if (/(sweet snacks|kuch meetha recommend karo|meetha|sweet craving)/i.test(normalized)) {
+      return { intent: "sweet_recommendation", language, taste: "sweet" };
+    }
+
+    if (/(salty|namkeen|mild and salty)/i.test(normalized)) {
+      return { intent: "salty_recommendation", language, taste: "salty" };
+    }
+
+    if (/(mild snacks|less spicy|non spicy|plain)/i.test(normalized)) {
+      return { intent: "mild_recommendation", language, taste: "mild" };
+    }
+
+    if (/(crunchy snacks|crunchy|crispy)/i.test(normalized)) {
+      return { intent: "crunchy_recommendation", language, taste: "crunchy" };
+    }
+
+    if (/(kids ke liye|snacks for children|kids snacks|bachon ke liye)/i.test(normalized)) {
+      return { intent: "kids_recommendation", language, occasion: "kids" };
+    }
+
+    if (/(office snacks|office ke liye|team snacks|work snacks)/i.test(normalized)) {
+      return { intent: "office_recommendation", language, occasion: "office" };
+    }
+
+    if (/(movie night snacks|movie night|netflix snacks)/i.test(normalized)) {
+      return { intent: "movie_night_recommendation", language, occasion: "movie night" };
+    }
+
+    if (/(gaming snacks|netflix and gaming|gaming\/netflix)/i.test(normalized)) {
+      return { intent: "gaming_netflix_recommendation", language, occasion: "gaming" };
+    }
+
+    if (/(gift|gifting|gift bundle)/i.test(normalized)) {
+      return { intent: "gifting_recommendation", language, occasion: "gifting" };
+    }
+
+    if (/(party snacks|party bundle|guests)/i.test(normalized)) {
+      return { intent: "party_recommendation", language, occasion: "party" };
+    }
+
+    if (/(tea time|chai time)/i.test(normalized)) {
+      return { intent: "tea_time_recommendation", language, occasion: "tea time" };
+    }
+
+    if (budget) {
+      return { intent: "budget_recommendation", language, budget };
+    }
+
+    if (category) {
+      return { intent: "product_category_query", language, category };
+    }
+
+    if (/(halal)/i.test(normalized)) {
+      return { intent: "halal_query", language };
+    }
+
+    if (/(iso|certified|certification|certificate)/i.test(normalized)) {
+      return { intent: "certification_query", language };
+    }
+
+    if (/(contain nuts|gluten free|milk|soy|allergen|allergy)/i.test(normalized)) {
+      return {
+        intent: "allergen_query",
+        language,
+        productName: category || this.extractPotentialProductName(userMessage),
+      };
+    }
+
+    if (/(ingredients|gelatin|msg|made of)/i.test(normalized)) {
+      return {
+        intent: "ingredient_query",
+        language,
+        productName: category || this.extractPotentialProductName(userMessage),
+      };
+    }
+
+    if (/(vegan|vegetarian)/i.test(normalized)) {
+      return { intent: "vegan_vegetarian_query", language };
+    }
+
+    if (/(nutrition|calories|protein|fat)/i.test(normalized)) {
+      return { intent: "nutrition_query", language };
+    }
+
+    if (/(spice level|how spicy)/i.test(normalized)) {
+      return { intent: "spice_level_query", language };
+    }
+
+    if (/(fresh|freshness|are these fresh)/i.test(normalized)) {
+      return { intent: "product_freshness", language };
+    }
+
+    if (/(storage|store these|how to store)/i.test(normalized)) {
+      return { intent: "product_storage", language };
+    }
+
+    if (/(out of stock|stock available|availability|available\?|restock|restocking)/i.test(normalized)) {
+      return /(restock|restocking)/i.test(normalized)
+        ? { intent: "product_restock", language, productName: category || this.extractPotentialProductName(userMessage) }
+        : { intent: "product_availability", language, productName: category || this.extractPotentialProductName(userMessage) };
+    }
+
+    if (/(too expensive|mehnga|expensive|prices high|price high)/i.test(normalized)) {
+      return { intent: "price_objection", language };
+    }
+
+    if (/(shipping policy|delivery policy|shipping)/i.test(normalized)) {
+      return { intent: "shipping_policy", language };
+    }
+
+    if (/(delivery charges|shipping charges|free shipping)/i.test(normalized)) {
+      return /(free shipping)/i.test(normalized)
+        ? { intent: "free_shipping_query", language }
+        : { intent: "delivery_charges", language };
+    }
+
+    if (/(delivery time|kitne din|how long delivery)/i.test(normalized)) {
+      return { intent: "delivery_time", language };
+    }
+
+    if (/(deliver across pakistan|delivery cities|which cities|city delivery)/i.test(normalized)) {
+      return { intent: "delivery_city", language };
+    }
+
+    if (/(same day delivery)/i.test(normalized)) {
+      return { intent: "same_day_delivery", language };
+    }
+
+    if (/(change address|address change)/i.test(normalized)) {
+      return { intent: "address_change", language };
+    }
+
+    if (/(delayed order|late delivery|order delayed)/i.test(normalized)) {
+      return { intent: "delayed_order", language };
+    }
+
+    if (/(cod available|cash on delivery|cod hai)/i.test(normalized)) {
+      return { intent: "cod_query", language };
+    }
+
+    if (/(online payment|card payment|bank transfer|wallet payment)/i.test(normalized)) {
+      return { intent: "online_payment", language };
+    }
+
+    if (/(whatsapp order|order on whatsapp)/i.test(normalized)) {
+      return { intent: "whatsapp_order", language };
+    }
+
+    if (/(payment failed|amount deducted|payment deducted|order not confirmed)/i.test(normalized)) {
+      return { intent: "payment_failed", language };
+    }
+
+    if (/(secure payment|safe to pay)/i.test(normalized)) {
+      return { intent: "secure_payment", language };
+    }
+
+    if (/(return food items|return request|can i return)/i.test(normalized)) {
+      return { intent: "return_request", language };
+    }
+
+    if (/(refund request|refund mil|refund policy)/i.test(normalized)) {
+      return { intent: "refund_request", language };
+    }
+
+    if (/(refund time|kab refund)/i.test(normalized)) {
+      return { intent: "refund_time", language };
+    }
+
+    if (/(replacement|replace item)/i.test(normalized)) {
+      return { intent: "replacement_request", language };
+    }
+
+    if (/(damaged item|damaged product|product is damaged)/i.test(normalized)) {
+      return { intent: "damaged_product", language };
+    }
+
+    if (/(wrong product|wrong item received)/i.test(normalized)) {
+      return { intent: "wrong_product", language };
+    }
+
+    if (/(exchange flavor|change flavor)/i.test(normalized)) {
+      return { intent: "exchange_flavor", language };
+    }
+
+    if (/(cancel order|cancellation)/i.test(normalized)) {
+      return { intent: "cancellation_query", language };
+    }
+
+    if (/(discount|coupon|promo code)/i.test(normalized)) {
+      return /(coupon not working|promo code not working)/i.test(normalized)
+        ? { intent: "coupon_not_working", language }
+        : { intent: "discount_query", language };
+    }
+
+    if (/(complete my cart|complete checkout|checkout help|should i checkout|cart recovery|cart mein kya add karun)/i.test(normalized)) {
+      return { intent: "cart_completion", language };
+    }
+
+    if (/(upsell|what else should i add|add on suggestion|aur kya add karun)/i.test(normalized)) {
+      return { intent: "upsell_request", language };
+    }
+
+    if (/(pair with|goes with|cross sell|iske sath kya loon)/i.test(normalized)) {
+      return { intent: "cross_sell_request", language };
+    }
+
+    if (/(wholesale|bulk order)/i.test(normalized)) {
+      return { intent: "wholesale_query", language };
+    }
+
+    if (/(bulk discount)/i.test(normalized)) {
+      return { intent: "bulk_discount", language };
+    }
+
+    if (/(corporate gifting|corporate order)/i.test(normalized)) {
+      return { intent: "corporate_gifting", language };
+    }
+
+    if (/(event order|event snacks)/i.test(normalized)) {
+      return { intent: "event_order", language };
+    }
+
+    if (/(i'm confused|i am confused|confused customer|confused)/i.test(normalized)) {
+      return { intent: "confused_customer", language };
+    }
+
+    if (/(returning customer|welcome back|repeat order|regular snacks|order later)/i.test(normalized)) {
+      return { intent: "repeat_purchase", language };
+    }
+
+    if (/(trust|why buy from snakitos|pakistani products|is this real brand)/i.test(normalized)) {
+      return { intent: "general_brand_query", language };
+    }
+
+    return { intent: "fallback_unknown", language };
+  }
+
+  private detectSnakitosLanguage(
+    message: string,
+  ): "english" | "roman_urdu" | "mixed" {
+    const normalized = message.toLowerCase();
+    const romanHits = [
+      "bhai",
+      "batao",
+      "kuch",
+      "acha",
+      "andar",
+      "mera",
+      "kahan",
+      "liye",
+      "haan",
+      "han",
+      "theek",
+      "chahiye",
+      "karo",
+      "meetha",
+      "teekha",
+      "nachos",
+    ].filter((token) => normalized.includes(token)).length;
+    const englishHits = [
+      "shipping",
+      "refund",
+      "recommend",
+      "product",
+      "delivery",
+      "bundle",
+      "support",
+      "movie",
+      "office",
+      "snack",
+    ].filter((token) => normalized.includes(token)).length;
+
+    if (romanHits > 0 && englishHits > 0) {
+      return "mixed";
+    }
+
+    return romanHits > 0 ? "roman_urdu" : "english";
+  }
+
+  private extractKnownCategory(message: string): string {
+    const categories = [
+      "Nachos",
+      "Stix",
+      "Patata",
+      "Banana Chips",
+      "Choco Sticks",
+      "Wafer Rolls",
+      "ChickPea Puffs",
+      "Snaktory",
+    ];
+
+    return categories.find((item) => new RegExp(item.replace(/\s+/g, "\\s+"), "i").test(message)) ?? "";
+  }
+
+  private extractPotentialProductName(message: string): string {
+    return this.extractKnownCategory(message) || extractProductQuery(message);
+  }
+
+  private async handleSnakitosStructuredIntent(
+    classified: ClassifiedIntent,
+    userMessage: string,
+    chatId: string,
+  ): Promise<Omit<ChatResponsePayload, "chatId" | "userId"> | null> {
+    const language = classified.language;
+    const category = classified.category || "";
+    const budget = classified.budget || "";
+
+    switch (classified.intent) {
+      case "greeting":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message:
+              language === "roman_urdu"
+                ? "Hi! Main aapka Snakitos snack assistant hoon. Main snack deals, recommendations, shipping/refunds, aur collections mein help kar sakta hoon. Aaj aap ko spicy, sweet, crunchy, ya mixed snack box chahiye?"
+                : "Hi! I’m your Snakitos snack assistant. I can help you find snack deals, recommend snacks, explain shipping/refunds, or guide you to the right collection. What are you craving today — spicy, sweet, crunchy, or mixed?",
+            userMessage,
+            options: this.getQuickMenuOptions(),
+            skipSuggestions: true,
+          }),
+        };
+      case "back_home":
+      case "main_categories":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message:
+              language === "roman_urdu"
+                ? "Snakitos ki main snack categories yeh hain:"
+                : "Browse the main Snakitos snack collections below:",
+            userMessage,
+            options: this.getMainCategoryOptions(),
+            skipSuggestions: true,
+          }),
+        };
+      case "confirmation_continue":
+        return this.handleConfirmationContinue(language, userMessage);
+      case "what_do_you_sell":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message:
+              "Snakitos offers snacks like Stix, Patata, Banana Chips, Choco Sticks, Wafer Rolls, ChickPea Puffs, Nachos, Snaktory packs, and snack bundles. Are you looking for spicy, sweet, kids-friendly, or mixed snacks?",
+            userMessage,
+            options: this.getQuickMenuOptions(),
+            skipSuggestions: true,
+          }),
+        };
+      case "product_recommendation":
+        return {
+          intent: "product",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message:
+              language === "roman_urdu"
+                ? "Zaroor! Main best option recommend kar sakta hoon. Aapko spicy, sweet, salty, crunchy, ya mixed snack box chahiye?"
+                : "Sure! I can recommend the best option. What are you craving — spicy, sweet, salty, crunchy, or a mixed snack box?",
+            userMessage,
+            options: [
+              { label: "Spicy", value: "spicy snacks" },
+              { label: "Sweet", value: "sweet snacks" },
+              { label: "Crunchy", value: "crunchy snacks" },
+              { label: "Mixed", value: "mixed snack box" },
+              { label: "Home", value: "home" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
+      case "best_seller_query":
+        return this.buildCuratedRecommendationResponse(
+          userMessage,
+          "best sellers bundle popular snacks",
+          "Some popular choices include Stix, Patata, Choco Sticks, Wafer Rolls, Banana Chips, Nachos, and snack bundles. If you want better value, I’d recommend starting with a bundle. Do you prefer spicy, sweet, or mixed?",
+          "popular snacks",
+        );
+      case "best_deals":
+      case "bundle_deals":
+        return this.buildCuratedRecommendationResponse(
+          userMessage,
+          "bundle combo deal value pack family pack party pack gift box deals",
+          "Here are some strong-value Snakitos deals you can check:\n\nMy best value pick is a mixed bundle, because it gives more variety than buying only single packs. Do you want deals under Rs. 1,000, under Rs. 2,000, or family-size bundles?",
+          "best deals",
+        );
+      case "product_category_query":
+        return this.buildCategoryResponse(userMessage, category || "Snacks");
+      case "spicy_recommendation":
+        return this.buildCuratedRecommendationResponse(
+          userMessage,
+          "spicy stix nachos banana chips spicy bundle",
+          language === "roman_urdu"
+            ? "Zaroor! Agar aapko spicy snacks pasand hain to Stix Hot & Spicy, Stix Peri Peri, Stix Lemon & Chilli, aur Nachos Salsa try karein. Better value ke liye spicy bundle bhi acha rahega. Kya main aapke budget ke hisaab se spicy combo suggest karun?"
+            : "If you enjoy spicy snacks, I’d recommend Stix Hot & Spicy, Stix Peri Peri, Stix Lemon & Chilli, Nachos Salsa, Nachos Paprika, and Banana Chips Achari Masti. For better value, you can also go for a spicy bundle. Want me to suggest a spicy combo under your budget?",
+          "spicy",
+        );
+      case "sweet_recommendation":
+        return this.buildCuratedRecommendationResponse(
+          userMessage,
+          "sweet choco sticks wafer rolls coco choco sweet bundle",
+          language === "roman_urdu"
+            ? "Sweet craving ke liye Choco Stick Chocolate, Choco Stick Strawberry, Wafer Rolls Hazelnut, aur Coco Choco Can best options hain. Aap chocolate-only snacks lena chahenge ya sweet + crunchy mix?"
+            : "For sweet cravings, I’d recommend Choco Stick Chocolate, Choco Stick Strawberry, Coco Choco Can, Wafer Rolls Hazelnut, Wafer Rolls Strawberry, and a Choco Lovers Bundle. Would you like chocolate-only snacks or a sweet + crunchy mix?",
+          "sweet",
+        );
+      case "salty_recommendation":
+      case "mild_recommendation":
+        return this.buildCuratedRecommendationResponse(
+          userMessage,
+          "mild salty patata banana chips chickpea puffs stix salty",
+          "For something mild and salty, I’d suggest Patata Salty, Banana Chips Sea Salt, ChickPea Puffs, and Stix Salty. You can also add a sweet item like Choco Stick or Wafer Rolls for balance.",
+          "salty",
+        );
+      case "crunchy_recommendation":
+        return this.buildCuratedRecommendationResponse(
+          userMessage,
+          "crunchy patata stix nachos banana chips chickpea puffs",
+          "For crunchy snacks, I’d recommend Patata, Stix, Nachos, Banana Chips, and ChickPea Puffs. Do you want crunchy and spicy, or crunchy and mild?",
+          "crunchy",
+        );
+      case "kids_recommendation":
+        return this.buildCuratedRecommendationResponse(
+          userMessage,
+          "kids snacks choco sticks wafer rolls patata salty kids fun box",
+          language === "roman_urdu"
+            ? "Kids ke liye Choco Stick, Coco Choco Can, Wafer Rolls Strawberry, aur Patata Salty achay options hain. Agar ready mix chahiye to Kids Fun Box best rahega. Aapka budget kya hai?"
+            : "For kids, I’d suggest Choco Stick Chocolate, Choco Stick Strawberry, Coco Choco Can, Wafer Rolls Strawberry, Wafer Rolls Hazelnut, Patata Salty, and a Kids Fun Box. The Kids Fun Box is a good ready-made mix. What’s your budget?",
+          "kids",
+        );
+      case "movie_night_recommendation":
+        return this.buildCuratedRecommendationResponse(
+          userMessage,
+          "movie night nachos bundle party crunch shareable snacks",
+          "Great! For movie night, I recommend crunchy and shareable snacks like a Movie Night Nachos Bundle, Snakitos Stix Party, Patata Crunch Deal, Nachos Salsa, and Ultimate Snack Deal. How many people are you ordering for?",
+          "movie night",
+        );
+      case "gaming_netflix_recommendation":
+        return this.buildCuratedRecommendationResponse(
+          userMessage,
+          "gaming netflix crunchy nachos stix patata banana chips",
+          "For Netflix or gaming, go for crunchy snacks like Nachos Salsa, Patata Masala, Stix Peri Peri, Banana Chips, and a Movie Night Nachos Bundle. Want a sweet item added too? Choco Stick or Wafer Rolls pair nicely.",
+          "gaming",
+        );
+      case "office_recommendation":
+        return this.buildCuratedRecommendationResponse(
+          userMessage,
+          "office snack box shareable banana chips wafer rolls patata puffs",
+          "For office snacking, I’d recommend Office Snack Box, All Time Favorites, Banana Chips Sea Salt, Wafer Rolls, Patata Salty, and ChickPea Puffs. These are easy to share and give a good sweet + savory mix. How many people are in your team?",
+          "office",
+        );
+      case "gifting_recommendation":
+        return this.buildCuratedRecommendationResponse(
+          userMessage,
+          "gift bundles mega snack box choco lovers flavor fiesta",
+          "Nice idea! For gifting, I’d recommend an Ultimate Mega Snack Box, All Time Favorites, a Choco Lovers Bundle, or a Snakitos Flavor Fiesta Bundle. These feel better than individual packs because they give more variety. Is this gift for kids, family, office, or a friend?",
+          "gifting",
+        );
+      case "party_recommendation":
+        return this.buildCuratedRecommendationResponse(
+          userMessage,
+          "party pleaser bundle mega snack box fiesta bundle nachos stix party",
+          "For parties, I’d recommend a Party Pleaser Bundle, Ultimate Mega Snack Box, Snakitos Flavor Fiesta Bundle, Nachos packs, and Stix Party. These are shareable and give good variety. How many guests are you expecting?",
+          "party",
+        );
+      case "tea_time_recommendation":
+        return this.buildCuratedRecommendationResponse(
+          userMessage,
+          "tea time wafer rolls choco sticks patata puffs banana chips",
+          "For tea time, I’d suggest Wafer Rolls, Choco Sticks, Patata Salty, ChickPea Puffs, and Banana Chips Sea Salt. If you want variety, All Time Favorites is a good option.",
+          "tea time",
+        );
+      case "budget_recommendation":
+        return this.buildBudgetResponse(userMessage, budget, language);
+      case "halal_query":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message:
+              "Yes, Snakitos is a brand by FM Foods, and FM Foods publicly lists Halal certification as part of its quality and food safety standards. Are you looking for halal snacks for kids, gifting, or daily use?",
+            userMessage,
+            options: [
+              { label: "Kids Snacks", value: "kids snacks" },
+              { label: "Gift Bundles", value: "gift bundles" },
+              { label: "Daily Snacks", value: "regular snacks" },
+              { label: "Home", value: "home" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
+      case "certification_query":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message:
+              "Snakitos is a brand by FM Foods. FM Foods lists quality and food safety standards including Halal, ISO 22000, HACCP, SFDA, and FDA-related approvals/compliance. If you need certificate copies for wholesale, export, or corporate buying, support can confirm.",
+            userMessage,
+            options: [
+              { label: "Talk to Support", value: "talk to support" },
+              { label: "Bulk Orders", value: "wholesale" },
+              { label: "Home", value: "home" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
+      case "ingredient_query":
+        return {
+          intent: "general",
+          response: await this.buildSensitiveProductSafetyResponse(
+            userMessage,
+            classified.productName,
+            "Ingredients vary by product. Please check the product packaging or product page for the exact ingredient list. Some snack products may include ingredients such as corn/wheat, vegetable oil, salt, and spices, depending on the product.",
+          ),
+        };
+      case "allergen_query":
+        return {
+          intent: "general",
+          response: await this.buildSensitiveProductSafetyResponse(
+            userMessage,
+            classified.productName,
+            "Allergen information can vary by product. Please check the packaging for the most accurate allergen details. If you have a serious allergy, I recommend confirming with support before placing the order.",
+          ),
+        };
+      case "vegan_vegetarian_query":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message:
+              "Some products may be vegetarian-friendly, but ingredients vary by product. Please check the specific product label for dairy, gelatin, or animal-derived ingredients. If you follow a strict vegan or vegetarian diet, support should confirm before you order.",
+            userMessage,
+            options: [
+              { label: "Talk to Support", value: "talk to support" },
+              { label: "Show Products", value: "show categories" },
+              { label: "Home", value: "home" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
+      case "spice_level_query":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message:
+              "Some Snakitos products are spicy, while others are mild or sweet. Spicy options include Stix Hot & Spicy, Stix Peri Peri, Stix Lemon & Chilli, Nachos Salsa, Nachos Paprika, and Banana Chips Achari Masti. For non-spicy options, try Choco Sticks, Wafer Rolls, Banana Chips Sea Salt, Patata Salty, or sweet snack bundles.",
+            userMessage,
+            options: [
+              { label: "Spicy Snacks", value: "spicy snacks" },
+              { label: "Mild Snacks", value: "mild snacks" },
+              { label: "Home", value: "home" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
+      case "nutrition_query":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message:
+              "I’m not fully sure about the exact nutrition information, and I don’t want to misguide you. Please check the product packaging or confirm with support before ordering.",
+            userMessage,
+            options: [
+              { label: "Talk to Support", value: "talk to support" },
+              { label: "Show Products", value: "show categories" },
+              { label: "Home", value: "home" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
+      case "shipping_refund_policy":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "policy",
+            message:
+              "Here’s the quick policy overview:\n\nShipping: delivery charges depend on your city, order value, and current offers. Delivery time varies by city and courier service, and tracking is usually shared after dispatch.\n\nRefunds and returns: because these are food items, returns may be limited for hygiene and safety reasons. If you received a damaged, wrong, or defective item, support can review it with proof.",
+            userMessage,
+            policyLink: "https://snakitos.com/policies/",
+            options: [
+              { label: "Track Order", value: "track my order" },
+              { label: "Talk to Support", value: "talk to support" },
+              { label: "Home", value: "home" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
+      case "shipping_policy":
+        return this.buildPolicyTemplateResponse(
+          userMessage,
+          "Shipping charges and delivery timing depend on location, order size, and current promotions. The final charges are shown at checkout, and tracking is usually shared after dispatch.",
+          "https://snakitos.com/policies/shipping-policy",
+        );
+      case "delivery_charges":
+      case "free_shipping_query":
+        return this.buildPolicyTemplateResponse(
+          userMessage,
+          "Delivery charges may depend on your city, order value, and current offer. Please check the checkout page for the exact delivery charge. Some bundles or deals may include free shipping.",
+          "https://snakitos.com/policies/shipping-policy",
+        );
+      case "delivery_time":
+        return this.buildPolicyTemplateResponse(
+          userMessage,
+          "Delivery time depends on your city and courier service. Major cities are usually faster, while other areas may take a little longer. Once your order is shipped, you can track it using your order details.",
+          "https://snakitos.com/policies/shipping-policy",
+        );
+      case "delivery_city":
+        return this.buildPolicyTemplateResponse(
+          userMessage,
+          "Snakitos delivers across Pakistan through courier service. Delivery time and charges may vary by city.",
+          "https://snakitos.com/policies/shipping-policy",
+        );
+      case "same_day_delivery":
+        return this.buildPolicyTemplateResponse(
+          userMessage,
+          "Same-day delivery may not be available for all areas. Please share your city and area so support can confirm.",
+          "https://snakitos.com/policies/shipping-policy",
+        );
+      case "address_change":
+        return this.buildEscalationPolicyResponse(
+          userMessage,
+          "If your order has not been dispatched yet, address changes may be possible. Please share your order number and updated address as soon as possible so support can check before dispatch.",
+        );
+      case "delayed_order":
+        return this.buildEscalationPolicyResponse(
+          userMessage,
+          "I’m sorry about that. Courier delays can happen due to delivery load, route issues, public holidays, weather, or city-specific delays. Please use the Track Order option or share your order number with support.",
+        );
+      case "cod_query":
+        return this.buildPolicyTemplateResponse(
+          userMessage,
+          "Cash on Delivery may be available depending on your city and order type. You can confirm available payment options at checkout.",
+          "https://snakitos.com/policies/terms-of-service",
+        );
+      case "online_payment":
+        return this.buildPolicyTemplateResponse(
+          userMessage,
+          "Available payment options will appear at checkout. Depending on the current setup, you may see options such as COD, bank transfer, card payment, or wallet payment.",
+          "https://snakitos.com/policies/terms-of-service",
+        );
+      case "whatsapp_order":
+        return this.buildPolicyTemplateResponse(
+          userMessage,
+          "Yes, you can contact Snakitos support on WhatsApp for help with ordering, product suggestions, or order updates. Before that, I can quickly suggest the best bundle for your taste and budget.",
+          "",
+        );
+      case "payment_failed":
+        return this.buildEscalationPolicyResponse(
+          userMessage,
+          "Sorry about that. Please check whether the amount was deducted. If the amount was not deducted, you can try placing the order again or choose another payment method. If the amount was deducted but your order was not confirmed, please keep a screenshot or transaction ID and contact support for verification.",
+        );
+      case "secure_payment":
+        return this.buildPolicyTemplateResponse(
+          userMessage,
+          "Payments should only be made through the official Snakitos checkout or official support channels. Avoid sharing sensitive card or banking details in chat.",
+          "https://snakitos.com/policies/terms-of-service",
+        );
+      case "return_request":
+        return this.buildPolicyTemplateResponse(
+          userMessage,
+          "Because these are food items, returns may be limited for hygiene and safety reasons. However, if you received a damaged, wrong, or defective item, please contact support with proof so the case can be reviewed.",
+          "https://snakitos.com/policies/refund-policy",
+        );
+      case "refund_request":
+        return this.buildPolicyTemplateResponse(
+          userMessage,
+          "Because these are food items, returns and refunds may be limited for hygiene and safety reasons. If you received a damaged, wrong, or defective item, support can review your case with proof.",
+          "https://snakitos.com/policies/refund-policy",
+        );
+      case "refund_time":
+        return this.buildPolicyTemplateResponse(
+          userMessage,
+          "Refund timing depends on the payment method and review process. Once approved, support will guide you about the expected refund timeline.",
+          "https://snakitos.com/policies/refund-policy",
+        );
+      case "replacement_request":
+      case "damaged_product":
+        return this.buildComplaintResponse(
+          userMessage,
+          "I’m sorry about that. Please share your order number and clear photos or videos of the damaged items and packaging. This helps support review your claim quickly.",
+        );
+      case "wrong_product":
+        return this.buildComplaintResponse(
+          userMessage,
+          "Sorry for the inconvenience. Please share your order number and a photo of the product received. Support can review and guide you about replacement or correction.",
+        );
+      case "exchange_flavor":
+        return this.buildEscalationPolicyResponse(
+          userMessage,
+          "If the order has not been dispatched yet, flavor changes may be possible. If it has already been shipped or delivered, exchange may be limited because these are food products.",
+        );
+      case "cancellation_query":
+        return this.buildEscalationPolicyResponse(
+          userMessage,
+          "Order cancellation usually depends on whether the order has already been dispatched. Please share your order number with support so they can confirm this properly.",
+        );
+      case "discount_query":
+        return this.buildPolicyTemplateResponse(
+          userMessage,
+          "Current discounts and offers may change from time to time. You can check the Deals section on the website for active offers. I can also recommend the best-value bundle based on your budget.",
+          "",
+        );
+      case "cart_completion":
+        return this.buildCuratedRecommendationResponse(
+          userMessage,
+          "best selling snack deals value bundle mixed add on free shipping",
+          "I can help you finish the cart smartly. Bundles usually give better value, and I can also suggest a small add-on if you want to get closer to free delivery.",
+          "cart completion",
+        );
+      case "upsell_request":
+        return this.buildCuratedRecommendationResponse(
+          userMessage,
+          "bundles trending high margin flavor fiesta office snack box all time favorites",
+          "A bundle is usually the best upgrade if you want more variety and better value. I’ve picked a few strong upsell options for you below.",
+          "upsell",
+        );
+      case "cross_sell_request":
+        return this.buildCuratedRecommendationResponse(
+          userMessage,
+          "sweet pairing crunchy pairing spicy sweet combo",
+          "A good pairing makes the box feel more complete. I’ve added a few natural mix-and-match options below.",
+          "cross sell",
+        );
+      case "coupon_not_working":
+        return this.buildPolicyTemplateResponse(
+          userMessage,
+          "Please check if the coupon is still valid, applies to your selected products, and meets any minimum order requirement. If it still doesn’t work, share a screenshot with support.",
+          "",
+        );
+      case "wholesale_query":
+      case "bulk_discount":
+        return this.buildEscalationPolicyResponse(
+          userMessage,
+          "Wholesale or bulk pricing may be available for retailers, offices, events, or corporate buyers. Please share your name, business name, city, required products, quantity, contact number, and delivery location so support can guide you.",
+        );
+      case "corporate_gifting":
+        return this.buildEscalationPolicyResponse(
+          userMessage,
+          "Corporate snack boxes may be possible for offices, events, and gifting. Please share the quantity, budget per box, city, and preferred snack type.",
+        );
+      case "event_order":
+        return this.buildEscalationPolicyResponse(
+          userMessage,
+          "Sure! Please share the number of guests, city, event date, and budget. I can suggest bundles, and support can help with bulk pricing.",
+        );
+      case "confused_customer":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message:
+              language === "roman_urdu"
+                ? "Koi baat nahi. Bas yeh bata dein: aapko spicy, sweet, kids-friendly, movie-night, office, ya mixed snacks chahiye?"
+                : "No worries. Tell me one thing: do you want spicy, sweet, kids-friendly, movie-night, office, or mixed snacks?",
+            userMessage,
+            options: [
+              { label: "Spicy", value: "spicy snacks" },
+              { label: "Sweet", value: "sweet snacks" },
+              { label: "Kids", value: "kids snacks" },
+              { label: "Movie Night", value: "movie night snacks" },
+              { label: "Mixed", value: "mixed snack box" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
+      case "repeat_purchase":
+        return this.buildCuratedRecommendationResponse(
+          userMessage,
+          "repeat order office snack box all time favorites mixed snacks",
+          "Welcome back! If you enjoyed spicy snacks last time, you can try another Stix flavor, Nachos, or a spicy bundle. If you want something different, I can suggest a sweet + salty mix.",
+          "repeat",
+        );
+      case "price_objection":
+        return this.buildCuratedRecommendationResponse(
+          userMessage,
+          "bundle combo value mixed snack box",
+          "I understand. If you want better value, I’d suggest choosing a bundle instead of individual items. Bundles usually give more variety and a better overall snack experience.",
+          "value bundle",
+        );
+      case "product_freshness":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message:
+              "Snakitos focuses on quality-packed snacks. For best taste, store products in a cool, dry place and consume before the expiry date printed on the pack.",
+            userMessage,
+            options: [
+              { label: "Show Snacks", value: "show categories" },
+              { label: "Talk to Support", value: "talk to support" },
+              { label: "Home", value: "home" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
+      case "product_storage":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message:
+              "For best taste, store your snacks in a cool, dry place and keep the pack sealed after opening.",
+            userMessage,
+            options: [
+              { label: "Show Snacks", value: "show categories" },
+              { label: "Home", value: "home" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
+      case "product_availability":
+      case "product_restock":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message:
+              "I’m not fully sure about live stock or restock timing. Please check the product page or contact support for confirmation.",
+            userMessage,
+            options: [
+              { label: "Talk to Support", value: "talk to support" },
+              { label: "Show Products", value: "show categories" },
+              { label: "Home", value: "home" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
+      case "support_request":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message:
+              "Sure, I can connect you with Snakitos support. Please share your issue briefly so support can guide you faster.",
+            userMessage,
+            options: [
+              { label: "WhatsApp Support", value: "How can I contact support?" },
+              { label: "Track Order", value: "track my order" },
+              { label: "Home", value: "home" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
+      case "general_brand_query":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message:
+              "Snakitos offers a wide range of Pakistani snacks, sweet treats, spicy snacks, bundles, and snack boxes. It is a brand by FM Foods, with focus on quality, hygiene, taste, and export-quality production standards. Bundles are especially good if you want more variety and better value.",
+            userMessage,
+            options: [
+              { label: "Best Deals", value: "show best deals" },
+              { label: "Best Sellers", value: "show best sellers" },
+              { label: "Home", value: "home" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
+      default:
+        return null;
+    }
+  }
+
+  private buildStateUpdateFromIntent(
+    classified: ClassifiedIntent,
+    response: Omit<ChatResponsePayload, "chatId" | "userId">,
+  ): Partial<ConversationState> {
+    const next: Partial<ConversationState> = {
+      last_intent: classified.intent,
+      last_topic: classified.category || classified.taste || classified.occasion || classified.intent,
+    };
+
+    if (classified.category) {
+      next.last_category = classified.category;
+    }
+
+    if (classified.budget) {
+      next.last_budget = classified.budget;
+    }
+
+    if (classified.taste) {
+      next.last_taste = classified.taste;
+    }
+
+    if (classified.occasion) {
+      next.last_occasion = classified.occasion;
+    }
+
+    if (
+      classified.intent === "best_deals" ||
+      classified.intent === "bundle_deals" ||
+      classified.intent === "product_category_query" ||
+      classified.intent.endsWith("_recommendation") ||
+      classified.intent === "best_seller_query"
+    ) {
+      next.pending_action = "show_more_products";
+    } else if (classified.intent === "product_recommendation") {
+      next.pending_action = "taste_preference";
+    } else {
+      next.pending_action = "";
+    }
+
+    try {
+      const parsed = JSON.parse(response.response) as { products?: Array<{ name?: string }> };
+      next.last_recommended_products =
+        parsed.products?.map((item) => item.name || "").filter(Boolean).slice(0, 6) ?? [];
+    } catch {
+      next.last_recommended_products = [];
+    }
+
+    if (
+      classified.intent.includes("shipping") ||
+      classified.intent.includes("refund") ||
+      classified.intent.includes("delivery") ||
+      classified.intent.includes("payment")
+    ) {
+      next.last_policy_topic = classified.intent;
+    }
+
+    if (
+      classified.intent === "damaged_product" ||
+      classified.intent === "wrong_product" ||
+      classified.intent === "payment_failed" ||
+      classified.intent === "support_request"
+    ) {
+      next.last_support_issue = classified.intent;
+    }
+
+    return next;
+  }
+
+  private async handleConfirmationContinue(
+    language: ClassifiedIntent["language"],
+    userMessage: string,
+  ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
+    return {
+      intent: "product",
+      response: await this.buildCuratedRecommendationResponseText(
+        userMessage,
+        "bundle combo deal more options family pack party pack",
+        language === "roman_urdu"
+          ? "Perfect! Yahan aur snack deals aur bundles hain jo aap explore kar sakte hain:"
+          : "Perfect! Here are more snack deals and bundles you can explore:",
+      ),
+    };
+  }
+
+  private getQuickMenuOptions(): Array<{ label: string; value: string }> {
+    return [
+      { label: "Track Order", value: "track my order" },
+      { label: "Snack Deals", value: "show best deals" },
+      { label: "Recommend Me Snacks", value: "recommend something" },
+      { label: "Shipping & Refunds", value: "show shipping and refund policy" },
+      { label: "Talk to Support", value: "talk to support" },
+    ];
+  }
+
+  private getMainCategoryOptions(): Array<{ label: string; value: string }> {
+    return [
+      { label: "Snack Deals", value: "show best deals" },
+      { label: "Best Sellers", value: "show best sellers" },
+      { label: "Spicy Snacks", value: "spicy snacks" },
+      { label: "Sweet Snacks", value: "sweet snacks" },
+      { label: "Nachos", value: "show me nachos" },
+      { label: "Stix", value: "show me stix" },
+      { label: "Patata", value: "show me patata" },
+      { label: "Banana Chips", value: "show me banana chips" },
+      { label: "Choco Sticks", value: "show me choco sticks" },
+      { label: "Wafer Rolls", value: "show me wafer rolls" },
+      { label: "Kids Snacks", value: "kids snacks" },
+      { label: "Office Snacks", value: "office snacks" },
+      { label: "Gift Bundles", value: "gift bundles" },
+      { label: "Movie Night Snacks", value: "movie night snacks" },
+      { label: "Shipping & Refunds", value: "show shipping and refund policy" },
+      { label: "Talk to Support", value: "talk to support" },
+    ];
+  }
+
+  private async buildCuratedRecommendationResponse(
+    userMessage: string,
+    query: string,
+    message: string,
+    rankingMessage: string,
+  ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
+    return {
+      intent: "product",
+      response: await this.buildCuratedRecommendationResponseText(userMessage, query, message, rankingMessage),
+    };
+  }
+
+  private async buildCuratedRecommendationResponseText(
+    userMessage: string,
+    query: string,
+    message: string,
+    rankingMessage?: string,
+  ): Promise<string> {
+    const products = await this.getProductsForStructuredQuery(query, rankingMessage || userMessage);
+    const freeShippingHint = this.buildFreeShippingHint(products);
+    return this.buildResponseWithSuggestions({
+      type: "product",
+      message: [message, freeShippingHint].filter(Boolean).join("\n\n"),
+      userMessage,
+      products: this.buildProductCards(products, rankingMessage || userMessage),
+      options: [
+        { label: "Back", value: "show categories" },
+        { label: "Home", value: "home" },
+      ],
+      skipSuggestions: true,
+    });
+  }
+
+  private async buildCategoryResponse(
+    userMessage: string,
+    category: string,
+  ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
+    const products = await this.getProductsForStructuredQuery(category, category);
+    return {
+      intent: "product",
+      response: await this.buildResponseWithSuggestions({
+        type: "product",
+        message: `Sure! Here are the ${category} options I found:\n\n${category} pairs nicely with a related snack or a bundle if you want more variety. Do you want spicy, mild, or a combo option?`,
+        userMessage,
+        products: this.buildProductCards(products, category),
+        options: [
+          { label: "Best Deals", value: "show best deals" },
+          { label: "Recommend Me", value: "recommend something" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      }),
+    };
+  }
+
+  private async buildBudgetResponse(
+    userMessage: string,
+    budget: string,
+    language: ClassifiedIntent["language"],
+  ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
+    const amount = Number.parseInt(budget, 10);
+    const query =
+      amount <= 500
+        ? "under 500 single packs choco stick patata stix puffs banana chips wafer rolls"
+        : amount <= 1000
+          ? "under 1000 snack pack choco combo smaller combo deal"
+          : amount <= 2000
+            ? "under 2000 all time favorites office snack box movie night nachos bundle snack sampler deal"
+            : "above 3000 ultimate mega snack box flavor fiesta party pleaser combo";
+    const message =
+      amount <= 500
+        ? "Under Rs. 500, you can try single packs like Choco Stick, Patata, Stix, ChickPea Puffs, Banana Chips, or Wafer Rolls. Do you prefer spicy, sweet, or salty?"
+        : amount <= 1000
+          ? "Under Rs. 1,000, I’d suggest a Snaktory Snack Pack, Choco Stick Combo, or a smaller combo deal. You’ll get better variety than buying only one item."
+          : amount <= 2000
+            ? language === "roman_urdu"
+              ? "Rs. 2,000 ke andar All Time Favorites, Snack Sampler Deal, Office Snack Box, ya Movie Night Nachos Bundle achay options hain. Aap spicy lena chahenge, sweet, ya mixed?"
+              : "Under Rs. 2,000, the best value options are All Time Favorites, Office Snack Box, Movie Night Nachos Bundle, Snakitos Stix Party, and Snack Sampler Deal. Do you want spicy, sweet, or mixed?"
+            : "For a bigger order, I’d recommend Ultimate Mega Snack Box, Flavor Fiesta Bundle, Party Pleaser Bundle, or Crunch Munch Combo. These are great for families, offices, parties, and gifting.";
+
+    const products =
+      amount > 0 && amount <= 2000
+        ? await this.getBudgetProducts(amount)
+        : await this.getProductsForStructuredQuery(query, query);
+
+    return {
+      intent: "product",
+      response: await this.buildResponseWithSuggestions({
+        type: "product",
+        message: [message, this.buildFreeShippingHint(products)].filter(Boolean).join("\n\n"),
+        userMessage,
+        products: this.buildProductCards(products, query),
+        options: [
+          { label: "Back", value: "show categories" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      }),
+    };
+  }
+
+  private async buildSensitiveProductSafetyResponse(
+    userMessage: string,
+    productName: string | undefined,
+    baseMessage: string,
+  ): Promise<string> {
+    const productLead = productName ? `${productName}: ` : "";
+    return this.buildResponseWithSuggestions({
+      type: "fallback",
+      message: `${productLead}${baseMessage} ${productName ? "" : "Which product are you asking about?"}`.trim(),
+      userMessage,
+      options: [
+        { label: "Talk to Support", value: "talk to support" },
+        { label: "Show Products", value: "show categories" },
+        { label: "Home", value: "home" },
+      ],
+      skipSuggestions: true,
+    });
+  }
+
+  private async buildPolicyTemplateResponse(
+    userMessage: string,
+    message: string,
+    policyLink: string,
+  ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
+    return {
+      intent: "general",
+      response: await this.buildResponseWithSuggestions({
+        type: "policy",
+        message,
+        userMessage,
+        policyLink,
+        options: [
+          { label: "Track Order", value: "track my order" },
+          { label: "Talk to Support", value: "talk to support" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      }),
+    };
+  }
+
+  private async buildEscalationPolicyResponse(
+    userMessage: string,
+    message: string,
+  ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
+    return {
+      intent: "general",
+      response: await this.buildResponseWithSuggestions({
+        type: "fallback",
+        message,
+        userMessage,
+        options: [
+          { label: "Talk to Support", value: "talk to support" },
+          { label: "Track Order", value: "track my order" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      }),
+    };
+  }
+
+  private async buildComplaintResponse(
+    userMessage: string,
+    message: string,
+  ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
+    return {
+      intent: "general",
+      response: await this.buildResponseWithSuggestions({
+        type: "fallback",
+        message,
+        userMessage,
+        options: [
+          { label: "Talk to Support", value: "talk to support" },
+          { label: "Track Order", value: "track my order" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      }),
+    };
+  }
+
+  private async getProductsForStructuredQuery(
+    query: string,
+    rankingMessage: string,
+  ): Promise<ProductLookupResult[]> {
+    const direct = await shopifyService.getStorefrontRecommendations(query, 30).catch(() => []);
+    const products = direct.length > 0 ? direct : await this.getFallbackProductRecommendations(query);
+    const selected = this.selectProductsForResponse(products, rankingMessage).slice(0, 6);
+    if (selected.length > 0) {
+      return selected;
+    }
+
+    const fallbackNames = this.resolveFallbackStructuredProductNames(`${query} ${rankingMessage}`);
+    if (fallbackNames.length === 0) {
+      return [];
+    }
+
+    return this.getProductsByNames(fallbackNames);
+  }
+
+  private buildFreeShippingHint(products: ProductLookupResult[]): string {
+    const threshold = FREE_SHIPPING_THRESHOLD;
+    const closestUnderThreshold = products
+      .map((product) => this.parseDisplayPrice(product.price))
+      .filter((price) => price > 0 && price < threshold)
+      .sort((left, right) => right - left)[0];
+
+    if (!closestUnderThreshold) {
+      return "";
+    }
+
+    const remaining = threshold - closestUnderThreshold;
+    if (remaining <= 0 || remaining > 500) {
+      return "";
+    }
+
+    return `You’re only Rs. ${remaining} away from free delivery. Want recommendations under Rs. 500?`;
+  }
+
+  private async getBudgetProducts(maxAmount: number): Promise<ProductLookupResult[]> {
+    const products = await shopifyService.getQuickRecommendations("", 60).catch(() => []);
+    const filtered = products
+      .filter((product) => {
+        const price = this.parseDisplayPrice(product.price);
+        return price > 0 && price <= maxAmount;
+      })
+      .sort((left, right) => this.parseDisplayPrice(right.price) - this.parseDisplayPrice(left.price));
+
+    if (filtered.length > 0) {
+      return filtered.slice(0, 6);
+    }
+
+    const fallbackNames =
+      maxAmount <= 500
+        ? ["Choco Stick Chocolate", "Patata Salty", "Stix Peri Peri", "Banana Chips Sea Salt"]
+        : maxAmount <= 1000
+          ? ["Choco Stick Combo", "Snakitos Snaktory Snack Pack", "Nachos Pack Of 10"]
+          : ["All Time Favorites", "Office Snack Box", "Movie Night Nachos Bundle"];
+
+    const fallbackProducts = await this.getProductsByNames(fallbackNames);
+    return fallbackProducts
+      .filter((product) => {
+        const price = this.parseDisplayPrice(product.price);
+        return price === 0 || price <= maxAmount;
+      })
+      .slice(0, 6);
+  }
+
+  private async getProductsByNames(names: string[]): Promise<ProductLookupResult[]> {
+    const matches = await Promise.all(
+      names.map(async (name) => {
+        const results = await shopifyService.searchProducts(name).catch(() => []);
+        return results[0] ?? null;
+      }),
+    );
+
+    return matches.filter((item): item is ProductLookupResult => Boolean(item)).slice(0, 6);
+  }
+
+  private resolveFallbackStructuredProductNames(seed: string): string[] {
+    const normalized = seed.toLowerCase();
+
+    if (/(deal|bundle|combo|value|family|party|gift)/i.test(normalized)) {
+      return [
+        "All Time Favorites",
+        "Office Snack Box",
+        "Movie Night Nachos Bundle",
+        "Flavor Fiesta Bundle",
+        "Party Pleaser Bundle",
+        "Choco Lovers Bundle",
+      ];
+    }
+
+    if (/nachos/i.test(normalized)) {
+      return ["Nachos Salsa", "Nachos Paprika", "Movie Night Nachos Bundle", "Nachos Pack Of 10"];
+    }
+
+    if (/spicy/i.test(normalized)) {
+      return [
+        "Stix Hot & Spicy",
+        "Stix Peri Peri",
+        "Stix Lemon & Chilli",
+        "Nachos Salsa",
+        "Nachos Paprika",
+        "Banana Chips Achari Masti",
+      ];
+    }
+
+    if (/sweet|choco|wafer/i.test(normalized)) {
+      return [
+        "Choco Stick Chocolate",
+        "Choco Stick Strawberry",
+        "Wafer Rolls Hazelnut",
+        "Wafer Rolls Strawberry",
+        "Coco Choco Can",
+        "Choco Lovers Bundle",
+      ];
+    }
+
+    if (/kids/i.test(normalized)) {
+      return [
+        "Choco Stick Chocolate",
+        "Choco Stick Strawberry",
+        "Wafer Rolls Strawberry",
+        "Patata Salty",
+        "Coco Choco Can",
+        "Kids Fun Box",
+      ];
+    }
+
+    if (/office/i.test(normalized)) {
+      return [
+        "Office Snack Box",
+        "All Time Favorites",
+        "Banana Chips Sea Salt",
+        "Wafer Rolls Hazelnut",
+        "Patata Salty",
+        "ChickPea Puffs",
+      ];
+    }
+
+    if (/movie|gaming|netflix/i.test(normalized)) {
+      return [
+        "Movie Night Nachos Bundle",
+        "Nachos Salsa",
+        "Patata Masala",
+        "Stix Peri Peri",
+        "Banana Chips Sea Salt",
+        "Wafer Rolls Hazelnut",
+      ];
+    }
+
+    return ["All Time Favorites", "Nachos Salsa", "Stix Peri Peri", "Choco Stick Chocolate"];
   }
 
   private async buildPrioritySupportResponse(userMessage: string): Promise<string | null> {
@@ -1958,17 +3538,17 @@ export class SupportAgentService {
       ? this.buildSuggestionStrategy(input)
       : null;
     const suggestions =
-      input.skipSuggestions
-        ? []
-        : baseProducts.length > 0
+      baseProducts.length > 0
         ? baseProducts
-        : suggestionStrategy
-          ? await this.getSuggestedProductCards(
-              suggestionStrategy.query,
-              suggestionStrategy.rankingMessage,
-              suggestionStrategy.mode,
-            )
-          : [];
+        : input.skipSuggestions
+          ? []
+          : suggestionStrategy
+            ? await this.getSuggestedProductCards(
+                suggestionStrategy.query,
+                suggestionStrategy.rankingMessage,
+                suggestionStrategy.mode,
+              )
+            : [];
 
     return JSON.stringify({
       type: input.type,

@@ -234,7 +234,7 @@ export default function PublicChatbot() {
       content: JSON.stringify({
         type: "mixed",
         message:
-          "Hello there! I'm your Snakitos snack assistant.\n\nAsk about snack collections, bundle deals, gifting picks, order tracking, or shipping policies. I can help in English, Urdu, or Roman Urdu.",
+          "Hi! I’m the Snakitos AI Assistant. I can help you track orders, find snack deals, recommend snacks by taste or budget, and answer questions about delivery, payments, and refunds. What are you craving today — spicy, sweet, crunchy, or a mixed snack box?",
       }),
     },
   ]);
