@@ -97,6 +97,7 @@ type SnakitosIntent =
   | "product_recommendation"
   | "spicy_recommendation"
   | "sweet_recommendation"
+  | "mixed_recommendation"
   | "salty_recommendation"
   | "mild_recommendation"
   | "crunchy_recommendation"
@@ -524,6 +525,10 @@ export class SupportAgentService {
       return { intent: "crunchy_recommendation", language, taste: "crunchy" };
     }
 
+    if (/(^mixed$|show me mixed|mixed snack box|mixed snacks|recommend mixed snacks|mixed bundle|mix of both)/i.test(normalized)) {
+      return { intent: "mixed_recommendation", language, taste: "mixed" };
+    }
+
     if (/(kids ke liye|snacks for children|kids snacks|bachon ke liye)/i.test(normalized)) {
       return { intent: "kids_recommendation", language, occasion: "kids" };
     }
@@ -914,8 +919,17 @@ export class SupportAgentService {
             : "For sweet cravings, I’d recommend Choco Stick Chocolate, Choco Stick Strawberry, Coco Choco Can, Wafer Rolls Hazelnut, Wafer Rolls Strawberry, and a Choco Lovers Bundle. Would you like chocolate-only snacks or a sweet + crunchy mix?",
           "sweet",
         );
+      case "mixed_recommendation":
+        return this.buildCuratedRecommendationResponse(
+          userMessage,
+          "mixed snack box mixed bundle snack sampler all time favorites office snack box flavor fiesta ultimate mega snack box",
+          language === "roman_urdu"
+            ? "Mixed snacks ke liye best value picks All Time Favorites, Snack Sampler Deal, Office Snack Box, aur Ultimate Mega Snack Box hain. In mein sweet aur savory dono variety mil jati hai. Kya aap budget-friendly mixed box chahte hain ya family-size bundle?"
+            : "For mixed snacks, I'd start with All Time Favorites, Snack Sampler Deal, Office Snack Box, and Ultimate Mega Snack Box. These give you sweet + savory variety instead of just one flavor. Do you want a budget-friendly mixed box or a family-size bundle?",
+          "mixed snacks",
+        );
       case "salty_recommendation":
-      case "mild_recommendation":
+        case "mild_recommendation":
         return this.buildCuratedRecommendationResponse(
           userMessage,
           "mild salty patata banana chips chickpea puffs stix salty",
