@@ -1,0 +1,271 @@
+{
+    "summary":  {
+                    "total":  30,
+                    "passed":  7,
+                    "failed":  23,
+                    "generalPassed":  5,
+                    "generalFailed":  10,
+                    "productPassed":  2,
+                    "productFailed":  13
+                },
+    "failures":  [
+                     {
+                         "id":  2,
+                         "category":  "general",
+                         "message":  "Are your products halal?",
+                         "expectedIntent":  "general",
+                         "actualIntent":  "product",
+                         "missing":  "Halal; FM Foods",
+                         "reply":  "I couldn\u0027t find exact details, but here\u0027s what I know..."
+                     },
+                     {
+                         "id":  6,
+                         "category":  "general",
+                         "message":  "delivery charges kitne hain",
+                         "expectedIntent":  "general",
+                         "actualIntent":  "general",
+                         "missing":  "charge",
+                         "reply":  "I couldn\u0027t find exact details, but here\u0027s what I know about our shipping policy: Delivery timelines vary based on location but are typically within a few business days. Delays may occur due to external factors such as weather or logistics issues."
+                     },
+                     {
+                         "id":  7,
+                         "category":  "general",
+                         "message":  "COD available?",
+                         "expectedIntent":  "general",
+                         "actualIntent":  "product",
+                         "missing":  "Cash on Delivery; checkout",
+                         "reply":  "I couldn\u0027t find exact details, but here\u0027s what I know..."
+                     },
+                     {
+                         "id":  9,
+                         "category":  "general",
+                         "message":  "coupon code not wrking",
+                         "expectedIntent":  "general",
+                         "actualIntent":  "general",
+                         "missing":  "valid",
+                         "reply":  "I couldn\u0027t find exact details, but here\u0027s what I know: Available discounts and coupon offers can change, so the best place to confirm them is the current product page, cart, or checkout. You can also explore our Mega Discounts and Deals collections for more offers."
+                     },
+                     {
+                         "id":  10,
+                         "category":  "general",
+                         "message":  "Talk to agent",
+                         "expectedIntent":  "general",
+                         "actualIntent":  "general",
+                         "missing":  "support; issue",
+                         "reply":  "I can help with products, orders, or policies."
+                     },
+                     {
+                         "id":  11,
+                         "category":  "general",
+                         "message":  "Do you offer wholesale?",
+                         "expectedIntent":  "general",
+                         "actualIntent":  "general",
+                         "missing":  "quantity; city",
+                         "reply":  "For bulk orders, corporate gifting, or event orders, please contact support so the team can guide you properly."
+                     },
+                     {
+                         "id":  12,
+                         "category":  "general",
+                         "message":  "Need 40 corporate gift boxes",
+                         "expectedIntent":  "general",
+                         "actualIntent":  "product",
+                         "missing":  "quantity; budget",
+                         "reply":  "We have a great selection of nachos that could be perfect for corporate gifts. Here are some options you might consider:"
+                     },
+                     {
+                         "id":  13,
+                         "category":  "general",
+                         "message":  "Are your snacks fresh?",
+                         "expectedIntent":  "general",
+                         "actualIntent":  "product",
+                         "missing":  "cool, dry place; expiry",
+                         "reply":  "I couldn\u0027t find exact details, but here\u0027s what I know: Snakitos offers a variety of snacks, including indulgent treats and savory chips. You can explore our collection to find something that suits your taste."
+                     },
+                     {
+                         "id":  14,
+                         "category":  "general",
+                         "message":  "can i return food items?",
+                         "expectedIntent":  "general",
+                         "actualIntent":  "general",
+                         "missing":  "food items; damaged",
+                         "reply":  "Items are eligible for return if they are unused, in original condition, and within the specified return window. You must initiate a return request through official channels, and refunds are processed after inspection of returned items. For more details, please check our full policy."
+                     },
+                     {
+                         "id":  15,
+                         "category":  "general",
+                         "message":  "payment deducted but order not confirmed",
+                         "expectedIntent":  "general",
+                         "actualIntent":  "general",
+                         "missing":  "screenshot; transaction ID",
+                         "reply":  "Please contact support."
+                     },
+                     {
+                         "id":  16,
+                         "category":  "product",
+                         "message":  "Recommend something",
+                         "expectedIntent":  "product",
+                         "actualIntent":  "product",
+                         "missing":  "spicy; sweet",
+                         "reply":  "Here are some delicious snacks you might enjoy from Snakitos!"
+                     },
+                     {
+                         "id":  17,
+                         "category":  "product",
+                         "message":  "Show me the best snack deals available right now",
+                         "expectedIntent":  "product",
+                         "actualIntent":  "product",
+                         "missing":  "deal; bundle",
+                         "reply":  "Check out these delicious snack options from Snakitos!"
+                     },
+                     {
+                         "id":  18,
+                         "category":  "product",
+                         "message":  "sure",
+                         "expectedIntent":  "product",
+                         "actualIntent":  "general",
+                         "missing":  "deal; bundle",
+                         "reply":  "I can help with products, orders, or policies."
+                     },
+                     {
+                         "id":  19,
+                         "category":  "product",
+                         "message":  "Any spicy snacks?",
+                         "expectedIntent":  "product",
+                         "actualIntent":  "product",
+                         "missing":  "Stix",
+                         "reply":  "Here are some spicy snacks you might enjoy from Snakitos:"
+                     },
+                     {
+                         "id":  20,
+                         "category":  "product",
+                         "message":  "kuch meetha recommend karo",
+                         "expectedIntent":  "product",
+                         "actualIntent":  "product",
+                         "missing":  "Choco; Wafer",
+                         "reply":  "Here are some sweet treats you might enjoy from Snakitos:"
+                     },
+                     {
+                         "id":  21,
+                         "category":  "product",
+                         "message":  "kids ke liye kya acha hai?",
+                         "expectedIntent":  "product",
+                         "actualIntent":  "general",
+                         "missing":  "budget",
+                         "reply":  "Kids ke liye kuch mazedaar snacks chahiye? Choco Stick Chocolate, Coco Choco Can, Wafer Rolls Strawberry, aur Patata Salty bachon ke liye badiya hain. Agar aap ready mix chahte hain, to Kids Fun Box ek zabardast option hai!"
+                     },
+                     {
+                         "id":  22,
+                         "category":  "product",
+                         "message":  "movie night snacks chahiyen",
+                         "expectedIntent":  "product",
+                         "actualIntent":  "product",
+                         "missing":  "Nachos",
+                         "reply":  "For a perfect movie night, try these delicious snacks from Snakitos:"
+                     },
+                     {
+                         "id":  23,
+                         "category":  "product",
+                         "message":  "office ke liye snacks bata do",
+                         "expectedIntent":  "product",
+                         "actualIntent":  "product",
+                         "missing":  "team",
+                         "reply":  "Here are some great snack options for the office from Snakitos:"
+                     },
+                     {
+                         "id":  24,
+                         "category":  "product",
+                         "message":  "show me nachos",
+                         "expectedIntent":  "product",
+                         "actualIntent":  "product",
+                         "missing":  "Nachos; Salsa",
+                         "reply":  "Here are some nacho options you might like:"
+                     },
+                     {
+                         "id":  25,
+                         "category":  "product",
+                         "message":  "show me stix",
+                         "expectedIntent":  "product",
+                         "actualIntent":  "general",
+                         "missing":  "",
+                         "reply":  "Check out our delicious range of Multigrain Stix, perfect for any occasion!"
+                     },
+                     {
+                         "id":  27,
+                         "category":  "product",
+                         "message":  "2000 ke andar kuch acha batao",
+                         "expectedIntent":  "product",
+                         "actualIntent":  "order",
+                         "missing":  "2,000; mixed",
+                         "reply":  "Please provide: * Order Number * Phone Number"
+                     },
+                     {
+                         "id":  28,
+                         "category":  "product",
+                         "message":  "Under Rs. 500 what can I get?",
+                         "expectedIntent":  "product",
+                         "actualIntent":  "general",
+                         "missing":  "single packs",
+                         "reply":  "For a budget under Rs. 500, you can enjoy a variety of snacks. Here are some great options: Choco Stick Chocolate, Patata Salty, Stix Peri Peri, ChickPea Puffs, and Banana Chips Sea Salt. These snacks offer a delightful mix of flavors and textures."
+                     },
+                     {
+                         "id":  30,
+                         "category":  "product",
+                         "message":  "too expensive",
+                         "expectedIntent":  "product",
+                         "actualIntent":  "general",
+                         "missing":  "",
+                         "reply":  "I understand. If you\u0027re looking for better value, I\u0027d suggest choosing a bundle instead of individual items. Bundles usually offer more variety and a better snack experience. Here are some great options for you:"
+                     }
+                 ],
+    "samplePasses":  [
+                         {
+                             "id":  1,
+                             "category":  "general",
+                             "message":  "What do you sell?",
+                             "actualIntent":  "general",
+                             "reply":  "Snakitos offers a wide range of snacks including Stix, Patata, Banana Chips, Choco Sticks, Wafer Rolls, ChickPea Puffs, Nachos, Snaktory packs, and snack bundles. Are you looking for spicy, sweet, kids-friendly, or mixed snacks?"
+                         },
+                         {
+                             "id":  3,
+                             "category":  "general",
+                             "message":  "Do you have ISO?",
+                             "actualIntent":  "general",
+                             "reply":  "Yes, Snakitos is a brand by FM Foods, which lists ISO 22000 among its food safety and quality standards. You can learn more about our certifications on our website."
+                         },
+                         {
+                             "id":  4,
+                             "category":  "general",
+                             "message":  "What is your shipping policy?",
+                             "actualIntent":  "general",
+                             "reply":  "Our shipping policy includes processing orders after confirmation and payment verification. Delivery timelines vary based on location but are typically within a few business days. Shipping costs depend on location, order size, and promotions, and are displayed at checkout. For more details, please visit our official policy page."
+                         },
+                         {
+                             "id":  5,
+                             "category":  "general",
+                             "message":  "show me shipping and refund policy",
+                             "actualIntent":  "general",
+                             "reply":  "Our Shipping Policy states that orders are processed after confirmation and payment verification. Delivery timelines vary based on location but are typically within a few business days. Shipping costs are calculated based on location, order size, and promotions, and are displayed at checkout. For more details, visit our [Shipping Policy](https://snakitos.com/policies/shipping-policy). I couldn\u0027t find exact details on the refund policy, but here\u0027s what I know: Refunds are typically processed after the return is received and inspected. For more information, please visit our general policies page."
+                         },
+                         {
+                             "id":  8,
+                             "category":  "general",
+                             "message":  "Can I pay online?",
+                             "actualIntent":  "general",
+                             "reply":  "Yes, you can pay online. Available payment options will appear at checkout. Please use only the official Snakitos checkout or official support channels."
+                         },
+                         {
+                             "id":  26,
+                             "category":  "product",
+                             "message":  "banana chips dikhao",
+                             "actualIntent":  "product",
+                             "reply":  "Here are some delicious banana chips you might enjoy:"
+                         },
+                         {
+                             "id":  29,
+                             "category":  "product",
+                             "message":  "I want sweet + crunchy mix",
+                             "actualIntent":  "product",
+                             "reply":  "If you\u0027re looking for a sweet and crunchy snack, try our Coco Choco Can! It\u0027s a delicious chocolate-filled biscuit snack that\u0027s sure to satisfy your cravings."
+                         }
+                     ]
+}

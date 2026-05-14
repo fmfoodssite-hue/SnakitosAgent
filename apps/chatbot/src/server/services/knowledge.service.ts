@@ -25,6 +25,27 @@ type LocalGeneralKnowledgeItem = {
 };
 
 type StoreFaqKnowledgeItem = LocalGeneralKnowledgeItem;
+type GeneralKnowledgeCategory =
+  | "brand_about"
+  | "shipping_delivery"
+  | "returns_refunds"
+  | "payments_checkout"
+  | "order_general"
+  | "product_general"
+  | "account_login"
+  | "contact_support"
+  | "discounts_promotions"
+  | "privacy_security"
+  | "technical_website"
+  | "wholesale_corporate"
+  | "food_safety_allergens"
+  | "complaints_escalation"
+  | "international_customs"
+  | "accessibility_language"
+  | "warranty_authenticity"
+  | "loyalty_referral"
+  | "size_fit_care";
+
 type SnakitosGeneralTrainingItem = {
   id: string;
   intent: string;
@@ -249,6 +270,12 @@ export class KnowledgeService {
   private retrieveGeneralKnowledge(query: string): KnowledgeDocument[] {
     const tokens = query.split(/[^a-z0-9]+/).filter((token) => token.length >= 2);
     const docs = generalQueryRagData as LocalGeneralKnowledgeItem[];
+    const targetCategories = this.inferGeneralKnowledgeCategories(query);
+    const queryWithoutExpansions = query.split(/\s+(?:weight|size|grams|certificate|expiry|shelf life|ingredients|spicy|sweet|salty|same day delivery|advance payment|delivery all over pakistan|contact support|whatsapp|refund|return|exchange|kids|school lunch|kids fun box|office|office snack box|movie night|gaming|netflix|movie night nachos bundle|gift|gift box|ultimate mega snack box|bundle|combo|deal|value|under_500|under_1000|under_2000|above_3000|budget)\b/i)[0]?.trim() ?? query;
+    const strongQueryPhrases = queryWithoutExpansions
+      .split(/[?.!,;:]/)
+      .map((part) => part.trim())
+      .filter((part) => part.length >= 6);
 
     return docs
       .map((item) => {
@@ -256,6 +283,8 @@ export class KnowledgeService {
         const loweredName = item.name.toLowerCase();
         const loweredCategory = item.category.toLowerCase();
         const loweredHints = (item.hints ?? []).map((hint) => hint.toLowerCase());
+        const isMixedChunk = loweredCategory === "mixed_general_knowledge";
+        const textLength = loweredText.length;
 
         const keywordMatches = loweredHints.filter((hint) => query.includes(hint)).length;
         const tokenMatches = tokens.filter(
@@ -273,7 +302,47 @@ export class KnowledgeService {
           (/\b(payment|cod|cash on delivery)\b/.test(query) && /payment|cash on delivery/.test(loweredText) ? 8 : 0) +
           (/\b(contact|support|whatsapp)\b/.test(query) && /support|contact/.test(loweredText) ? 8 : 0);
 
-        const score = keywordMatches * 6 + tokenMatches + phraseBoost;
+        const categoryBoost = targetCategories.reduce((boost, category) => {
+          if (
+            loweredCategory === category ||
+            loweredText.includes(`category key: \`${category}\``) ||
+            loweredText.includes(`faq ${category.toUpperCase()}-`)
+          ) {
+            return boost + 18;
+          }
+
+          return boost;
+        }, 0);
+
+        const exactQuestionBoost = strongQueryPhrases.reduce((boost, phrase) => {
+          const loweredPhrase = phrase.toLowerCase();
+          if (loweredText.includes(`for questions like '${loweredPhrase}'`)) {
+            return boost + 14;
+          }
+
+          if (loweredText.includes(loweredPhrase)) {
+            return boost + 6;
+          }
+
+          return boost;
+        }, 0);
+
+        const specificityBoost =
+          targetCategories.length > 0 && !isMixedChunk ? 10 : 0;
+        const mixedChunkPenalty =
+          targetCategories.length > 0 && isMixedChunk ? -8 : 0;
+        const lengthPenalty =
+          isMixedChunk && textLength > 2_500 ? -4 : textLength > 5_500 ? -2 : 0;
+
+        const score =
+          keywordMatches * 6 +
+          tokenMatches +
+          phraseBoost +
+          categoryBoost +
+          exactQuestionBoost +
+          specificityBoost +
+          mixedChunkPenalty +
+          lengthPenalty;
 
         return {
           score,
@@ -292,6 +361,91 @@ export class KnowledgeService {
       .sort((left, right) => right.score - left.score)
       .slice(0, 6)
       .map((item) => item.document);
+  }
+
+  private inferGeneralKnowledgeCategories(query: string): GeneralKnowledgeCategory[] {
+    const categoryMatchers: Array<[GeneralKnowledgeCategory, RegExp]> = [
+      [
+        "brand_about",
+        /\b(brand|about|about us|who are you|what do you sell|real store|trust|physical shop|based|company|pakistani brand)\b/i,
+      ],
+      [
+        "shipping_delivery",
+        /\b(shipping|delivery|courier|dispatch|ship nationwide|deliver to|same day|late delivery|free delivery|city|coverage)\b/i,
+      ],
+      [
+        "returns_refunds",
+        /\b(return|refund|exchange|money back|wrong item|damaged item|replacement|return shipping)\b/i,
+      ],
+      [
+        "payments_checkout",
+        /\b(payment|cod|cash on delivery|bank transfer|card|checkout|invoice|secure payment|wallet|payment deducted)\b/i,
+      ],
+      [
+        "order_general",
+        /\b(place an order|how do i order|order confirmation|change order|cancel order|change address|after i order|need an account to order)\b/i,
+      ],
+      [
+        "product_general",
+        /\b(recommend|best seller|best product|new arrival|fresh|original|discount on products|what should i buy)\b/i,
+      ],
+      [
+        "account_login",
+        /\b(account|login|log in|password|reset password|order history|saved address|change phone number|guest checkout)\b/i,
+      ],
+      [
+        "contact_support",
+        /\b(contact|support|agent|human|whatsapp|call|live chat|support hours|complain)\b/i,
+      ],
+      [
+        "discounts_promotions",
+        /\b(discount|promo|promo code|coupon|offer|sale|free shipping|bundle deal|promotion)\b/i,
+      ],
+      [
+        "privacy_security",
+        /\b(privacy|secure|data safe|otp|password safety|card safety|phishing|banking credentials)\b/i,
+      ],
+      [
+        "technical_website",
+        /\b(website issue|page not loading|checkout bug|cart issue|site broken|search not working|technical issue)\b/i,
+      ],
+      [
+        "wholesale_corporate",
+        /\b(wholesale|bulk|corporate|reseller|quotation|partnership|distributor|100 pieces|office supply)\b/i,
+      ],
+      [
+        "food_safety_allergens",
+        /\b(ingredient|ingredients|allergen|allergy|nuts|gluten|halal|expiry|fresh|store it|storage|safe for kids|pregnant)\b/i,
+      ],
+      [
+        "complaints_escalation",
+        /\b(angry|bad service|fraud|terrible experience|manager|report you|nobody is replying|refund now)\b/i,
+      ],
+      [
+        "international_customs",
+        /\b(international|customs|duties|uAE|usa|outside pakistan|import tax|ship abroad)\b/i,
+      ],
+      [
+        "accessibility_language",
+        /\b(roman urdu|urdu|simple english|step by step|not technical|cannot read|accessibility|language)\b/i,
+      ],
+      [
+        "warranty_authenticity",
+        /\b(warranty|authentic|genuine|defective|original product|quality guaranteed)\b/i,
+      ],
+      [
+        "loyalty_referral",
+        /\b(loyalty|referral|reward points|wallet balance|store credit|points missing)\b/i,
+      ],
+      [
+        "size_fit_care",
+        /\b(size chart|size guide|fit|wash|shrink|material|care instructions|how to use)\b/i,
+      ],
+    ];
+
+    return categoryMatchers
+      .filter(([, matcher]) => matcher.test(query))
+      .map(([category]) => category);
   }
 
   private retrieveStoreFaqKnowledge(query: string): KnowledgeDocument[] {

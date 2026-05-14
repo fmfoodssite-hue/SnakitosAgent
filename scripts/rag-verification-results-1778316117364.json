@@ -1,0 +1,532 @@
+{
+  "endpoint": "http://localhost:3000/api/chat",
+  "summary": {
+    "total": 3000,
+    "pass": 2292,
+    "fail": 708,
+    "byIntent": {
+      "GENERAL": {
+        "total": 2231,
+        "pass": 1968,
+        "fail": 263
+      },
+      "HUMAN_SUPPORT": {
+        "total": 319,
+        "pass": 55,
+        "fail": 264
+      },
+      "PRODUCT": {
+        "total": 250,
+        "pass": 176,
+        "fail": 74
+      },
+      "ORDER": {
+        "total": 200,
+        "pass": 93,
+        "fail": 107
+      }
+    }
+  },
+  "failures": [
+    {
+      "testId": "TC-0493",
+      "query": "I am confused and annoyed. Do I need account to order? Why is this not clear?",
+      "expectedIntent": "HUMAN_SUPPORT",
+      "actualIntent": "GENERAL",
+      "answer": "I don't have a confirmed account requirement in the active store details right now.\n\nIf you want, support can confirm the latest checkout requirement for you.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0506",
+      "query": "can i change address after ordr?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "ORDER",
+      "answer": "I can check your order for you.\n\nPlease type your details in this format:\n\nOrder: #12345\n\nPhone: 03001234567\n\nExample: Order #12345, phone 03001234567",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0520",
+      "query": "can i add item after ordring?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Coco Choco Can - Snakitos - 70g, Multi Grain Stix - Can Tray 5 +1.\n\nCrunchy chocolate-filled biscuit snack.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0548",
+      "query": "can i add item after ordring?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Coco Choco Can - Snakitos - 70g, Multi Grain Stix - Can Tray 5 +1.\n\nCrunchy chocolate-filled biscuit snack.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0601",
+      "query": "How do I compare products?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found Fm Foods Mega Snack Deal.\n\nLarge assorted snack-box deal covering multiple Snakitos products.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0602",
+      "query": "Where can I see product details?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Coco Choco Can - Snakitos - 70g, Multi Grain Stix - Can Tray 5 +1, Nachos Salsa Pack Of 10 - 50g ( +DC ).\n\nCrunchy chocolate-filled biscuit snack.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0604",
+      "query": "quickly batao how do i compare products?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found Fm Foods Mega Snack Deal.\n\nLarge assorted snack-box deal covering multiple Snakitos products.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0608",
+      "query": "Can you recommend something?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Sure. To recommend the best snacks, tell me your taste preference and budget. For example: spicy under 3000, sweet for gifting, or mixed snacks for 4 people.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0609",
+      "query": "Can you recommend something?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Sure. To recommend the best snacks, tell me your taste preference and budget. For example: spicy under 3000, sweet for gifting, or mixed snacks for 4 people.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0606",
+      "query": "I am confused and annoyed. How do I compare products? Why is this not clear?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Fm Foods Mega Snack Deal, Stix Lemon and Chilli - Multigrain - 50g, Snakitos Snaktory.\n\nLarge assorted snack-box deal covering multiple Snakitos products.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0612",
+      "query": "Can you recommend something? plz",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Sure. To recommend the best snacks, tell me your taste preference and budget. For example: spicy under 3000, sweet for gifting, or mixed snacks for 4 people.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0615",
+      "query": "Which product is best for me?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Sure. To recommend the best snacks, tell me your taste preference and budget. For example: spicy under 3000, sweet for gifting, or mixed snacks for 4 people.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0616",
+      "query": "Where can I see product details?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Coco Choco Can - Snakitos - 70g, Multi Grain Stix - Can Tray 5 +1, Nachos Salsa Pack Of 10 - 50g ( +DC ).\n\nCrunchy chocolate-filled biscuit snack.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0613",
+      "query": "I am confused and annoyed. Are your products original? Why is this not clear?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Fm Foods Mega Snack Deal, Stix Lemon and Chilli - Multigrain - 50g, Snakitos Snaktory.\n\nLarge assorted snack-box deal covering multiple Snakitos products.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0614",
+      "query": "Please can you help me with this: Are your products original?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found Fm Foods Mega Snack Deal.\n\nLarge assorted snack-box deal covering multiple Snakitos products.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0618",
+      "query": "mujhe batao how do i compare products?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found Fm Foods Mega Snack Deal.\n\nLarge assorted snack-box deal covering multiple Snakitos products.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0620",
+      "query": "I am confused and annoyed. Which product is best for me? Why is this not clear?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Sure. To recommend the best snacks, tell me your taste preference and budget. For example: spicy under 3000, sweet for gifting, or mixed snacks for 4 people.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0627",
+      "query": "I am confused and annoyed. Can you recommend something? Why is this not clear?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Sure. To recommend the best snacks, tell me your taste preference and budget. For example: spicy under 3000, sweet for gifting, or mixed snacks for 4 people.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0622",
+      "query": "Is this product good quality?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Coco Choco Can - Snakitos - 70g, Banana Chips Sea Salt - 100g, Banana Chips BBQ - 100g.\n\nCrunchy chocolate-filled biscuit snack.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0629",
+      "query": "Can you recommend something?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Sure. To recommend the best snacks, tell me your taste preference and budget. For example: spicy under 3000, sweet for gifting, or mixed snacks for 4 people.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0630",
+      "query": "Are your products original?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Fm Foods Mega Snack Deal looks like a strong match.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0634",
+      "query": "I am confused and annoyed. Are your products original? Why is this not clear?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Fm Foods Mega Snack Deal, Stix Lemon and Chilli - Multigrain - 50g, Snakitos Snaktory.\n\nLarge assorted snack-box deal covering multiple Snakitos products.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0632",
+      "query": "bhai are your products original?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Fm Foods Mega Snack Deal looks like a strong match.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0636",
+      "query": "How do I compare products?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found Fm Foods Mega Snack Deal.\n\nLarge assorted snack-box deal covering multiple Snakitos products.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0635",
+      "query": "Please can you help me with this: How do I compare products?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Fm Foods Mega Snack Deal, Coco Choco Can - Snakitos - 70g, Choco Stick with Chocolate Spread - 35g.\n\nLarge assorted snack-box deal covering multiple Snakitos products.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0644",
+      "query": "Is this product good quality?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Coco Choco Can - Snakitos - 70g, Banana Chips Sea Salt - 100g, Banana Chips BBQ - 100g.\n\nCrunchy chocolate-filled biscuit snack.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0641",
+      "query": "I am confused and annoyed. Where can I see product details? Why is this not clear?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Coco Choco Can - Snakitos - 70g, Stix Lemon and Chilli - Multigrain - 50g, Multi Grain Stix - Can Tray 5 +1.\n\nCrunchy chocolate-filled biscuit snack.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0648",
+      "query": "I am confused and annoyed. Where can I see product details? Why is this not clear?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Coco Choco Can - Snakitos - 70g, Stix Lemon and Chilli - Multigrain - 50g, Multi Grain Stix - Can Tray 5 +1.\n\nCrunchy chocolate-filled biscuit snack.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0649",
+      "query": "Please can you help me with this: How do I compare products?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Fm Foods Mega Snack Deal, Coco Choco Can - Snakitos - 70g, Choco Stick with Chocolate Spread - 35g.\n\nLarge assorted snack-box deal covering multiple Snakitos products.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0651",
+      "query": "Which product is best for me?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Sure. To recommend the best snacks, tell me your taste preference and budget. For example: spicy under 3000, sweet for gifting, or mixed snacks for 4 people.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0653",
+      "query": "sir can you recommend something?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Sure. To recommend the best snacks, tell me your taste preference and budget. For example: spicy under 3000, sweet for gifting, or mixed snacks for 4 people.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0655",
+      "query": "I am confused and annoyed. How do I compare products? Why is this not clear?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Fm Foods Mega Snack Deal, Stix Lemon and Chilli - Multigrain - 50g, Snakitos Snaktory.\n\nLarge assorted snack-box deal covering multiple Snakitos products.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0657",
+      "query": "How do I compare products?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found Fm Foods Mega Snack Deal.\n\nLarge assorted snack-box deal covering multiple Snakitos products.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0658",
+      "query": "Which product is best for me?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Sure. To recommend the best snacks, tell me your taste preference and budget. For example: spicy under 3000, sweet for gifting, or mixed snacks for 4 people.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0660",
+      "query": "quickly batao is this product good quality?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Coco Choco Can - Snakitos - 70g, Banana Chips Sea Salt - 100g, Banana Chips BBQ - 100g.\n\nCrunchy chocolate-filled biscuit snack.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0664",
+      "query": "Where can I see product details?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Coco Choco Can - Snakitos - 70g, Multi Grain Stix - Can Tray 5 +1, Nachos Salsa Pack Of 10 - 50g ( +DC ).\n\nCrunchy chocolate-filled biscuit snack.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0663",
+      "query": "Please can you help me with this: How do I compare products?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Fm Foods Mega Snack Deal, Coco Choco Can - Snakitos - 70g, Choco Stick with Chocolate Spread - 35g.\n\nLarge assorted snack-box deal covering multiple Snakitos products.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0665",
+      "query": "Is this product good quality?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Coco Choco Can - Snakitos - 70g, Banana Chips Sea Salt - 100g, Banana Chips BBQ - 100g.\n\nCrunchy chocolate-filled biscuit snack.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0667",
+      "query": "yar is this product good quality?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Coco Choco Can - Snakitos - 70g, Banana Chips Sea Salt - 100g, Banana Chips BBQ - 100g.\n\nCrunchy chocolate-filled biscuit snack.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0671",
+      "query": "Are your products original?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Fm Foods Mega Snack Deal looks like a strong match.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0674",
+      "query": "yar is this product good quality?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Coco Choco Can - Snakitos - 70g, Banana Chips Sea Salt - 100g, Banana Chips BBQ - 100g.\n\nCrunchy chocolate-filled biscuit snack.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0676",
+      "query": "I am confused and annoyed. What categories do you have? Why is this not clear?",
+      "expectedIntent": "HUMAN_SUPPORT",
+      "actualIntent": "GENERAL",
+      "answer": "Here is what I found for you.\n\nThe bot should provide instant business information without human support where possible.\n\nThe Snakitos AI Bot should act as a sales assistant, customer support agent, product recommendation engine, cart recovery assistant, and customer engagement tool.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0684",
+      "query": "Please can you help me with this: Which product is best for me?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Sure. To recommend the best snacks, tell me your taste preference and budget. For example: spicy under 3000, sweet for gifting, or mixed snacks for 4 people.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0688",
+      "query": "please which product is best for me?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Sure. To recommend the best snacks, tell me your taste preference and budget. For example: spicy under 3000, sweet for gifting, or mixed snacks for 4 people.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0686",
+      "query": "Is this product good quality?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Coco Choco Can - Snakitos - 70g, Banana Chips Sea Salt - 100g, Banana Chips BBQ - 100g.\n\nCrunchy chocolate-filled biscuit snack.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0693",
+      "query": "Which product is best for me?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Sure. To recommend the best snacks, tell me your taste preference and budget. For example: spicy under 3000, sweet for gifting, or mixed snacks for 4 people.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0692",
+      "query": "Is this product good quality?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Coco Choco Can - Snakitos - 70g, Banana Chips Sea Salt - 100g, Banana Chips BBQ - 100g.\n\nCrunchy chocolate-filled biscuit snack.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0691",
+      "query": "Please can you help me with this: Is this product good quality?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Coco Choco Can - Snakitos - 70g, Banana Chips Sea Salt - 100g, Banana Chips BBQ - 100g.\n\nCrunchy chocolate-filled biscuit snack.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0700",
+      "query": "Which product is best for me?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Sure. To recommend the best snacks, tell me your taste preference and budget. For example: spicy under 3000, sweet for gifting, or mixed snacks for 4 people.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0698",
+      "query": "Please can you help me with this: Is this product good quality?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Coco Choco Can - Snakitos - 70g, Banana Chips Sea Salt - 100g, Banana Chips BBQ - 100g.\n\nCrunchy chocolate-filled biscuit snack.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    }
+  ]
+}

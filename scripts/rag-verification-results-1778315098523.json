@@ -1,0 +1,532 @@
+{
+  "endpoint": "http://localhost:3000/api/chat",
+  "summary": {
+    "total": 3000,
+    "pass": 2194,
+    "fail": 806,
+    "byIntent": {
+      "GENERAL": {
+        "total": 2231,
+        "pass": 1843,
+        "fail": 388
+      },
+      "HUMAN_SUPPORT": {
+        "total": 319,
+        "pass": 33,
+        "fail": 286
+      },
+      "PRODUCT": {
+        "total": 250,
+        "pass": 181,
+        "fail": 69
+      },
+      "ORDER": {
+        "total": 200,
+        "pass": 137,
+        "fail": 63
+      }
+    }
+  },
+  "failures": [
+    {
+      "testId": "TC-0004",
+      "query": "please ye store real hai?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Nachos Salsa  - 50g ( +DC ) looks like a strong match. I also added a few close picks below.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0006",
+      "query": "I am confused and annoyed. Is this official website? Why is this not clear?",
+      "expectedIntent": "HUMAN_SUPPORT",
+      "actualIntent": "GENERAL",
+      "answer": "Here is what I found for you.\n\nSome situations should go to human support quickly, including refund disputes, angry customers, missing orders, payment failures, bulk order inquiries, wholesale requests, and technical website issues.\n\nThe bot should reduce customer support tickets related to delivery and order status.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0018",
+      "query": "yar ye store real hai?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Nachos Salsa  - 50g ( +DC ) looks like a strong match. I also added a few close picks below.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0025",
+      "query": "mujhe batao ye store real hai?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Nachos Salsa  - 50g ( +DC ) looks like a strong match. I also added a few close picks below.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0033",
+      "query": "What makes your store different? plz",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Nachos Salsa  - 50g ( +DC ), Nachos Paprika    - 50g ( +DC ), Coco Choco Can - Snakitos - 70g.\n\nNachos Salsa  - 50g ( +DC ) is listed as a Nachos snack on Snakitos.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0040",
+      "query": "What makes your store different? plz",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Nachos Salsa  - 50g ( +DC ), Nachos Paprika    - 50g ( +DC ), Coco Choco Can - Snakitos - 70g.\n\nNachos Salsa  - 50g ( +DC ) is listed as a Nachos snack on Snakitos.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0039",
+      "query": "sir ye store real hai?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Nachos Salsa  - 50g ( +DC ) looks like a strong match. I also added a few close picks below.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0044",
+      "query": "What makes your store different?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Nachos Salsa  - 50g ( +DC ), Nachos Paprika    - 50g ( +DC ), Coco Choco Can - Snakitos - 70g.\n\nNachos Salsa  - 50g ( +DC ) is listed as a Nachos snack on Snakitos.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0055",
+      "query": "I am confused and annoyed. What makes your store different? Why is this not clear?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Stix Lemon and Chilli - Multigrain - 50g, Snakitos Snaktory, FM Foods Snakitos Nachos Salsa & Paprika Pack (10 Packs).\n\nTangy and spicy lemon-chilli multigrain sticks.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0060",
+      "query": "ye store real hai?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Nachos Salsa  - 50g ( +DC ) looks like a strong match. I also added a few close picks below.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0081",
+      "query": "ye store real hai?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Nachos Salsa  - 50g ( +DC ) looks like a strong match. I also added a few close picks below.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0090",
+      "query": "I am confused and annoyed. What makes your store different? Why is this not clear?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Stix Lemon and Chilli - Multigrain - 50g, Snakitos Snaktory, FM Foods Snakitos Nachos Salsa & Paprika Pack (10 Packs).\n\nTangy and spicy lemon-chilli multigrain sticks.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0103",
+      "query": "What makes your store different? plz",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Nachos Salsa  - 50g ( +DC ), Nachos Paprika    - 50g ( +DC ), Coco Choco Can - Snakitos - 70g.\n\nNachos Salsa  - 50g ( +DC ) is listed as a Nachos snack on Snakitos.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0098",
+      "query": "Please can you help me with this: What makes your store different?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Coco Choco Can - Snakitos - 70g, Choco Stick with Chocolate Spread - 35g, Banana Chips Sea Salt - 100g.\n\nCrunchy chocolate-filled biscuit snack.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0113",
+      "query": "What makes your store different?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Nachos Salsa  - 50g ( +DC ), Nachos Paprika    - 50g ( +DC ), Coco Choco Can - Snakitos - 70g.\n\nNachos Salsa  - 50g ( +DC ) is listed as a Nachos snack on Snakitos.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0111",
+      "query": "I am confused and annoyed. Who owns this brand? Why is this not clear?",
+      "expectedIntent": "HUMAN_SUPPORT",
+      "actualIntent": "GENERAL",
+      "answer": "Here is what I found for you.\n\nThe bot should provide instant business information without human support where possible.\n\nSome situations should go to human support quickly, including refund disputes, angry customers, missing orders, payment failures, bulk order inquiries, wholesale requests, and technical website issues.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0122",
+      "query": "Which courier do you use?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "ORDER",
+      "answer": "I can check your order for you.\n\nPlease type your details in this format:\n\nOrder: #12345\n\nPhone: 03001234567\n\nExample: Order #12345, phone 03001234567",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0116",
+      "query": "quickly batao ye store real hai?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Nachos Salsa  - 50g ( +DC ) looks like a strong match. I also added a few close picks below.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0132",
+      "query": "Which courier do you use? plz",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "ORDER",
+      "answer": "I can check your order for you.\n\nPlease type your details in this format:\n\nOrder: #12345\n\nPhone: 03001234567\n\nExample: Order #12345, phone 03001234567",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0135",
+      "query": "How do I track my parcel?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "ORDER",
+      "answer": "I can check your order for you.\n\nPlease type your details in this format:\n\nOrder: #12345\n\nPhone: 03001234567\n\nExample: Order #12345, phone 03001234567",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0140",
+      "query": "I am confused and annoyed. How long does delivery take? Why is this not clear?",
+      "expectedIntent": "HUMAN_SUPPORT",
+      "actualIntent": "GENERAL",
+      "answer": "Here is the quick policy update from Snakitos.\n\nShipping Policy: Delivery timelines vary based on location but are typically within a few business days.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0153",
+      "query": "Which courier do you use? plz",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "ORDER",
+      "answer": "I can check your order for you.\n\nPlease type your details in this format:\n\nOrder: #12345\n\nPhone: 03001234567\n\nExample: Order #12345, phone 03001234567",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0157",
+      "query": "How do I track my parcel?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "ORDER",
+      "answer": "I can check your order for you.\n\nPlease type your details in this format:\n\nOrder: #12345\n\nPhone: 03001234567\n\nExample: Order #12345, phone 03001234567",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0161",
+      "query": "I am confused and annoyed. Do you deliver to Lahore? Why is this not clear?",
+      "expectedIntent": "HUMAN_SUPPORT",
+      "actualIntent": "GENERAL",
+      "answer": "Here is what I found for you.\n\nThe bot should provide instant business information without human support where possible.\n\nThe Snakitos AI Bot should act as a sales assistant, customer support agent, product recommendation engine, cart recovery assistant, and customer engagement tool.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0162",
+      "query": "Please can you help me with this: How do I track my parcel?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "ORDER",
+      "answer": "I can check your order for you.\n\nPlease type your details in this format:\n\nOrder: #12345\n\nPhone: 03001234567\n\nExample: Order #12345, phone 03001234567",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0169",
+      "query": "Please can you help me with this: Which courier do you use?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "ORDER",
+      "answer": "I can check your order for you.\n\nPlease type your details in this format:\n\nOrder: #12345\n\nPhone: 03001234567\n\nExample: Order #12345, phone 03001234567",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0174",
+      "query": "why is my delivry late?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Coco Choco Can - Snakitos - 70g, Wafer Rolls Dark Chocolate - 80g.\n\nCrunchy chocolate-filled biscuit snack.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0185",
+      "query": "Which courier do you use?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "ORDER",
+      "answer": "I can check your order for you.\n\nPlease type your details in this format:\n\nOrder: #12345\n\nPhone: 03001234567\n\nExample: Order #12345, phone 03001234567",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0188",
+      "query": "why is my delivry late?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Coco Choco Can - Snakitos - 70g, Wafer Rolls Dark Chocolate - 80g.\n\nCrunchy chocolate-filled biscuit snack.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0189",
+      "query": "I am confused and annoyed. Which courier do you use? Why is this not clear?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "ORDER",
+      "answer": "I can check your order for you.\n\nPlease type your details in this format:\n\nOrder: #12345\n\nPhone: 03001234567\n\nExample: Order #12345, phone 03001234567",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0195",
+      "query": "How do I track my parcel? plz",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "ORDER",
+      "answer": "I can check your order for you.\n\nPlease type your details in this format:\n\nOrder: #12345\n\nPhone: 03001234567\n\nExample: Order #12345, phone 03001234567",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0196",
+      "query": "I am confused and annoyed. How long does delivery take? Why is this not clear?",
+      "expectedIntent": "HUMAN_SUPPORT",
+      "actualIntent": "GENERAL",
+      "answer": "Here is the quick policy update from Snakitos.\n\nShipping Policy: Delivery timelines vary based on location but are typically within a few business days.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0197",
+      "query": "Please can you help me with this: Which courier do you use?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "ORDER",
+      "answer": "I can check your order for you.\n\nPlease type your details in this format:\n\nOrder: #12345\n\nPhone: 03001234567\n\nExample: Order #12345, phone 03001234567",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0210",
+      "query": "I am confused and annoyed. Can you deliver tomorrow? Why is this not clear?",
+      "expectedIntent": "HUMAN_SUPPORT",
+      "actualIntent": "GENERAL",
+      "answer": "Here is what I found for you.\n\nThe bot should reduce customer support tickets related to delivery and order status.\n\nThe bot should provide instant business information without human support where possible.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0216",
+      "query": "How do I track my parcel? plz",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "ORDER",
+      "answer": "I can check your order for you.\n\nPlease type your details in this format:\n\nOrder: #12345\n\nPhone: 03001234567\n\nExample: Order #12345, phone 03001234567",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0220",
+      "query": "Which courier do you use?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "ORDER",
+      "answer": "I can check your order for you.\n\nPlease type your details in this format:\n\nOrder: #12345\n\nPhone: 03001234567\n\nExample: Order #12345, phone 03001234567",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0233",
+      "query": "Which courier do you use?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "ORDER",
+      "answer": "I can check your order for you.\n\nPlease type your details in this format:\n\nOrder: #12345\n\nPhone: 03001234567\n\nExample: Order #12345, phone 03001234567",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0237",
+      "query": "why is my delivry late?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Coco Choco Can - Snakitos - 70g, Wafer Rolls Dark Chocolate - 80g.\n\nCrunchy chocolate-filled biscuit snack.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0253",
+      "query": "I am confused and annoyed. What is your return policy? Why is this not clear?",
+      "expectedIntent": "HUMAN_SUPPORT",
+      "actualIntent": "GENERAL",
+      "answer": "Here is the quick policy update from Snakitos.\n\nReturn & Refund Policy: Items are eligible for return if they are unused, in original condition, and within the specified return window.\n\nReturn & Refund Policy: Customers must initiate a return request through official channels. Items must be shipped back according to instructions provided.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0249",
+      "query": "I received wrong product?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Nachos Salsa Pack Of 10 - 50g ( +DC ) looks like a strong match. I also added a few close picks below.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0267",
+      "query": "I am confused and annoyed. Who pays return shipping? Why is this not clear?",
+      "expectedIntent": "HUMAN_SUPPORT",
+      "actualIntent": "GENERAL",
+      "answer": "Here is the quick policy update from Snakitos.\n\nShipping Policy: Orders are processed after confirmation and payment verification. Processing time may vary depending on order volume and availability.\n\nShipping Policy: Delivery timelines vary based on location but are typically within a few business days.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0268",
+      "query": "Please can you help me with this: I received wrong product",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Coco Choco Can - Snakitos - 70g, Choco Stick with Chocolate Spread - 35g, Banana Chips Sea Salt - 100g.\n\nCrunchy chocolate-filled biscuit snack.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0276",
+      "query": "I received wrong product",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Nachos Salsa Pack Of 10 - 50g ( +DC ) looks like a strong match. I also added a few close picks below.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0274",
+      "query": "I am confused and annoyed. I received wrong product Why is this not clear?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Stix Lemon and Chilli - Multigrain - 50g, Snakitos Snaktory, FM Foods Snakitos Nachos Salsa & Paprika Pack (10 Packs).\n\nTangy and spicy lemon-chilli multigrain sticks.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0297",
+      "query": "I received wrong product",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Nachos Salsa Pack Of 10 - 50g ( +DC ) looks like a strong match. I also added a few close picks below.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0294",
+      "query": "Do you accept opened items? plz",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Nachos Salsa  - 50g ( +DC ) looks like a strong match. I also added a few close picks below.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0296",
+      "query": "Please can you help me with this: Do you accept opened items?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Coco Choco Can - Snakitos - 70g looks like a strong match. I also added a few close picks below.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0305",
+      "query": "I received wrong product?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "Nachos Salsa Pack Of 10 - 50g ( +DC ) looks like a strong match. I also added a few close picks below.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0309",
+      "query": "I am confused and annoyed. What is your return policy? Why is this not clear?",
+      "expectedIntent": "HUMAN_SUPPORT",
+      "actualIntent": "GENERAL",
+      "answer": "Here is the quick policy update from Snakitos.\n\nReturn & Refund Policy: Items are eligible for return if they are unused, in original condition, and within the specified return window.\n\nReturn & Refund Policy: Customers must initiate a return request through official channels. Items must be shipped back according to instructions provided.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    },
+    {
+      "testId": "TC-0316",
+      "query": "I am confused and annoyed. I received wrong product Why is this not clear?",
+      "expectedIntent": "GENERAL",
+      "actualIntent": "PRODUCT",
+      "answer": "I couldn't find exact details, but here's what I know...\n\nI found these close matches: Stix Lemon and Chilli - Multigrain - 50g, Snakitos Snaktory, FM Foods Snakitos Nachos Salsa & Paprika Pack (10 Packs).\n\nTangy and spicy lemon-chilli multigrain sticks.",
+      "pass": false,
+      "intentPass": false,
+      "forbiddenPass": true
+    }
+  ]
+}
