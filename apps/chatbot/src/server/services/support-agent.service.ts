@@ -16,6 +16,8 @@ import {
   recordOrderVerificationFailure,
 } from "../utils/security.util";
 import {
+  extractOrderReference,
+  extractPhoneNumber,
   extractProductQuery,
   extractSelectionIndex,
   formatWhatsAppFallback,
@@ -463,7 +465,7 @@ export class SupportAgentService {
     classified: ClassifiedIntent,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId"> | null> {
     if (
-      !["damaged_product", "wrong_product", "payment_failed", "support_request"].includes(
+      !["damaged_product", "wrong_product", "payment_failed"].includes(
         state.last_support_issue,
       )
     ) {
@@ -482,7 +484,9 @@ export class SupportAgentService {
       return null;
     }
 
-    const hasOrderReference = Boolean(orderIntentResult.orderId || orderIntentResult.phone);
+    const hasOrderReference = Boolean(
+      extractOrderReference(userMessage) || extractPhoneNumber(userMessage),
+    );
     const hasProofReference = /\b(photo|photos|video|videos|picture|pictures|pic|pics|screenshot|proof)\b/i.test(
       userMessage,
     );
@@ -504,7 +508,7 @@ export class SupportAgentService {
         message,
         userMessage,
         options: [
-          { label: "WhatsApp Support", value: "How can I contact support?" },
+          { label: "WhatsApp Support", value: "whatsapp support number" },
           { label: "Home", value: "home" },
         ],
         skipSuggestions: true,
@@ -1550,10 +1554,10 @@ export class SupportAgentService {
           response: await this.buildResponseWithSuggestions({
             type: "fallback",
             message:
-              "Sure, I can connect you with Snakitos support. Please share your issue briefly so support can guide you faster.",
+              "Sure, you can contact Snakitos support on WhatsApp at +92-345-828-3827. You can also email info@snakitos.com. If you want, share your issue briefly and I'll point you the right way first.",
             userMessage,
             options: [
-              { label: "WhatsApp Support", value: "How can I contact support?" },
+              { label: "WhatsApp Support", value: "whatsapp support number" },
               { label: "Home", value: "home" },
             ],
             skipSuggestions: true,
@@ -1657,10 +1661,11 @@ export class SupportAgentService {
     if (
       classified.intent === "damaged_product" ||
       classified.intent === "wrong_product" ||
-      classified.intent === "payment_failed" ||
-      classified.intent === "support_request"
+      classified.intent === "payment_failed"
     ) {
       next.last_support_issue = classified.intent;
+    } else {
+      next.last_support_issue = "";
     }
 
     return next;
@@ -3116,7 +3121,7 @@ export class SupportAgentService {
     if (/(support hours|contact support|customer support|social media|instagram|facebook|whatsapp|whatsapp number|contact number|support number|support kaise contact karun|support kaise contact karon|support kese contact karun|support kese contact karon)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
-        answer: "You can contact Snakitos support on WhatsApp at +92-345-828-3827.",
+        answer: "You can contact Snakitos support on WhatsApp at +92-345-828-3827. You can also email info@snakitos.com or call +92-345-8283825 / +92-345-8283827.",
         assistLine: "And if you want, I can still help with orders, shipping, refunds, or product picks right here.",
         type: "fallback",
         options: [
