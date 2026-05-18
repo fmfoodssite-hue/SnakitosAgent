@@ -412,6 +412,21 @@ export class SupportAgentService {
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId"> | null> {
     const classified = this.classifySnakitosIntent(userMessage, state);
 
+    const supportIssueFollowUp = await this.handleSupportIssueFollowUp(
+      state,
+      userMessage,
+      orderIntentResult,
+      classified,
+    );
+    if (supportIssueFollowUp) {
+      this.saveConversationState(chatId, userId, {
+        last_intent: classified.intent === "fallback_unknown" ? state.last_intent : classified.intent,
+        last_topic: state.last_support_issue || state.last_topic,
+        pending_action: "",
+      });
+      return supportIssueFollowUp;
+    }
+
     if (classified.intent === "fallback_unknown") {
       return null;
     }
@@ -437,6 +452,108 @@ export class SupportAgentService {
 
     this.saveConversationState(chatId, userId, this.buildStateUpdateFromIntent(classified, response));
     return response;
+  }
+
+  private async handleSupportIssueFollowUp(
+    state: ConversationState,
+    userMessage: string,
+    orderIntentResult: ReturnType<typeof detectIntent>,
+    classified: ClassifiedIntent,
+  ): Promise<Omit<ChatResponsePayload, "chatId" | "userId"> | null> {
+    if (
+      !["damaged_product", "wrong_product", "payment_failed", "support_request"].includes(
+        state.last_support_issue,
+      )
+    ) {
+      return null;
+    }
+
+    if (
+      classified.intent !== "fallback_unknown" &&
+      classified.intent !== "order_tracking" &&
+      classified.intent !== "support_request"
+    ) {
+      return null;
+    }
+
+    if (/\b(track my order|where is my order|order status|tracking number|parcel track|order kab ayega)\b/i.test(userMessage)) {
+      return null;
+    }
+
+    const hasOrderReference = Boolean(orderIntentResult.orderId || orderIntentResult.phone);
+    const hasProofReference = /\b(photo|photos|video|videos|picture|pictures|pic|pics|screenshot|proof)\b/i.test(
+      userMessage,
+    );
+
+    if (!hasOrderReference && !hasProofReference) {
+      return null;
+    }
+
+    const message = this.buildSupportIssueFollowUpMessage(
+      state.last_support_issue,
+      orderIntentResult,
+      hasProofReference,
+    );
+
+    return {
+      intent: "general",
+      response: await this.buildResponseWithSuggestions({
+        type: "fallback",
+        message,
+        userMessage,
+        options: [
+          { label: "WhatsApp Support", value: "How can I contact support?" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      }),
+    };
+  }
+
+  private buildSupportIssueFollowUpMessage(
+    supportIssue: string,
+    orderIntentResult: ReturnType<typeof detectIntent>,
+    hasProofReference: boolean,
+  ): string {
+    const hasOrderReference = Boolean(orderIntentResult.orderId || orderIntentResult.phone);
+
+    if (supportIssue === "payment_failed") {
+      if (hasOrderReference) {
+        return "Thanks. I’ve noted your order details. Please also share your payment screenshot or transaction ID with support so they can verify the failed payment properly.";
+      }
+
+      return "Thanks. Please also share your order number or checkout phone number, along with any payment screenshot or transaction ID, so support can verify the issue properly.";
+    }
+
+    if (supportIssue === "wrong_product") {
+      if (hasOrderReference && hasProofReference) {
+        return "Thanks. I’ve noted your order details. Please send the photo of the product received and the packaging to support so they can review the replacement or correction quickly.";
+      }
+
+      if (hasOrderReference) {
+        return "Thanks. I’ve noted your order details. Please also share a clear photo of the product received and the packaging so support can review the issue quickly.";
+      }
+
+      return "Thanks. Please also share your order number or checkout phone number, along with a clear photo of the product received and the packaging, so support can review the issue quickly.";
+    }
+
+    if (supportIssue === "damaged_product") {
+      if (hasOrderReference && hasProofReference) {
+        return "Thanks. I’ve noted your order details. Please send the photos or videos of the damaged items and packaging to support so they can review your claim quickly.";
+      }
+
+      if (hasOrderReference) {
+        return "Thanks. I’ve noted your order details. Please also share clear photos or videos of the damaged items and packaging so support can review your claim quickly.";
+      }
+
+      return "Thanks. Please also share your order number or checkout phone number, along with clear photos or videos of the damaged items and packaging, so support can review your claim quickly.";
+    }
+
+    if (hasOrderReference) {
+      return "Thanks. I’ve noted your details. Please share the remaining issue details with support so they can help you faster.";
+    }
+
+    return "Thanks. Please share a little more detail and contact support so they can guide you properly.";
   }
 
   private classifySnakitosIntent(
@@ -1362,7 +1479,6 @@ export class SupportAgentService {
             userMessage,
             options: [
               { label: "WhatsApp Support", value: "How can I contact support?" },
-              { label: "Track Order", value: "track my order" },
               { label: "Home", value: "home" },
             ],
             skipSuggestions: true,
@@ -1657,8 +1773,7 @@ export class SupportAgentService {
         message,
         userMessage,
         options: [
-          { label: "Talk to Support", value: "talk to support" },
-          { label: "Track Order", value: "track my order" },
+          { label: "WhatsApp Support", value: "How can I contact support?" },
           { label: "Home", value: "home" },
         ],
         skipSuggestions: true,
@@ -1677,8 +1792,7 @@ export class SupportAgentService {
         message,
         userMessage,
         options: [
-          { label: "Talk to Support", value: "talk to support" },
-          { label: "Track Order", value: "track my order" },
+          { label: "WhatsApp Support", value: "How can I contact support?" },
           { label: "Home", value: "home" },
         ],
         skipSuggestions: true,
