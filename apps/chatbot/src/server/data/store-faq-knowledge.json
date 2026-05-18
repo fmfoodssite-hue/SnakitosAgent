@@ -12,27 +12,27 @@
   {
     "id": "store-support-contact",
     "name": "Support Contact",
-    "text": "Customers can reach Snakitos support on WhatsApp at +92-345-828-3827 for order help, delivery questions, refunds, complaints, or certificate requests.",
-    "link": "https://snakitos.com/",
+    "text": "Customers can contact Snakitos at info@snakitos.com. Public contact numbers shown on the website include +92-345-8283825 and +92-345-8283827. The listed address is A-50, S.I.T.E., Karachi, Pakistan.",
+    "link": "https://snakitos.com/pages/contact",
     "type": "knowledge",
     "category": "support",
     "source": "store_faq",
-    "hints": ["contact support", "support number", "whatsapp number", "contact number", "support kaise", "support kese", "whatsapp"]
+    "hints": ["contact support", "support number", "whatsapp number", "contact number", "support kaise", "support kese", "whatsapp", "info@snakitos.com", "phone number", "number", "address"]
   },
   {
     "id": "store-delivery-pakistan",
     "name": "Pakistan Delivery",
-    "text": "Snakitos delivers across Pakistan. Delivery timing can vary by city, area coverage, courier handling, weather, public holidays, and order volume.",
+    "text": "Snakitos shipping policy says delivery usually takes 2-5 business days after order fulfillment, depending on the destination city.",
     "link": "https://snakitos.com/policies/shipping-policy",
     "type": "policy",
     "category": "delivery",
     "source": "store_faq",
-    "hints": ["deliver all over pakistan", "pakistan delivery", "delivery all over pakistan", "poore pakistan", "saray pakistan", "all over pakistan"]
+    "hints": ["deliver all over pakistan", "pakistan delivery", "delivery all over pakistan", "poore pakistan", "saray pakistan", "all over pakistan", "delivery", "shipping"]
   },
   {
     "id": "store-delivery-same-day-karachi",
     "name": "Same Day Delivery in Karachi",
-    "text": "Same-day delivery is possible in Karachi with advance payment. Final timing can still depend on confirmation time and delivery area coverage.",
+    "text": "The public shipping policy does not confirm same-day delivery. Customers should check checkout or contact Snakitos support for the latest delivery options.",
     "link": "https://snakitos.com/policies/shipping-policy",
     "type": "policy",
     "category": "delivery",
@@ -42,17 +42,17 @@
   {
     "id": "store-delivery-timeline",
     "name": "Delivery Timeline",
-    "text": "Orders are usually processed after confirmation and payment verification. Delivery timelines vary by location, but customers can generally expect delivery within a few business days unless there is a delay.",
+    "text": "Orders are processed within 1-2 business days after payment confirmation. Delivery usually takes 2-5 business days from the date of order fulfillment, depending on the destination city.",
     "link": "https://snakitos.com/policies/shipping-policy",
     "type": "policy",
     "category": "delivery",
     "source": "store_faq",
-    "hints": ["delivery time", "delivery timeline", "how long does delivery take", "kitne din", "delivery kab tak", "shipping time"]
+    "hints": ["delivery time", "delivery timeline", "how long does delivery take", "kitne din", "delivery kab tak", "shipping time", "1-2 business days", "2-5 business days"]
   },
   {
     "id": "store-cash-on-delivery",
     "name": "Cash on Delivery",
-    "text": "Cash on Delivery is available across Pakistan. If a customer wants faster clarification, the bot can also guide them to delivery policy or support.",
+    "text": "The public shipping and refund policies do not clearly confirm Cash on Delivery availability. Customers should check at checkout or contact Snakitos support for confirmation.",
     "link": "https://snakitos.com/policies/shipping-policy",
     "type": "policy",
     "category": "payment",
@@ -62,12 +62,12 @@
   {
     "id": "store-online-payment",
     "name": "Online Payment and Security",
-    "text": "Online payments can be discussed confidently and in a trust-building way. The bot should reassure customers that online payment questions are supported and that payment methods can be guided clearly.",
+    "text": "The public policy pages do not clearly list the exact payment methods. Customers should check checkout for available payment options or contact Snakitos support for confirmation.",
     "link": "https://snakitos.com/policies/",
     "type": "policy",
     "category": "payment",
     "source": "store_faq",
-    "hints": ["pay online", "online payment", "is payment secure", "secure payment", "can i pay online", "online payment secure"]
+    "hints": ["pay online", "online payment", "is payment secure", "secure payment", "can i pay online", "online payment secure", "payment", "payment methods"]
   },
   {
     "id": "store-halal-overview",
@@ -82,7 +82,7 @@
   {
     "id": "store-halal-certificate",
     "name": "Halal Certificate",
-    "text": "Customers asking about certification should be told that products are approved by Pakistan Halal Authority (PHA) and Sindh, and that support can share the halal certificate on request.",
+    "text": "Customers asking about certification should be told that current store knowledge treats the products as halal and that support can help with halal certificate requests for the latest confirmation.",
     "link": "https://snakitos.com/",
     "type": "knowledge",
     "category": "halal",
@@ -102,12 +102,22 @@
   {
     "id": "store-ingredients-overview",
     "name": "Storewide Ingredients Guidance",
-    "text": "Ingredients vary by snack, but common snack bases include corn, potato, banana, chickpea, multigrain blends, wafer shells, and chocolate fillings with seasoning or flavoring. The bot should ask for the product name when the customer needs exact ingredients.",
+    "text": "Ingredients vary by snack, but common snack bases include corn, potato, banana, chickpea, multigrain blends, wafer shells, and chocolate fillings with seasoning or flavoring. The bot should ask for the product name when the customer needs exact ingredients and should direct customers to the product page or packaging for the exact ingredient list.",
     "link": "https://snakitos.com/collections/all",
     "type": "knowledge",
     "category": "product-facts",
     "source": "store_faq",
     "hints": ["ingredients", "ingredients kya hain", "made of", "made from", "all ingredients", "what are ingredients"]
+  },
+  {
+    "id": "store-nutrition-health-guidance",
+    "name": "Nutrition and Health Guidance",
+    "text": "The current store knowledge does not confirm exact nutrition facts, calories, protein, fat, sugar, or medical health claims for all products. For nutrition-sensitive questions, the bot should avoid guessing and ask the customer to check the product page, packaging, or support for exact details.",
+    "link": "https://snakitos.com/collections/all",
+    "type": "knowledge",
+    "category": "product-facts",
+    "source": "store_faq",
+    "hints": ["nutrition", "calories", "protein", "fat", "sugar", "healthy", "health", "gluten", "allergen"]
   },
   {
     "id": "store-weight-overview",
@@ -132,7 +142,7 @@
   {
     "id": "store-order-tracking",
     "name": "Order Tracking Guidance",
-    "text": "For order tracking, the bot should guide the customer to share order number and phone number. For general parcel tracking questions, the bot should explain that tracking details are usually shared after confirmation or dispatch if available.",
+    "text": "Once an order has been shipped, Snakitos says the customer will receive a tracking number by email. If the customer wants order-specific help, ask for the order number and registered phone or email.",
     "link": "https://snakitos.com/policies/shipping-policy",
     "type": "policy",
     "category": "order-support",
@@ -142,7 +152,7 @@
   {
     "id": "store-address-cancel-changes",
     "name": "Address Changes and Cancellation",
-    "text": "Address changes and order cancellation usually depend on whether the order has already been processed or dispatched. Customers should contact support quickly with their order details for the best chance of changes.",
+    "text": "The public policy pages do not confirm detailed cancellation rules. For address changes or cancellation requests, customers should contact Snakitos support quickly with their order details.",
     "link": "https://snakitos.com/policies/shipping-policy",
     "type": "policy",
     "category": "order-support",
@@ -152,12 +162,12 @@
   {
     "id": "store-refund-return",
     "name": "Refund and Return Guidance",
-    "text": "Return and refund questions should be answered clearly and calmly. Customers should be asked to contact support with order number, item details, and the issue. If eligible under the return policy, the team can guide the next steps.",
+    "text": "Eligible returns are allowed within 14 calendar days from receiving the item. The item must be unused and in the original packaging. Food products are non-refundable unless they are defective or damaged on arrival. Exchanges are only for defective or damaged items, and approved refunds go back to the original payment method.",
     "link": "https://snakitos.com/policies/refund-policy",
     "type": "policy",
     "category": "refund-support",
     "source": "store_faq",
-    "hints": ["refund", "return", "exchange", "return policy", "refund policy", "return procedure"]
+    "hints": ["refund", "return", "exchange", "return policy", "refund policy", "return procedure", "14 days", "damaged", "defective", "original packaging"]
   },
   {
     "id": "store-wholesale-bulk",
@@ -172,11 +182,11 @@
   {
     "id": "store-physical-location",
     "name": "Physical Store and Location",
-    "text": "If customers ask about physical store or exact location, the bot should answer honestly based on available store information and offer support contact if they need direct confirmation.",
-    "link": "https://snakitos.com/",
+    "text": "The public contact page lists Snakitos / FM Foods at A-50, S.I.T.E., Karachi, Pakistan.",
+    "link": "https://snakitos.com/pages/contact",
     "type": "knowledge",
     "category": "store-faq",
     "source": "store_faq",
-    "hints": ["physical store", "physical shop", "location", "where are you located", "store address"]
+    "hints": ["physical store", "physical shop", "location", "where are you located", "store address", "address", "karachi", "site"]
   }
 ]

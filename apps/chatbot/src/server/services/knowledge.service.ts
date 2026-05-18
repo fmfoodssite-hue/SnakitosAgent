@@ -25,6 +25,23 @@ type LocalGeneralKnowledgeItem = {
 };
 
 type StoreFaqKnowledgeItem = LocalGeneralKnowledgeItem;
+type SearchCollection = "orders_collection" | "products_collection" | "store_faq_collection";
+type RoutedIntent =
+  | "order_status"
+  | "product_query"
+  | "store_policy"
+  | "recommendation"
+  | "unknown";
+type RoutedLanguage = "english" | "roman_urdu" | "urdu" | "mixed";
+type QueryRoute = {
+  originalQuery: string;
+  language: RoutedLanguage;
+  normalizedQuery: string;
+  intent: RoutedIntent;
+  collectionToSearch: SearchCollection;
+  searchQueries: string[];
+  requiredAction: "retrieve" | "ask_order_number" | "ask_clarification";
+};
 type GeneralKnowledgeCategory =
   | "brand_about"
   | "shipping_delivery"
@@ -102,25 +119,26 @@ export class KnowledgeService {
   >();
 
   async retrieve(query: string): Promise<KnowledgeDocument[]> {
-    const normalizedQuery = this.normalizeQueryForRetrieval(query);
-    if (!normalizedQuery) {
+    const route = this.buildQueryRoute(query);
+    if (!route.normalizedQuery) {
       return [];
     }
 
-    const cached = this.cache.get(normalizedQuery);
+    const cacheKey = [route.intent, route.collectionToSearch, ...route.searchQueries].join(" || ");
+    const cached = this.cache.get(cacheKey);
     if (cached && cached.expiresAt > Date.now()) {
       return cached.value;
     }
 
-    const localResults = this.retrieveLocalKnowledge(normalizedQuery);
+    const localResults = this.retrieveLocalKnowledge(route);
 
     if (!config.openai.apiKey || !config.pinecone.apiKey || !config.pinecone.indexName) {
-      this.setCache(normalizedQuery, localResults);
+      this.setCache(cacheKey, localResults);
       return localResults;
     }
 
     try {
-      const results = await this.retrieveWithTimeout(normalizedQuery);
+      const results = await this.retrieveWithTimeout(route);
 
       const mapped = results.map((item) => ({
         id: item.id,
@@ -132,32 +150,45 @@ export class KnowledgeService {
         source: "pinecone",
       }));
 
-      const merged = this.mergeKnowledge(localResults, mapped);
-      this.setCache(normalizedQuery, merged);
+      const merged = this.rerankKnowledge(route, this.mergeKnowledge(localResults, mapped));
+      this.setCache(cacheKey, merged);
       return merged;
     } catch {
-      this.setCache(normalizedQuery, localResults);
+      this.setCache(cacheKey, localResults);
       return localResults;
     }
   }
 
-  private async retrieveWithTimeout(query: string) {
-    return await Promise.race([
-      retrieveKnowledge({
-        query,
-        topK: 5,
-        runtimeConfig: {
-          openAiApiKey: config.openai.apiKey,
-          pineconeApiKey: config.pinecone.apiKey,
-          pineconeIndexName: config.pinecone.indexName,
-          pineconeNamespace: config.pinecone.namespace,
-          storefrontDomain: config.shopify.storefrontDomain,
-        },
-      }),
-      new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error("Knowledge retrieval timed out.")), RETRIEVAL_TIMEOUT_MS);
-      }),
-    ]);
+  private async retrieveWithTimeout(route: QueryRoute) {
+    const topK = route.collectionToSearch === "store_faq_collection" ? 8 : 5;
+    const tasks = route.searchQueries.map((searchQuery) =>
+      Promise.race([
+        retrieveKnowledge({
+          query: searchQuery,
+          topK,
+          runtimeConfig: {
+            openAiApiKey: config.openai.apiKey,
+            pineconeApiKey: config.pinecone.apiKey,
+            pineconeIndexName: config.pinecone.indexName,
+            pineconeNamespace: config.pinecone.namespace,
+            storefrontDomain: config.shopify.storefrontDomain,
+          },
+        }),
+        new Promise<never>((_, reject) => {
+          setTimeout(() => reject(new Error("Knowledge retrieval timed out.")), RETRIEVAL_TIMEOUT_MS);
+        }),
+      ]),
+    );
+
+    const settled = await Promise.allSettled(tasks);
+    const successful = settled
+      .filter(
+        (item): item is PromiseFulfilledResult<Awaited<ReturnType<typeof retrieveKnowledge>>> =>
+          item.status === "fulfilled",
+      )
+      .flatMap((item) => item.value);
+
+    return successful;
   }
 
   private setCache(query: string, value: KnowledgeDocument[]): void {
@@ -174,63 +205,469 @@ export class KnowledgeService {
     });
   }
 
-  private normalizeQueryForRetrieval(query: string): string {
-    const normalized = query.trim().toLowerCase();
-    const expansions: string[] = [];
+  private retrieveLocalKnowledge(route: QueryRoute): KnowledgeDocument[] {
+    const retrievalQuery = route.searchQueries.join(" ");
+    const capabilityResults = this.retrieveCapabilityKnowledge(retrievalQuery);
+    const generalResults = this.retrieveGeneralKnowledge(retrievalQuery);
+    const storeFaqResults = this.retrieveStoreFaqKnowledge(retrievalQuery);
+    const snakitosGeneralTrainingResults = this.retrieveSnakitosGeneralTraining(retrievalQuery);
+    const snakitosFaqResults = this.retrieveSnakitosFaqKnowledge(retrievalQuery);
+    const snakitosRecommendationResults = this.retrieveSnakitosRecommendationKnowledge(retrievalQuery);
+    const snakitosProductRecordResults = this.retrieveSnakitosProductRecordKnowledge(retrievalQuery);
 
-    const synonymMap: Array<[RegExp, string[]]> = [
-      [/\b(wazan|kitna gram|kitne gram)\b/i, ["weight", "size", "grams"]],
-      [/\b(halaal|halal hain|halal hai)\b/i, ["halal", "certificate"]],
-      [/\b(expiry kitni hai|kitni expiry)\b/i, ["expiry", "shelf life"]],
-      [/\b(ingredients kya hain)\b/i, ["ingredients"]],
-      [/\b(teekha|spicy chahiye)\b/i, ["spicy"]],
-      [/\b(meetha|sweet chahiye)\b/i, ["sweet"]],
-      [/\b(namkeen)\b/i, ["salty"]],
-      [/\b(same day|advance pe|advance payment)\b/i, ["same day delivery", "advance payment"]],
-      [/\b(pakistan mein delivery|pakistan me delivery|poore pakistan|saray pakistan)\b/i, ["delivery all over pakistan"]],
-      [/\b(contact number|support number|whatsapp number)\b/i, ["contact support", "whatsapp"]],
-      [/\b(refund|return|exchange)\b/i, ["refund", "return", "exchange"]],
-      [/\b(kids|bachon|bache|school lunch)\b/i, ["kids", "school lunch", "kids fun box"]],
-      [/\b(office|work|team)\b/i, ["office", "office snack box"]],
-      [/\b(movie night|netflix|gaming|party snacks)\b/i, ["movie night", "gaming", "netflix", "movie night nachos bundle"]],
-      [/\b(gift|gifting|corporate gifting)\b/i, ["gift", "gift box", "ultimate mega snack box"]],
-      [/\b(bundle|combo|box|deal)\b/i, ["bundle", "combo", "deal", "value"]],
-      [/\b(under 500|500 ke andar|rs\.?\s*500)\b/i, ["under_500", "budget"]],
-      [/\b(under 1000|1000 ke andar|rs\.?\s*1000)\b/i, ["under_1000", "budget"]],
-      [/\b(under 2000|2000 ke andar|rs\.?\s*2000)\b/i, ["under_2000", "budget"]],
-      [/\b(above 3000|over 3000|rs\.?\s*3000)\b/i, ["above_3000", "budget"]],
-    ];
+    const merged =
+      route.collectionToSearch === "store_faq_collection"
+        ? this.mergeKnowledge(
+            this.mergeKnowledge(storeFaqResults, generalResults),
+            this.mergeKnowledge(capabilityResults, snakitosGeneralTrainingResults),
+          )
+        : route.collectionToSearch === "products_collection"
+          ? this.mergeKnowledge(
+              this.mergeKnowledge(
+                this.mergeKnowledge(snakitosFaqResults, snakitosRecommendationResults),
+                snakitosProductRecordResults,
+              ),
+              capabilityResults,
+            )
+          : this.mergeKnowledge(this.mergeKnowledge(storeFaqResults, generalResults), capabilityResults);
 
-    for (const [pattern, values] of synonymMap) {
-      if (pattern.test(normalized)) {
-        expansions.push(...values);
-      }
-    }
-
-    return [normalized, ...expansions].join(" ").trim();
+    return this.rerankKnowledge(route, merged);
   }
 
-  private retrieveLocalKnowledge(query: string): KnowledgeDocument[] {
-    const capabilityResults = this.retrieveCapabilityKnowledge(query);
-    const generalResults = this.retrieveGeneralKnowledge(query);
-    const storeFaqResults = this.retrieveStoreFaqKnowledge(query);
-    const snakitosGeneralTrainingResults = this.retrieveSnakitosGeneralTraining(query);
-    const snakitosFaqResults = this.retrieveSnakitosFaqKnowledge(query);
-    const snakitosRecommendationResults = this.retrieveSnakitosRecommendationKnowledge(query);
-    const snakitosProductRecordResults = this.retrieveSnakitosProductRecordKnowledge(query);
-    return this.mergeKnowledge(
-      this.mergeKnowledge(
-        this.mergeKnowledge(
-          this.mergeKnowledge(
-            this.mergeKnowledge(snakitosFaqResults, snakitosRecommendationResults),
-            snakitosProductRecordResults,
-          ),
-          snakitosGeneralTrainingResults,
-        ),
-        this.mergeKnowledge(this.mergeKnowledge(storeFaqResults, capabilityResults), generalResults),
-      ),
-      [],
-    );
+  private buildQueryRoute(query: string): QueryRoute {
+    const originalQuery = query.trim();
+    const normalized = originalQuery.toLowerCase().replace(/\s+/g, " ").trim();
+    const language = this.detectQueryLanguage(originalQuery);
+    const orderIdentifierPattern =
+      /(#\s*[a-z0-9-]{3,}|\b\d{4,}\b|\b[\w.+-]+@[\w.-]+\.[a-z]{2,}\b|(?:\+?\d[\d\s\-()]{8,}\d))/i;
+    const keywordRouteMatchers: Array<{
+      matcher: RegExp;
+      normalizedQuery: string;
+      intent: RoutedIntent;
+      collectionToSearch: SearchCollection;
+      categoryQuery: string;
+      keywords: string;
+      romanUrdu: string;
+    }> = [
+      {
+        matcher: /^(delivery|shipping)$/i,
+        normalizedQuery: "What is Snakitos delivery time and shipping policy?",
+        intent: "store_policy",
+        collectionToSearch: "store_faq_collection",
+        categoryQuery: "category: shipping policy",
+        keywords: "shipping delivery courier tracking order fulfillment charges",
+        romanUrdu: "order kab ayega delivery kitne din parcel kab milega",
+      },
+      {
+        matcher: /^refund$/i,
+        normalizedQuery: "What is Snakitos refund policy?",
+        intent: "store_policy",
+        collectionToSearch: "store_faq_collection",
+        categoryQuery: "category: return refund policy",
+        keywords: "return refund damaged defective non-refundable food product",
+        romanUrdu: "paise wapis return kharab product",
+      },
+      {
+        matcher: /^return$/i,
+        normalizedQuery: "Can I return my Snakitos order?",
+        intent: "store_policy",
+        collectionToSearch: "store_faq_collection",
+        categoryQuery: "category: return refund policy",
+        keywords: "return refund unused original packaging 14 days",
+        romanUrdu: "wapis karna hai return policy",
+      },
+      {
+        matcher: /^(number|contact)$/i,
+        normalizedQuery: "How can I contact Snakitos?",
+        intent: "store_policy",
+        collectionToSearch: "store_faq_collection",
+        categoryQuery: "category: contact",
+        keywords: "phone contact support helpline mobile email whatsapp address",
+        romanUrdu: "number do contact kaise karun",
+      },
+      {
+        matcher: /^address$/i,
+        normalizedQuery: "Where is Snakitos located?",
+        intent: "store_policy",
+        collectionToSearch: "store_faq_collection",
+        categoryQuery: "category: contact",
+        keywords: "address location physical store karachi site fm foods",
+        romanUrdu: "address kya hai",
+      },
+      {
+        matcher: /^(track|tracking)$/i,
+        normalizedQuery: "How can I track my order?",
+        intent: "order_status",
+        collectionToSearch: "orders_collection",
+        categoryQuery: "category: order tracking",
+        keywords: "tracking order status parcel dispatch email tracking number",
+        romanUrdu: "parcel track order kab ayega",
+      },
+      {
+        matcher: /^order$/i,
+        normalizedQuery: "The customer may want order status. Ask for order number or registered phone/email.",
+        intent: "order_status",
+        collectionToSearch: "orders_collection",
+        categoryQuery: "category: order tracking",
+        keywords: "order status order number phone email",
+        romanUrdu: "order kab ayega",
+      },
+      {
+        matcher: /^(complaint|damaged|exchange|cancel|cod|payment)$/i,
+        normalizedQuery:
+          normalized === "damaged"
+            ? "What should I do if my product arrived damaged?"
+            : normalized === "exchange"
+              ? "Can I exchange a damaged or defective item?"
+              : normalized === "cancel"
+                ? "Can I cancel my order?"
+                : normalized === "cod"
+                  ? "Is cash on delivery available?"
+                  : normalized === "payment"
+                    ? "What payment methods are available?"
+                    : "How can I submit a complaint to Snakitos?",
+        intent: "store_policy",
+        collectionToSearch: "store_faq_collection",
+        categoryQuery:
+          normalized === "damaged"
+            ? "category: damaged item support"
+            : normalized === "exchange" || normalized === "cancel"
+              ? "category: return refund policy"
+              : normalized === "cod" || normalized === "payment"
+                ? "category: payment policy"
+                : "category: complaint support",
+        keywords:
+          normalized === "damaged"
+            ? "damaged defective issue proof purchase exchange"
+            : normalized === "exchange"
+              ? "exchange defective damaged same product"
+              : normalized === "cancel"
+                ? "cancel order address changes support"
+                : normalized === "cod"
+                  ? "cash on delivery cod payment checkout"
+                  : normalized === "payment"
+                    ? "payment method checkout online payment secure"
+                    : "complaint contact support issue order details",
+        romanUrdu:
+          normalized === "damaged"
+            ? "kharab product defective item"
+            : normalized === "exchange"
+              ? "replace karna hai damaged product"
+              : normalized === "cancel"
+                ? "order cancel karna hai"
+                : normalized === "cod"
+                  ? "cod hai cash on delivery"
+                  : normalized === "payment"
+                    ? "payment kaise karni hai"
+                    : "complain kaise karni",
+      },
+      {
+        matcher: /^(banana|chips|stix|wafer|choco|bundle|deal|gift)$/i,
+        normalizedQuery:
+          normalized === "banana"
+            ? "Show Snakitos banana chips products."
+            : normalized === "chips"
+              ? "Show chips or snack products."
+              : normalized === "stix"
+                ? "Show Snakitos Stix products."
+                : normalized === "wafer"
+                  ? "Show Snakitos wafer products."
+                  : normalized === "choco"
+                    ? "Show Snakitos chocolate or choco products."
+                    : normalized === "gift"
+                      ? "Show snack gift or bundle options."
+                      : "Show Snakitos bundles or deals.",
+        intent: normalized === "gift" ? "recommendation" : "product_query",
+        collectionToSearch: "products_collection",
+        categoryQuery:
+          normalized === "banana"
+            ? "category: banana chips"
+            : normalized === "stix"
+              ? "category: multi grain stix"
+              : normalized === "wafer"
+                ? "category: sweet tooth wafers"
+                : normalized === "choco"
+                  ? "category: choco products"
+                  : normalized === "gift"
+                    ? "category: gift bundles"
+                    : "category: deals",
+        keywords:
+          normalized === "banana"
+            ? "banana chips bbq sea salt achari cheese snack"
+            : normalized === "chips"
+              ? "banana chips potato slims multi grain stix chickpea puffs"
+              : normalized === "stix"
+                ? "stix multi grain hot spicy lemon chilli peri peri salty"
+                : normalized === "wafer"
+                  ? "wafer rolls hazelnut strawberry dark chocolate cappuccino"
+                  : normalized === "choco"
+                    ? "choco stick coco choco chocolate spread sweet tooth"
+                    : normalized === "gift"
+                      ? "gift bundle mixed snack box party office family"
+                      : "bundle deal snack sampler all time favorites flavor fiesta",
+        romanUrdu:
+          normalized === "banana"
+            ? "banana chips flavour price available"
+            : normalized === "chips"
+              ? "chips dikhao snacks batao"
+              : normalized === "stix"
+                ? "stix dikhao spicy ya salty"
+                : normalized === "wafer"
+                  ? "wafer rolls dikhao"
+                  : normalized === "choco"
+                    ? "choco snacks dikhao"
+                    : normalized === "gift"
+                      ? "gift ke liye snacks batao"
+                      : "bundle deal dikhao",
+      },
+    ];
+
+    const matchedRoute = keywordRouteMatchers.find(({ matcher }) => matcher.test(normalized));
+    if (matchedRoute) {
+      return {
+        originalQuery,
+        language,
+        normalizedQuery: matchedRoute.normalizedQuery,
+        intent: matchedRoute.intent,
+        collectionToSearch: matchedRoute.collectionToSearch,
+        searchQueries: [
+          normalized,
+          matchedRoute.normalizedQuery,
+          matchedRoute.keywords,
+          matchedRoute.romanUrdu,
+          matchedRoute.categoryQuery,
+        ],
+        requiredAction:
+          matchedRoute.intent === "order_status" && !orderIdentifierPattern.test(originalQuery)
+            ? "ask_order_number"
+            : "retrieve",
+      };
+    }
+
+    const intent = this.inferRoutedIntent(normalized);
+    const collectionToSearch =
+      intent === "order_status"
+        ? "orders_collection"
+        : intent === "store_policy"
+          ? "store_faq_collection"
+          : "products_collection";
+    const normalizedQuery = this.expandNormalizedQuery(normalized, intent);
+    const keywordQuery = this.buildKeywordQuery(normalized, intent);
+    const romanUrduQuery = this.buildRomanUrduQuery(normalized, normalizedQuery, intent);
+    const categoryQuery = this.buildCategoryQuery(normalized, intent);
+
+    return {
+      originalQuery,
+      language,
+      normalizedQuery,
+      intent,
+      collectionToSearch,
+      searchQueries: [normalized, normalizedQuery, keywordQuery, romanUrduQuery, categoryQuery],
+      requiredAction:
+        intent === "order_status" && !orderIdentifierPattern.test(originalQuery)
+          ? "ask_order_number"
+          : intent === "unknown"
+            ? "ask_clarification"
+            : "retrieve",
+    };
+  }
+
+  private detectQueryLanguage(message: string): RoutedLanguage {
+    if (/[\u0600-\u06FF]/.test(message)) {
+      return /[a-z]/i.test(message) ? "mixed" : "urdu";
+    }
+
+    const normalized = message.toLowerCase();
+    const romanHits = [
+      "bhai",
+      "kya",
+      "hai",
+      "hain",
+      "kaise",
+      "kitne",
+      "kitni",
+      "wapis",
+      "kharab",
+      "parcel",
+      "order kab ayega",
+      "chahiye",
+    ].filter((token) => normalized.includes(token)).length;
+    const englishHits = ["delivery", "refund", "tracking", "policy", "product", "bundle", "gift"].filter(
+      (token) => normalized.includes(token),
+    ).length;
+
+    if (romanHits > 0 && englishHits > 0) {
+      return "mixed";
+    }
+
+    return romanHits > 0 ? "roman_urdu" : "english";
+  }
+
+  private inferRoutedIntent(normalized: string): RoutedIntent {
+    if (/\b(track|tracking|where is my order|parcel|order status|order kab ayega)\b/i.test(normalized)) {
+      return "order_status";
+    }
+    if (/\b(delivery|shipping|return|refund|exchange|damaged|complaint|cancel|contact|number|email|address|cod|payment|privacy|terms)\b/i.test(normalized)) {
+      return "store_policy";
+    }
+    if (/\b(recommend|best|gift|bundle suggestion|kids snack|tea|spicy|sweet|mixed)\b/i.test(normalized)) {
+      return "recommendation";
+    }
+    if (/\b(banana|chips|stix|wafer|choco|bundle|deal|price|stock|flavor|patata|chickpea|snaktory)\b/i.test(normalized)) {
+      return "product_query";
+    }
+    return normalized ? "unknown" : "unknown";
+  }
+
+  private expandNormalizedQuery(normalized: string, intent: RoutedIntent): string {
+    if (intent === "store_policy") {
+      if (/\bdelivery\b/i.test(normalized)) {
+        return "What is Snakitos delivery time and shipping policy?";
+      }
+      if (/\bshipping\b/i.test(normalized)) {
+        return "What are Snakitos shipping charges, delivery time, and tracking process?";
+      }
+      if (/\brefund\b/i.test(normalized)) {
+        return "What is Snakitos refund policy?";
+      }
+      if (/\breturn\b/i.test(normalized)) {
+        return "Can I return my Snakitos order?";
+      }
+      if (/\bcontact|number\b/i.test(normalized)) {
+        return "How can I contact Snakitos?";
+      }
+    }
+    if (intent === "order_status") {
+      return /\border\b/i.test(normalized)
+        ? "How can I track my order?"
+        : `Order status or tracking request: ${normalized}`;
+    }
+    if (intent === "product_query") {
+      return `Show Snakitos products related to ${normalized}.`;
+    }
+    if (intent === "recommendation") {
+      return `Recommend Snakitos snacks for ${normalized}.`;
+    }
+    return normalized;
+  }
+
+  private buildKeywordQuery(normalized: string, intent: RoutedIntent): string {
+    if (intent === "store_policy") {
+      return [normalized, "policy", "support", "faq", "contact", "delivery", "refund", "tracking"]
+        .filter(Boolean)
+        .join(" ");
+    }
+    if (intent === "order_status") {
+      return [normalized, "order status", "tracking", "parcel", "dispatch", "tracking number"]
+        .filter(Boolean)
+        .join(" ");
+    }
+    if (intent === "recommendation") {
+      return [normalized, "best snack", "bundle", "gift", "spicy", "sweet", "mixed"]
+        .filter(Boolean)
+        .join(" ");
+    }
+    if (intent === "product_query") {
+      return [normalized, "product", "price", "flavor", "category", "deal", "bundle"]
+        .filter(Boolean)
+        .join(" ");
+    }
+    return normalized;
+  }
+
+  private buildRomanUrduQuery(
+    normalized: string,
+    normalizedQuery: string,
+    intent: RoutedIntent,
+  ): string {
+    if (intent === "store_policy") {
+      return normalized.includes("delivery")
+        ? "delivery kitne din shipping policy parcel kab milega"
+        : normalized.includes("refund") || normalized.includes("return")
+          ? "paise wapis return policy wapis karna hai"
+          : normalized.includes("contact") || normalized.includes("number")
+            ? "number do contact kaise karun"
+            : normalizedQuery.toLowerCase();
+    }
+    if (intent === "order_status") {
+      return "order kab ayega parcel track tracking number";
+    }
+    if (intent === "product_query") {
+      return `${normalized} snacks dikhao product price available`;
+    }
+    if (intent === "recommendation") {
+      return `${normalized} snacks recommend karo`;
+    }
+    return normalized;
+  }
+
+  private buildCategoryQuery(normalized: string, intent: RoutedIntent): string {
+    if (intent === "store_policy") {
+      if (/\b(delivery|shipping|track|tracking)\b/i.test(normalized)) {
+        return "category: shipping policy";
+      }
+      if (/\b(refund|return|exchange|damaged)\b/i.test(normalized)) {
+        return "category: return refund policy";
+      }
+      if (/\b(contact|number|address)\b/i.test(normalized)) {
+        return "category: contact";
+      }
+      if (/\b(cod|payment)\b/i.test(normalized)) {
+        return "category: payment policy";
+      }
+      return "category: store faq";
+    }
+    if (intent === "order_status") {
+      return "category: order tracking";
+    }
+    if (intent === "recommendation") {
+      return "category: snack recommendation";
+    }
+    if (/\bbanana\b/i.test(normalized)) {
+      return "category: banana chips";
+    }
+    if (/\bstix\b/i.test(normalized)) {
+      return "category: multi grain stix";
+    }
+    if (/\bwafer\b/i.test(normalized)) {
+      return "category: wafer rolls";
+    }
+    if (/\bchoco\b/i.test(normalized)) {
+      return "category: choco";
+    }
+    if (/\bbundle|deal|gift\b/i.test(normalized)) {
+      return "category: deals";
+    }
+    return "category: products";
+  }
+
+  private rerankKnowledge(route: QueryRoute, documents: KnowledgeDocument[]): KnowledgeDocument[] {
+    const tokens = route.searchQueries.join(" ").split(/[^a-z0-9+.-]+/).filter((token) => token.length >= 2);
+    return documents
+      .map((document) => {
+        const haystack = `${document.name} ${document.text} ${document.category} ${document.type}`.toLowerCase();
+        const tokenScore = tokens.filter((token) => haystack.includes(token)).length;
+        const collectionBoost =
+          route.collectionToSearch === "store_faq_collection"
+            ? document.source === "store_faq" || document.type === "policy"
+              ? 20
+              : -2
+            : route.collectionToSearch === "products_collection"
+              ? /snakitos_(faq|recommendation|product_record)/.test(document.source) || document.type === "faq"
+                ? 14
+                : -2
+              : /order-support|policy/.test(document.category)
+                ? 8
+                : 0;
+        const exactBoost = haystack.includes(route.originalQuery.toLowerCase()) ? 8 : 0;
+        return {
+          score: tokenScore + collectionBoost + exactBoost,
+          document,
+        };
+      })
+      .sort((left, right) => right.score - left.score)
+      .slice(0, route.collectionToSearch === "store_faq_collection" ? 8 : 6)
+      .map((item) => item.document);
   }
 
   private retrieveCapabilityKnowledge(query: string): KnowledgeDocument[] {

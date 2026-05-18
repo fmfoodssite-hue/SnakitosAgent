@@ -1002,7 +1002,7 @@ export class SupportAgentService {
           response: await this.buildResponseWithSuggestions({
             type: "fallback",
             message:
-              "Yes, Snakitos is a brand by FM Foods, and FM Foods publicly lists Halal certification as part of its quality and food safety standards. Are you looking for halal snacks for kids, gifting, or daily use?",
+              "Based on current Snakitos store knowledge, the products are handled as halal and halal certificate support is available on request. If you want, share a product name and I can narrow it down for that item.",
             userMessage,
             options: [
               { label: "Kids Snacks", value: "kids snacks" },
@@ -1085,7 +1085,7 @@ export class SupportAgentService {
           response: await this.buildResponseWithSuggestions({
             type: "fallback",
             message:
-              "I’m not fully sure about the exact nutrition information, and I don’t want to misguide you. Please check the product packaging or confirm with support before ordering.",
+              "I don’t have confirmed exact nutrition information here, and I don’t want to misguide you. Please check the product packaging or product page, or confirm with support before ordering.",
             userMessage,
             options: [
               { label: "Talk to Support", value: "talk to support" },
@@ -1101,7 +1101,7 @@ export class SupportAgentService {
           response: await this.buildResponseWithSuggestions({
             type: "policy",
             message:
-              "Here’s the quick policy overview:\n\nShipping: delivery charges depend on your city, order value, and current offers. Delivery time varies by city and courier service, and tracking is usually shared after dispatch.\n\nRefunds and returns: because these are food items, returns may be limited for hygiene and safety reasons. If you received a damaged, wrong, or defective item, support can review it with proof.",
+              "Here’s the quick policy overview:\n\nShipping: orders are processed within 1-2 business days after payment confirmation. Delivery usually takes 2-5 business days after order fulfillment depending on the destination city. Shipping rates are calculated at checkout, and tracking number is sent by email after shipment.\n\nReturns and refunds: eligible returns are allowed within 14 calendar days if the item is unused and in original packaging. Food products are non-refundable unless they arrive damaged or defective. Exchanges are only for defective or damaged items.",
             userMessage,
             policyLink: "https://snakitos.com/policies/",
             options: [
@@ -1122,13 +1122,13 @@ export class SupportAgentService {
       case "free_shipping_query":
         return this.buildPolicyTemplateResponse(
           userMessage,
-          "Delivery charges may depend on your city, order value, and current offer. Please check the checkout page for the exact delivery charge. Some bundles or deals may include free shipping.",
+          "Shipping rates are calculated at checkout based on the weight and dimensions of your order and the destination. I don’t have confirmed free-shipping details in the current public policy, so please check checkout or contact support for confirmation.",
           "https://snakitos.com/policies/shipping-policy",
         );
       case "delivery_time":
         return this.buildPolicyTemplateResponse(
           userMessage,
-          "Delivery time depends on your city and courier service. Major cities are usually faster, while other areas may take a little longer. Once your order is shipped, you can track it using your order details.",
+          "Orders are processed within 1-2 business days after payment confirmation. Delivery usually takes 2-5 business days after order fulfillment depending on the destination city.",
           "https://snakitos.com/policies/shipping-policy",
         );
       case "delivery_city":
@@ -1140,7 +1140,7 @@ export class SupportAgentService {
       case "same_day_delivery":
         return this.buildPolicyTemplateResponse(
           userMessage,
-          "Same-day delivery may not be available for all areas. Please share your city and area so support can confirm.",
+          "The current public shipping policy does not confirm same-day delivery. Please check checkout or contact Snakitos support for the latest delivery options.",
           "https://snakitos.com/policies/shipping-policy",
         );
       case "address_change":
@@ -1156,14 +1156,14 @@ export class SupportAgentService {
       case "cod_query":
         return this.buildPolicyTemplateResponse(
           userMessage,
-          "Cash on Delivery may be available depending on your city and order type. You can confirm available payment options at checkout.",
-          "https://snakitos.com/policies/terms-of-service",
+          "I don’t have confirmed Cash on Delivery information in the current public policy. Please check checkout or contact Snakitos support for confirmation.",
+          "https://snakitos.com/policies/shipping-policy",
         );
       case "online_payment":
         return this.buildPolicyTemplateResponse(
           userMessage,
-          "Available payment options will appear at checkout. Depending on the current setup, you may see options such as COD, bank transfer, card payment, or wallet payment.",
-          "https://snakitos.com/policies/terms-of-service",
+          "I don’t have confirmed exact payment-method details in the current public policy. Please check checkout for available payment options or contact Snakitos support for confirmation.",
+          "https://snakitos.com/policies/",
         );
       case "whatsapp_order":
         return this.buildPolicyTemplateResponse(
@@ -2034,7 +2034,7 @@ export class SupportAgentService {
         response: await this.buildResponseWithSuggestions({
           type: "fallback",
           message:
-            "Yes, our products are halal and approved by Pakistan Halal Authority (PHA) and Sindh. If you need the halal certificate, our support team can share it on request.",
+            "Based on current Snakitos store knowledge, the products are handled as halal and halal certificate support is available on request. If you need a certificate copy, please contact support.",
           userMessage,
           options: [
             { label: "Contact Support", value: "How can I contact support?" },
@@ -2463,6 +2463,23 @@ export class SupportAgentService {
   private async handleGeneralIntent(
     userMessage: string,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
+    if (this.shouldAskForOrderIdentifier(userMessage)) {
+      return {
+        intent: "general",
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message: "Please share your order number or registered phone/email so I can check your order.",
+          userMessage,
+          options: [
+            { label: "Track Order", value: "track my order" },
+            { label: "Contact Support", value: "How can I contact support?" },
+            { label: "Home", value: "home" },
+          ],
+          skipSuggestions: true,
+        }),
+      };
+    }
+
     const quickSupportResponse = await this.buildQuickSupportResponse(userMessage);
     if (quickSupportResponse) {
       return {
@@ -2521,12 +2538,27 @@ export class SupportAgentService {
     };
   }
 
+  private shouldAskForOrderIdentifier(userMessage: string): boolean {
+    const normalized = userMessage.trim().toLowerCase();
+    const hasOrderSignal =
+      /^(track|tracking|order|parcel)$/.test(normalized) ||
+      /\b(track my order|where is my order|order status|tracking number|parcel track|order kab ayega)\b/i.test(
+        normalized,
+      );
+    const hasIdentifier =
+      /#\s*[a-z0-9-]{3,}|\b\d{4,}\b|\b[\w.+-]+@[\w.-]+\.[a-z]{2,}\b|(?:\+?\d[\d\s\-()]{8,}\d)/i.test(
+        userMessage,
+      );
+
+    return hasOrderSignal && !hasIdentifier;
+  }
+
   private async buildQuickSupportResponse(userMessage: string): Promise<string | null> {
     if (/\b(certificate|certification|certificate chahiye|certificate chaiye|certificate do)\b/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
-        answer: "Yes, our products are halal and approved by Pakistan Halal Authority (PHA) and Sindh.",
-        assistLine: "If you need the halal certificate, our support team can share it on request.",
+        answer: "Based on current Snakitos store knowledge, the products are handled as halal.",
+        assistLine: "If you need halal certificate support, please contact support and share the product name if possible.",
         type: "fallback",
         options: [
           { label: "Contact Support", value: "How can I contact support?" },
@@ -2736,13 +2768,13 @@ export class SupportAgentService {
     if (/(cash on delivery|cod|cod hai|cash on delivery hai|cash delivery)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
-        answer: "Yes, Cash on Delivery is available across Pakistan.",
-        assistLine: "If you want, I can also help with delivery timing or order tracking.",
+        answer: "I don’t have confirmed Cash on Delivery information in the current public policy.",
+        assistLine: "Please check checkout or contact Snakitos support for the latest payment options.",
         type: "policy",
         policyLink: "https://snakitos.com/policies/shipping-policy",
         options: [
-          { label: "Track Order", value: "track my order" },
           { label: "Shipping Policy", value: "show shipping and refund policy" },
+          { label: "Contact Support", value: "How can I contact support?" },
           { label: "Home", value: "home" },
         ],
       });
@@ -2757,13 +2789,13 @@ export class SupportAgentService {
     ) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
-        answer: "Yes, same-day delivery is possible in Karachi with advance payment.",
-        assistLine: "Delivery timing can still depend on order confirmation time and area coverage.",
+        answer: "The current public shipping policy does not confirm same-day delivery, including Karachi-specific same-day service.",
+        assistLine: "Please check checkout or contact Snakitos support for the latest delivery options.",
         type: "policy",
         policyLink: "https://snakitos.com/policies/shipping-policy",
         options: [
           { label: "Shipping Policy", value: "show shipping and refund policy" },
-          { label: "Track Order", value: "track my order" },
+          { label: "Contact Support", value: "How can I contact support?" },
           { label: "Home", value: "home" },
         ],
       });
@@ -2772,13 +2804,13 @@ export class SupportAgentService {
     if (/(same day delivery|same-day delivery|same day hai|same-day hai)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
-        answer: "Same-day delivery isn't confirmed in the current Snakitos policy details.",
-        assistLine: "Delivery usually takes a few business days depending on location.",
+        answer: "The current public shipping policy does not confirm same-day delivery.",
+        assistLine: "Orders are processed in 1 to 2 business days, and delivery usually takes 2 to 5 business days after fulfillment.",
         type: "policy",
         policyLink: "https://snakitos.com/policies/shipping-policy",
         options: [
           { label: "Shipping Policy", value: "show shipping and refund policy" },
-          { label: "Track Order", value: "track my order" },
+          { label: "Contact Support", value: "How can I contact support?" },
           { label: "Home", value: "home" },
         ],
       });
@@ -2787,12 +2819,13 @@ export class SupportAgentService {
     if (/(online payment secure|payment secure|safe to pay online|secure payment)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
-        answer: "Yes, online payments are handled with standard checkout security.",
-        assistLine: "You can also check the official store policies for exact payment details.",
+        answer: "I don’t have confirmed checkout-security details in the current public policy.",
+        assistLine: "Please review the checkout page carefully or contact support if you want exact payment guidance before ordering.",
         type: "policy",
         policyLink: "https://snakitos.com/policies/terms-of-service",
         options: [
           { label: "Policies", value: "show shipping and refund policy" },
+          { label: "Contact Support", value: "How can I contact support?" },
           { label: "Home", value: "home" },
         ],
       });
@@ -2801,12 +2834,13 @@ export class SupportAgentService {
     if (/(payment methods|how can i pay|can i pay online|online payment|payment kaise karein|payment kese karain|online pay kar sakte hain)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
-        answer: "You can pay through the standard Snakitos checkout flow, and Cash on Delivery is available too.",
-        assistLine: "Online payment details appear during checkout.",
+        answer: "You can use the standard Snakitos checkout flow, but the current public policy does not clearly confirm the full list of payment methods.",
+        assistLine: "Please check checkout or contact support for exact payment options before placing the order.",
         type: "policy",
         policyLink: "https://snakitos.com/policies/terms-of-service",
         options: [
           { label: "Shipping Policy", value: "show shipping and refund policy" },
+          { label: "Contact Support", value: "How can I contact support?" },
           { label: "Home", value: "home" },
         ],
       });
@@ -3802,8 +3836,8 @@ export class SupportAgentService {
       if (typeof metadata.halal === "boolean") {
         return metadata.halal
           ? productDescription
-            ? `${productDescription} Yes, ${product.title} is halal and approved by Pakistan Halal Authority (PHA) and Sindh. If you need the halal certificate, our support team can share it on request.`
-            : `Yes, ${product.title} is halal and approved by Pakistan Halal Authority (PHA) and Sindh. If you need the halal certificate, our support team can share it on request.`
+            ? `${productDescription} Based on current store knowledge, ${product.title} is handled as halal. If you need halal certificate support, please contact support for the latest confirmation.`
+            : `Based on current store knowledge, ${product.title} is handled as halal. If you need halal certificate support, please contact support for the latest confirmation.`
           : `${product.title} is not marked as halal in the current product details.`;
       }
 
@@ -3929,11 +3963,11 @@ export class SupportAgentService {
 
   private buildGeneralProductDetailAnswer(normalizedMessage: string): string {
     if (/\b(certificate|certification|halal certificate|certificate chahiye|certificate chaiye|certificate do)\b/i.test(normalizedMessage)) {
-      return "Yes, our products are halal and approved by Pakistan Halal Authority (PHA) and Sindh. If you need the halal certificate, our support team can share it on request.";
+      return "Based on current Snakitos store knowledge, the products are handled as halal and halal certificate support is available on request through support.";
     }
 
     if (/\b(halal|halaal|halal hain|halal hai)\b/i.test(normalizedMessage)) {
-      return "Yes, our products are halal and approved by Pakistan Halal Authority (PHA) and Sindh. If you need the halal certificate, our support team can share it on request.";
+      return "Based on current Snakitos store knowledge, the products are handled as halal. If you want the latest certificate support for a specific item, please contact support with the product name.";
     }
 
     if (/\b(vegetarian|vegan)\b/i.test(normalizedMessage)) {

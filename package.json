@@ -25,6 +25,7 @@
     "sync:snakitos": "node scripts/sync-snakitos-knowledge.mjs",
     "test:product-queries": "node scripts/test-product-queries.mjs",
     "test:product-expiry": "node scripts/test-product-expiry.mjs",
+    "test:store-faq-safety": "node scripts/test-store-faq-safety.mjs",
     "start:chatbot": "npm --prefix apps/chatbot run start",
     "typecheck": "tsc --noEmit",
     "test": "npm run typecheck"
