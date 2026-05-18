@@ -1,0 +1,155 @@
+[
+  {
+    "category": "general_opening",
+    "examples": [
+      "What are you craving today?",
+      "What do you sell?",
+      "Recommend something.",
+      "Best seller?",
+      "I'm new here.",
+      "Do you prefer spicy, sweet, or a mix of both?"
+    ]
+  },
+  {
+    "category": "halal_certification",
+    "examples": [
+      "Are your products halal?",
+      "Do you have halal certification?",
+      "Which authority certified you?",
+      "Do you have ISO?",
+      "Are you HACCP certified?",
+      "Are your products export quality?"
+    ]
+  },
+  {
+    "category": "ingredients_allergens",
+    "examples": [
+      "What ingredients are used?",
+      "Do you use MSG?",
+      "Does this contain gelatin?",
+      "Do your snacks contain nuts?",
+      "Are your snacks gluten free?",
+      "Are your snacks vegan?"
+    ]
+  },
+  {
+    "category": "kids_safety",
+    "examples": [
+      "Are these safe for kids?",
+      "Which snacks are best for children?",
+      "What should I buy for school lunch?",
+      "Kids ke liye kya acha hai?"
+    ]
+  },
+  {
+    "category": "taste_recommendation",
+    "examples": [
+      "I want spicy snacks.",
+      "Suggest chocolate snacks.",
+      "Bhai spicy snacks batao.",
+      "Kuch meetha recommend karo.",
+      "2000 ke andar kuch acha batao.",
+      "Do you prefer spicy, sweet, or salty?"
+    ]
+  },
+  {
+    "category": "occasion_recommendation",
+    "examples": [
+      "Need snacks for movie night.",
+      "Need snacks for office.",
+      "I want to send snacks as a gift.",
+      "Need snacks for party.",
+      "What is good for tea time?",
+      "Recommend snacks for Netflix."
+    ]
+  },
+  {
+    "category": "shipping_delivery",
+    "examples": [
+      "delivery",
+      "dilevry",
+      "delivry kitny din",
+      "shiping chrges",
+      "dlevry charges kia",
+      "Do you deliver to Lahore/Islamabad/Karachi?"
+    ]
+  },
+  {
+    "category": "order_tracking",
+    "examples": [
+      "Where is my order?",
+      "I don't have order number.",
+      "Tracking is not updating.",
+      "Mera order kahan hai?",
+      "parcel kab ayega",
+      "traking kidar hai"
+    ]
+  },
+  {
+    "category": "payment_checkout",
+    "examples": [
+      "Do you offer COD?",
+      "Can I pay online?",
+      "Can I order on WhatsApp?",
+      "My payment failed.",
+      "Is online payment secure?"
+    ]
+  },
+  {
+    "category": "refund_replacement",
+    "examples": [
+      "Can I return my order?",
+      "I received damaged items.",
+      "I received the wrong product.",
+      "How long does refund take?",
+      "Can I exchange flavor?",
+      "I want refund."
+    ]
+  },
+  {
+    "category": "discounts_offers",
+    "examples": [
+      "Any discount code?",
+      "My coupon is not working.",
+      "Do you offer bulk discounts?",
+      "Do you have Eid deals?",
+      "Bulk order price?"
+    ]
+  },
+  {
+    "category": "brand_trust",
+    "examples": [
+      "Why should I buy from Snakitos?",
+      "Are your products fresh?",
+      "Are these Pakistani snacks?",
+      "Why are your prices high?"
+    ]
+  },
+  {
+    "category": "stock_availability",
+    "examples": [
+      "This product is out of stock. When will it return?",
+      "Can you reserve this for me?",
+      "Are new products coming?"
+    ]
+  },
+  {
+    "category": "wholesale_corporate",
+    "examples": [
+      "Do you offer wholesale?",
+      "Do you do corporate gifting?",
+      "Talk to agent."
+    ]
+  },
+  {
+    "category": "cart_repeat_purchase",
+    "examples": [
+      "I'll order later.",
+      "I'm confused.",
+      "Too expensive.",
+      "I ordered before. What should I try now?",
+      "I want regular snacks.",
+      "I'm not sure."
+    ]
+  }
+]

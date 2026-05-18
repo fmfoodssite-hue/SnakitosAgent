@@ -89,6 +89,8 @@ type SnakitosIntent =
   | "general_brand_query"
   | "main_categories"
   | "new_customer_query"
+  | "budget_prompt"
+  | "product_navigation_prompt"
   | "best_seller_query"
   | "support_request"
   | "fallback_unknown"
@@ -560,7 +562,7 @@ export class SupportAgentService {
     userMessage: string,
     state: ConversationState,
   ): ClassifiedIntent {
-    const normalized = userMessage.trim().toLowerCase();
+    const normalized = this.normalizeSnakitosMessage(userMessage);
     const language = this.detectSnakitosLanguage(userMessage);
     const budgetMatch =
       userMessage.match(/(?:under|below|andar|rs\.?|pkr)\s*(\d{3,5})/i) ??
@@ -586,15 +588,15 @@ export class SupportAgentService {
       return { intent: "confirmation_continue", language };
     }
 
-    if (/^(hi|hello|hey|assalamualaikum|salam)$/i.test(normalized)) {
+    if (/^(hi|hello|hey|assalamualaikum|salam|kya haal|help)$/i.test(normalized)) {
       return { intent: "greeting", language };
     }
 
-    if (/(where is my order|track my order|mera order kahan hai|order kahan hai|track order)/i.test(normalized)) {
+    if (/(where is my order|track my order|mera order kahan hai|order kahan hai|track order|parcel kab ayega|order kab milega|mujhy tracking do|tracking do|tracking kidar hai|track$|tracker number|email tracking nahi aya|parcel late|rider kidar hai|order$|mera order|ordar no nahi hai|phone se order dekho|order id bhool gaya|courier update nhi|status batao|3 din hogaye order nahi aya|kal order kia tha)/i.test(normalized)) {
       return { intent: "order_tracking", language };
     }
 
-    if (/(talk to agent|human support|talk to support|support chahiye|agent se baat|whatsapp support)/i.test(normalized)) {
+    if (/(talk to agent|human support|talk to support|support chahiye|agent se baat|whatsapp support|koi agent se bat krni)/i.test(normalized)) {
       return { intent: "support_request", language };
     }
 
@@ -606,8 +608,12 @@ export class SupportAgentService {
       return { intent: "what_do_you_sell", language };
     }
 
-    if (/(new customer|first time|pehli dafa|first order)/i.test(normalized)) {
+    if (/(new customer|first time|pehli dafa|first order|i'm new here|im new here)/i.test(normalized)) {
       return { intent: "new_customer_query", language };
+    }
+
+    if (/(what'?s your budget|what is your budget|budget\?)/i.test(normalized)) {
+      return { intent: "budget_prompt", language };
     }
 
     if (/(best sellers|best seller|popular snacks|popular items)/i.test(normalized)) {
@@ -622,11 +628,11 @@ export class SupportAgentService {
       return { intent: "product_recommendation", language };
     }
 
-    if (/(spicy snacks|spicy snack|bhai spicy snacks batao|teekha|teekay)/i.test(normalized)) {
+    if (/(spicy snacks|spicy snack|bhai spicy snacks batao|teekha|teekay|spicy combo|bohat teekha|hot spicy|spcy snacks)/i.test(normalized)) {
       return { intent: "spicy_recommendation", language, taste: "spicy" };
     }
 
-    if (/(sweet snacks|kuch meetha recommend karo|meetha|sweet craving)/i.test(normalized)) {
+    if (/(sweet snacks|kuch meetha recommend karo|meetha|sweet craving|suggest chocolate snacks|chocolate wala)/i.test(normalized)) {
       return { intent: "sweet_recommendation", language, taste: "sweet" };
     }
 
@@ -634,7 +640,7 @@ export class SupportAgentService {
       return { intent: "salty_recommendation", language, taste: "salty" };
     }
 
-    if (/(mild snacks|less spicy|non spicy|plain)/i.test(normalized)) {
+    if (/(mild snacks|less spicy|non spicy|plain|don't want spicy|dont want spicy|which one is mild|halka spicy)/i.test(normalized)) {
       return { intent: "mild_recommendation", language, taste: "mild" };
     }
 
@@ -646,15 +652,15 @@ export class SupportAgentService {
       return { intent: "mixed_recommendation", language, taste: "mixed" };
     }
 
-    if (/(kids ke liye|snacks for children|kids snacks|bachon ke liye)/i.test(normalized)) {
+    if (/(kids ke liye|snacks for children|kids snacks|bachon ke liye|best for children|safe for kids|school lunch|what should i order for kids|bachy kha sakty)/i.test(normalized)) {
       return { intent: "kids_recommendation", language, occasion: "kids" };
     }
 
-    if (/(office snacks|office ke liye|team snacks|work snacks)/i.test(normalized)) {
+    if (/(office snacks|office ke liye|team snacks|work snacks|office mein rakhna|office box)/i.test(normalized)) {
       return { intent: "office_recommendation", language, occasion: "office" };
     }
 
-    if (/(movie night snacks|movie night|netflix snacks)/i.test(normalized)) {
+    if (/(movie night snacks|movie night|netflix snacks|netflix snack|cricket match snacks)/i.test(normalized)) {
       return { intent: "movie_night_recommendation", language, occasion: "movie night" };
     }
 
@@ -662,15 +668,15 @@ export class SupportAgentService {
       return { intent: "gaming_netflix_recommendation", language, occasion: "gaming" };
     }
 
-    if (/(gift|gifting|gift bundle)/i.test(normalized)) {
+    if (/(gift|gifting|gift bundle|dost ko gift|gift dena hai|birthday snack box|eid gift snack)/i.test(normalized)) {
       return { intent: "gifting_recommendation", language, occasion: "gifting" };
     }
 
-    if (/(party snacks|party bundle|guests)/i.test(normalized)) {
+    if (/(party snacks|party bundle|guests|mehman arhy snacks)/i.test(normalized)) {
       return { intent: "party_recommendation", language, occasion: "party" };
     }
 
-    if (/(tea time|chai time)/i.test(normalized)) {
+    if (/(tea time|chai time|chai ke sath)/i.test(normalized)) {
       return { intent: "tea_time_recommendation", language, occasion: "tea time" };
     }
 
@@ -682,15 +688,15 @@ export class SupportAgentService {
       return { intent: "product_category_query", language, category };
     }
 
-    if (/(halal)/i.test(normalized)) {
+    if (/(halal|safe for muslims|haram to nahi)/i.test(normalized)) {
       return { intent: "halal_query", language };
     }
 
-    if (/(iso|certified|certification|certificate)/i.test(normalized)) {
+    if (/(iso|certified|certification|certificate|which authority certified|haccp|export quality|approved for export|fda approved)/i.test(normalized)) {
       return { intent: "certification_query", language };
     }
 
-    if (/(contain nuts|gluten free|milk|soy|allergen|allergy)/i.test(normalized)) {
+    if (/(contain nuts|gluten free|milk|soy|allergen|allergy|peanut allergy|processed near nuts|dairy|nuts)/i.test(normalized)) {
       return {
         intent: "allergen_query",
         language,
@@ -698,7 +704,7 @@ export class SupportAgentService {
       };
     }
 
-    if (/(ingredients|gelatin|msg|made of)/i.test(normalized)) {
+    if (/(ingredients|gelatin|msg|made of|oil use|vegetable oil|preservatives|natural or artificial|chicken extract|beef extract|imported ingredients)/i.test(normalized)) {
       return {
         intent: "ingredient_query",
         language,
@@ -710,7 +716,7 @@ export class SupportAgentService {
       return { intent: "vegan_vegetarian_query", language };
     }
 
-    if (/(nutrition|calories|protein|fat)/i.test(normalized)) {
+    if (/(nutrition|calories|protein|fat|diet snack|healthy snack)/i.test(normalized)) {
       return { intent: "nutrition_query", language };
     }
 
@@ -718,7 +724,7 @@ export class SupportAgentService {
       return { intent: "spice_level_query", language };
     }
 
-    if (/(fresh|freshness|are these fresh)/i.test(normalized)) {
+    if (/(fresh|freshness|are these fresh|are your products fresh)/i.test(normalized)) {
       return { intent: "product_freshness", language };
     }
 
@@ -726,31 +732,31 @@ export class SupportAgentService {
       return { intent: "product_storage", language };
     }
 
-    if (/(out of stock|stock available|availability|available\?|restock|restocking)/i.test(normalized)) {
+    if (/(out of stock|stock available|availability|available\?|restock|restocking|reserve this|new products coming|new arrivals)/i.test(normalized)) {
       return /(restock|restocking)/i.test(normalized)
         ? { intent: "product_restock", language, productName: category || this.extractPotentialProductName(userMessage) }
         : { intent: "product_availability", language, productName: category || this.extractPotentialProductName(userMessage) };
     }
 
-    if (/(too expensive|mehnga|expensive|prices high|price high)/i.test(normalized)) {
+    if (/(too expensive|mehnga|expensive|prices high|price high|why are your prices high|i'll order later|ill order later|i am not sure|i'm not sure)/i.test(normalized)) {
       return { intent: "price_objection", language };
     }
 
-    if (/(shipping policy|delivery policy|shipping)/i.test(normalized)) {
-      return { intent: "shipping_policy", language };
-    }
-
-    if (/(delivery charges|shipping charges|free shipping)/i.test(normalized)) {
+    if (/(delivery charges|shipping charges|free shipping|shipping charges|shiping charges|delivery charges kia|kitna paisa delivery ka|free delivery|free shipping kab)/i.test(normalized)) {
       return /(free shipping)/i.test(normalized)
         ? { intent: "free_shipping_query", language }
         : { intent: "delivery_charges", language };
     }
 
-    if (/(delivery time|kitne din|how long delivery)/i.test(normalized)) {
+    if (/(delivery time|kitne din|how long delivery|how long does delivery take|delivery kitny din|delivery$|shipping times)/i.test(normalized)) {
       return { intent: "delivery_time", language };
     }
 
-    if (/(deliver across pakistan|delivery cities|which cities|city delivery)/i.test(normalized)) {
+    if (/(shipping policy|delivery policy|shipping$|lahore delivery hoti|karachi me delivery|islamabad parcel bhejtay|gaon me deliver hoga)/i.test(normalized)) {
+      return { intent: "shipping_policy", language };
+    }
+
+    if (/(deliver across pakistan|delivery cities|which cities|city delivery|do you deliver to|lahore|karachi|islamabad)/i.test(normalized)) {
       return { intent: "delivery_city", language };
     }
 
@@ -766,19 +772,19 @@ export class SupportAgentService {
       return { intent: "delayed_order", language };
     }
 
-    if (/(cod available|cash on delivery|cod hai)/i.test(normalized)) {
+    if (/(cod available|cash on delivery|cod hai|do you offer cod|cash pay kr sakty)/i.test(normalized)) {
       return { intent: "cod_query", language };
     }
 
-    if (/(online payment|card payment|bank transfer|wallet payment)/i.test(normalized)) {
+    if (/(online payment|card payment|bank transfer|wallet payment|can i pay online|payment$|card chalta|easypaisa|jazzcash)/i.test(normalized)) {
       return { intent: "online_payment", language };
     }
 
-    if (/(whatsapp order|order on whatsapp)/i.test(normalized)) {
+    if (/(whatsapp order|order on whatsapp|can i order on whatsapp)/i.test(normalized)) {
       return { intent: "whatsapp_order", language };
     }
 
-    if (/(payment failed|amount deducted|payment deducted|order not confirmed)/i.test(normalized)) {
+    if (/(payment failed|amount deducted|payment deducted|order not confirmed|paisa kat gya order nahi|payment fail hogya)/i.test(normalized)) {
       return { intent: "payment_failed", language };
     }
 
@@ -786,40 +792,40 @@ export class SupportAgentService {
       return { intent: "secure_payment", language };
     }
 
-    if (/(return food items|return request|can i return)/i.test(normalized)) {
+    if (/(return food items|return request|can i return|return$|return krna|return karna|wapis karna hai|food wapis hota|14 din bad return|packet khol dia return)/i.test(normalized)) {
       return { intent: "return_request", language };
     }
 
-    if (/(refund request|refund mil|refund policy)/i.test(normalized)) {
+    if (/(refund request|refund mil|refund policy|refund$|refnd|paise wapis)/i.test(normalized)) {
       return { intent: "refund_request", language };
     }
 
-    if (/(refund time|kab refund)/i.test(normalized)) {
+    if (/(refund time|kab refund|paisy wapis kab)/i.test(normalized)) {
       return { intent: "refund_time", language };
     }
 
-    if (/(replacement|replace item)/i.test(normalized)) {
+    if (/(replacement|replace item|exchange$)/i.test(normalized)) {
       return { intent: "replacement_request", language };
     }
 
-    if (/(damaged item|damaged product|product is damaged)/i.test(normalized)) {
+    if (/(damaged item|damaged product|product is damaged|damaged$|product broken|product toot gaya|packet phata hua|chips tuti hui|item kharab hai|expiry wali cheez bheji|smell aa rahi|taste kharab hai)/i.test(normalized)) {
       return { intent: "damaged_product", language };
     }
 
-    if (/(wrong product|wrong item received)/i.test(normalized)) {
+    if (/(wrong product|wrong item received|wrong item aya|ghalat saman)/i.test(normalized)) {
       return { intent: "wrong_product", language };
     }
 
-    if (/(exchange flavor|change flavor)/i.test(normalized)) {
+    if (/(exchange flavor|change flavor|flavor change karna)/i.test(normalized)) {
       return { intent: "exchange_flavor", language };
     }
 
-    if (/(cancel order|cancellation)/i.test(normalized)) {
+    if (/(cancel order|cancellation|cancellation after dispatch)/i.test(normalized)) {
       return { intent: "cancellation_query", language };
     }
 
-    if (/(discount|coupon|promo code)/i.test(normalized)) {
-      return /(coupon not working|promo code not working)/i.test(normalized)
+    if (/(discount|coupon|promo code|discount code|eid deals|sale hai kya|deal$)/i.test(normalized)) {
+      return /(coupon not working|promo code not working|coupon nahi lag raha)/i.test(normalized)
         ? { intent: "coupon_not_working", language }
         : { intent: "discount_query", language };
     }
@@ -836,31 +842,35 @@ export class SupportAgentService {
       return { intent: "cross_sell_request", language };
     }
 
-    if (/(wholesale|bulk order)/i.test(normalized)) {
+    if (/(wholesale|bulk order|dukaan ke liye rate|retailer price|monthly supply|rate list bhejo|agency chahiye|dealership milti|shop pr rakhna hai|school canteen supply)/i.test(normalized)) {
       return { intent: "wholesale_query", language };
     }
 
-    if (/(bulk discount)/i.test(normalized)) {
+    if (/(bulk discount|bulk discounts)/i.test(normalized)) {
       return { intent: "bulk_discount", language };
     }
 
-    if (/(corporate gifting|corporate order)/i.test(normalized)) {
+    if (/(corporate gifting|corporate order|corporate gift|office k liye 50 box)/i.test(normalized)) {
       return { intent: "corporate_gifting", language };
     }
 
-    if (/(event order|event snacks)/i.test(normalized)) {
+    if (/(event order|event snacks|i need snacks for an event|wedding snacks)/i.test(normalized)) {
       return { intent: "event_order", language };
     }
 
-    if (/(i'm confused|i am confused|confused customer|confused)/i.test(normalized)) {
+    if (/(i'm confused|i am confused|confused customer|confused|mujhy samajh nahi araha|konsa loon)/i.test(normalized)) {
       return { intent: "confused_customer", language };
     }
 
-    if (/(returning customer|welcome back|repeat order|regular snacks|order later)/i.test(normalized)) {
+    if (/(returning customer|welcome back|repeat order|regular snacks|order later|i ordered before|i want regular snacks)/i.test(normalized)) {
       return { intent: "repeat_purchase", language };
     }
 
-    if (/(trust|why buy from snakitos|pakistani products|is this real brand)/i.test(normalized)) {
+    if (/(would you like me to take you to this product|take me to this product|show me this product|open this product)/i.test(normalized)) {
+      return { intent: "product_navigation_prompt", language };
+    }
+
+    if (/(trust|why(?:\s+should\s+i)?\s+buy\s+from\s+snakitos|pakistani products|is this real brand|why are your prices high|are these pakistani snacks)/i.test(normalized)) {
       return { intent: "general_brand_query", language };
     }
 
@@ -909,19 +919,46 @@ export class SupportAgentService {
     return romanHits > 0 ? "roman_urdu" : "english";
   }
 
+  private normalizeSnakitosMessage(message: string): string {
+    return message
+      .trim()
+      .toLowerCase()
+      .replace(/\bdilevry\b/g, "delivery")
+      .replace(/\bdelivry\b/g, "delivery")
+      .replace(/\bdlevry\b/g, "delivery")
+      .replace(/\bshiping\b/g, "shipping")
+      .replace(/\bchrges\b/g, "charges")
+      .replace(/\btraking\b/g, "tracking")
+      .replace(/\btracker\b/g, "tracking")
+      .replace(/\brefnd\b/g, "refund")
+      .replace(/\briturn\b/g, "return")
+      .replace(/\bordar\b/g, "order")
+      .replace(/\bbnana\b/g, "banana")
+      .replace(/\bwaffer\b/g, "wafer")
+      .replace(/\bspcy\b/g, "spicy")
+      .replace(/\bpaisy\b/g, "paise")
+      .replace(/\bnhi\b/g, "nahi")
+      .replace(/\bkrna\b/g, "karna")
+      .replace(/\bkr\b/g, "kar")
+      .replace(/\bbhejta?y\b/g, "bhejtay")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
   private extractKnownCategory(message: string): string {
-    const categories = [
-      "Nachos",
-      "Stix",
-      "Patata",
-      "Banana Chips",
-      "Choco Sticks",
-      "Wafer Rolls",
-      "ChickPea Puffs",
-      "Snaktory",
+    const normalized = this.normalizeSnakitosMessage(message);
+    const categoryAliases: Array<{ category: string; pattern: RegExp }> = [
+      { category: "Nachos", pattern: /\b(nachos|tortilla chips)\b/i },
+      { category: "Stix", pattern: /\b(stix|sticks|hot spicy|peri peri|lemon chilli|masala stix|salty stix)\b/i },
+      { category: "Patata", pattern: /\b(patata|potato slim|potato slims)\b/i },
+      { category: "Banana Chips", pattern: /\b(banana|banana chips|achari banana|banana bbq|banana sea salt|cheese banana)\b/i },
+      { category: "Choco Sticks", pattern: /\b(choco stick|chocolate stick|spread wali stick|strawberry choco)\b/i },
+      { category: "Wafer Rolls", pattern: /\b(wafer|wafer rolls|hazelnut wafer|strawberry wafer|cappuccino wafer|dark chocolate wafer)\b/i },
+      { category: "ChickPea Puffs", pattern: /\b(chickpea|chickpea puffs|chana puff|chana chips)\b/i },
+      { category: "Snaktory", pattern: /\b(snaktory|can tray)\b/i },
     ];
 
-    return categories.find((item) => new RegExp(item.replace(/\s+/g, "\\s+"), "i").test(message)) ?? "";
+    return categoryAliases.find((item) => item.pattern.test(normalized))?.category ?? "";
   }
 
   private extractPotentialProductName(message: string): string {
@@ -978,6 +1015,44 @@ export class SupportAgentService {
               "Snakitos offers snacks like Stix, Patata, Banana Chips, Choco Sticks, Wafer Rolls, ChickPea Puffs, Nachos, Snaktory packs, and snack bundles. Are you looking for spicy, sweet, kids-friendly, or mixed snacks?",
             userMessage,
             options: this.getQuickMenuOptions(),
+            skipSuggestions: true,
+          }),
+        };
+      case "new_customer_query":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message:
+              language === "roman_urdu"
+                ? "Welcome! Agar aap pehli dafa order kar rahe hain, to mixed bundle se start karna best rahega takay aap different flavors try kar sakein. Aap spicy pasand karte hain, sweet, ya dono ka mix?"
+                : "Welcome to Snakitos! If it’s your first time, I’d suggest starting with a mixed bundle so you can try different flavors. Do you prefer spicy, sweet, or a mix of both?",
+            userMessage,
+            options: [
+              { label: "Spicy", value: "spicy snacks" },
+              { label: "Sweet", value: "sweet snacks" },
+              { label: "Mixed", value: "mixed snack box" },
+              { label: "Home", value: "home" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
+      case "budget_prompt":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message:
+              language === "roman_urdu"
+                ? "Aapka budget kya hai? Aap Under Rs. 500, Under Rs. 1,000, Under Rs. 2,000, ya family-size bundle choose kar sakte hain."
+                : "What’s your budget? I can suggest options under Rs. 500, under Rs. 1,000, under Rs. 2,000, or a bigger family-size bundle.",
+            userMessage,
+            options: [
+              { label: "Under Rs. 500", value: "500" },
+              { label: "Under Rs. 1,000", value: "1000" },
+              { label: "Under Rs. 2,000", value: "2000" },
+              { label: "Home", value: "home" },
+            ],
             skipSuggestions: true,
           }),
         };
@@ -1232,7 +1307,7 @@ export class SupportAgentService {
       case "shipping_policy":
         return this.buildPolicyTemplateResponse(
           userMessage,
-          "Shipping charges and delivery timing depend on location, order size, and current promotions. The final charges are shown at checkout, and tracking is usually shared after dispatch.",
+          "Orders are processed within 1-2 business days after payment confirmation. Delivery usually takes 2-5 business days after order fulfillment depending on the destination city. Shipping rates are shown at checkout, and tracking number is shared by email after shipment.",
           "https://snakitos.com/policies/shipping-policy",
         );
       case "delivery_charges":
@@ -1495,6 +1570,24 @@ export class SupportAgentService {
             options: [
               { label: "Best Deals", value: "show best deals" },
               { label: "Best Sellers", value: "show best sellers" },
+              { label: "Home", value: "home" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
+      case "product_navigation_prompt":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message:
+              language === "roman_urdu"
+                ? "Bilkul. Jis product ko aap dekhna chahte hain, us par 'Open on Snakitos' use karein. Agar aap chahein to main pehle best option recommend bhi kar sakta hoon."
+                : "Yes. If you want to open a product, use the 'Open on Snakitos' button under it. If you want, I can also help narrow down the best option first.",
+            userMessage,
+            options: [
+              { label: "Recommend Me", value: "recommend something" },
+              { label: "Show Products", value: "show categories" },
               { label: "Home", value: "home" },
             ],
             skipSuggestions: true,
@@ -2687,11 +2780,11 @@ export class SupportAgentService {
   private async buildComplaintOrEscalationResponse(userMessage: string): Promise<string | null> {
     const normalized = userMessage.toLowerCase();
     const hasFrustrationSignal =
-      /(angry|annoyed|confused|upset|frustrated|not clear|not happy|issue|problem|complaint|why is this not clear)/i.test(
+      /(angry|annoyed|confused|upset|frustrated|not clear|not happy|issue|problem|complaint|why is this not clear|terrible|bakwas|fraud|koi sun nahi raha)/i.test(
         normalized,
       );
     const hasSensitiveSupportTopic =
-      /(official website|real store|who owns|brand|deliver|delivery|refund|return|payment|courier|track|parcel|support|policy|late|confirmation|tomorrow|order not placed)/i.test(
+      /(official website|real store|who owns|brand|deliver|delivery|refund|return|payment|courier|track|parcel|support|service|policy|late|confirmation|tomorrow|order not placed)/i.test(
         normalized,
       );
 
@@ -2992,7 +3085,7 @@ export class SupportAgentService {
   }
 
   private async buildStoreInfoResponse(userMessage: string): Promise<string | null> {
-    if (/(what is snakitos|about snakitos|what is your store about|tell me about your brand|brand ke bare mein|brand ke bare me|store ke bare mein|store ke bare me|are you a real store|can i trust this website|official website|ye store real hai|store real hai|real store ho|real hai|what makes your store different|what makes your brand different|who owns this brand)/i.test(userMessage)) {
+    if (/(what is snakitos|about snakitos|what is your store about|tell me about your brand|brand ke bare mein|brand ke bare me|store ke bare mein|store ke bare me|are you a real store|can i trust this website|official website|ye store real hai|store real hai|real store ho|real hai|what makes your store different|what makes your brand different|who owns this brand|why(?:\s+should\s+i)?\s+buy\s+from\s+snakitos)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
         answer:
