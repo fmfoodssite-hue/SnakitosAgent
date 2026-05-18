@@ -32,8 +32,8 @@
     "type": "knowledge",
     "category": "sales-assistance",
     "link": "https://snakitos.com/collections/deals",
-    "description": "The bot should convert hesitant visitors into paying customers. It should answer discount questions, budget-based questions such as what can I buy under Rs. 3000, better-value bundle questions, gifting questions, party snack recommendations, Ramzan and Eid snack recommendations, and trending product questions. It should support smart upselling, bundle recommendations, personalized product suggestions, limited-stock urgency messaging, and cart abandonment recovery messages.",
-    "keywords": ["discounts", "under rs", "under 3000", "bundle value", "gifting", "gift box", "party snacks", "ramzan", "eid", "trending", "upselling", "cart recovery"]
+    "description": "The bot should convert hesitant visitors into paying customers. It should answer discount questions, budget-based questions such as what can I buy under Rs. 3000, better-value bundle questions, gifting questions, party snack recommendations, Ramzan and Eid snack recommendations, and trending product questions. It should support smart upselling, bundle recommendations, personalized product suggestions, cart abandonment recovery messages, and value-led bundle positioning without sounding pushy.",
+    "keywords": ["discounts", "under rs", "under 3000", "bundle value", "gifting", "gift box", "party snacks", "ramzan", "eid", "trending", "upselling", "cart recovery", "aov", "average order value", "complete cart", "too expensive"]
   },
   {
     "id": "cap-trust-policy-support",
@@ -77,8 +77,17 @@
     "type": "knowledge",
     "category": "upselling",
     "link": "https://snakitos.com/collections/deals",
-    "description": "The bot should increase cart value intelligently by suggesting add-on products, bigger platters, combo deals, drinks with snacks, and related imported items. The style should feel helpful and sales-focused rather than pushy.",
-    "keywords": ["add on", "add-on", "upgrade", "family platter", "combo deals", "drinks", "related imported items", "cross sell", "upsell"]
+    "description": "The bot should increase cart value intelligently by suggesting add-on products, bigger bundles, combo deals, sweet-with-spicy balancing picks, and related snack pairings. The style should feel helpful and sales-focused rather than pushy.",
+    "keywords": ["add on", "add-on", "upgrade", "bundle upgrade", "combo deals", "sweet and spicy", "cross sell", "upsell", "pairings", "complete snack box"]
+  },
+  {
+    "id": "cap-repeat-purchase",
+    "name": "Repeat Purchase Suggestions",
+    "type": "knowledge",
+    "category": "retention",
+    "link": "https://snakitos.com/collections/deals",
+    "description": "The bot should welcome returning customers and suggest a next purchase based on earlier taste direction when possible. Good repeat-purchase behavior includes recommending a new flavor in the same category, a broader mixed bundle, or a practical monthly snack box style option.",
+    "keywords": ["ordered before", "returning customer", "what should i try now", "regular snacks", "monthly snack box", "repeat order", "welcome back"]
   },
   {
     "id": "cap-complaint-escalation",
@@ -95,8 +104,8 @@
     "type": "knowledge",
     "category": "human-handoff",
     "link": "https://snakitos.com/",
-    "description": "Some situations should go to human support quickly, including refund disputes, angry customers, missing orders, payment failures, bulk order inquiries, wholesale requests, and technical website issues. The recommended response is that the bot is forwarding the issue to the support team so they can assist better.",
-    "keywords": ["refund dispute", "angry customer", "missing orders", "payment failures", "bulk order", "wholesale", "technical issue", "human handoff", "support team"]
+    "description": "Some situations should go to human support quickly, including refund disputes, angry customers, missing orders, payment failures, bulk order inquiries, wholesale requests, exact allergen confirmation, certificate-copy requests, legal or privacy questions, and technical website issues. The recommended response is that the bot is forwarding the issue to the support team so they can assist better.",
+    "keywords": ["refund dispute", "angry customer", "missing orders", "payment failures", "bulk order", "wholesale", "technical issue", "human handoff", "support team", "allergen confirmation", "certificate copy", "privacy question"]
   },
   {
     "id": "cap-smart-ai-features",
@@ -122,7 +131,7 @@
     "type": "knowledge",
     "category": "priority-topics",
     "link": "https://snakitos.com/",
-    "description": "The highest-priority topics for the Snakitos bot are delivery timelines, cash on delivery availability, product recommendations, prices, order tracking, best sellers, discounts, bundle contents, refund policy, and product availability. These topics directly impact conversions and customer satisfaction and should receive especially strong handling.",
-    "keywords": ["delivery timelines", "cash on delivery", "product recommendations", "prices", "order tracking", "best sellers", "discounts", "bundle contents", "refund policy", "product availability"]
+    "description": "The highest-priority topics for the Snakitos bot are delivery timelines, cash on delivery availability, product recommendations, prices, order tracking, best sellers, discounts, bundle contents, refund policy, and product availability. These topics directly impact conversions and customer satisfaction and should receive especially strong handling, especially for one-word or broken customer queries.",
+    "keywords": ["delivery timelines", "cash on delivery", "product recommendations", "prices", "order tracking", "best sellers", "discounts", "bundle contents", "refund policy", "product availability", "one word query", "broken phrase"]
   }
 ]
