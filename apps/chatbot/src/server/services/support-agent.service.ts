@@ -1198,7 +1198,7 @@ export class SupportAgentService {
           response: await this.buildResponseWithSuggestions({
             type: "fallback",
             message:
-              "Based on current Snakitos store knowledge, the products are handled as halal and halal certificate support is available on request. If you want, share a product name and I can narrow it down for that item.",
+              "Yes! Snakitos is a brand by FM Foods, and FM Foods publicly lists Halal certification as part of its quality and food safety standards. If you want, share a product name and I can help narrow it down for that item.",
             userMessage,
             options: [
               { label: "Kids Snacks", value: "kids snacks" },
@@ -2246,7 +2246,7 @@ export class SupportAgentService {
         response: await this.buildResponseWithSuggestions({
           type: "fallback",
           message:
-            "Based on current Snakitos store knowledge, the products are handled as halal and halal certificate support is available on request. If you need a certificate copy, please contact support.",
+            "Snakitos is a brand by FM Foods, and FM Foods publicly lists Halal certification as part of its quality standards. If you need a certificate copy, please contact support.",
           userMessage,
           options: [
             { label: "Contact Support", value: "How can I contact support?" },
@@ -2769,8 +2769,8 @@ export class SupportAgentService {
     if (/\b(certificate|certification|certificate chahiye|certificate chaiye|certificate do)\b/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
-        answer: "Based on current Snakitos store knowledge, the products are handled as halal.",
-        assistLine: "If you need halal certificate support, please contact support and share the product name if possible.",
+        answer: "Snakitos is a brand by FM Foods, and FM Foods publicly lists Halal certification as part of its quality standards.",
+        assistLine: "If you need halal certificate copies or product-specific confirmation, please contact support and share the product name if possible.",
         type: "fallback",
         options: [
           { label: "Contact Support", value: "How can I contact support?" },
@@ -4048,8 +4048,8 @@ export class SupportAgentService {
       if (typeof metadata.halal === "boolean") {
         return metadata.halal
           ? productDescription
-            ? `${productDescription} Based on current store knowledge, ${product.title} is handled as halal. If you need halal certificate support, please contact support for the latest confirmation.`
-            : `Based on current store knowledge, ${product.title} is handled as halal. If you need halal certificate support, please contact support for the latest confirmation.`
+            ? `${productDescription} ${product.title} is presented as a halal product under FM Foods quality standards. If you need the latest certificate confirmation, please contact support.`
+            : `${product.title} is presented as a halal product under FM Foods quality standards. If you need the latest certificate confirmation, please contact support.`
           : `${product.title} is not marked as halal in the current product details.`;
       }
 
@@ -4175,11 +4175,11 @@ export class SupportAgentService {
 
   private buildGeneralProductDetailAnswer(normalizedMessage: string): string {
     if (/\b(certificate|certification|halal certificate|certificate chahiye|certificate chaiye|certificate do)\b/i.test(normalizedMessage)) {
-      return "Based on current Snakitos store knowledge, the products are handled as halal and halal certificate support is available on request through support.";
+      return "FM Foods publicly lists Halal certification as part of its quality standards. If you need certificate copies, please contact support for the latest confirmation.";
     }
 
     if (/\b(halal|halaal|halal hain|halal hai)\b/i.test(normalizedMessage)) {
-      return "Based on current Snakitos store knowledge, the products are handled as halal. If you want the latest certificate support for a specific item, please contact support with the product name.";
+      return "Yes, Snakitos is a brand by FM Foods, and FM Foods publicly lists Halal certification as part of its quality and food safety standards. If you want product-specific confirmation, please contact support with the product name.";
     }
 
     if (/\b(vegetarian|vegan)\b/i.test(normalizedMessage)) {

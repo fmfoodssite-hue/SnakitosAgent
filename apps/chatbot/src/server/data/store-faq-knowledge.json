@@ -72,7 +72,7 @@
   {
     "id": "store-halal-overview",
     "name": "Halal Status",
-    "text": "All Snakitos products are handled as halal in the current store knowledge. If customers ask for confidence, the bot should answer positively and mention that halal certificate support is available on request.",
+    "text": "Snakitos is a brand by FM Foods, and FM Foods publicly lists Halal certification as part of its quality standards. If customers ask for confidence, the bot should answer positively and mention that halal certificate support is available on request.",
     "link": "https://snakitos.com/",
     "type": "knowledge",
     "category": "halal",
