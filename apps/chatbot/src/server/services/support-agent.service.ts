@@ -105,6 +105,7 @@ type SnakitosIntent =
   | "spicy_recommendation"
   | "sweet_recommendation"
   | "mixed_recommendation"
+  | "daily_snacks_recommendation"
   | "salty_recommendation"
   | "mild_recommendation"
   | "crunchy_recommendation"
@@ -705,12 +706,12 @@ export class SupportAgentService {
       return { intent: "product_category_query", language, category };
     }
 
-    if (/(halal|safe for muslims|haram to nahi)/i.test(normalized)) {
-      return { intent: "halal_query", language };
-    }
-
     if (/(iso|certified|certification|certificate|which authority certified|haccp|export quality|approved for export|fda approved)/i.test(normalized)) {
       return { intent: "certification_query", language };
+    }
+
+    if (/(halal|safe for muslims|haram to nahi)/i.test(normalized)) {
+      return { intent: "halal_query", language };
     }
 
     if (/(contain nuts|gluten free|milk|soy|allergen|allergy|peanut allergy|processed near nuts|dairy|nuts)/i.test(normalized)) {
@@ -899,7 +900,11 @@ export class SupportAgentService {
       return { intent: "confused_customer", language };
     }
 
-    if (/(returning customer|welcome back|repeat order|regular snacks|order later|i ordered before|i want regular snacks)/i.test(normalized)) {
+    if (/(daily snacks|daily snacking|everyday snacks|regular snacking)/i.test(normalized)) {
+      return { intent: "daily_snacks_recommendation", language, occasion: "daily" };
+    }
+
+    if (/(returning customer|welcome back|repeat order|order later|i ordered before|i want regular snacks)/i.test(normalized)) {
       return { intent: "repeat_purchase", language };
     }
 
@@ -1099,6 +1104,7 @@ export class SupportAgentService {
       .replace(/\briturn\b/g, "return")
       .replace(/\bordar\b/g, "order")
       .replace(/\bbnana\b/g, "banana")
+      .replace(/\bstiks\b/g, "stix")
       .replace(/\bwaffer\b/g, "wafer")
       .replace(/\bspcy\b/g, "spicy")
       .replace(/\bpaisy\b/g, "paise")
@@ -1337,6 +1343,15 @@ export class SupportAgentService {
             ? "Mixed snacks ke liye best value picks All Time Favorites, Snack Sampler Deal, Office Snack Box, aur Ultimate Mega Snack Box hain. In mein sweet aur savory dono variety mil jati hai. Kya aap budget-friendly mixed box chahte hain ya family-size bundle?"
             : "For mixed snacks, I'd start with All Time Favorites, Snack Sampler Deal, Office Snack Box, and Ultimate Mega Snack Box. These give you sweet + savory variety instead of just one flavor. Do you want a budget-friendly mixed box or a family-size bundle?",
           "mixed snacks",
+        );
+      case "daily_snacks_recommendation":
+        return this.buildCuratedRecommendationResponse(
+          userMessage,
+          "daily snacks regular snacks office snack box all time favorites snaktory snack pack banana chips wafer rolls patata chickpea puffs",
+          language === "roman_urdu"
+            ? "Rozana snacking ke liye Office Snack Box, All Time Favorites, Snaktory Snack Pack, Banana Chips, Wafer Rolls, aur Patata achay options hain. Kya aap light daily snacks chahte hain ya mixed variety box?"
+            : "For daily snacking, I’d suggest Office Snack Box, All Time Favorites, Snaktory Snack Pack, Banana Chips, Wafer Rolls, and Patata. Do you want lighter daily snacks or a mixed variety box?",
+          "daily snacks",
         );
       case "salty_recommendation":
         case "mild_recommendation":
