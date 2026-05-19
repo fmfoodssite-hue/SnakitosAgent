@@ -632,7 +632,7 @@ export class SupportAgentService {
       return { intent: "product_recommendation", language };
     }
 
-    if (/(spicy snacks|spicy snack|bhai spicy snacks batao|teekha|teekay|spicy combo|bohat teekha|hot spicy|spcy snacks)/i.test(normalized)) {
+    if (/(are your snacks spicy|spicy snacks|spicy snack|bhai spicy snacks batao|teekha|teekay|spicy combo|bohat teekha|hot spicy|spcy snacks)/i.test(normalized)) {
       return { intent: "spicy_recommendation", language, taste: "spicy" };
     }
 
@@ -724,7 +724,7 @@ export class SupportAgentService {
       return { intent: "nutrition_query", language };
     }
 
-    if (/(spice level|how spicy)/i.test(normalized)) {
+    if (/(spice level|how spicy|which one is very spicy|very spicy|sab se spicy|most spicy)/i.test(normalized)) {
       return { intent: "spice_level_query", language };
     }
 
@@ -1265,7 +1265,7 @@ export class SupportAgentService {
           response: await this.buildResponseWithSuggestions({
             type: "fallback",
             message:
-              "Some Snakitos products are spicy, while others are mild or sweet. Spicy options include Stix Hot & Spicy, Stix Peri Peri, Stix Lemon & Chilli, Nachos Salsa, Nachos Paprika, and Banana Chips Achari Masti. For non-spicy options, try Choco Sticks, Wafer Rolls, Banana Chips Sea Salt, Patata Salty, or sweet snack bundles.",
+              "If you want the spiciest picks, start with Stix Hot & Spicy, Stix Peri Peri, Nachos Salsa, Nachos Paprika, and Banana Chips Achari Masti. If you want something less intense, I can also show mild options.",
             userMessage,
             options: [
               { label: "Spicy Snacks", value: "spicy snacks" },
