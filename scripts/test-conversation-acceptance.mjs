@@ -21,7 +21,7 @@ const cases = [
   },
   {
     message: "Are your products halal?",
-    mustInclude: "handled as halal",
+    mustInclude: "publicly lists Halal certification",
   },
   {
     message: "Do you have ISO?",

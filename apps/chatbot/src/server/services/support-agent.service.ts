@@ -83,6 +83,9 @@ type ConversationState = {
   last_recommended_products: string[];
   last_policy_topic: string;
   last_support_issue: string;
+  active_product_name: string;
+  active_detail_intent: string;
+  awaiting_input: string;
 };
 
 type SnakitosIntent =
@@ -185,6 +188,9 @@ const DEFAULT_CONVERSATION_STATE: ConversationState = {
   last_recommended_products: [],
   last_policy_topic: "",
   last_support_issue: "",
+  active_product_name: "",
+  active_detail_intent: "",
+  awaiting_input: "",
 };
 
 const conversationStateStore = new Map<string, ConversationState>();
@@ -449,7 +455,7 @@ export class SupportAgentService {
       return response;
     }
 
-    const response = await this.handleSnakitosStructuredIntent(classified, userMessage, chatId);
+    const response = await this.handleSnakitosStructuredIntent(classified, userMessage, state);
     if (!response) {
       return null;
     }
@@ -580,6 +586,9 @@ export class SupportAgentService {
     const bareBudgetMatch = isBudgetFollowUp ? normalized.match(/^(\d{3,5})$/) : null;
     const budget = budgetMatch?.[1] ?? bareBudgetMatch?.[1] ?? "";
     const category = this.extractKnownCategory(userMessage);
+    const specificProductName = this.extractPotentialProductName(userMessage);
+    const productName = specificProductName;
+    const detailFollowUpIntent = this.getProductDetailFollowUpIntent(state, normalized, productName);
 
     if (/^(back|home|take me back|main categories|show categories)$/i.test(normalized)) {
       return { intent: "back_home", language };
@@ -688,6 +697,10 @@ export class SupportAgentService {
       return { intent: "budget_recommendation", language, budget };
     }
 
+    if (detailFollowUpIntent) {
+      return { intent: detailFollowUpIntent, language, productName };
+    }
+
     if (category) {
       return { intent: "product_category_query", language, category };
     }
@@ -704,7 +717,7 @@ export class SupportAgentService {
       return {
         intent: "allergen_query",
         language,
-        productName: category || this.extractPotentialProductName(userMessage),
+        productName,
       };
     }
 
@@ -712,34 +725,54 @@ export class SupportAgentService {
       return {
         intent: "ingredient_query",
         language,
-        productName: category || this.extractPotentialProductName(userMessage),
+        productName,
       };
     }
 
     if (/(vegan|vegetarian)/i.test(normalized)) {
-      return { intent: "vegan_vegetarian_query", language };
+      return {
+        intent: "vegan_vegetarian_query",
+        language,
+        productName,
+      };
     }
 
     if (/(nutrition|calories|protein|fat|diet snack|healthy snack)/i.test(normalized)) {
-      return { intent: "nutrition_query", language };
+      return {
+        intent: "nutrition_query",
+        language,
+        productName,
+      };
     }
 
     if (/(spice level|how spicy|which one is very spicy|very spicy|sab se spicy|most spicy)/i.test(normalized)) {
-      return { intent: "spice_level_query", language };
+      return {
+        intent: "spice_level_query",
+        language,
+        productName,
+      };
     }
 
     if (/(fresh|freshness|are these fresh|are your products fresh)/i.test(normalized)) {
-      return { intent: "product_freshness", language };
+      return {
+        intent: "product_freshness",
+        language,
+        productName,
+      };
     }
 
     if (/(storage|store these|how to store)/i.test(normalized)) {
-      return { intent: "product_storage", language };
+      return {
+        intent: "product_storage",
+        language,
+        productName,
+      };
     }
 
     if (/(out of stock|stock available|availability|available\?|restock|restocking|reserve this|new products coming|new arrivals)/i.test(normalized)) {
       return /(restock|restocking)/i.test(normalized)
-        ? { intent: "product_restock", language, productName: category || this.extractPotentialProductName(userMessage) }
-        : { intent: "product_availability", language, productName: category || this.extractPotentialProductName(userMessage) };
+        ? { intent: "product_restock", language, productName }
+        : { intent: "product_availability", language, productName };
     }
 
     if (/(too expensive|mehnga|expensive|prices high|price high|why are your prices high|i'll order later|ill order later|i am not sure|i'm not sure)/i.test(normalized)) {
@@ -881,6 +914,134 @@ export class SupportAgentService {
     return { intent: "fallback_unknown", language };
   }
 
+  private getProductDetailFollowUpIntent(
+    state: ConversationState,
+    normalizedMessage: string,
+    productName: string,
+  ): SnakitosIntent | null {
+    if (!productName) {
+      return null;
+    }
+
+    if (
+      /^(back|home|show categories|show me|show best deals|recommend|track|talk to support|whatsapp support|best sellers?)$/i.test(
+        normalizedMessage,
+      )
+    ) {
+      return null;
+    }
+
+    const lastIntent = (state.active_detail_intent || state.last_intent) as SnakitosIntent;
+    const supportedFollowUps: SnakitosIntent[] = [
+      "halal_query",
+      "certification_query",
+      "ingredient_query",
+      "allergen_query",
+      "vegan_vegetarian_query",
+      "nutrition_query",
+      "spice_level_query",
+      "product_freshness",
+      "product_storage",
+      "product_availability",
+      "product_restock",
+    ];
+
+    if (!supportedFollowUps.includes(lastIntent)) {
+      return null;
+    }
+
+    const stripped = normalizedMessage
+      .replace(
+        /\b(show me|tell me|check|about|for|product|snack|item|please|plz|hai|hain|kya|ka|ki|ke)\b/g,
+        " ",
+      )
+      .replace(/\s+/g, " ")
+      .trim();
+
+    if (!stripped) {
+      return null;
+    }
+
+    if (state.awaiting_input === "product_name") {
+      return stripped.split(" ").length <= 8 ? lastIntent : null;
+    }
+
+    return stripped.split(" ").length <= 5 ? lastIntent : null;
+  }
+
+  private isProductDetailIntent(intent: SnakitosIntent): boolean {
+    return [
+      "halal_query",
+      "certification_query",
+      "ingredient_query",
+      "allergen_query",
+      "vegan_vegetarian_query",
+      "nutrition_query",
+      "spice_level_query",
+      "product_freshness",
+      "product_storage",
+      "product_availability",
+      "product_restock",
+    ].includes(intent);
+  }
+
+  private composeContextualQuery(
+    state: ConversationState,
+    classified: ClassifiedIntent,
+    userMessage: string,
+  ): string {
+    const normalizedMessage = this.normalizeSnakitosMessage(userMessage).trim();
+    const productName = classified.productName || state.active_product_name || "";
+
+    if (this.isProductDetailIntent(classified.intent)) {
+      const detailLabel = this.getDetailLabelForIntent(classified.intent);
+      if (productName && detailLabel) {
+        return `${productName} ${detailLabel}`.trim();
+      }
+
+      return detailLabel || normalizedMessage;
+    }
+
+    if (
+      classified.intent === "delivery_city" &&
+      state.last_policy_topic &&
+      !/\b(delivery|shipping|policy|courier)\b/i.test(normalizedMessage)
+    ) {
+      return `${normalizedMessage} ${state.last_policy_topic.replace(/_/g, " ")}`.trim();
+    }
+
+    return normalizedMessage;
+  }
+
+  private getDetailLabelForIntent(intent: SnakitosIntent): string {
+    switch (intent) {
+      case "halal_query":
+        return "halal";
+      case "certification_query":
+        return "certificate";
+      case "ingredient_query":
+        return "ingredients";
+      case "allergen_query":
+        return "allergen";
+      case "vegan_vegetarian_query":
+        return "vegan vegetarian";
+      case "nutrition_query":
+        return "nutrition";
+      case "spice_level_query":
+        return "spicy";
+      case "product_freshness":
+        return "fresh expiry";
+      case "product_storage":
+        return "storage";
+      case "product_availability":
+        return "availability";
+      case "product_restock":
+        return "restock";
+      default:
+        return "";
+    }
+  }
+
   private detectSnakitosLanguage(
     message: string,
   ): "english" | "roman_urdu" | "mixed" {
@@ -966,13 +1127,66 @@ export class SupportAgentService {
   }
 
   private extractPotentialProductName(message: string): string {
-    return this.extractKnownCategory(message) || extractProductQuery(message);
+    return this.extractKnownCategory(message) || this.extractSpecificNamedProduct(message);
+  }
+
+  private extractSpecificNamedProduct(message: string): string {
+    const category = this.extractKnownCategory(message);
+    if (category) {
+      return category;
+    }
+
+    const candidate = extractProductQuery(message)
+      .toLowerCase()
+      .replace(
+        /\b(what|which|is|are|the|of|for|a|an|do|does|did|can|could|would|will|how|to|you|your|show|list|tell|me|all|every|full|complete|have|offer|please|plz|hai|hain|kya|kiya|ka|ki|ke|mein|me|wali|wala|walay|chahiye|chaiye|dein|dena|product|products|snack|snacks|item|items|weight|weights|wazan|size|sizes|specification|specifications|pack|packs|gram|grams|g|kg|ml|l|halal|halaal|certificate|certification|vegetarian|vegan|ingredients?|allergen|allergy|contain|contains|nuts?|gluten|free|safe|near|processed|milk|soy|dairy|expiry|duration|details|fresh|imported|local|fried|dried|baked|made|from|made of|made from|status|nutrition|calories|protein|fat|healthy|stock|availability|available|restock|restocking|refund|return|shipping|delivery|support|agent|service|wholesale|bulk|discount|coupon|confused|store|storage)\b/g,
+        " ",
+      )
+      .replace(/\s+/g, " ")
+      .trim();
+
+    const tokens = candidate.split(" ").filter(Boolean);
+    if (tokens.length < 2) {
+      return "";
+    }
+
+    const productMarkers = [
+      "banana",
+      "chips",
+      "stix",
+      "wafer",
+      "rolls",
+      "choco",
+      "coco",
+      "nachos",
+      "patata",
+      "potato",
+      "chickpea",
+      "puffs",
+      "snaktory",
+      "peri",
+      "paprika",
+      "salsa",
+      "hazelnut",
+      "strawberry",
+      "cappuccino",
+      "masala",
+      "salty",
+      "lemon",
+      "chilli",
+    ];
+
+    if (!tokens.some((token) => productMarkers.includes(token))) {
+      return "";
+    }
+
+    return candidate;
   }
 
   private async handleSnakitosStructuredIntent(
     classified: ClassifiedIntent,
     userMessage: string,
-    chatId: string,
+    state: ConversationState,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId"> | null> {
     const language = classified.language;
     const category = classified.category || "";
@@ -1193,6 +1407,12 @@ export class SupportAgentService {
       case "budget_recommendation":
         return this.buildBudgetResponse(userMessage, budget, language);
       case "halal_query":
+        if (classified.productName) {
+          return await this.buildSpecificProductDetailResponse(
+            this.composeContextualQuery(state, classified, userMessage),
+            userMessage,
+          );
+        }
         return {
           intent: "general",
           response: await this.buildResponseWithSuggestions({
@@ -1210,6 +1430,12 @@ export class SupportAgentService {
           }),
         };
       case "certification_query":
+        if (classified.productName) {
+          return await this.buildSpecificProductDetailResponse(
+            this.composeContextualQuery(state, classified, userMessage),
+            userMessage,
+          );
+        }
         return {
           intent: "general",
           response: await this.buildResponseWithSuggestions({
@@ -1226,6 +1452,12 @@ export class SupportAgentService {
           }),
         };
       case "ingredient_query":
+        if (classified.productName) {
+          return await this.buildSpecificProductDetailResponse(
+            this.composeContextualQuery(state, classified, userMessage),
+            userMessage,
+          );
+        }
         return {
           intent: "general",
           response: await this.buildSensitiveProductSafetyResponse(
@@ -1235,6 +1467,12 @@ export class SupportAgentService {
           ),
         };
       case "allergen_query":
+        if (classified.productName) {
+          return await this.buildSpecificProductDetailResponse(
+            this.composeContextualQuery(state, classified, userMessage),
+            userMessage,
+          );
+        }
         return {
           intent: "general",
           response: await this.buildSensitiveProductSafetyResponse(
@@ -1244,6 +1482,12 @@ export class SupportAgentService {
           ),
         };
       case "vegan_vegetarian_query":
+        if (classified.productName) {
+          return await this.buildSpecificProductDetailResponse(
+            this.composeContextualQuery(state, classified, userMessage),
+            userMessage,
+          );
+        }
         return {
           intent: "general",
           response: await this.buildResponseWithSuggestions({
@@ -1260,6 +1504,12 @@ export class SupportAgentService {
           }),
         };
       case "spice_level_query":
+        if (classified.productName) {
+          return await this.buildSpecificProductDetailResponse(
+            this.composeContextualQuery(state, classified, userMessage),
+            userMessage,
+          );
+        }
         return {
           intent: "general",
           response: await this.buildResponseWithSuggestions({
@@ -1276,6 +1526,12 @@ export class SupportAgentService {
           }),
         };
       case "nutrition_query":
+        if (classified.productName) {
+          return await this.buildSpecificProductDetailResponse(
+            this.composeContextualQuery(state, classified, userMessage),
+            userMessage,
+          );
+        }
         return {
           intent: "general",
           response: await this.buildResponseWithSuggestions({
@@ -1501,6 +1757,12 @@ export class SupportAgentService {
           "value bundle",
         );
       case "product_freshness":
+        if (classified.productName) {
+          return await this.buildSpecificProductDetailResponse(
+            this.composeContextualQuery(state, classified, userMessage),
+            userMessage,
+          );
+        }
         return {
           intent: "general",
           response: await this.buildResponseWithSuggestions({
@@ -1517,6 +1779,12 @@ export class SupportAgentService {
           }),
         };
       case "product_storage":
+        if (classified.productName) {
+          return await this.buildSpecificProductDetailResponse(
+            this.composeContextualQuery(state, classified, userMessage),
+            userMessage,
+          );
+        }
         return {
           intent: "general",
           response: await this.buildResponseWithSuggestions({
@@ -1533,6 +1801,12 @@ export class SupportAgentService {
         };
       case "product_availability":
       case "product_restock":
+        if (classified.productName) {
+          return await this.buildSpecificProductDetailResponse(
+            this.composeContextualQuery(state, classified, userMessage),
+            userMessage,
+          );
+        }
         return {
           intent: "general",
           response: await this.buildResponseWithSuggestions({
@@ -1609,6 +1883,7 @@ export class SupportAgentService {
     const next: Partial<ConversationState> = {
       last_intent: classified.intent,
       last_topic: classified.category || classified.taste || classified.occasion || classified.intent,
+      active_product_name: classified.productName || classified.category || "",
     };
 
     if (classified.category) {
@@ -1639,6 +1914,19 @@ export class SupportAgentService {
       next.pending_action = "taste_preference";
     } else {
       next.pending_action = "";
+    }
+
+    if (this.isProductDetailIntent(classified.intent)) {
+      next.active_detail_intent = classified.intent;
+      next.awaiting_input = classified.productName ? "" : "product_name";
+    } else if (
+      classified.intent === "product_category_query" ||
+      classified.intent === "product_specific_query"
+    ) {
+      next.awaiting_input = "";
+    } else {
+      next.active_detail_intent = "";
+      next.awaiting_input = "";
     }
 
     try {
@@ -1836,6 +2124,36 @@ export class SupportAgentService {
       ],
       skipSuggestions: true,
     });
+  }
+
+  private async buildSpecificProductDetailResponse(
+    query: string,
+    userMessage: string,
+  ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
+    const products = await this.getProductsForStructuredQuery(query, query);
+
+    if (products.length === 0) {
+      return {
+        intent: "general",
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message:
+            "I couldn’t find a clear product match for that. Please share the exact product name and I’ll narrow it down for you.",
+          userMessage,
+          options: [
+            { label: "Show Products", value: "show categories" },
+            { label: "Talk to Support", value: "talk to support" },
+            { label: "Home", value: "home" },
+          ],
+          skipSuggestions: true,
+        }),
+      };
+    }
+
+    return {
+      intent: "product",
+      response: await this.buildDirectProductAnswer(products, query),
+    };
   }
 
   private async buildPolicyTemplateResponse(
@@ -4082,6 +4400,20 @@ export class SupportAgentService {
       }
 
       return `I found ${product.title}, but the current catalog does not clearly confirm the exact expiry or shelf-life details here. Please check the product page or ask support for exact confirmation.`;
+    }
+
+    if (/\b(storage|store|how to store)\b/i.test(normalizedMessage)) {
+      return productDescription
+        ? `${productDescription} For best taste, store ${product.title} in a cool, dry place and keep the pack sealed after opening.`
+        : `For best taste, store ${product.title} in a cool, dry place and keep the pack sealed after opening.`;
+    }
+
+    if (/\b(nutrition|calories|protein|fat|healthy)\b/i.test(normalizedMessage)) {
+      return `I found ${product.title}, but the current catalog does not clearly confirm exact nutrition facts here. Please check the product page or packaging, or ask support for exact confirmation.`;
+    }
+
+    if (/\b(availability|available|restock|restocking|stock)\b/i.test(normalizedMessage)) {
+      return `I found ${product.title}, but I’m not fully sure about its live stock or restock timing. Please check the product page or contact support for confirmation.`;
     }
 
     if (/\b(fried|dried|baked)\b/i.test(normalizedMessage)) {

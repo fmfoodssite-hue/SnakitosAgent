@@ -28,6 +28,8 @@
     "test:store-faq-safety": "node scripts/test-store-faq-safety.mjs",
     "test:support-claim-flow": "node scripts/test-support-claim-flow.mjs",
     "test:support-spicy-reset": "npx tsx scripts/test-support-spicy-reset.mjs",
+    "test:halal-product-followup": "npx tsx scripts/test-halal-product-followup.mjs",
+    "test:contextual-query-linking": "npx tsx scripts/test-contextual-query-linking.mjs",
     "test:brand-trust-flow": "npx tsx scripts/test-brand-trust-flow.mjs",
     "test:conversation-acceptance": "npx tsx scripts/test-conversation-acceptance.mjs",
     "test:phrase-coverage": "npx tsx scripts/test-phrase-coverage.mjs",
