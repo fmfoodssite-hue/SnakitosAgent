@@ -1,0 +1,119 @@
+{
+  "name": "Snakitos General 200k Dataset",
+  "imported_at": "2026-05-19T11:13:07.201Z",
+  "total_records": 200000,
+  "intent_count": 57,
+  "intents": [
+    {
+      "intent": "gifting",
+      "count": 3509
+    },
+    {
+      "intent": "delivery_cities",
+      "count": 3509
+    },
+    {
+      "intent": "coupon_not_working",
+      "count": 3509
+    },
+    {
+      "intent": "budget_under_2000",
+      "count": 3509
+    },
+    {
+      "intent": "vegan_vegetarian",
+      "count": 3509
+    },
+    {
+      "intent": "bulk_discount",
+      "count": 3509
+    },
+    {
+      "intent": "discount_code",
+      "count": 3509
+    },
+    {
+      "intent": "ingredients",
+      "count": 3509
+    },
+    {
+      "intent": "budget_above_3000",
+      "count": 3509
+    },
+    {
+      "intent": "budget_under_1000",
+      "count": 3509
+    },
+    {
+      "intent": "halal",
+      "count": 3509
+    },
+    {
+      "intent": "secure_payment",
+      "count": 3509
+    },
+    {
+      "intent": "tea_time",
+      "count": 3509
+    },
+    {
+      "intent": "movie_night",
+      "count": 3509
+    },
+    {
+      "intent": "damaged_product",
+      "count": 3509
+    },
+    {
+      "intent": "seasonal_offers",
+      "count": 3509
+    },
+    {
+      "intent": "pakistani_brand",
+      "count": 3509
+    },
+    {
+      "intent": "change_address",
+      "count": 3509
+    },
+    {
+      "intent": "online_payment",
+      "count": 3509
+    },
+    {
+      "intent": "exchange_flavor",
+      "count": 3509
+    },
+    {
+      "intent": "shipping_time",
+      "count": 3509
+    },
+    {
+      "intent": "cod",
+      "count": 3509
+    },
+    {
+      "intent": "payment_failed",
+      "count": 3509
+    },
+    {
+      "intent": "allergens",
+      "count": 3509
+    },
+    {
+      "intent": "why_buy",
+      "count": 3509
+    }
+  ],
+  "languages": [
+    {
+      "language": "roman_urdu",
+      "count": 84094
+    },
+    {
+      "language": "english",
+      "count": 115906
+    }
+  ],
+  "notes": "Snakitos General Questions Dataset - 200,000 examples\n\nPurpose:\nThis dataset is designed for chatbot/RAG testing, intent routing, answer generation examples, fallback handling, Roman Urdu handling, and escalation training for the Snakitos AI Assistant.\n\nFiles:\n1. snakitos_general_200k_train.jsonl\n   Recommended for fine-tuning-style supervised examples or retrieval evaluation.\n2. snakitos_general_200k_train.csv\n   Easier to inspect in Excel/Google Sheets.\n3. snakitos_general_sample_500.jsonl\n   Small sample for quick testing.\n4. README_snakitos_dataset.txt\n   This file.\n\nSchema:\n- id: stable hash id\n- split: train / validation / test\n- language: english / roman_urdu\n- intent: intent label\n- user_message: customer-style query\n- ideal_answer: safe approved answer\n- requires_escalation: true/false\n- tags: searchable labels\n- source: source guide\n- quality_rule: behavior rule\n\nImportant:\n- Replace placeholder product availability/prices with live Shopify/RAG data.\n- Do not use this dataset to invent exact ingredients, allergens, nutrition facts, stock dates, refund approvals, delivery dates, certificate numbers, or private order details.\n- For order tracking, payment deducted, damaged product, wrong product, serious allergy, wholesale pricing, certificate copies, legal/privacy, or angry customer cases, the answer should escalate to human support.\n- Roman Urdu examples are included for Pakistani customers.\n- This dataset uses templated variations, so for production you should later add real WhatsApp, Instagram, website chat, and support-ticket questions.\n\nTotal records: 200000\nIntent count: 57\nGenerated from the Snakitos chatbot guide uploaded in the current conversation."
+}

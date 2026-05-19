@@ -19,7 +19,16 @@ function toKnowledgeItems({ generalTraining, faqs, recommendations, productRecor
     ...generalTraining.map((item, index) => ({
       id: item.id || toId("training", index),
       name: `Training: ${item.intent || "general"}`,
-      description: [item.user_query, item.ideal_answer, item.follow_up_question]
+      description: [
+        item.user_query || item.user_message,
+        item.ideal_answer,
+        item.follow_up_question,
+        item.language ? `Language: ${item.language}.` : "",
+        Array.isArray(item.tags) && item.tags.length > 0 ? `Tags: ${item.tags.join(", ")}.` : "",
+        typeof item.requires_escalation === "boolean"
+          ? `Requires escalation: ${item.requires_escalation ? "yes" : "no"}.`
+          : "",
+      ]
         .filter(Boolean)
         .join(" "),
       type: "knowledge",
@@ -89,8 +98,15 @@ async function main() {
     loadJson("15-product-records.json"),
   ]);
 
+  let importedGeneralDataset = [];
+  try {
+    importedGeneralDataset = await loadJson("18-general-200k-sample.json");
+  } catch {
+    importedGeneralDataset = [];
+  }
+
   const items = toKnowledgeItems({
-    generalTraining,
+    generalTraining: [...generalTraining, ...importedGeneralDataset],
     faqs,
     recommendations,
     productRecords,

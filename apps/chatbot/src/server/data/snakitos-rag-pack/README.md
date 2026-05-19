@@ -20,6 +20,7 @@ Files:
 - 15 product records
 - 16 complete training guide
 - 17 conversation phrase groups
+- 18 general 200k dataset sample, manifest, and README
 
 Opening message:
 Hi! I'm the Snakitos AI Assistant. I can help you track orders, find snack deals, recommend snacks by taste or budget, and answer questions about delivery, payments, and refunds. What are you craving today - spicy, sweet, crunchy, or a mixed snack box?
