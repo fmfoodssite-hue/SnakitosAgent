@@ -49,7 +49,7 @@ const cases = [
   },
   {
     message: "Where is my order?",
-    mustInclude: "I can check your order for you.",
+    mustInclude: "Sure, I can help track it.",
   },
   {
     message: "Do you offer COD?",

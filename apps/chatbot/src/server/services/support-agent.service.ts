@@ -606,7 +606,24 @@ export class SupportAgentService {
       return { intent: "greeting", language };
     }
 
+    if (/(damaged item|damaged product|arrived damaged|product is damaged|damaged$|items? are broken|product broken|product toot gaya|packet phata hua|chips tuti hui|items? tootay hue|item kharab hai|expiry wali cheez bheji|smell aa rahi|taste kharab hai)/i.test(normalized)) {
+      return { intent: "damaged_product", language };
+    }
+
+    if (/(wrong product|wrong item received|wrong item aya|ghalat saman)/i.test(normalized)) {
+      return { intent: "wrong_product", language };
+    }
+
     if (/(where is my order|track my order|mera order kahan hai|order kahan hai|track order|parcel kab ayega|order kab milega|mujhy tracking do|tracking do|tracking kidar hai|track$|tracker number|email tracking nahi aya|parcel late|rider kidar hai|order$|mera order|ordar no nahi hai|phone se order dekho|order id bhool gaya|courier update nhi|status batao|3 din hogaye order nahi aya|kal order kia tha)/i.test(normalized)) {
+      return { intent: "order_tracking", language };
+    }
+
+    if (
+      state.last_topic === "order_tracking" &&
+      /(i don't have order no|i dont have order no|i don't have order number|i dont have order number|dont have order number|don't have order number|dont have order no|don't have order no|no order number|no order no|order number nahi hai|order no nahi hai|ordar no nahi hai|order id bhool gaya|no tracking number|tracking number nahi hai)/i.test(
+        normalized,
+      )
+    ) {
       return { intent: "order_tracking", language };
     }
 
@@ -702,10 +719,6 @@ export class SupportAgentService {
       return { intent: detailFollowUpIntent, language, productName };
     }
 
-    if (category) {
-      return { intent: "product_category_query", language, category };
-    }
-
     if (/(iso|certified|certification|certificate|which authority certified|haccp|export quality|approved for export|fda approved)/i.test(normalized)) {
       return { intent: "certification_query", language };
     }
@@ -736,6 +749,10 @@ export class SupportAgentService {
         language,
         productName,
       };
+    }
+
+    if (category) {
+      return { intent: "product_category_query", language, category };
     }
 
     if (/(nutrition|calories|protein|fat|diet snack|healthy snack)/i.test(normalized)) {
@@ -834,7 +851,7 @@ export class SupportAgentService {
       return { intent: "return_request", language };
     }
 
-    if (/(refund request|refund mil|refund policy|refund$|refnd|paise wapis)/i.test(normalized)) {
+    if (/(refund request|i want a refund|need a refund|mujhe refund|refund chahiye|refund mil|refund policy|refund$|refnd|paise wapis)/i.test(normalized)) {
       return { intent: "refund_request", language };
     }
 
@@ -846,7 +863,7 @@ export class SupportAgentService {
       return { intent: "replacement_request", language };
     }
 
-    if (/(damaged item|damaged product|product is damaged|damaged$|product broken|product toot gaya|packet phata hua|chips tuti hui|item kharab hai|expiry wali cheez bheji|smell aa rahi|taste kharab hai)/i.test(normalized)) {
+    if (/(damaged item|damaged product|arrived damaged|product is damaged|damaged$|items? are broken|product broken|product toot gaya|packet phata hua|chips tuti hui|items? tootay hue|item kharab hai|expiry wali cheez bheji|smell aa rahi|taste kharab hai)/i.test(normalized)) {
       return { intent: "damaged_product", language };
     }
 
@@ -1056,10 +1073,17 @@ export class SupportAgentService {
       "batao",
       "kuch",
       "acha",
+      "ye",
       "andar",
       "mera",
+      "mujhe",
       "kahan",
       "liye",
+      "nahi",
+      "hai",
+      "hain",
+      "bachay",
+      "tootay",
       "haan",
       "han",
       "theek",
@@ -1087,6 +1111,12 @@ export class SupportAgentService {
     }
 
     return romanHits > 0 ? "roman_urdu" : "english";
+  }
+
+  private prefersRomanUrdu(
+    language: "english" | "roman_urdu" | "mixed",
+  ): boolean {
+    return language === "roman_urdu" || language === "mixed";
   }
 
   private normalizeSnakitosMessage(message: string): string {
@@ -1321,8 +1351,8 @@ export class SupportAgentService {
         return this.buildCuratedRecommendationResponse(
           userMessage,
           "spicy stix nachos banana chips spicy bundle",
-          language === "roman_urdu"
-            ? "Zaroor! Agar aapko spicy snacks pasand hain to Stix Hot & Spicy, Stix Peri Peri, Stix Lemon & Chilli, aur Nachos Salsa try karein. Better value ke liye spicy bundle bhi acha rahega. Kya main aapke budget ke hisaab se spicy combo suggest karun?"
+          this.prefersRomanUrdu(language)
+            ? "Zaroor! Agar aapko spicy snacks pasand hain to Stix Hot & Spicy, Stix Peri Peri, Stix Lemon & Chilli, Nachos Salsa, Nachos Paprika aur Banana Chips Achari Masti try karein. Better value ke liye aap spicy bundle bhi choose kar sakte hain.\n\nAapka budget kya hai - Rs. 500, Rs. 1,000, Rs. 2,000 ya above?"
             : "If you enjoy spicy snacks, I’d recommend Stix Hot & Spicy, Stix Peri Peri, Stix Lemon & Chilli, Nachos Salsa, Nachos Paprika, and Banana Chips Achari Masti. For better value, you can also go for a spicy bundle. Want me to suggest a spicy combo under your budget?",
           "spicy",
         );
@@ -1482,18 +1512,14 @@ export class SupportAgentService {
           ),
         };
       case "allergen_query":
-        if (classified.productName) {
-          return await this.buildSpecificProductDetailResponse(
-            this.composeContextualQuery(state, classified, userMessage),
-            userMessage,
-          );
-        }
         return {
           intent: "general",
           response: await this.buildSensitiveProductSafetyResponse(
             userMessage,
             classified.productName,
-            "Allergen information can vary by product. Please check the packaging for the most accurate allergen details. If you have a serious allergy, I recommend confirming with support before placing the order.",
+            this.prefersRomanUrdu(language)
+              ? "Allergen information product ke hisaab se vary kar sakti hai. Serious allergy ke case me main guess nahi karna chahta, kyun ke galat information risky ho sakti hai. Please exact product name share karein, aur main aapko support se connect karwa deta hoon taake confirmed allergen information mil sake."
+              : "Allergen information can vary by product. For a serious allergy, I don’t want to guess because incorrect information could be risky. Please share the exact product name and I’ll connect you with support for confirmed allergen information.",
           ),
         };
       case "vegan_vegetarian_query":
@@ -1656,10 +1682,11 @@ export class SupportAgentService {
           "https://snakitos.com/policies/refund-policy",
         );
       case "refund_request":
-        return this.buildPolicyTemplateResponse(
+        return this.buildEscalationPolicyResponse(
           userMessage,
-          "Because these are food items, returns and refunds may be limited for hygiene and safety reasons. If you received a damaged, wrong, or defective item, support can review your case with proof.",
-          "https://snakitos.com/policies/refund-policy",
+          this.prefersRomanUrdu(language)
+            ? "Main refund directly approve nahi kar sakta, lekin support aapka case review karega. Please order number, photos/videos, aur issue details share kar dein taake support properly check kar sake."
+            : "I can’t approve a refund directly, but support can review your case. Please share your order number, photos/videos, and issue details so support can check it properly.",
         );
       case "refund_time":
         return this.buildPolicyTemplateResponse(
@@ -1671,7 +1698,9 @@ export class SupportAgentService {
       case "damaged_product":
         return this.buildComplaintResponse(
           userMessage,
-          "I’m sorry about that. Please share your order number and clear photos or videos of the damaged items and packaging. This helps support review your claim quickly.",
+          this.prefersRomanUrdu(language)
+            ? "I’m really sorry your order arrived damaged. Please apna order number aur damaged items/packaging ki clear photos ya videos share kar dein. Support aapka claim review karega aur replacement ya correction ke baare me guide karega."
+            : "I’m really sorry your order arrived damaged. Please share your order number and clear photos or videos of the damaged items and packaging. Support will review your claim and guide you about replacement or correction.",
         );
       case "wrong_product":
         return this.buildComplaintResponse(
@@ -1768,7 +1797,9 @@ export class SupportAgentService {
         return this.buildCuratedRecommendationResponse(
           userMessage,
           "bundle combo value mixed snack box",
-          "I understand. If you want better value, I’d suggest choosing a bundle instead of individual items. Bundles usually give more variety and a better overall snack experience.",
+          this.prefersRomanUrdu(language)
+            ? "I understand. Snakitos quality ingredients, hygienic production, packaging aur convenient delivery par focus karta hai. Agar aap better value chahte hain to single packs ke bajaye bundle choose karna zyada acha rahega, kyun ke bundles me variety bhi milti hai aur overall value better hoti hai.\n\nAapka budget kya hai? Main uske andar best-value bundle suggest kar deta hoon."
+            : "I understand. Snakitos focuses on quality ingredients, hygienic production, packaging, and convenient delivery. If you want better value, choosing a bundle instead of individual packs usually works better because you get more variety overall.\n\nWhat’s your budget? I can suggest the best-value bundle within it.",
           "value bundle",
         );
       case "product_freshness":
@@ -2092,14 +2123,20 @@ export class SupportAgentService {
             : "above 3000 ultimate mega snack box flavor fiesta party pleaser combo";
     const message =
       amount <= 500
-        ? "Under Rs. 500, you can try single packs like Choco Stick, Patata, Stix, ChickPea Puffs, Banana Chips, or Wafer Rolls. Do you prefer spicy, sweet, or salty?"
+        ? this.prefersRomanUrdu(language)
+          ? "Rs. 500 ke andar aap Choco Stick, Patata, Stix, ChickPea Puffs, Banana Chips ya Wafer Rolls jaise single packs try kar sakte hain. Aap spicy, sweet, ya salty kya prefer karte hain?"
+          : "Under Rs. 500, you can try single packs like Choco Stick, Patata, Stix, ChickPea Puffs, Banana Chips, or Wafer Rolls. Do you prefer spicy, sweet, or salty?"
         : amount <= 1000
-          ? "Under Rs. 1,000, I’d suggest a Snaktory Snack Pack, Choco Stick Combo, or a smaller combo deal. You’ll get better variety than buying only one item."
+          ? this.prefersRomanUrdu(language)
+            ? "Rs. 1,000 ke andar Snaktory Snack Pack, Choco Stick Combo ya chhota combo deal achay options hain. Is range me aapko single item ke muqable me better variety mil jati hai."
+            : "Under Rs. 1,000, I'd suggest a Snaktory Snack Pack, Choco Stick Combo, or a smaller combo deal. You'll get better variety than buying only one item."
           : amount <= 2000
-            ? language === "roman_urdu"
-              ? "Rs. 2,000 ke andar All Time Favorites, Snack Sampler Deal, Office Snack Box, ya Movie Night Nachos Bundle achay options hain. Aap spicy lena chahenge, sweet, ya mixed?"
-              : "Under Rs. 2,000, the best value options are All Time Favorites, Office Snack Box, Movie Night Nachos Bundle, Snakitos Stix Party, and Snack Sampler Deal. Do you want spicy, sweet, or mixed?"
-            : "For a bigger order, I’d recommend Ultimate Mega Snack Box, Flavor Fiesta Bundle, Party Pleaser Bundle, or Crunch Munch Combo. These are great for families, offices, parties, and gifting.";
+            ? this.prefersRomanUrdu(language)
+              ? "Rs. 2,000 ke andar Movie Night Nachos Bundle, Snakitos Stix Party, Snack Sampler Deal ya Ultimate Snack Deal achay options hain agar available hon.\n\nAgar aap spicy ke sath thora sweet balance chahte hain to Choco Stick ya Wafer Rolls bhi add kar sakte hain."
+              : "Under Rs. 2,000, the best value options are Movie Night Nachos Bundle, Snakitos Stix Party, Snack Sampler Deal, and Ultimate Snack Deal when available.\n\nIf you want a sweet balance with spicy snacks, you can also add Choco Stick or Wafer Rolls."
+            : this.prefersRomanUrdu(language)
+              ? "Bari order ke liye Ultimate Mega Snack Box, Flavor Fiesta Bundle, Party Pleaser Bundle, ya Crunch Munch Combo achay options hain. Ye family, office, party, aur gifting ke liye fit rehte hain."
+              : "For a bigger order, I'd recommend Ultimate Mega Snack Box, Flavor Fiesta Bundle, Party Pleaser Bundle, or Crunch Munch Combo. These are great for families, offices, parties, and gifting.";
 
     const products =
       amount > 0 && amount <= 2000
@@ -2450,18 +2487,23 @@ export class SupportAgentService {
     userMessage: string,
     clientKey?: string,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
+    const language = this.detectSnakitosLanguage(userMessage);
     if (!intentResult.orderId || !intentResult.phone) {
+      const noOrderNumber =
+        /(i don't have order no|i dont have order no|i don't have order number|i dont have order number|don't have order number|do not have order number|don't have order no|dont have order no|no order number|no order no|order number nahi hai|order no nahi hai|ordar no nahi hai|order id bhool gaya)/i.test(
+          this.normalizeSnakitosMessage(userMessage),
+        );
       return {
         intent: "order",
         response: await this.buildResponseWithSuggestions({
           type: "fallback",
-          message: [
-            "I can check your order for you.",
-            "Please type your details in this format:",
-            "Order: #12345",
-            "Phone: 03001234567",
-            "Example: Order #12345, phone 03001234567",
-          ].join("\n\n"),
+          message: noOrderNumber
+            ? this.prefersRomanUrdu(language)
+              ? "No problem. Please woh phone number share kar dein jo aapne checkout ke time use kiya tha. Support us number se aapka order locate kar sakta hai."
+              : "No problem. Please share the phone number you used at checkout so support can locate your order."
+            : this.prefersRomanUrdu(language)
+              ? "Zaroor, main help karta hoon. Please apna order number ya checkout wala phone number share kar dein taake support aapka order status check kar sake."
+              : "Sure, I can help track it. Please share your order number or the phone number used when placing the order so support can check the status.",
           userMessage,
           options: [
             { label: "Back", value: "show categories" },

@@ -4742,5 +4742,917 @@
     "type": "product",
     "category": "bundles",
     "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0001",
+    "name": "General Dataset: budget_under_500 (english)",
+    "description": "Intent: budget_under_500. Language: english. Total examples: 2083. Escalation rate: 0%. Tags: budget, under_500. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"please what can I buy under Rs 500 urgent\" | \"hi cheap snaks please?\" | \"please single pack under 500 in Pakistan\" | \"hello suggest snack under 500 from Snakitos\" | \"can you single pack under 500 from Snakitos\" | \"can you single pack under 500 in Pakistan\" | \"bro recommend snacks under 500 quickly\" | \"hello recommend snacks under 500 urgent\" | \"bro recommend snacks under 500\" | \"salam recommend snacks under 500 in Pakistan\" | \"bro what can I buy under Rs 500 today\" | \"hey single pack under 500 today\". Approved answer patterns: \"Under Rs. 500, you can try single packs like Choco Stick, Patata, Stix, ChickPea Puffs, Banana Chips, or Wafer Rolls. Do you prefer spicy, sweet, or salty?\".",
+    "type": "knowledge",
+    "category": "dataset_budget-under-500",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0002",
+    "name": "General Dataset: whatsapp_order (english)",
+    "description": "Intent: whatsapp_order. Language: english. Total examples: 2082. Escalation rate: 0%. Tags: whatsapp, support, order. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"salam can I ordr on WhatsApp?\" | \"hey i want to order through WhatsApp\" | \"salam i want to order through WhatsApp in Pakistan\" | \"dear snakitos do you have WhatsApp support\" | \"hi i want to order through WhatsApp urgent\" | \"can you can I order on WhatsApp from Snakitos\" | \"dear snakitos can support take my order please\" | \"can you can support take my oder in Pakistan\" | \"can I order on WhatsApp in Pakistan\" | \"dear snakitos i want to order through WhatsApp in Pakistan\" | \"i want to know do you have WhatsApp support for me\" | \"bro do you have WhatsApp support now\". Approved answer patterns: \"Yes, you can contact Snakitos support on WhatsApp for help with ordering, product suggestions, or order updates. Before you message support, I can quickly suggest the best bundle for your taste and budget.\".",
+    "type": "knowledge",
+    "category": "dataset_whatsapp-order",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0003",
+    "name": "General Dataset: gifting (english)",
+    "description": "Intent: gifting. Language: english. Total examples: 2076. Escalation rate: 0%. Tags: occasion, gift, bundle. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"salam recommend gift bundle from Snakitos\" | \"dear snakitos corporate gift snack box in Pakistan\" | \"hi snack gift for family\" | \"please i want to send snacks as a gift\" | \"hi snack gift for family?\" | \"dear snakitos corporate gift snack box today\" | \"can you corporate gift snack box today\" | \"can you recommend gift bundle urgent\" | \"bro snack gift for family for me\" | \"bro corporate gift snack box today\" | \"corporate gift snack box in Pakistan\" | \"hi recommend gift bundle urgent\". Approved answer patterns: \"For gifting, I recommend Ultimate Mega Snack Box, All Time Favorites, Choco Lovers Bundle, or Snakitos Flavor Fiesta Bundle if available. These give variety and feel better than individual packs. Is this gift for kids, family, office, or a friend?\".",
+    "type": "knowledge",
+    "category": "dataset_gifting",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0004",
+    "name": "General Dataset: cart_later (english)",
+    "description": "Intent: cart_later. Language: english. Total examples: 2075. Escalation rate: 0%. Tags: cart_recovery, hesitation. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"salam i will come back now\" | \"hi i will order later please\" | \"i want to know not ordering now please\" | \"hey maybe later please\" | \"hi i will order later\" | \"hi i will think about it for me\" | \"i want to know i will order later?\" | \"i want to know not ordering now today\" | \"i want to know not ordering now now\" | \"can you i will come back please\" | \"please i will order later in Pakistan\" | \"dear snakitos i will come back today\". Approved answer patterns: \"No problem. Before you go, would you like me to suggest the best-value bundle? Bundles usually give better variety and are great for family, kids, office, or movie night.\".",
+    "type": "knowledge",
+    "category": "dataset_cart-later",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0005",
+    "name": "General Dataset: salty_mild_recommendation (english)",
+    "description": "Intent: salty_mild_recommendation. Language: english. Total examples: 2072. Escalation rate: 0%. Tags: salty, mild, recommendation. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"hi what is good but not too spicy now\" | \"i want to know suggest mild snacks please\" | \"hey which snacks are not spicy today\" | \"can you which snacks are not spicy quickly\" | \"hey i want simple snacks for me\" | \"i want to know what is good but not too spicy now\" | \"can you i want simple snacks please\" | \"i want to know which snacks are not spicy in Pakistan\" | \"hello suggest mild snacks?\" | \"salam which snacks are not spicy in Pakistan\" | \"hey recommend mild and crunchy snacks quickly\" | \"hi i do not want spicy snacks from Snakitos\". Approved answer patterns: \"For mild and salty snacks, try Patata Salty, Banana Chips Sea Salt, ChickPea Puffs, Stix Salty, or Patata Salty Slims Pack of 6. You can add Choco Stick or Wafer Rolls for a balanced snack box.\".",
+    "type": "knowledge",
+    "category": "dataset_salty-mild-recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0006",
+    "name": "General Dataset: cod (english)",
+    "description": "Intent: cod. Language: english. Total examples: 2066. Escalation rate: 0%. Tags: payment, cod. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"cOD avaliable in my city quickly\" | \"can you cOD in Lahore please\" | \"hey do you offer COD for me\" | \"can you do you offer COD from Snakitos\" | \"hey cOD avaliable in my city quickly\" | \"hi cOD in Lahore please\" | \"is cash on delivery available today\" | \"please is cash on delivery available please\" | \"hello is cash on delivery available?\" | \"hello can I pay cash for me\" | \"hello cOD available in my city today\" | \"bro do you offer COD in Pakistan\". Approved answer patterns: \"Cash on Delivery may be available depending on your city and order type. You can confirm available payment options at checkout.\".",
+    "type": "knowledge",
+    "category": "dataset_cod",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0007",
+    "name": "General Dataset: new_products (english)",
+    "description": "Intent: new_products. Language: english. Total examples: 2065. Escalation rate: 0%. Tags: new_products, stock. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"bro any new snacks now\" | \"hey new arrivals urgent\" | \"any new snacks for me\" | \"hey new arrivals from Snakitos\" | \"i want to know any new snack\" | \"can you any new snacks today\" | \"bro any new snacks\" | \"dear snakitos are new products coming in Pakistan\" | \"new arrivals from Snakitos\" | \"any new snacks quickly\" | \"salam do you launch new flavors please\" | \"can you new arrivals urgent\". Approved answer patterns: \"Snakitos may add new snacks and bundles from time to time. Keep checking the website and social pages for new arrivals.\".",
+    "type": "knowledge",
+    "category": "dataset_new-products",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0008",
+    "name": "General Dataset: order_tracking (english)",
+    "description": "Intent: order_tracking. Language: english. Total examples: 2064. Escalation rate: 100%. Tags: order_tracking, support. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"hi tracking is not updating?\" | \"salam track my order please\" | \"i want to know order status please\" | \"track my order from Snakitos\" | \"hey my order is late\" | \"dear snakitos track my order today\" | \"salam tracking is not updating urgent\" | \"dear snakitos tracking is not updating please\" | \"bro where is my order today\" | \"salam my order is late today\" | \"hello i do not have order number quickly\" | \"hi my order is late in Pakistan\". Approved answer patterns: \"Sure, I can help track it. Please share your order number or the phone number used when placing the order. If tracking is not updating, support can check the courier status properly.\".",
+    "type": "knowledge",
+    "category": "dataset_order-tracking",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0009",
+    "name": "General Dataset: vegan_vegetarian (english)",
+    "description": "Intent: vegan_vegetarian. Language: english. Total examples: 2062. Escalation rate: 100%. Tags: vegan, vegetarian, safe_fallback. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"hello are they vegetarian for me\" | \"hello do they contain gelatin\" | \"dear snakitos are they vegetarian?\" | \"hi are these suitable for vegetarians?\" | \"bro are they vegetarian urgent\" | \"can you are your snacks vegan\" | \"salam are these suitable for vegetarians now\" | \"can you do they contain gelatin in Pakistan\" | \"can you do they contain gelatin urgent\" | \"are your snacks vegan\" | \"are they vegetarian?\" | \"hello are your snacks vegan urgent\". Approved answer patterns: \"Some products may be vegetarian-friendly, but ingredients vary by product. Please check the specific product label for dairy, gelatin, or animal-derived ingredients. For strict vegan or vegetarian diets, share the product name and support can confirm.\".",
+    "type": "knowledge",
+    "category": "dataset_vegan-vegetarian",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0010",
+    "name": "General Dataset: halal (english)",
+    "description": "Intent: halal. Language: english. Total examples: 2061. Escalation rate: 0%. Tags: halal, trust. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"dear snakitos which authority certified you?\" | \"salam are your snaks safe for Muslims\" | \"dear snakitos are your products halal quickly\" | \"please are your products halal from Snakitos\" | \"is Snakitos halal for me\" | \"hey is Snakitos halal?\" | \"salam do you have halal certification today\" | \"hey do you have halal certification from Snakitos\" | \"can you which authority certified you quickly\" | \"are your products halal from Snakitos\" | \"i want to know are your products halal for me\" | \"salam is Snakitos halal in Pakistan\". Approved answer patterns: \"Yes, Snakitos is a brand by FM Foods, and FM Foods publicly lists Halal certification as part of its quality and food safety standards. For exact product-level details or certificate copies, I can connect you with support.\".",
+    "type": "knowledge",
+    "category": "dataset_halal",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0011",
+    "name": "General Dataset: movie_night (english)",
+    "description": "Intent: movie_night. Language: english. Total examples: 2057. Escalation rate: 0%. Tags: occasion, movie_night, bundle. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"can you need snacks for movie night in Pakistan\" | \"can you snacks for gaming for me\" | \"hello movie night bundle please now\" | \"can you snacks for gaming quickly\" | \"bro need snacks for movie night now\" | \"i want to know need snacks for movie night now\" | \"bro need snacks for movie night for me\" | \"please what should I eat while watching movie urgent\" | \"hi movie night bundle please\" | \"hi what should I eat while watching movie today\" | \"bro need snacks for movie night\" | \"bro recommend Netflix snacks in Pakistan\". Approved answer patterns: \"For movie night, I recommend crunchy and shareable snacks like Movie Night Nachos Bundle, Snakitos Stix Party, Patata Crunch Deal, Nachos Salsa, and Ultimate Snack Deal. How many people are you ordering for?\".",
+    "type": "knowledge",
+    "category": "dataset_movie-night",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0012",
+    "name": "General Dataset: payment_failed (english)",
+    "description": "Intent: payment_failed. Language: english. Total examples: 2056. Escalation rate: 100%. Tags: payment, failed, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"salam i paid but did not receive confirmation urgent\" | \"i want to know i paid but did not receive confirmation for me\" | \"amount deducted but order not confirmed\" | \"dear snakitos my payment failed today\" | \"can you payment deducted no order now\" | \"salam i paid but did not receive confirmation\" | \"salam i paid but did not receive confirmation please\" | \"bro transaction failed what should I do urgent\" | \"salam payment deducted no order now\" | \"dear snakitos transaction failed what should I do in Pakistan\" | \"hello transaction failed what should I do now\" | \"hey transaction failed what should I do today\". Approved answer patterns: \"Sorry about that. Please check whether the amount was deducted. If it was not deducted, you can try placing the order again. If the amount was deducted but your order was not confirmed, keep a screenshot or transaction ID and contact support for verification.\".",
+    "type": "knowledge",
+    "category": "dataset_payment-failed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0013",
+    "name": "General Dataset: return_request (english)",
+    "description": "Intent: return_request. Language: english. Total examples: 2056. Escalation rate: 100%. Tags: return, food_safety, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"hi i changed my mind can I return\" | \"hello i want to return snacks from Snakitos\" | \"i changed my mind can I return please\" | \"i want to know can food items be returned from Snakitos\" | \"please i want to return snacks for me\" | \"can you i changed my mind can I return please\" | \"i want to know can I return my order for me\" | \"i changed my mind can I return quickly\" | \"bro can I return my order please\" | \"hi i changed my mind can I return please\" | \"salam i want to return snacks in Pakistan\" | \"dear snakitos return policy kya hai today\". Approved answer patterns: \"Because these are food items, returns may be limited for hygiene and safety reasons. However, if you received a damaged, wrong, or defective item, please contact support with proof so the case can be reviewed.\".",
+    "type": "knowledge",
+    "category": "dataset_return-request",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0014",
+    "name": "General Dataset: shipping_time (english)",
+    "description": "Intent: shipping_time. Language: english. Total examples: 2055. Escalation rate: 0%. Tags: shipping, timeline. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"hi how long does delivery take for me\" | \"i want to know how many days for Islamabad now\" | \"salam how many days for Karachi now\" | \"delivery time kya hai\" | \"dear snakitos how long does shipping take now\" | \"please how many days for Karachi please\" | \"can you dilevery time kya hai now\" | \"please how long does delivery take now\" | \"dear snakitos how long does delivery take now\" | \"hi how many days for Islamabad from Snakitos\" | \"can you how many days for Lahore please\" | \"please how many days for Karachi quickly\". Approved answer patterns: \"Delivery time depends on your city and courier service. Major cities are usually faster, while other areas may take a little longer. Once your order is shipped, you can track it using your order details.\".",
+    "type": "knowledge",
+    "category": "dataset_shipping-time",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0015",
+    "name": "General Dataset: sweet_recommendation (english)",
+    "description": "Intent: sweet_recommendation. Language: english. Total examples: 2055. Escalation rate: 0%. Tags: sweet, chocolate, recommendation, cross_sell. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"i need something sweet from Snakitos\" | \"salam i want chocolate snacks from Snakitos\" | \"hello i need something sweet today\" | \"salam best chocolate item please\" | \"dear snakitos recommend me dessert snacks in Pakistan\" | \"dear snakitos what is sweet here?\" | \"hello do you have wafer rolls today\" | \"hello do you have wafer rolls quickly\" | \"salam what is meetha here from Snakitos\" | \"please which snacks are good for sweet craving today\" | \"salam what is sweet here today\" | \"can you do you have wafer rolls urgent\". Approved answer patterns: \"For sweet cravings, I recommend Choco Stick Chocolate, Choco Stick Strawberry, Coco Choco Can, Wafer Rolls Hazelnut, Wafer Rolls Strawberry, and Choco Lovers Bundle. You can add Patata or Stix if you want a sweet plus salty snack box.\".",
+    "type": "knowledge",
+    "category": "dataset_sweet-recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0016",
+    "name": "General Dataset: returning_customer (english)",
+    "description": "Intent: returning_customer. Language: english. Total examples: 2052. Escalation rate: 0%. Tags: repeat_purchase, recommendation. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"hi i already tried Stix now\" | \"i already tried Stix urgent\" | \"i want to know what should I reorder quickly\" | \"i want to know i ordered before what should I try now quickly\" | \"i want to know i already tried Stix please\" | \"please i already tried Stix quickly\" | \"salam i ordered before what should I try now quickly\" | \"dear snakitos i ordered before what should I try now from Snakitos\" | \"dear snakitos suggest something new from Snakitos\" | \"hi suggest something new urgent\" | \"hello i am returning customer\" | \"hello i am returning customer today\". Approved answer patterns: \"Welcome back! If you enjoyed spicy snacks last time, try another Stix flavor, Nachos, or a spicy bundle. If you want something different, I can suggest a sweet plus salty mix.\".",
+    "type": "knowledge",
+    "category": "dataset_returning-customer",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0017",
+    "name": "General Dataset: seasonal_offers (english)",
+    "description": "Intent: seasonal_offers. Language: english. Total examples: 2052. Escalation rate: 0%. Tags: seasonal, discount. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"please new year deal in Pakistan\" | \"hey any seasonal offer?\" | \"dear snakitos special deal for today for me\" | \"dear snakitos special deal for today quickly\" | \"dear snakitos ramadan offer hai urgent\" | \"i want to know ramadan offer hai today\" | \"bro special deal for today please\" | \"hi ramadan offer hai please\" | \"hey special deal for today quickly\" | \"bro do you have Eid deals?\" | \"i want to know special deal for today today\" | \"salam do you have Eid deals from Snakitos\". Approved answer patterns: \"Seasonal deals may be available from time to time. Please check the Deals section, or tell me your budget and I can suggest the best current value options.\".",
+    "type": "knowledge",
+    "category": "dataset_seasonal-offers",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0018",
+    "name": "General Dataset: why_buy (english)",
+    "description": "Intent: why_buy. Language: english. Total examples: 2050. Escalation rate: 0%. Tags: brand_trust, quality. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"hey what makes Snakitos good from Snakitos\" | \"can you is Snakitos trustworthy urgent\" | \"bro what makes Snakitos good from Snakitos\" | \"can you tell me about brand quality please\" | \"i want to know why are you better urgent\" | \"salam why should I buy from Snakitos in Pakistan\" | \"can you why are you better please\" | \"dear snakitos why are you better\" | \"why should I buy from Snakitos please\" | \"salam why are you better for me\" | \"hi why are you better please\" | \"hey why should I buy from Snakitos today\". Approved answer patterns: \"Snakitos offers a wide range of Pakistani snacks, sweet treats, spicy snacks, bundles, and snack boxes. It is a brand by FM Foods, with focus on quality, hygiene, taste, and export-quality production standards. Bundles are especially good for variety and value.\".",
+    "type": "knowledge",
+    "category": "dataset_why-buy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0019",
+    "name": "General Dataset: fallback_unknown (english)",
+    "description": "Intent: fallback_unknown. Language: english. Total examples: 2049. Escalation rate: 100%. Tags: fallback, anti_hallucination, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"bro what is certificate number now\" | \"hey what is certificate number today\" | \"bro what is exact shelf life?\" | \"salam can you tell exact nutrition facts?\" | \"hi what is certificate number quickly\" | \"bro what is certificate number today\" | \"confirm my refund now today\" | \"hi what is certificate number urgent\" | \"hey what is certificate number in Pakistan\" | \"can you confirm my refund now in Pakistan\" | \"salam what is exact shelf life for me\" | \"hello confirm my refund now from Snakitos\". Approved answer patterns: \"I’m not fully sure about that information, and I don’t want to misguide you. Please share the product or order details, and I’ll connect you with support for confirmed information.\".",
+    "type": "knowledge",
+    "category": "dataset_fallback-unknown",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0020",
+    "name": "General Dataset: regular_snacks (english)",
+    "description": "Intent: regular_snacks. Language: english. Total examples: 2049. Escalation rate: 0%. Tags: repeat_purchase, monthly. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"salam monthly snack box today\" | \"snacks for daily use in Pakistan\" | \"hey need snacks for home every month from Snakitos\" | \"salam monthly snack box urgent\" | \"salam snaks for daily use\" | \"can you need snacks for home every month quickly\" | \"please i want regular snacks urgent\" | \"bro monthly snack box\" | \"salam need snacks for home every month today\" | \"monthly snack box now\" | \"i want to know regular office snacks from Snakitos\" | \"salam regular office snacks from Snakitos\". Approved answer patterns: \"Great idea. For regular snacking, I recommend a mix of sweet, salty, and spicy items. Office Snack Box, All Time Favorites, and Snaktory packs are good options for repeat orders.\".",
+    "type": "knowledge",
+    "category": "dataset_regular-snacks",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0021",
+    "name": "General Dataset: damaged_product (english)",
+    "description": "Intent: damaged_product. Language: english. Total examples: 2048. Escalation rate: 100%. Tags: damaged, replacement, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"can you my snacks arrived damaged\" | \"hi my snacks arrived damaged in Pakistan\" | \"can you package is damaged urgent\" | \"i want to know i received damaged items please\" | \"please i received damaged items for me\" | \"items are crushed from Snakitos\" | \"bro my snacks arrived damaged from Snakitos\" | \"hello package is damaged today\" | \"items are crushed now\" | \"product was broken today\" | \"hey product was broken?\" | \"please i received damaged items\". Approved answer patterns: \"I’m sorry your order arrived damaged. Please share your order number and clear photos or videos of the damaged items and packaging so support can review your claim quickly.\".",
+    "type": "knowledge",
+    "category": "dataset_damaged-product",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0022",
+    "name": "General Dataset: general_what_do_you_sell (english)",
+    "description": "Intent: general_what_do_you_sell. Language: english. Total examples: 2048. Escalation rate: 0%. Tags: general, catalog, recommendation. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"dear snakitos tell me about Snakitos products in Pakistan\" | \"dear snakitos what do you sell in Pakistan\" | \"hello what do you sell?\" | \"dear snakitos what products do you have from Snakitos\" | \"i want to know what can I buy here in Pakistan\" | \"i want to know show me your snack range quickly\" | \"can you what products do you have please\" | \"hello i am new here what do you sell please\" | \"hi what products do you have?\" | \"please what products do you have now\" | \"hey show me your snack range?\" | \"what products do you have?\". Approved answer patterns: \"Snakitos offers snacks like Stix, Patata, Banana Chips, Choco Sticks, Wafer Rolls, ChickPea Puffs, Nachos, Snaktory packs, and snack bundles. Are you looking for spicy, sweet, kids-friendly, or a mixed snack box?\".",
+    "type": "knowledge",
+    "category": "dataset_general-what-do-you-sell",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0023",
+    "name": "General Dataset: discount_code (english)",
+    "description": "Intent: discount_code. Language: english. Total examples: 2047. Escalation rate: 0%. Tags: discount, deals. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"salam how can I get discount quickly\" | \"dear snakitos any offer today\" | \"salam give me discount today\" | \"salam give me discount for me\" | \"hi how can I get discount for me\" | \"hi any promo code now\" | \"bro give me discount from Snakitos\" | \"hello any offer today from Snakitos\" | \"hello how can I get discount from Snakitos\" | \"please any offer today please\" | \"hello any discount code?\" | \"hey any offer today?\". Approved answer patterns: \"Current discounts and offers may change from time to time. You can check the Deals section on the website for active offers. I can also recommend the best-value bundle based on your budget.\".",
+    "type": "knowledge",
+    "category": "dataset_discount-code",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0024",
+    "name": "General Dataset: party (english)",
+    "description": "Intent: party. Language: english. Total examples: 2046. Escalation rate: 0%. Tags: occasion, party, bundle. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"dear snakitos party snacks please\" | \"hey snacks for guests today\" | \"can you party snacks please from Snakitos\" | \"bro party snacks please in Pakistan\" | \"bro snack for guests from Snakitos\" | \"dear snakitos snacks for guests please\" | \"dear snakitos party snack please for me\" | \"hey party snacks please urgent\" | \"hello snacks for guests now\" | \"hey i have 10 guests what snacks should I buy quickly\" | \"hey snacks for guests in Pakistan\" | \"can you party snacks please please\". Approved answer patterns: \"For parties, I recommend Party Pleaser Bundle, Ultimate Mega Snack Box, Snakitos Flavor Fiesta Bundle, Nachos packs, and Stix Party if available. How many guests are you expecting?\".",
+    "type": "knowledge",
+    "category": "dataset_party",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0025",
+    "name": "General Dataset: delivery_cities (english)",
+    "description": "Intent: delivery_cities. Language: english. Total examples: 2040. Escalation rate: 0%. Tags: shipping, cities. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"bro do you deliver to Karachi from Snakitos\" | \"salam do you deliver to Karachi please\" | \"i want to know do you deliver to Karachi quickly\" | \"bro can I order from Multan quickly\" | \"hey do you deliver to Lahore now\" | \"hello do you deliver to Karachi now\" | \"can I order from Multan\" | \"bro do you deliver to small cities from Snakitos\" | \"do you deliver to Lahore\" | \"dear snakitos do you deliver to Karachi for me\" | \"i want to know do you deliver to Karachi please\" | \"please do you deliver to Karachi for me\". Approved answer patterns: \"Snakitos delivers across Pakistan through courier service. Delivery time and charges may vary by city. Please enter your address at checkout to see the available delivery options.\".",
+    "type": "knowledge",
+    "category": "dataset_delivery-cities",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0026",
+    "name": "General Dataset: kids_recommendation (english)",
+    "description": "Intent: kids_recommendation. Language: english. Total examples: 2040. Escalation rate: 0%. Tags: kids, recommendation, mild. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"hey are spicy snacks okay for kids today\" | \"hi best snacks for children please\" | \"can you are teekha snaks okay for kids today\" | \"dear snakitos suggest school lunch snacks from Snakitos\" | \"hi kids friendly snacks please?\" | \"are spicy snacks okay for kids quickly\" | \"please best snacks for children urgent\" | \"i want to know best snacks for children for me\" | \"salam suggest school lunch snacks please\" | \"dear snakitos suggest school lunch snacks\" | \"hi are spicy snacks okay for kids from Snakitos\" | \"hey kids friendly snacks please?\". Approved answer patterns: \"For kids, I recommend milder and fun options like Choco Stick Chocolate, Choco Stick Strawberry, Coco Choco Can, Wafer Rolls Strawberry, Wafer Rolls Hazelnut, Patata Salty, and Kids Fun Box. For very spicy items, use caution for children.\".",
+    "type": "knowledge",
+    "category": "dataset_kids-recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0027",
+    "name": "General Dataset: human_support (english)",
+    "description": "Intent: human_support. Language: english. Total examples: 2037. Escalation rate: 100%. Tags: support, human_agent. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"salam connect me with support please\" | \"i want to know talk to agent from Snakitos\" | \"hi connect me with support?\" | \"connect me with support from Snakitos\" | \"salam talk to agent?\" | \"please i want human support?\" | \"dear snakitos need help from person please\" | \"i want to know call me in Pakistan\" | \"salam i want human support?\" | \"need help from person from Snakitos\" | \"dear snakitos talk to agent now\" | \"dear snakitos talk to agent quickly\". Approved answer patterns: \"Sure, I can connect you with Snakitos support. Please share your name, contact number, and a short detail of your issue so support can help properly.\".",
+    "type": "knowledge",
+    "category": "dataset_human-support",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0028",
+    "name": "General Dataset: budget_above_3000 (english)",
+    "description": "Intent: budget_above_3000. Language: english. Total examples: 2034. Escalation rate: 0%. Tags: budget, above_3000, bundle. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"hi best big bundle for me\" | \"bro i have budget above 3000?\" | \"i want to know recommend big snack box for me\" | \"bro i have budget above 3000 now\" | \"hi best big bundle urgent\" | \"hello suggest premium snack bundle please\" | \"please recommend big snack box please\" | \"bro need snacks for family in Pakistan\" | \"can you i want a large order?\" | \"recommend big snack box?\" | \"dear snakitos i want a large ordr for me\" | \"can you i want a large order please\". Approved answer patterns: \"For a bigger order, I recommend Ultimate Mega Snack Box, Snakitos Flavor Fiesta Bundle, Party Pleaser Bundle, Crunch Munch Combo, Fun Snack Bundle, or FM Foods Mega Snack Deal if available. These are great for families, offices, parties, and gifting.\".",
+    "type": "knowledge",
+    "category": "dataset_budget-above-3000",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0029",
+    "name": "General Dataset: wrong_product (english)",
+    "description": "Intent: wrong_product. Language: english. Total examples: 2034. Escalation rate: 100%. Tags: wrong_item, replacement, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"bro wrong item delivered\" | \"can you one item is different urgent\" | \"one item is different please\" | \"salam this is not what I ordered?\" | \"dear snakitos this is not what I ordered in Pakistan\" | \"dear snakitos this is not what I ordered\" | \"hi one item is different now\" | \"can you this is not what I ordered today\" | \"i want to know wrong item delivered in Pakistan\" | \"salam this is not what I ordered in Pakistan\" | \"hello my order has missing item urgent\" | \"dear snakitos i received the wrong product?\". Approved answer patterns: \"Sorry for the inconvenience. Please share your order number and a photo of the product received. Support can review and guide you about replacement or correction.\".",
+    "type": "knowledge",
+    "category": "dataset_wrong-product",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0030",
+    "name": "General Dataset: allergens (english)",
+    "description": "Intent: allergens. Language: english. Total examples: 2033. Escalation rate: 100%. Tags: allergen, safety, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"hi is it safe for peanut allergy from Snakitos\" | \"hello does it contain nuts quickly\" | \"are products processed near nuts today\" | \"hey do they contain soy urgent\" | \"can you are your snacks gluten free\" | \"hey are products processed near nuts for me\" | \"dear snakitos is it safe for peanut allergy?\" | \"hi are products processed near nuts from Snakitos\" | \"bro are your snacks gluten free?\" | \"salam do products contain milk?\" | \"bro is it safe for peanut allergy\" | \"please does it contain nuts for me\". Approved answer patterns: \"Allergen information can vary by product. Please check the packaging for the most accurate allergen details. If you have a serious allergy, I don’t want to guess. Please share the product name and I’ll connect you with support for confirmation.\".",
+    "type": "knowledge",
+    "category": "dataset_allergens",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0031",
+    "name": "General Dataset: tea_time (english)",
+    "description": "Intent: tea_time. Language: english. Total examples: 2033. Escalation rate: 0%. Tags: occasion, tea_time. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"hey evening snack recommendation from Snakitos\" | \"please what is good for tea time now\" | \"bro snacks with chai today\" | \"salam what should I eat with tea\" | \"salam tea time snacks please urgent\" | \"dear snakitos what should I eat with tea?\" | \"hi evening snack recommendation for me\" | \"hi what is good for tea time today\" | \"please evening snack recommendation for me\" | \"bro evening snack recommendation quickly\" | \"bro what is good for tea time for me\" | \"hi tea time snacks please today\". Approved answer patterns: \"For tea time, I suggest Wafer Rolls, Choco Sticks, Patata Salty, ChickPea Puffs, and Banana Chips Sea Salt. If you want variety, All Time Favorites is a good option.\".",
+    "type": "knowledge",
+    "category": "dataset_tea-time",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0032",
+    "name": "General Dataset: exchange_flavor (english)",
+    "description": "Intent: exchange_flavor. Language: english. Total examples: 2033. Escalation rate: 100%. Tags: exchange, flavor, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"hello can I exchange flavor in Pakistan\" | \"can you change Stix flavor please today\" | \"i ordered wrong flavor?\" | \"i want to know change Stix flavor please please\" | \"dear snakitos i ordered wrong flavor?\" | \"can you replace flavor now\" | \"dear snakitos can you replace flavor today\" | \"i want to know change Stix flavor please from Snakitos\" | \"hi change Stix flavor please urgent\" | \"hello change Stix flavor please today\" | \"i ordered wrong flavor today\" | \"dear snakitos can I exchange flavor urgent\". Approved answer patterns: \"If the order has not been dispatched yet, flavor changes may be possible. If it has already been shipped or delivered, exchange may be limited because these are food products. Please share your order number so support can check.\".",
+    "type": "knowledge",
+    "category": "dataset_exchange-flavor",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0033",
+    "name": "General Dataset: coupon_not_working (english)",
+    "description": "Intent: coupon_not_working. Language: english. Total examples: 2031. Escalation rate: 100%. Tags: coupon, discount, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"please why coupon failed?\" | \"bro discount code not applying today\" | \"hey promo code invalid please\" | \"can you why coupon failed today\" | \"bro coupon expired quickly\" | \"why coupon failed in Pakistan\" | \"dear snakitos discount code not applying for me\" | \"can you coupon expired for me\" | \"hello discount code not applying quickly\" | \"discount code not applying for me\" | \"please discount code not applying now\" | \"discount code not applying\". Approved answer patterns: \"Please check if the coupon is still valid, applies to your selected products, and meets any minimum order requirement. If it still does not work, share a screenshot with support.\".",
+    "type": "knowledge",
+    "category": "dataset_coupon-not-working",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0034",
+    "name": "General Dataset: pakistani_brand (english)",
+    "description": "Intent: pakistani_brand. Language: english. Total examples: 2028. Escalation rate: 0%. Tags: brand, pakistan. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"dear snakitos where is Snakitos from quickly\" | \"salam are these Pakistani snacks\" | \"dear snakitos is this local brand\" | \"can you pakistani product hai\" | \"i want to know pakistani product hai for me\" | \"can you are these Pakistani snacks urgent\" | \"hey is this local brand urgent\" | \"bro are these Pakistani snacks for me\" | \"hello where is Snakitos from now\" | \"pakistani product hai please\" | \"can you are these Pakistani snacks please\" | \"please pakistani product hai today\". Approved answer patterns: \"Yes, Snakitos is a Pakistani snack brand by FM Foods. The brand offers modern Pakistani snacks with a focus on quality, flavor, and hygienic packaging.\".",
+    "type": "knowledge",
+    "category": "dataset_pakistani-brand",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0035",
+    "name": "General Dataset: refund_time (english)",
+    "description": "Intent: refund_time. Language: english. Total examples: 2028. Escalation rate: 100%. Tags: refund, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"i want to know i need refund for me\" | \"dear snakitos refund status please now\" | \"hello how long does refund take urgent\" | \"approve my refund for me\" | \"hey i need refund quickly\" | \"salam i need refund today\" | \"i want to know when will I get refund in Pakistan\" | \"can you i need refund today\" | \"can you refund status please from Snakitos\" | \"hello approve my refund today\" | \"bro approve my refund quickly\" | \"can you how long does refund take for me\". Approved answer patterns: \"Refund timing depends on the payment method and review process. Once approved, support will guide you about the expected refund timeline. I cannot approve refunds directly, but I can connect you with support.\".",
+    "type": "knowledge",
+    "category": "dataset_refund-time",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0036",
+    "name": "General Dataset: reserve_product (english)",
+    "description": "Intent: reserve_product. Language: english. Total examples: 2026. Escalation rate: 0%. Tags: stock, reservation. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"can you reserve this for me now\" | \"hi hold this product please?\" | \"please hold this product please urgent\" | \"dear snakitos hold this product please quickly\" | \"bro keep one pack for me quickly\" | \"hey reserve bundle quickly\" | \"hello hold this product please from Snakitos\" | \"can I book this item today\" | \"hi can I book this item urgent\" | \"dear snakitos can you reserve this for me quickly\" | \"please hold this product please\" | \"dear snakitos hold this product please today\". Approved answer patterns: \"Product reservation may not always be possible. I recommend placing the order as soon as possible if the item is available.\".",
+    "type": "knowledge",
+    "category": "dataset_reserve-product",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0037",
+    "name": "General Dataset: spicy_recommendation (english)",
+    "description": "Intent: spicy_recommendation. Language: english. Total examples: 2024. Escalation rate: 0%. Tags: spicy, recommendation, upsell_bundle. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"hi i want spicy snacks please\" | \"bro best spicy snacks under my budget please\" | \"can you which one is hot and crunchy urgent\" | \"hey best spicy snacks under my budget from Snakitos\" | \"hello which one is hot and crunchy\" | \"i like hot snacks\" | \"hey suggest spicy snacks urgent\" | \"hey what is very spicy\" | \"can you give me spicy combo please\" | \"hello give me spicy combo from Snakitos\" | \"dear snakitos which one is hot and crunchy\" | \"hello i want spicey snacks quickly\". Approved answer patterns: \"If you enjoy spicy snacks, try Stix Hot & Spicy, Stix Peri Peri, Stix Lemon & Chilli, Nachos Salsa, Nachos Paprika, or Banana Chips Achari Masti. For better value, choose a spicy bundle instead of only single packs.\".",
+    "type": "knowledge",
+    "category": "dataset_spicy-recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0038",
+    "name": "General Dataset: certification (english)",
+    "description": "Intent: certification. Language: english. Total examples: 2022. Escalation rate: 100%. Tags: certification, trust, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"do you have ISO in Pakistan\" | \"salam are your products approved for export?\" | \"please are you HACCP certified please\" | \"dear snakitos are you HACCP certified now\" | \"hello are your products approved for export for me\" | \"do you have ISO?\" | \"can you are you HACCP certified urgent\" | \"please are your products approved for export today\" | \"dear snakitos are you HACCP certified urgent\" | \"salam are you certified please\" | \"please are you certified from Snakitos\" | \"are your products approved for export\". Approved answer patterns: \"Snakitos is a brand by FM Foods. FM Foods lists food safety and quality standards including Halal, ISO 22000, HACCP, SFDA, and FDA-related approvals/compliance. For certificate copies, wholesale, export, or corporate buying, support can confirm properly.\".",
+    "type": "knowledge",
+    "category": "dataset_certification",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0039",
+    "name": "General Dataset: recommend_general (english)",
+    "description": "Intent: recommend_general. Language: english. Total examples: 2021. Escalation rate: 0%. Tags: recommendation, first_order. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"hi give me your best recommendation today\" | \"what should I buy now\" | \"dear snakitos what should I buy urgent\" | \"i am confused what should I ordr for me\" | \"hi give me your best recommendation for me\" | \"what is best for first order today\" | \"hey i am confused what should I order for me\" | \"i want to know recommend me something urgent\" | \"please which snacks are good\" | \"can you what should I buy\" | \"dear snakitos which snaks are good from Snakitos\" | \"which snacks are good please\". Approved answer patterns: \"Sure! I can recommend the best option. What are you craving today: spicy, sweet, salty, crunchy, kids-friendly, or a mixed snack box?\".",
+    "type": "knowledge",
+    "category": "dataset_recommend-general",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0040",
+    "name": "General Dataset: ingredients (english)",
+    "description": "Intent: ingredients. Language: english. Total examples: 2020. Escalation rate: 100%. Tags: ingredients, safe_fallback, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"i want to know do you use MSG from Snakitos\" | \"dear snakitos do you use vegetable oil quickly\" | \"please does this contain chicken or beef extract quickly\" | \"what ingredients are used in Pakistan\" | \"i want to know what oil do you use from Snakitos\" | \"dear snakitos are flavors natural or artificial in Pakistan\" | \"salam do you use vegetable oil quickly\" | \"do you use MSG now\" | \"salam does this contain gelatin today\" | \"hi what ingredients are used urgent\" | \"hey does this contain gelatin today\" | \"hey what oil do you use\". Approved answer patterns: \"Ingredients vary by product. Please check the product packaging or product page for the exact ingredient list. Some snack products may include ingredients like corn/wheat, vegetable oil, salt, and spices depending on the product. If you have a dietary restriction, share the exact product name and support can confirm.\".",
+    "type": "knowledge",
+    "category": "dataset_ingredients",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0041",
+    "name": "General Dataset: customer_confused (english)",
+    "description": "Intent: customer_confused. Language: english. Total examples: 2020. Escalation rate: 0%. Tags: cart_recovery, recommendation. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"bro too many options today\" | \"dear snakitos i am confused for me\" | \"dear snakitos i do not know what to buy now\" | \"too many options today\" | \"can you help me choose please\" | \"bro i am confused please\" | \"i am not sure in Pakistan\" | \"bro i am not sure please\" | \"hey help me choose please\" | \"hi too many options for me\" | \"hi i do not know what to buy for me\" | \"hi i am confused now\". Approved answer patterns: \"No worries. Tell me one thing: do you want spicy, sweet, kids-friendly, movie-night, office, or mixed snacks?\".",
+    "type": "knowledge",
+    "category": "dataset_customer-confused",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0042",
+    "name": "General Dataset: budget_under_1000 (english)",
+    "description": "Intent: budget_under_1000. Language: english. Total examples: 2019. Escalation rate: 0%. Tags: budget, under_1000, combo. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"hi budget is 1000?\" | \"dear snakitos budget is 1000 urgent\" | \"hello budget is 1000 quickly\" | \"i want to know combo under 1000 today\" | \"salam combo under 1000 now\" | \"can you combo under 1000 from Snakitos\" | \"please budget is 1000?\" | \"can you what can I get under Rs 1000 urgent\" | \"what can I get under Rs 1000?\" | \"hi recommend snacks under 1000 from Snakitos\" | \"salam best deal below 1000 in Pakistan\" | \"hello combo under 1000 in Pakistan\". Approved answer patterns: \"Under Rs. 1,000, I’d suggest a Snaktory Snack Pack, Choco Stick Combo, Snaktory Namkeen, Spicy Stix Collection, or Stix & CocoChoco Treats if available. You’ll get better variety than buying only one item.\".",
+    "type": "knowledge",
+    "category": "dataset_budget-under-1000",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0043",
+    "name": "General Dataset: online_payment (english)",
+    "description": "Intent: online_payment. Language: english. Total examples: 2016. Escalation rate: 0%. Tags: payment, online. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"hi do you accept JazzCash urgent\" | \"bro do you accept JazzCash urgent\" | \"hey do you accept Easypaisa in Pakistan\" | \"dear snakitos do you accept JazzCash quickly\" | \"dear snakitos do you accept Easypaisa today\" | \"hi do you accept card payment urgent\" | \"dear snakitos do you accept JazzCash today\" | \"bro do you accept Easypaisa for me\" | \"i want to know can I pay online now\" | \"hi do you accept card paymet for me\" | \"please do you accept Easypaisa in Pakistan\" | \"i want to know can I pay online\". Approved answer patterns: \"Available payment options will appear at checkout. Depending on the current setup, you may see options such as COD, bank transfer, card payment, or wallet payment.\".",
+    "type": "knowledge",
+    "category": "dataset_online-payment",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0044",
+    "name": "General Dataset: price_objection (english)",
+    "description": "Intent: price_objection. Language: english. Total examples: 2016. Escalation rate: 0%. Tags: price_objection, cart_recovery, bundle. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"bro price is too much\" | \"hi why are prices high urgent\" | \"dear snakitos too expensive?\" | \"hi why are prices high today\" | \"salam can you make it cheaper now\" | \"can you can you make it cheaper today\" | \"bro price is too much in Pakistan\" | \"dear snakitos i found cheaper snacks\" | \"hi can you make it cheaper\" | \"bro too expensive in Pakistan\" | \"bro price is too much quickly\" | \"please why are prices high for me\". Approved answer patterns: \"I understand. Snakitos focuses on quality ingredients, hygienic production, packaging, and convenient delivery. If you want better value, I recommend choosing bundles instead of single packs.\".",
+    "type": "knowledge",
+    "category": "dataset_price-objection",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0045",
+    "name": "General Dataset: shipping_charges (english)",
+    "description": "Intent: shipping_charges. Language: english. Total examples: 2012. Escalation rate: 0%. Tags: shipping, charges. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"dear snakitos how much is shipping urgent\" | \"please how much is shipping?\" | \"i want to know do bundles have free shipping please\" | \"bro what are your delivery charges for me\" | \"salam what are your delivery charges now\" | \"salam delivery fee kya hai now\" | \"hello delivery fee kya hai for me\" | \"i want to know do bundles have free shipping from Snakitos\" | \"please what are your delivery charges now\" | \"dear snakitos how much is shipping\" | \"hey is delivry free for me\" | \"hello is delivery free?\". Approved answer patterns: \"Delivery charges may depend on your city, order value, and current offer. Please check the checkout page for the exact delivery charge. Some bundles or deals may include free shipping if the current offer allows it.\".",
+    "type": "knowledge",
+    "category": "dataset_shipping-charges",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0046",
+    "name": "General Dataset: complaint_angry (english)",
+    "description": "Intent: complaint_angry. Language: english. Total examples: 2011. Escalation rate: 100%. Tags: complaint, angry, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"hey bad service in Pakistan\" | \"hello bad service today\" | \"can you bad service?\" | \"i am very angry today\" | \"can you your service is terrible in Pakistan\" | \"please no one is helping me now\" | \"bro i want to complain quickly\" | \"please your service is terrible urgent\" | \"hello worst experience quickly\" | \"please no one is helping me for me\" | \"dear snakitos no one is helping me\" | \"dear snakitos no one is helping me quickly\". Approved answer patterns: \"I’m really sorry you had a bad experience. Please share your order number and issue details so support can check this properly and help you as quickly as possible.\".",
+    "type": "knowledge",
+    "category": "dataset_complaint-angry",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0047",
+    "name": "General Dataset: corporate_gifting (english)",
+    "description": "Intent: corporate_gifting. Language: english. Total examples: 2009. Escalation rate: 100%. Tags: corporate, gift, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"hi do you do corporate gifting?\" | \"custom gift boxes for company from Snakitos\" | \"salam office gifting snacks urgent\" | \"hey custom gift boxes for company in Pakistan\" | \"hello need corporate snack boxes please\" | \"bro need corporate snack boxes quickly\" | \"bro gifts for employees from Snakitos\" | \"salam office gifting snacks from Snakitos\" | \"gifts for employees?\" | \"please gifts for employees today\" | \"salam gifts for employees today\" | \"please office gifting snack urgent\". Approved answer patterns: \"Corporate snack boxes may be possible for offices, events, and gifting. Please share the quantity, budget per box, city, and preferred snack type so support can guide you.\".",
+    "type": "knowledge",
+    "category": "dataset_corporate-gifting",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0048",
+    "name": "General Dataset: office_snacks (english)",
+    "description": "Intent: office_snacks. Language: english. Total examples: 2009. Escalation rate: 0%. Tags: occasion, office, bundle. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"hey recommend snacks for workplace from Snakitos\" | \"dear snakitos office snack box please today\" | \"hi reccomend snack for workplace from Snakitos\" | \"salam snack for my team from Snakitos\" | \"office snack box please urgent\" | \"can you recommend snacks for workplace please\" | \"i want to know office snack box please quickly\" | \"dear snakitos snacks for my team\" | \"please bulk snacks for office?\" | \"hey need snacks for office please\" | \"hello need snacks for office now\" | \"hello snacks for my team for me\". Approved answer patterns: \"For office snacking, I recommend Office Snack Box, All Time Favorites, Banana Chips Sea Salt, Wafer Rolls, Patata Salty, and ChickPea Puffs. These are easy to share and give a good sweet plus savory mix. How many people are in your team?\".",
+    "type": "knowledge",
+    "category": "dataset_office-snacks",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0049",
+    "name": "General Dataset: change_address (english)",
+    "description": "Intent: change_address. Language: english. Total examples: 2003. Escalation rate: 100%. Tags: order, address_change, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"dear snakitos wrong city in order now\" | \"hello wrong city in order quickly\" | \"bro i entered wrong address for me\" | \"salam wrong city in order in Pakistan\" | \"i want to know can I change my address\" | \"bro i entered wrong address today\" | \"salam update delivery address\" | \"please can I change my address now\" | \"dear snakitos update shipping address from Snakitos\" | \"please wrong city in order today\" | \"can you can I change my address please\" | \"i want to know wrong city in order from Snakitos\". Approved answer patterns: \"If your order has not been dispatched yet, address changes may be possible. Please share your order number and updated address as soon as possible so support can check before dispatch.\".",
+    "type": "knowledge",
+    "category": "dataset_change-address",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0050",
+    "name": "General Dataset: out_of_stock (english)",
+    "description": "Intent: out_of_stock. Language: english. Total examples: 2001. Escalation rate: 100%. Tags: stock, restock, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"i want to know restock date please quickly\" | \"hello can you notify me when available today\" | \"bro this product is out of stock\" | \"when will it return from Snakitos\" | \"restock date please urgent\" | \"hello is this avaliable\" | \"this product is out of stock\" | \"hello is this available in Pakistan\" | \"dear snakitos when will it return\" | \"hey when will it return now\" | \"please when will it return for me\" | \"can you notify me when available please\". Approved answer patterns: \"Restock timing can vary by product. Please share the product name, and support can confirm expected availability. If the item is available now, I recommend placing the order soon.\".",
+    "type": "knowledge",
+    "category": "dataset_out-of-stock",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0051",
+    "name": "General Dataset: wholesale (english)",
+    "description": "Intent: wholesale. Language: english. Total examples: 2000. Escalation rate: 100%. Tags: wholesale, bulk, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"please i want to buy for shop?\" | \"salam wholesale price please please\" | \"please do you offer wholesale urgent\" | \"hey wholesale price please for me\" | \"hello do you offer wholesale from Snakitos\" | \"can you i want to buy for shop?\" | \"salam wholesale price please from Snakitos\" | \"hey i am retailer\" | \"dear snakitos wholesale price please in Pakistan\" | \"i want to buy for shop?\" | \"can you distributor rate?\" | \"hello i want to buy for shop\". Approved answer patterns: \"Wholesale or bulk pricing may be available for retailers, offices, events, or corporate buyers. Please share your name, business name, city, required products, quantity, contact number, and delivery location so support can guide you.\".",
+    "type": "knowledge",
+    "category": "dataset_wholesale",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0052",
+    "name": "General Dataset: secure_payment (english)",
+    "description": "Intent: secure_payment. Language: english. Total examples: 1999. Escalation rate: 0%. Tags: payment, security. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"bro payment safe hai?\" | \"salam is online payment secure quickly\" | \"is your checkout safe in Pakistan\" | \"hey should I share card details here?\" | \"i want to know can I send bank details in chat in Pakistan\" | \"hey can I send bank details in chat urgent\" | \"can you is online payment secure in Pakistan\" | \"payment safe hai urgent\" | \"hey should I share card details here from Snakitos\" | \"dear snakitos is online payment secure now\" | \"bro is online payment secure now\" | \"please is your checkout safe urgent\". Approved answer patterns: \"Payments should only be made through the official Snakitos checkout or official support channels. Avoid sharing sensitive card or banking details in chat.\".",
+    "type": "knowledge",
+    "category": "dataset_secure-payment",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0053",
+    "name": "General Dataset: same_day_delivery (english)",
+    "description": "Intent: same_day_delivery. Language: english. Total examples: 1995. Escalation rate: 100%. Tags: shipping, same_day, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"please same day in Karachi urgent\" | \"hey do you offer same day delivery urgent\" | \"dear snakitos urgent delivery possible from Snakitos\" | \"salam can I get order today today\" | \"hi can you deliver in few hours in Pakistan\" | \"i want to know can I get order today now\" | \"can you do you offer same day delivery?\" | \"please same day in Karachi today\" | \"hello urgent delivery possible from Snakitos\" | \"i want to know can you deliver in few hours from Snakitos\" | \"can you same day in Karachi now\" | \"dear snakitos can I get order today quickly\". Approved answer patterns: \"Same-day delivery may not be available for all areas. Please share your city and area so support can confirm availability.\".",
+    "type": "knowledge",
+    "category": "dataset_same-day-delivery",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0054",
+    "name": "General Dataset: bulk_discount (english)",
+    "description": "Intent: bulk_discount. Language: english. Total examples: 1989. Escalation rate: 100%. Tags: bulk, wholesale, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"please wholesale rate please please\" | \"hey bulk order price now\" | \"i want many snack boxes for me\" | \"hello discount for large order quickly\" | \"dear snakitos wholesale rate please from Snakitos\" | \"hey wholesale rate please today\" | \"salam i want many snack boxes now\" | \"salam i want many snack boxes in Pakistan\" | \"dear snakitos do you offer bulk discounts quickly\" | \"salam discount for large order urgent\" | \"dear snakitos i want many snack boxes today\" | \"discount for large order now\". Approved answer patterns: \"Bulk discounts may be available for large orders, offices, events, retailers, or corporate gifting. Please share your required quantity, city, and product preference so support can guide you.\".",
+    "type": "knowledge",
+    "category": "dataset_bulk-discount",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0055",
+    "name": "General Dataset: event_order (english)",
+    "description": "Intent: event_order. Language: english. Total examples: 1985. Escalation rate: 100%. Tags: event, bulk, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"need snacks for school event urgent\" | \"salam i need snacks for an event please\" | \"bro can you supply for event now\" | \"can you snacks for 100 people from Snakitos\" | \"hi can you supply for event please\" | \"can you supply for event in Pakistan\" | \"i want to know snacks for 100 people from Snakitos\" | \"hi event snack order\" | \"can you can you supply for event please\" | \"salam event snack order\" | \"salam need snacks for school event quickly\" | \"can you snacks for 100 people?\". Approved answer patterns: \"Sure! Please share the number of guests, city, event date, and budget. I can suggest bundles, and support can help with bulk pricing.\".",
+    "type": "knowledge",
+    "category": "dataset_event-order",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0056",
+    "name": "General Dataset: budget_under_2000 (english)",
+    "description": "Intent: budget_under_2000. Language: english. Total examples: 1968. Escalation rate: 0%. Tags: budget, under_2000, bundle. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"hello budget is Rs 2000 in Pakistan\" | \"what should I buy in 2000 from Snakitos\" | \"i want to know snack box below 2000 now\" | \"hey recommend snacks under 2000 now\" | \"can you what should I buy in 2000 in Pakistan\" | \"hello snack box below 2000 quickly\" | \"bro recommend snacks under 2000?\" | \"dear snakitos recommend snacks under 2000 from Snakitos\" | \"dear snakitos best bundle under 2000\" | \"dear snakitos budget is Rs 2000 for me\" | \"budget is Rs 2000 now\" | \"hey recommend snacks under 2000 urgent\". Approved answer patterns: \"Under Rs. 2,000, the best value options are All Time Favorites, Office Snack Box, Movie Night Nachos Bundle, Snakitos Stix Party, Snack Sampler Deal, or Ultimate Snack Deal if available. Do you want spicy, sweet, or mixed?\".",
+    "type": "knowledge",
+    "category": "dataset_budget-under-2000",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0057",
+    "name": "General Dataset: freshness (english)",
+    "description": "Intent: freshness. Language: english. Total examples: 1944. Escalation rate: 0%. Tags: freshness, storage. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"dear snakitos are products fresh now\" | \"salam how to store snacks in Pakistan\" | \"please will snacks be fresh please\" | \"can you will snacks be fresh\" | \"hi how to store snacks\" | \"hello how to store snacks now\" | \"bro are these quality packed quickly\" | \"hey will snacks be fresh?\" | \"i want to know how to store snacks today\" | \"hello what about expiry date in Pakistan\" | \"salam what about expiry date now\" | \"dear snakitos are these quality packed for me\". Approved answer patterns: \"Snakitos focuses on quality-packed snacks. For best taste, store products in a cool, dry place and consume before the expiry date printed on the pack.\".",
+    "type": "knowledge",
+    "category": "dataset_freshness",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0058",
+    "name": "General Dataset: freshness (roman_urdu)",
+    "description": "Intent: freshness. Language: roman_urdu. Total examples: 1565. Escalation rate: 0%. Tags: freshness, storage. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"snakitos quality packed hain\" | \"acha products fresh hain Pakistan me\" | \"snakitos products fresh hain?\" | \"products fresh hain?\" | \"snakitos expiry date kya hogi abhi\" | \"bhai quality packed hain?\" | \"mujhe snacks store kaise karne hain please\" | \"please expiry date kya hogi Pakistan me\" | \"acha snacks fresh milenge Snakitos se\" | \"mujhe snacks fresh milenge?\" | \"snacks fresh milenge abhi\" | \"please snacks fresh milenge\". Approved answer patterns: \"Snakitos quality-packed snacks par focus karta hai. Best taste ke liye products ko cool, dry place me store karein aur pack par printed expiry date se pehle consume karein.\".",
+    "type": "knowledge",
+    "category": "dataset_freshness",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0059",
+    "name": "General Dataset: budget_under_2000 (roman_urdu)",
+    "description": "Intent: budget_under_2000. Language: roman_urdu. Total examples: 1541. Escalation rate: 0%. Tags: budget, under_2000, bundle. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"snakitos 2000 tak snack box batao?\" | \"bhai 2000 tak snack box batao jaldi\" | \"please budget 2000 hai kya best hai Pakistan me\" | \"zara 2000 ke andar kuch acha batao jaldi\" | \"zara 2000 tak snack box batao jaldi\" | \"acha 2000 ke andar kuch acha batao abhi\" | \"acha 2000 tak snack box batao Pakistan me\" | \"snakitos 2000 ke andar kuch acha batao chahiye\" | \"zara rs 2000 me bundle chahiye?\" | \"yar rs 2000 me bundle chahiye\" | \"please rs 2000 me bundle chahiye batao\" | \"yar 2000 tak snack box batao Snakitos se\". Approved answer patterns: \"Rs. 2,000 ke andar All Time Favorites, Office Snack Box, Movie Night Nachos Bundle, Snakitos Stix Party, Snack Sampler Deal ya Ultimate Snack Deal achay options hain agar available hon. Aap spicy, sweet ya mixed chahte hain?\".",
+    "type": "knowledge",
+    "category": "dataset_budget-under-2000",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0060",
+    "name": "General Dataset: event_order (roman_urdu)",
+    "description": "Intent: event_order. Language: roman_urdu. Total examples: 1523. Escalation rate: 100%. Tags: event, bulk, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"please 100 logon ke liye snacks\" | \"snakitos event snack order karna hai abhi\" | \"yar school event ke liye snacks Pakistan me\" | \"please event ke liye snacks chahiye Snakitos se\" | \"salam event snack order karna hai abhi\" | \"salam school event ke liye snacks abhi\" | \"acha event ke liye snacks chahiye\" | \"acha event supply kar sakte ho Pakistan me\" | \"mujhe event supply kar sakte ho jaldi\" | \"please event snack order karna hai batao\" | \"zara 100 logon ke liye snacks Pakistan me\" | \"salam event supply kar sakte ho Snakitos se\". Approved answer patterns: \"Zaroor! Please guests ki quantity, city, event date aur budget share karein. Main bundles suggest kar sakta hoon, aur support bulk pricing me help karega.\".",
+    "type": "knowledge",
+    "category": "dataset_event-order",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0061",
+    "name": "General Dataset: bulk_discount (roman_urdu)",
+    "description": "Intent: bulk_discount. Language: roman_urdu. Total examples: 1520. Escalation rate: 100%. Tags: bulk, wholesale, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"bhai large order pe discount hai abhi\" | \"large order pe discount hai batao\" | \"salam bulk discount milta hai\" | \"salam bohat snack boxes chahiye chahiye\" | \"please bohat snack boxes chahiye please\" | \"please large order pe discount hai chahiye\" | \"yar bulk discount milta hai Pakistan me\" | \"mujhe wholesale rate chahiye chahiye\" | \"bohat snack boxes chahiye please\" | \"salam large order pe discount hai please\" | \"bohat snack boxes chahiye abhi\" | \"salam bulk discount milta hai?\". Approved answer patterns: \"Bulk discounts large orders, offices, events, retailers ya corporate gifting ke liye available ho sakte hain. Required quantity, city aur product preference share karein taake support guide kar sake.\".",
+    "type": "knowledge",
+    "category": "dataset_bulk-discount",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0062",
+    "name": "General Dataset: same_day_delivery (roman_urdu)",
+    "description": "Intent: same_day_delivery. Language: roman_urdu. Total examples: 1514. Escalation rate: 100%. Tags: shipping, same_day, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"yar urgent dilevery possible hai batao\" | \"zara urgent delivery possible hai\" | \"bhai kuch hours me deliver kar sakte ho abhi\" | \"please kuch hours me deliver kar sakte ho Pakistan me\" | \"salam karachi me same day hai?\" | \"acha urgent delivery possible hai Snakitos se\" | \"urgent delivery possible hai abhi\" | \"urgent shipping possible hai please\" | \"acha aaj order mil sakta hai please\" | \"acha aaj order mil sakta hai chahiye\" | \"zara aaj order mil sakta hai Snakitos se\" | \"karachi me same day hai batao\". Approved answer patterns: \"Same-day delivery har area me available nahi hoti. Apna city aur area share karein taake support availability confirm kar sake.\".",
+    "type": "knowledge",
+    "category": "dataset_same-day-delivery",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0063",
+    "name": "General Dataset: secure_payment (roman_urdu)",
+    "description": "Intent: secure_payment. Language: roman_urdu. Total examples: 1510. Escalation rate: 0%. Tags: payment, security. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"yar bank details chat me bhej du please\" | \"yar online payment secure hai\" | \"bhai bank details chat me bhej du abhi\" | \"snakitos payment safe hai chahiye\" | \"bhai online payment secure hai chahiye\" | \"salam payment safe hai jaldi\" | \"payment safe hai please\" | \"please card details chat me share karun please\" | \"please checkout safe hai\" | \"zara card details chat me share karun abhi\" | \"snakitos checkout safe hai\" | \"salam online payment secure hai?\". Approved answer patterns: \"Payments sirf official Snakitos checkout ya official support channels se karein. Card ya banking details chat me share na karein.\".",
+    "type": "knowledge",
+    "category": "dataset_secure-payment",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0064",
+    "name": "General Dataset: wholesale (roman_urdu)",
+    "description": "Intent: wholesale. Language: roman_urdu. Total examples: 1508. Escalation rate: 100%. Tags: wholesale, bulk, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"main retailer hoon please\" | \"please wholesale price chahiye Snakitos se\" | \"please wholesale offer karte ho?\" | \"mujhe shop ke liye buy karna hai chahiye\" | \"salam shop ke liye buy karna hai chahiye\" | \"mujhe shop ke liye buy karna hai Pakistan me\" | \"bhai shop ke liye buy karna hai Pakistan me\" | \"please wholesale offer karte ho Pakistan me\" | \"yar shop ke liye buy karna hai?\" | \"snakitos distributor rate hai chahiye\" | \"yar wholesale price chahiye batao\" | \"mujhe main retailer hoon\". Approved answer patterns: \"Wholesale ya bulk pricing retailers, offices, events ya corporate buyers ke liye available ho sakti hai. Please apna name, business name, city, required products, quantity, contact number aur delivery location share karein taake support guide kar sake.\".",
+    "type": "knowledge",
+    "category": "dataset_wholesale",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0065",
+    "name": "General Dataset: out_of_stock (roman_urdu)",
+    "description": "Intent: out_of_stock. Language: roman_urdu. Total examples: 1507. Escalation rate: 100%. Tags: stock, restock, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"acha available ho to batana please\" | \"mujhe restock date batao Pakistan me\" | \"mujhe ye product out of stock hai chahiye\" | \"kab wapas ayega batao\" | \"zara available ho to batana abhi\" | \"mujhe kab wapas ayega\" | \"acha ye product out of stock hai jaldi\" | \"bhai available ho to batana\" | \"yar ye available hai?\" | \"salam restock date batao\" | \"zara ye available hai jaldi\" | \"salam ye available hai batao\". Approved answer patterns: \"Restock timing product ke hisaab se vary karti hai. Product name share karein, support expected availability confirm kar sakta hai. Agar item abhi available hai to order jaldi place karna better hai.\".",
+    "type": "knowledge",
+    "category": "dataset_out-of-stock",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0066",
+    "name": "General Dataset: change_address (roman_urdu)",
+    "description": "Intent: change_address. Language: roman_urdu. Total examples: 1506. Escalation rate: 100%. Tags: order, address_change, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"yar mera address edit ho sakta hai please\" | \"mujhe mera address edit ho sakta hai batao\" | \"mera address edit ho sakta hai Snakitos se\" | \"salam order me city wrong hai\" | \"mera address edit ho sakta hai jaldi\" | \"yar address change karna hai Pakistan me\" | \"address change karna hai jaldi\" | \"bhai shipping address update kar do chahiye\" | \"yar delivery address update kar do jaldi\" | \"yar delivery address update kar do?\" | \"bhai mera address edit ho sakta hai batao\" | \"order me city wrong hai?\". Approved answer patterns: \"Agar order dispatch nahi hua to address change possible ho sakta hai. Please order number aur updated address jaldi share karein taake support dispatch se pehle check kar sake.\".",
+    "type": "knowledge",
+    "category": "dataset_change-address",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0067",
+    "name": "General Dataset: office_snacks (roman_urdu)",
+    "description": "Intent: office_snacks. Language: roman_urdu. Total examples: 1500. Escalation rate: 0%. Tags: occasion, office, bundle. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"team ke liye snack box batao\" | \"salam office ke liye snacks chahiye?\" | \"snakitos team ke liye snack box batao?\" | \"bhai office ke liye snacks chahiye Pakistan me\" | \"snakitos office ke liye snacks chahiye\" | \"salam office snack box hai Pakistan me\" | \"snakitos team ke liye snack box batao chahiye\" | \"acha team ke liye snack box batao please\" | \"snakitos team ke liye snack box batao Pakistan me\" | \"please workplace ke liye snacks recommend karo batao\" | \"mujhe workplace ke liye snacks recommend karo jaldi\" | \"mujhe team ke liye snack box batao abhi\". Approved answer patterns: \"Office snacking ke liye Office Snack Box, All Time Favorites, Banana Chips Sea Salt, Wafer Rolls, Patata Salty aur ChickPea Puffs achay options hain. Ye share karna easy hain aur sweet plus savory mix dete hain. Aapki team me kitne log hain?\".",
+    "type": "knowledge",
+    "category": "dataset_office-snacks",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0068",
+    "name": "General Dataset: corporate_gifting (roman_urdu)",
+    "description": "Intent: corporate_gifting. Language: roman_urdu. Total examples: 1499. Escalation rate: 100%. Tags: corporate, gift, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"zara corporate snack boxes chahiye?\" | \"corporate snack boxes chahiye batao\" | \"snakitos corporate gifting karte ho Snakitos se\" | \"snakitos corporate gifting karte ho batao\" | \"mujhe company ke liye custom gift boxes abhi\" | \"salam office gifting snacks please\" | \"yar corporate gifting karte ho abhi\" | \"salam company ke liye custom gift boxes batao\" | \"please employees ke liye gifts chahiye jaldi\" | \"mujhe office gifting snacks jaldi\" | \"mujhe corporate gifting karte ho?\" | \"corporate gifting karte ho?\". Approved answer patterns: \"Corporate snack boxes offices, events aur gifting ke liye possible ho sakte hain. Quantity, budget per box, city aur preferred snack type share karein taake support guide kar sake.\".",
+    "type": "knowledge",
+    "category": "dataset_corporate-gifting",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0069",
+    "name": "General Dataset: complaint_angry (roman_urdu)",
+    "description": "Intent: complaint_angry. Language: roman_urdu. Total examples: 1497. Escalation rate: 100%. Tags: complaint, angry, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"bhai worst experience Pakistan me\" | \"bad service hai chahiye\" | \"salam complaint karni hai Snakitos se\" | \"salam main bohat gussa hoon?\" | \"bad service hai abhi\" | \"acha bad service hai abhi\" | \"mujhe bad service hai batao\" | \"salam koi help nahi kar raha chahiye\" | \"snakitos aapki service bohat buri hai jaldi\" | \"mujhe complaint karni hai chahiye\" | \"please worst experience please\" | \"zara main bohat gussa hoon?\". Approved answer patterns: \"Mujhe really sorry hai ke aapka experience bura raha. Please order number aur issue details share karein taake support isay properly check karke jaldi help kar sake.\".",
+    "type": "knowledge",
+    "category": "dataset_complaint-angry",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0070",
+    "name": "General Dataset: shipping_charges (roman_urdu)",
+    "description": "Intent: shipping_charges. Language: roman_urdu. Total examples: 1497. Escalation rate: 0%. Tags: shipping, charges. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"bundle pe free delivery hai?\" | \"acha courier charges batao\" | \"snakitos delivery free hai abhi\" | \"yar delivery charges kya hain\" | \"delivery charges kya hain?\" | \"acha shipping kitni hai chahiye\" | \"yar shipping kitni hai jaldi\" | \"bhai bundle pe free delivery hai please\" | \"please delivery free hai jaldi\" | \"mujhe shipping kitni hai batao\" | \"snakitos courier charges batao please\" | \"please delivery charges kya hain please\". Approved answer patterns: \"Delivery charges city, order value aur current offer ke hisaab se depend kar sakte hain. Exact delivery charge checkout page par check karein. Kuch bundles ya deals me free shipping ho sakti hai agar current offer me available ho.\".",
+    "type": "knowledge",
+    "category": "dataset_shipping-charges",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0071",
+    "name": "General Dataset: price_objection (roman_urdu)",
+    "description": "Intent: price_objection. Language: roman_urdu. Total examples: 1493. Escalation rate: 0%. Tags: price_objection, cart_recovery, bundle. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"snakitos prices high kyun hain please\" | \"mujhe sasta kar do please\" | \"bhai bohat expensive hai Pakistan me\" | \"mujhe bohat expensive hai\" | \"mujhe bohat expensive hai chahiye\" | \"mujhe bohat expensive hai Pakistan me\" | \"sasta kar do Snakitos se\" | \"snakitos sasta kar do Snakitos se\" | \"salam mujhe cheaper snacks mil rahe hain?\" | \"mujhe cheaper snack mil rahe hain batao\" | \"bhai bohat expensive hai please\" | \"bhai price zyada hai Snakitos se\". Approved answer patterns: \"Samajh gaya. Snakitos quality ingredients, hygienic production, packaging aur convenient delivery par focus karta hai. Better value ke liye single packs ke bajaye bundles choose karna acha rahega.\".",
+    "type": "knowledge",
+    "category": "dataset_price-objection",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0072",
+    "name": "General Dataset: online_payment (roman_urdu)",
+    "description": "Intent: online_payment. Language: roman_urdu. Total examples: 1493. Escalation rate: 0%. Tags: payment, online. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"please card payment hai\" | \"yar easypaisa accept karte ho jaldi\" | \"snakitos online payment kar sakta hoon Snakitos se\" | \"snakitos card payment hai please\" | \"acha online payment kar sakta hoon chahiye\" | \"please online payment kar sakta hoon Pakistan me\" | \"snakitos card payment hai\" | \"jazzCash hai batao\" | \"snakitos bank transfer kar sakta hoon abhi\" | \"acha bank transfer kar sakta hoon jaldi\" | \"snakitos card payment hai Snakitos se\" | \"snakitos bank transfer kar sakta hoon chahiye\". Approved answer patterns: \"Available payment options checkout par show hongi. Current setup ke hisaab se COD, bank transfer, card payment ya wallet payment options mil sakte hain.\".",
+    "type": "knowledge",
+    "category": "dataset_online-payment",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0073",
+    "name": "General Dataset: budget_under_1000 (roman_urdu)",
+    "description": "Intent: budget_under_1000. Language: roman_urdu. Total examples: 1490. Escalation rate: 0%. Tags: budget, under_1000, combo. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"bhai 1000 ke andar kuch acha batao Pakistan me\" | \"salam budget 1000 hai kya loon Pakistan me\" | \"snakitos 1000 ke andar kuch acha batao chahiye\" | \"rs 1000 me combo hai Pakistan me\" | \"mujhe budget 1000 hai kya loon jaldi\" | \"1000 tak best deal abhi\" | \"zara 1000 ke andar kuch acha batao Snakitos se\" | \"salam 1000 tak best deal please\" | \"mujhe rs 1000 me combo hai\" | \"please 1000 ke andar kuch acha batao\" | \"mujhe 1000 tak best deal\" | \"bhai rs 1000 me combo hai\". Approved answer patterns: \"Rs. 1,000 ke andar Snaktory Snack Pack, Choco Stick Combo, Snaktory Namkeen, Spicy Stix Collection ya Stix & CocoChoco Treats achay options hain agar available hon. Isme single item se zyada variety milegi.\".",
+    "type": "knowledge",
+    "category": "dataset_budget-under-1000",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0074",
+    "name": "General Dataset: ingredients (roman_urdu)",
+    "description": "Intent: ingredients. Language: roman_urdu. Total examples: 1489. Escalation rate: 100%. Tags: ingredients, safe_fallback, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"yar preservatives hain batao\" | \"acha vegetable oil hai Snakitos se\" | \"yar gelatin hai Snakitos se\" | \"mSG use hota hai please\" | \"please aap konsa oil use karte ho jaldi\" | \"salam vegetable oil hai batao\" | \"acha gelatin hai chahiye\" | \"acha preservatives hain jaldi\" | \"salam mSG use hota hai chahiye\" | \"mujhe vegetable oil hai?\" | \"snakitos ingredients kya hain please\" | \"zara mSG use hota hai chahiye\". Approved answer patterns: \"Ingredients product ke hisaab se vary karte hain. Exact list ke liye product packaging ya product page check karein. Kuch snacks me corn/wheat, vegetable oil, salt aur spices ho sakte hain. Dietary restriction ho to exact product name share karein, support confirm kar dega.\".",
+    "type": "knowledge",
+    "category": "dataset_ingredients",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0075",
+    "name": "General Dataset: recommend_general (roman_urdu)",
+    "description": "Intent: recommend_general. Language: roman_urdu. Total examples: 1488. Escalation rate: 0%. Tags: recommendation, first_order. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"snakitos kuch acha recommend karo?\" | \"bhai kuch acha recommend karo chahiye\" | \"snakitos kuch acha recommend karo abhi\" | \"acha main confuse hoon kya loon abhi\" | \"please first time ordr kar raha hoon kya best hai Pakistan me\" | \"snakitos kuch acha recommend karo Snakitos se\" | \"bhai mujhe snacks suggest karo chahiye\" | \"snakitos kuch acha recommend karo\" | \"snakitos mujhe snacks suggest karo Pakistan me\" | \"zara mujhe snacks suggest karo Snakitos se\" | \"yar kya order karun?\" | \"please mujhe snacks suggest karo chahiye\". Approved answer patterns: \"Zaroor! Main best option recommend kar sakta hoon. Aapko spicy, sweet, salty, crunchy, kids-friendly ya mixed snack box chahiye?\".",
+    "type": "knowledge",
+    "category": "dataset_recommend-general",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0076",
+    "name": "General Dataset: customer_confused (roman_urdu)",
+    "description": "Intent: customer_confused. Language: roman_urdu. Total examples: 1488. Escalation rate: 0%. Tags: cart_recovery, recommendation. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"please main confuse hoon abhi\" | \"snakitos samajh nahi aa raha kya loon abhi\" | \"yar bohat options hain\" | \"main confuse hoon please\" | \"please samajh nahi aa raha kya loon Snakitos se\" | \"bhai samajh nahi aa raha kya loon Snakitos se\" | \"zara mujhe sure nahi Pakistan me\" | \"bhai choose karne me help karo Snakitos se\" | \"please main confuse hoon please\" | \"snakitos samajh nahi aa raha kya loon please\" | \"bhai choose karne me help karo abhi\" | \"snakitos bohat options hain batao\". Approved answer patterns: \"No worries. Bas ek cheez bata dein: aapko spicy, sweet, kids-friendly, movie-night, office ya mixed snacks chahiye?\".",
+    "type": "knowledge",
+    "category": "dataset_customer-confused",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0077",
+    "name": "General Dataset: certification (roman_urdu)",
+    "description": "Intent: certification. Language: roman_urdu. Total examples: 1487. Escalation rate: 100%. Tags: certification, trust, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"iSO certificate hai Snakitos se\" | \"salam hACCP certified hain abhi\" | \"snakitos hACCP certified hain Pakistan me\" | \"bhai iSO certificate hai\" | \"salam hACCP certified hain jaldi\" | \"yar aap certified ho jaldi\" | \"snakitos hACCP certified hain abhi\" | \"acha export approval hai Snakitos se\" | \"snakitos aap certified ho please\" | \"snakitos export approval hai batao\" | \"mujhe aap certified ho Snakitos se\" | \"snakitos export quality hai?\". Approved answer patterns: \"Snakitos FM Foods ka brand hai. FM Foods Halal, ISO 22000, HACCP, SFDA aur FDA-related approvals/compliance jaise food safety aur quality standards list karta hai. Certificate copies, wholesale, export ya corporate buying ke liye support confirm karega.\".",
+    "type": "knowledge",
+    "category": "dataset_certification",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0078",
+    "name": "General Dataset: spicy_recommendation (roman_urdu)",
+    "description": "Intent: spicy_recommendation. Language: roman_urdu. Total examples: 1485. Escalation rate: 0%. Tags: spicy, recommendation, upsell_bundle. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"bhai hot and spicy kuch suggest karo\" | \"zara hot and spicy kuch suggest karo abhi\" | \"zara mujhe mirchon wala snack chahiye chahiye\" | \"zara spicy combo batao Snakitos se\" | \"salam mujhe spicy chahiye Pakistan me\" | \"mujhe hot and spicy kuch suggest karo Snakitos se\" | \"zara teekha snack konsa hai\" | \"acha hot and spicy kuch suggest karo batao\" | \"acha spicy combo batao Snakitos se\" | \"snakitos teekha snack konsa hai jaldi\" | \"mujhe spicy combo batao\" | \"salam mujhe mirchon wala snack chahiye Pakistan me\". Approved answer patterns: \"Agar aapko spicy snacks pasand hain to Stix Hot & Spicy, Stix Peri Peri, Stix Lemon & Chilli, Nachos Salsa, Nachos Paprika, ya Banana Chips Achari Masti try karein. Better value ke liye spicy bundle bhi acha option hai.\".",
+    "type": "knowledge",
+    "category": "dataset_spicy-recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0079",
+    "name": "General Dataset: reserve_product (roman_urdu)",
+    "description": "Intent: reserve_product. Language: roman_urdu. Total examples: 1482. Escalation rate: 0%. Tags: stock, reservation. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"ye mere liye reserve kar do Pakistan me\" | \"snakitos ek pack mere liye rakh do jaldi\" | \"yar ek pack mere liye rakh do jaldi\" | \"acha item book ho sakta hai please\" | \"zara product hold kar sakte ho please\" | \"mujhe product hold kar sakte ho batao\" | \"bhai ek pack mere liye rakh do please\" | \"salam ek pack mere liye rakh do chahiye\" | \"please ye mere liye reserve kar do Pakistan me\" | \"yar item book ho sakta hai batao\" | \"please item book ho sakta hai\" | \"please product hold kar sakte ho Pakistan me\". Approved answer patterns: \"Product reservation hamesha possible nahi hoti. Agar item available hai to main recommend karunga ke aap order jald place kar dein.\".",
+    "type": "knowledge",
+    "category": "dataset_reserve-product",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0080",
+    "name": "General Dataset: pakistani_brand (roman_urdu)",
+    "description": "Intent: pakistani_brand. Language: roman_urdu. Total examples: 1481. Escalation rate: 0%. Tags: brand, pakistan. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"acha snakitos Pakistani hai?\" | \"please snakitos kahan ka brand hai Pakistan me\" | \"yar local brand hai Pakistan me\" | \"ye Pakistani snacks hain batao\" | \"snakitos snakitos kahan ka brand hai\" | \"zara snakitos Pakistani hai jaldi\" | \"mujhe ye Pakistani snacks hain please\" | \"yar snakitos Pakistani hai jaldi\" | \"acha ye Pakistani snacks hain please\" | \"salam local brand hai\" | \"salam local brand hai jaldi\" | \"acha pakistani product hai jaldi\". Approved answer patterns: \"Ji, Snakitos FM Foods ka Pakistani snack brand hai. Brand quality, flavor aur hygienic packaging ke focus ke sath modern Pakistani snacks offer karta hai.\".",
+    "type": "knowledge",
+    "category": "dataset_pakistani-brand",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0081",
+    "name": "General Dataset: refund_time (roman_urdu)",
+    "description": "Intent: refund_time. Language: roman_urdu. Total examples: 1481. Escalation rate: 100%. Tags: refund, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"mujhe refund chahiye please\" | \"salam refund kitne din me hota hai please\" | \"refund kitne din me hota hai Pakistan me\" | \"please mujhe refund chahiye Snakitos se\" | \"please refund approve kar do\" | \"mujhe mera refund kab milega jaldi\" | \"mujhe mera refund kab milega please\" | \"mujhe refund kitne din me hota hai\" | \"mujhe refund approve kar do please\" | \"acha mujhe refund chahiye Snakitos se\" | \"mujhe refund kitne din me hota hai batao\" | \"please refund kitne din me hota hai?\". Approved answer patterns: \"Refund timing payment method aur review process par depend karti hai. Approval ke baad support expected refund timeline guide karega. Main refund directly approve nahi kar sakta, lekin support se connect kar sakta hoon.\".",
+    "type": "knowledge",
+    "category": "dataset_refund-time",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0082",
+    "name": "General Dataset: coupon_not_working (roman_urdu)",
+    "description": "Intent: coupon_not_working. Language: roman_urdu. Total examples: 1478. Escalation rate: 100%. Tags: coupon, discount, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"salam coupon fail kyun hua Pakistan me\" | \"mujhe coupon expire hogaya please\" | \"bhai promo code invalid hai chahiye\" | \"bhai coupon expire hogaya\" | \"yar discount code apply nahi ho raha\" | \"coupon fail kyun hua chahiye\" | \"zara coupon work nahi kar raha Pakistan me\" | \"please coupon work nahi kar raha abhi\" | \"snakitos coupon expire hogaya abhi\" | \"discount code apply nahi ho raha abhi\" | \"salam coupon fail kyun hua abhi\" | \"yar coupon fail kyun hua?\". Approved answer patterns: \"Please check karein coupon valid hai, selected products par apply hota hai, aur minimum order requirement meet ho rahi hai. Agar phir bhi work nahi karta to support ko screenshot share karein.\".",
+    "type": "knowledge",
+    "category": "dataset_coupon-not-working",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0083",
+    "name": "General Dataset: tea_time (roman_urdu)",
+    "description": "Intent: tea_time. Language: roman_urdu. Total examples: 1476. Escalation rate: 0%. Tags: occasion, tea_time. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"please sham ke snack ke liye kya loon chahiye\" | \"mujhe tea time snacks batao?\" | \"acha chai ke sath kya acha hai jaldi\" | \"salam chai snack recommend karo please\" | \"snakitos chai ke sath kya acha hai jaldi\" | \"please chai ke sath kya acha hai Snakitos se\" | \"acha sham ke snack ke liye kya loon\" | \"zara chai ke sath kya acha hai Pakistan me\" | \"bhai tea time snacks batao?\" | \"mujhe sham ke snack ke liye kya loon?\" | \"snakitos chai ke sath kya acha hai chahiye\" | \"acha sham ke snack ke liye kya loon please\". Approved answer patterns: \"Tea time ke liye Wafer Rolls, Choco Sticks, Patata Salty, ChickPea Puffs aur Banana Chips Sea Salt achay options hain. Variety chahiye to All Time Favorites acha option hai.\".",
+    "type": "knowledge",
+    "category": "dataset_tea-time",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0084",
+    "name": "General Dataset: exchange_flavor (roman_urdu)",
+    "description": "Intent: exchange_flavor. Language: roman_urdu. Total examples: 1476. Escalation rate: 100%. Tags: exchange, flavor, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"zara stix flavor change karna hai batao\" | \"snakitos galat flavor order hogaya?\" | \"zara order ke baad flavor change kar sakta hoon jaldi\" | \"mujhe order ke baad flavor change kar sakta hoon please\" | \"acha ordr ke baad flavor change kar sakta hoon Pakistan me\" | \"salam flavor exchange ho sakta hai\" | \"flavor replace kar do batao\" | \"acha order ke baad flavor change kar sakta hoon batao\" | \"zara flavor replace kar do jaldi\" | \"acha stix flavor change karna hai batao\" | \"acha flavor replace kar do jaldi\" | \"please stix flavor change karna hai Snakitos se\". Approved answer patterns: \"Agar order dispatch nahi hua to flavor change possible ho sakta hai. Agar ship ya deliver ho gaya hai to food products hone ki wajah se exchange limited ho sakta hai. Order number share karein taake support check kar sake.\".",
+    "type": "knowledge",
+    "category": "dataset_exchange-flavor",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0085",
+    "name": "General Dataset: allergens (roman_urdu)",
+    "description": "Intent: allergens. Language: roman_urdu. Total examples: 1476. Escalation rate: 100%. Tags: allergen, safety, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"salam isme nuts hain chahiye\" | \"bhai milk contain karta hai batao\" | \"milk contain karta hai Snakitos se\" | \"acha nuts ke paas process hota hai\" | \"milk contain karta hai batao\" | \"yar nuts ke paas process hota hai abhi\" | \"mujhe nuts ke paas process hota hai jaldi\" | \"bhai isme nuts hain abhi\" | \"bhai gluten free hai?\" | \"please peanut allergy ke liye safe hai jaldi\" | \"mujhe soy hai chahiye\" | \"snakitos peanut allergy ke liye safe hai abhi\". Approved answer patterns: \"Allergen information product ke hisaab se vary karti hai. Accurate allergen details ke liye packaging check karein. Serious allergy ho to main guess nahi karna chahta. Product name share karein, main support se confirm karwa deta hoon.\".",
+    "type": "knowledge",
+    "category": "dataset_allergens",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0086",
+    "name": "General Dataset: budget_above_3000 (roman_urdu)",
+    "description": "Intent: budget_above_3000. Language: roman_urdu. Total examples: 1475. Escalation rate: 0%. Tags: budget, above_3000, bundle. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"yar family ke liye bundle batao batao\" | \"yar bara snack box chahiye please\" | \"bhai large order ke liye kya best hai please\" | \"yar 3000 se upar budget hai abhi\" | \"family ke liye bundle batao\" | \"please large order ke liye kya best hai Pakistan me\" | \"salam bara snack box chahiye chahiye\" | \"acha bara snack box chahiye abhi\" | \"family ke liye bundle batao chahiye\" | \"please 3000 se upar budget hai\" | \"acha 3000 se upar budget hai\" | \"zara family ke liye bundle batao Snakitos se\". Approved answer patterns: \"Bigger order ke liye Ultimate Mega Snack Box, Snakitos Flavor Fiesta Bundle, Party Pleaser Bundle, Crunch Munch Combo, Fun Snack Bundle ya FM Foods Mega Snack Deal achay options hain agar available hon. Ye family, office, party aur gifting ke liye best hain.\".",
+    "type": "knowledge",
+    "category": "dataset_budget-above-3000",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0087",
+    "name": "General Dataset: wrong_product (roman_urdu)",
+    "description": "Intent: wrong_product. Language: roman_urdu. Total examples: 1475. Escalation rate: 100%. Tags: wrong_item, replacement, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"yar jo order kiya tha wo nahi mila batao\" | \"snakitos wrong product mila hai\" | \"bhai ek item different hai jaldi\" | \"please galat item deliver hua\" | \"acha jo order kiya tha wo nahi mila\" | \"acha jo order kiya tha wo nahi mila?\" | \"mujhe jo order kiya tha wo nahi mila abhi\" | \"acha galat item deliver hua Pakistan me\" | \"yar ek item different hai\" | \"galat item deliver hua?\" | \"acha jo order kiya tha wo nahi mila chahiye\" | \"bhai galat item deliver hua abhi\". Approved answer patterns: \"Sorry for the inconvenience. Please order number aur received product ki photo share karein. Support review karke replacement ya correction ke baare me guide karega.\".",
+    "type": "knowledge",
+    "category": "dataset_wrong-product",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0088",
+    "name": "General Dataset: human_support (roman_urdu)",
+    "description": "Intent: human_support. Language: roman_urdu. Total examples: 1471. Escalation rate: 100%. Tags: support, human_agent. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"zara agent se baat karwao abhi\" | \"salam support se connect karo abhi\" | \"zara agent se baat karwao please\" | \"yar support se connect karo\" | \"acha human support chahiye jaldi\" | \"zara support se connect karo abhi\" | \"yar agent se baat karwao\" | \"snakitos support se connect karo chahiye\" | \"salam mujhe call chahiye\" | \"agent se baat karwao please\" | \"yar support se connect karo jaldi\" | \"zara person se baat karni hai\". Approved answer patterns: \"Zaroor, main aapko Snakitos support se connect kar sakta hoon. Please apna name, contact number aur issue ki short detail share kar dein taake support properly help kar sake.\".",
+    "type": "knowledge",
+    "category": "dataset_human-support",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0089",
+    "name": "General Dataset: delivery_cities (roman_urdu)",
+    "description": "Intent: delivery_cities. Language: roman_urdu. Total examples: 1469. Escalation rate: 0%. Tags: shipping, cities. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"acha small cities me delivery hai Pakistan me\" | \"snakitos islamabad deliver karte ho Snakitos se\" | \"salam small cities me delivery hai please\" | \"snakitos pakistan bhar delivery hai please\" | \"islamabad deliver karte ho jaldi\" | \"small cities me delivry hai jaldi\" | \"zara pakistan bhar delivery hai\" | \"acha lahore delivery hai please\" | \"acha islamabad deliver karte ho Snakitos se\" | \"snakitos multan order kar sakta hoon Pakistan me\" | \"salam karachi me delivery hai Snakitos se\" | \"bhai pakistan bhar delivery hai Snakitos se\". Approved answer patterns: \"Snakitos courier service ke through Pakistan bhar deliver karta hai. Delivery time aur charges city ke hisaab se vary kar sakte hain. Available options ke liye checkout par apna address enter karein.\".",
+    "type": "knowledge",
+    "category": "dataset_delivery-cities",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0090",
+    "name": "General Dataset: kids_recommendation (roman_urdu)",
+    "description": "Intent: kids_recommendation. Language: roman_urdu. Total examples: 1469. Escalation rate: 0%. Tags: kids, recommendation, mild. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"bhai bachon ko spicy de sakte hain abhi\" | \"please bachon ko spicy de sakte hain abhi\" | \"bhai kids ke liye kya acha hai jaldi\" | \"yar bachon ko spicy de sakte hain Pakistan me\" | \"mujhe kids ke liye kya acha hai\" | \"please kids friendly snack chahiye Pakistan me\" | \"bhai school lunch ke liye kya loon?\" | \"salam kids ke liye kya acha hai chahiye\" | \"bachon ke liye snacks batao chahiye\" | \"school lunch ke liye kya loon Snakitos se\" | \"zara kids friendly snack chahiye chahiye\" | \"please bachon ko spicy de sakte hain Pakistan me\". Approved answer patterns: \"Kids ke liye Choco Stick Chocolate, Choco Stick Strawberry, Coco Choco Can, Wafer Rolls Strawberry, Wafer Rolls Hazelnut, Patata Salty aur Kids Fun Box achay options hain. Zyada spicy items bachon ke liye caution ke sath dein.\".",
+    "type": "knowledge",
+    "category": "dataset_kids-recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0091",
+    "name": "General Dataset: party (roman_urdu)",
+    "description": "Intent: party. Language: roman_urdu. Total examples: 1463. Escalation rate: 0%. Tags: occasion, party, bundle. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"snakitos guests ke liye snacks chahiye please\" | \"snakitos party ke liye snacks batao?\" | \"zara party ke liye snacks batao?\" | \"yar party bundle hai abhi\" | \"yar party ke liye snacks batao Pakistan me\" | \"yar party bundle hai chahiye\" | \"snakitos 10 logon ke liye snacks kya loon batao\" | \"mujhe party bundle hai Pakistan me\" | \"yar party bundle hai Snakitos se\" | \"zara guests ke liye snacks chahiye\" | \"mujhe party ke liye snacks batao batao\" | \"bhai 10 logon ke liye snacks kya loon jaldi\". Approved answer patterns: \"Party ke liye Party Pleaser Bundle, Ultimate Mega Snack Box, Snakitos Flavor Fiesta Bundle, Nachos packs aur Stix Party achay options hain agar available hon. Aap kitne guests expect kar rahe hain?\".",
+    "type": "knowledge",
+    "category": "dataset_party",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0092",
+    "name": "General Dataset: discount_code (roman_urdu)",
+    "description": "Intent: discount_code. Language: roman_urdu. Total examples: 1462. Escalation rate: 0%. Tags: discount, deals. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"acha promo code batao Pakistan me\" | \"bhai coupon hai batao\" | \"snakitos promo code batao Pakistan me\" | \"mujhe promo code batao abhi\" | \"yar aaj koi offer hai abhi\" | \"salam promo code batao Pakistan me\" | \"yar coupon hai?\" | \"snakitos discount code hai jaldi\" | \"bhai discount kaise milega?\" | \"salam discount kaise milega please\" | \"acha promo code batao please\" | \"zara discount de do Pakistan me\". Approved answer patterns: \"Current discounts aur offers time to time change hote hain. Active offers ke liye website ka Deals section check karein. Main aapke budget ke hisaab se best-value bundle bhi recommend kar sakta hoon.\".",
+    "type": "knowledge",
+    "category": "dataset_discount-code",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0093",
+    "name": "General Dataset: damaged_product (roman_urdu)",
+    "description": "Intent: damaged_product. Language: roman_urdu. Total examples: 1461. Escalation rate: 100%. Tags: damaged, replacement, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"salam damaged items mile hain Pakistan me\" | \"please product broken hai Pakistan me\" | \"mujhe package damaged hai please\" | \"mujhe product broken hai abhi\" | \"acha product broken hai abhi\" | \"acha items crush hogaye batao\" | \"zara items crush hogaye Pakistan me\" | \"please package damaged hai?\" | \"yar damaged items mile hain jaldi\" | \"acha snacks tootay hue aaye please\" | \"acha package damaged hai Pakistan me\" | \"snakitos product broken hai please\". Approved answer patterns: \"Sorry aapka order damaged aaya. Please order number aur damaged items/packaging ki clear photos ya videos share karein taake support claim quickly review kar sake.\".",
+    "type": "knowledge",
+    "category": "dataset_damaged-product",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0094",
+    "name": "General Dataset: general_what_do_you_sell (roman_urdu)",
+    "description": "Intent: general_what_do_you_sell. Language: roman_urdu. Total examples: 1461. Escalation rate: 0%. Tags: general, catalog, recommendation. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"please snakitos me kya milta hai chahiye\" | \"mujhe batao aapke products kya hain Pakistan me\" | \"salam aap kya sell karte ho\" | \"snakitos aap kya sell karte ho batao\" | \"bhai snakitos me kya milta hai batao\" | \"snakitos aap kya sell karte ho jaldi\" | \"snakitos snakitos me kya milta hai please\" | \"mujhe snakitos me kya milta hai\" | \"mujhe snakitos me kya milta hai abhi\" | \"aap kya sell karte ho Snakitos se\" | \"please aap kya sell karte ho?\" | \"yar snakitos me kya milta hai Pakistan me\". Approved answer patterns: \"Snakitos me Stix, Patata, Banana Chips, Choco Sticks, Wafer Rolls, ChickPea Puffs, Nachos, Snaktory packs aur bundles milte hain. Aap spicy, sweet, kids-friendly ya mixed snacks chahte hain?\".",
+    "type": "knowledge",
+    "category": "dataset_general-what-do-you-sell",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0095",
+    "name": "General Dataset: fallback_unknown (roman_urdu)",
+    "description": "Intent: fallback_unknown. Language: roman_urdu. Total examples: 1459. Escalation rate: 100%. Tags: fallback, anti_hallucination, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"mera refund abhi confirm karo please\" | \"zara exact delivery date batao abhi\" | \"salam exact delivery date batao chahiye\" | \"bhai exact shelf life kya hai Snakitos se\" | \"mujhe exact shelf life kya hai chahiye\" | \"acha mera refund abhi confirm karo please\" | \"zara private order details batao?\" | \"bhai exact nutrition facts batao chahiye\" | \"certificate number batao?\" | \"please private order details batao abhi\" | \"please certificate number batao?\" | \"snakitos mera refund abhi confirm karo?\". Approved answer patterns: \"Main is information ke baare me fully sure nahi hoon aur aapko misguide nahi karna chahta. Please product ya order details share karein, main support se confirmed information ke liye connect karwa deta hoon.\".",
+    "type": "knowledge",
+    "category": "dataset_fallback-unknown",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0096",
+    "name": "General Dataset: why_buy (roman_urdu)",
+    "description": "Intent: why_buy. Language: roman_urdu. Total examples: 1459. Escalation rate: 0%. Tags: brand_trust, quality. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"salam snakitos se kyun khareedun\" | \"snakitos brand quality batao please\" | \"acha snakitos acha kyun hai chahiye\" | \"zara aap better kaise ho please\" | \"bhai snakitos acha kyun hai jaldi\" | \"salam snakitos se kyun khareedun Snakitos se\" | \"bhai brand quality batao?\" | \"bhai aap better kaise ho please\" | \"mujhe brand quality batao?\" | \"mujhe snakitos trustworthy hai jaldi\" | \"mujhe snakitos acha kyun hai please\" | \"zara snakitos se kyun khareedun abhi\". Approved answer patterns: \"Snakitos Pakistani snacks, sweet treats, spicy snacks, bundles aur snack boxes ki wide range offer karta hai. Ye FM Foods ka brand hai, quality, hygiene, taste aur export-quality production standards par focus ke sath. Bundles variety aur value ke liye especially achay hain.\".",
+    "type": "knowledge",
+    "category": "dataset_why-buy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0097",
+    "name": "General Dataset: regular_snacks (roman_urdu)",
+    "description": "Intent: regular_snacks. Language: roman_urdu. Total examples: 1459. Escalation rate: 0%. Tags: repeat_purchase, monthly. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"bhai har month home snacks chahiye batao\" | \"snakitos monthly snack box chahiye\" | \"zara daily use ke liye snacks jaldi\" | \"mujhe regular office snacks chahiye jaldi\" | \"snakitos har month home snacks chahiye Pakistan me\" | \"salam har month home snacks chahiye Snakitos se\" | \"snakitos daily use ke liye snacks chahiye\" | \"daily use ke liye snaks abhi\" | \"please har month home snacks chahiye please\" | \"acha daily use ke liye snacks jaldi\" | \"yar monthly snack box chahiye please\" | \"salam regular snacks chahiye?\". Approved answer patterns: \"Great idea. Regular snacking ke liye sweet, salty aur spicy items ka mix best rahega. Office Snack Box, All Time Favorites aur Snaktory packs repeat orders ke liye achay options hain.\".",
+    "type": "knowledge",
+    "category": "dataset_regular-snacks",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0098",
+    "name": "General Dataset: seasonal_offers (roman_urdu)",
+    "description": "Intent: seasonal_offers. Language: roman_urdu. Total examples: 1457. Escalation rate: 0%. Tags: seasonal, discount. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"mujhe new year deal hai abhi\" | \"zara aaj special deal hai?\" | \"snakitos seasonal offer hai Pakistan me\" | \"seasonal offer hai abhi\" | \"zara eid deals hain\" | \"salam eid deals hain please\" | \"bhai ramadan offer hai please\" | \"acha new year deal hai jaldi\" | \"yar eid deals hain abhi\" | \"yar ramadan offer hai chahiye\" | \"snakitos aaj special deal hai batao\" | \"snakitos ramadan offer hai chahiye\". Approved answer patterns: \"Seasonal deals time to time available ho sakti hain. Deals section check karein, ya apna budget bata dein main best current value options suggest kar dunga.\".",
+    "type": "knowledge",
+    "category": "dataset_seasonal-offers",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0099",
+    "name": "General Dataset: returning_customer (roman_urdu)",
+    "description": "Intent: returning_customer. Language: roman_urdu. Total examples: 1456. Escalation rate: 0%. Tags: repeat_purchase, recommendation. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"bhai pehle order kiya tha ab kya try karun chahiye\" | \"please stix try kar chuka hoon Pakistan me\" | \"bhai stix try kar chuka hoon chahiye\" | \"mujhe main returning customer hoon please\" | \"snakitos kuch new suggest karo Snakitos se\" | \"mujhe main returning customer hoon batao\" | \"yar stix try kar chuka hoon chahiye\" | \"mujhe reorder kya karun Snakitos se\" | \"yar pehle order kiya tha ab kya try karun jaldi\" | \"mujhe reorder kya karun\" | \"zara pehle order kiya tha ab kya try karun\" | \"acha pehle order kiya tha ab kya try karun\". Approved answer patterns: \"Welcome back! Agar last time spicy snacks pasand aaye thay to another Stix flavor, Nachos ya spicy bundle try karein. Kuch different chahiye to main sweet plus salty mix suggest kar sakta hoon.\".",
+    "type": "knowledge",
+    "category": "dataset_returning-customer",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0100",
+    "name": "General Dataset: shipping_time (roman_urdu)",
+    "description": "Intent: shipping_time. Language: roman_urdu. Total examples: 1454. Escalation rate: 0%. Tags: shipping, timeline. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"yar dilevery kitne din me hoti hai batao\" | \"zara karachi me kitna time lagega chahiye\" | \"delivery kitne din me hoti hai abhi\" | \"yar lahore delivery time jaldi\" | \"snakitos delivery kitne din me hoti hai chahiye\" | \"yar order kab milega Pakistan me\" | \"acha islamabad me delivery kitne din Pakistan me\" | \"snakitos karachi me kitna time lagega?\" | \"mujhe islamabad me dilevery kitne din please\" | \"snakitos islamabad me delivery kitne din Snakitos se\" | \"please karachi me kitna time lagega\" | \"lahore delivery time Pakistan me\". Approved answer patterns: \"Delivery time city aur courier service par depend karta hai. Major cities me usually fast hoti hai, doosre areas me thora time lag sakta hai. Order ship hone ke baad aap tracking details se track kar sakte hain.\".",
+    "type": "knowledge",
+    "category": "dataset_shipping-time",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0101",
+    "name": "General Dataset: sweet_recommendation (roman_urdu)",
+    "description": "Intent: sweet_recommendation. Language: roman_urdu. Total examples: 1454. Escalation rate: 0%. Tags: sweet, chocolate, recommendation, cross_sell. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"please kuch meetha recommend karo chahiye\" | \"snakitos wafer rolls hain abhi\" | \"salam wafer rolls hain\" | \"bachon ke liye sweet snack chahiye\" | \"mujhe kuch meetha reccomend karo?\" | \"yar meetha snack chahiye Pakistan me\" | \"please meetha snack chahiye Snakitos se\" | \"bachon ke liye sweet snack Pakistan me\" | \"please sweet craving ke liye kya hai jaldi\" | \"snakitos meetha snack chahiye please\" | \"bhai wafer rolls hain abhi\" | \"mujhe kuch meetha recommend karo?\". Approved answer patterns: \"Sweet craving ke liye Choco Stick Chocolate, Choco Stick Strawberry, Coco Choco Can, Wafer Rolls Hazelnut, Wafer Rolls Strawberry aur Choco Lovers Bundle best options hain. Sweet ke sath salty balance ke liye Patata ya Stix bhi add kar sakte hain.\".",
+    "type": "knowledge",
+    "category": "dataset_sweet-recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0102",
+    "name": "General Dataset: payment_failed (roman_urdu)",
+    "description": "Intent: payment_failed. Language: roman_urdu. Total examples: 1453. Escalation rate: 100%. Tags: payment, failed, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"salam payment ki confirmation nahi ayi\" | \"zara paise kat gaye order nahi bana chahiye\" | \"yar paise kat gaye oder nahi bana?\" | \"payment fail hogayi\" | \"zara transaction failed kya karun\" | \"acha transaction failed kya karun Pakistan me\" | \"snakitos amount deduct hogaya order confirm nahi hua jaldi\" | \"yar transaction failed kya karun abhi\" | \"zara payment fail hogayi\" | \"snakitos payment ki confirmation nahi ayi abhi\" | \"mujhe payment ki confirmation nahi ayi abhi\" | \"bhai amount deduct hogaya order confirm nahi hua chahiye\". Approved answer patterns: \"Sorry about that. Please check karein amount deduct hua ya nahi. Agar deduct nahi hua to order dobara place kar sakte hain. Agar amount deduct hua lekin order confirm nahi hua, screenshot ya transaction ID save karein aur support se verification ke liye contact karein.\".",
+    "type": "knowledge",
+    "category": "dataset_payment-failed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0103",
+    "name": "General Dataset: return_request (roman_urdu)",
+    "description": "Intent: return_request. Language: roman_urdu. Total examples: 1453. Escalation rate: 100%. Tags: return, food_safety, escalate. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"bhai order return ho sakta hai please\" | \"please mind change hogaya return kar sakta hoon Pakistan me\" | \"salam oder return ho sakta hai\" | \"please snacks return karne hain please\" | \"acha snacks return karne hain Pakistan me\" | \"order return ho sakta hai batao\" | \"mujhe snack return karne hain Snakitos se\" | \"bhai return policy kya hai Snakitos se\" | \"snakitos order return ho sakta hai\" | \"zara return policy kya hai Snakitos se\" | \"snakitos mind change hogaya return kar sakta hoon batao\" | \"snakitos return policy kya hai\". Approved answer patterns: \"Food items hone ki wajah se hygiene aur safety reasons ke liye returns limited ho sakte hain. Lekin agar damaged, wrong ya defective item mila hai to proof ke sath support contact karein taake case review ho sake.\".",
+    "type": "knowledge",
+    "category": "dataset_return-request",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0104",
+    "name": "General Dataset: movie_night (roman_urdu)",
+    "description": "Intent: movie_night. Language: roman_urdu. Total examples: 1452. Escalation rate: 0%. Tags: occasion, movie_night, bundle. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"bhai netflix ke liye snacks chahiye jaldi\" | \"zara gaming ke liye crunchy snacks jaldi\" | \"acha movie night ke liye snacks batao Snakitos se\" | \"movie dekhte hue kya order karun chahiye\" | \"mujhe movie dekhte hue kya ordr karun\" | \"zara movie night ke liye snacks batao please\" | \"salam movie night ke liye snacks batao Snakitos se\" | \"yar movie dekhte hue kya order karun chahiye\" | \"snakitos gaming ke liye crunchy snacks Pakistan me\" | \"yar netflix ke liye snacks chahiye chahiye\" | \"yar netflix ke liye snacks chahiye Pakistan me\" | \"please gaming ke liye crunchy snacks?\". Approved answer patterns: \"Movie night ke liye crunchy aur shareable snacks best hain: Movie Night Nachos Bundle, Snakitos Stix Party, Patata Crunch Deal, Nachos Salsa aur Ultimate Snack Deal. Aap kitne logon ke liye order kar rahe hain?\".",
+    "type": "knowledge",
+    "category": "dataset_movie-night",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0105",
+    "name": "General Dataset: halal (roman_urdu)",
+    "description": "Intent: halal. Language: roman_urdu. Total examples: 1448. Escalation rate: 0%. Tags: halal, trust. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"snakitos halal certificate kis ka hai abhi\" | \"acha aapke products halal hain\" | \"bhai muslims ke liye safe hai Snakitos se\" | \"snakitos halal certificate kis ka hai Snakitos se\" | \"yar muslims ke liye safe hai abhi\" | \"please halal certification hai Snakitos se\" | \"acha muslims ke liye safe hai Pakistan me\" | \"bhai aapke products halal hain jaldi\" | \"snakitos halal certification hai Snakitos se\" | \"aapke products halal hain jaldi\" | \"acha halal certificate kis ka hai?\" | \"salam muslims ke liye safe hai jaldi\". Approved answer patterns: \"Ji, Snakitos FM Foods ka brand hai, aur FM Foods apne quality aur food safety standards me Halal certification publicly list karta hai. Exact product-level detail ya certificate copy ke liye main aapko support se connect kar sakta hoon.\".",
+    "type": "knowledge",
+    "category": "dataset_halal",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0106",
+    "name": "General Dataset: vegan_vegetarian (roman_urdu)",
+    "description": "Intent: vegan_vegetarian. Language: roman_urdu. Total examples: 1447. Escalation rate: 100%. Tags: vegan, vegetarian, safe_fallback. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"snakitos gelatin contain karta hai batao\" | \"bhai snacks vegan hain\" | \"yar vegetarian hain batao\" | \"mujhe dairy hai\" | \"salam vegetarian hain chahiye\" | \"please snacks vegan hain?\" | \"zara vegetarian hain batao\" | \"snaks vegan hain jaldi\" | \"please vegetarian hain chahiye\" | \"yar vegetarians ke liye safe hai batao\" | \"salam snacks vegan hain jaldi\" | \"yar dairy hai jaldi\". Approved answer patterns: \"Kuch products vegetarian-friendly ho sakte hain, lekin ingredients product ke hisaab se vary karte hain. Dairy, gelatin ya animal-derived ingredients ke liye label check karein. Strict vegan/vegetarian diet ke liye product name share karein, support confirm kar dega.\".",
+    "type": "knowledge",
+    "category": "dataset_vegan-vegetarian",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0107",
+    "name": "General Dataset: order_tracking (roman_urdu)",
+    "description": "Intent: order_tracking. Language: roman_urdu. Total examples: 1445. Escalation rate: 100%. Tags: order_tracking, support. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"snakitos mera order kahan hai?\" | \"yar order number nahi hai chahiye\" | \"zara order number nahi hai Pakistan me\" | \"please mera order kahan hai chahiye\" | \"yar mera order late hai\" | \"yar tracking update nahi ho rahi batao\" | \"snakitos mera order kahan hai\" | \"please order number nahi hai Pakistan me\" | \"bhai ordr track karna hai Snakitos se\" | \"please mera ordr kahan hai?\" | \"yar order number nahi hai abhi\" | \"bhai tracking update nahi ho rahi\". Approved answer patterns: \"Zaroor, main help karta hoon. Please apna order number ya checkout wala phone number share kar dein. Agar tracking update nahi ho rahi to support courier status properly check kar sakta hai.\".",
+    "type": "knowledge",
+    "category": "dataset_order-tracking",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0108",
+    "name": "General Dataset: new_products (roman_urdu)",
+    "description": "Intent: new_products. Language: roman_urdu. Total examples: 1443. Escalation rate: 0%. Tags: new_products, stock. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"new flavors launch hote hain jaldi\" | \"please new arrivals kya hain Snakitos se\" | \"zara new flavors launch hote hain chahiye\" | \"bhai latest product kya hai please\" | \"snakitos naye snacks hain abhi\" | \"please latest product kya hai?\" | \"latest product kya hai Snakitos se\" | \"please new flavors launch hote hain abhi\" | \"yar latest product kya hai\" | \"mujhe naye snack hain abhi\" | \"acha new flavors launch hote hain abhi\" | \"yar new arrivals kya hain Pakistan me\". Approved answer patterns: \"Snakitos time to time new snacks aur bundles add kar sakta hai. New arrivals ke liye website aur social pages check karte rahein.\".",
+    "type": "knowledge",
+    "category": "dataset_new-products",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0109",
+    "name": "General Dataset: cod (roman_urdu)",
+    "description": "Intent: cod. Language: roman_urdu. Total examples: 1443. Escalation rate: 0%. Tags: payment, cod. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"please meri city me COD hoga?\" | \"please cOD hai abhi\" | \"snakitos cOD hai?\" | \"salam cash payment kar sakta hoon Snakitos se\" | \"yar lahore me COD hai?\" | \"acha meri city me COD hoga abhi\" | \"please cash on delivery available hai abhi\" | \"acha meri city me COD hoga batao\" | \"please meri city me COD hoga jaldi\" | \"yar cash payment kar sakta hoon Snakitos se\" | \"snakitos cOD hai batao\" | \"snakitos lahore me COD hai\". Approved answer patterns: \"Cash on Delivery city aur order type ke hisaab se available ho sakti hai. Available payment options checkout par confirm ho jayenge.\".",
+    "type": "knowledge",
+    "category": "dataset_cod",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0110",
+    "name": "General Dataset: salty_mild_recommendation (roman_urdu)",
+    "description": "Intent: salty_mild_recommendation. Language: roman_urdu. Total examples: 1437. Escalation rate: 0%. Tags: salty, mild, recommendation. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"acha spicy nahi chahiye chahiye\" | \"namkeen snacks chahiye Pakistan me\" | \"please mild snacks batao batao\" | \"snakitos namkeen snacks chahiye batao\" | \"please spicy nahi chahiye chahiye\" | \"mujhe mild snacks batao?\" | \"please mild snacks batao\" | \"zara spicy nahi chahiye batao\" | \"please bina mirch wala kya hai abhi\" | \"please mild snacks batao please\" | \"salam bina mirch wala kya hai?\" | \"please simple salty snack batao abhi\". Approved answer patterns: \"Mild aur salty snacks ke liye Patata Salty, Banana Chips Sea Salt, ChickPea Puffs, Stix Salty ya Patata Salty Slims Pack of 6 try karein. Balanced box ke liye Choco Stick ya Wafer Rolls add kar sakte hain.\".",
+    "type": "knowledge",
+    "category": "dataset_salty-mild-recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0111",
+    "name": "General Dataset: gifting (roman_urdu)",
+    "description": "Intent: gifting. Language: roman_urdu. Total examples: 1433. Escalation rate: 0%. Tags: occasion, gift, bundle. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"mujhe gift ke liye snacks chahiye Snakitos se\" | \"please family gift box batao jaldi\" | \"zara gift ke liye snacks chahiye batao\" | \"gift ke liye snacks chahiye Pakistan me\" | \"snakitos gift ke liye snaks chahiye please\" | \"yar corporate gifting hai\" | \"mujhe gift ke liye snack chahiye batao\" | \"mujhe family gift box batao Snakitos se\" | \"please gift ke liye snacks chahiye?\" | \"acha gift ke liye snacks chahiye\" | \"snakitos gift ke liye snacks chahiye?\" | \"yar family gift box batao batao\". Approved answer patterns: \"Gifting ke liye Ultimate Mega Snack Box, All Time Favorites, Choco Lovers Bundle ya Snakitos Flavor Fiesta Bundle achay options hain agar available hon. Ye individual packs se zyada complete lagte hain. Gift kids, family, office ya friend ke liye hai?\".",
+    "type": "knowledge",
+    "category": "dataset_gifting",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0112",
+    "name": "General Dataset: cart_later (roman_urdu)",
+    "description": "Intent: cart_later. Language: roman_urdu. Total examples: 1433. Escalation rate: 0%. Tags: cart_recovery, hesitation. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"acha abhi oder nahi karna jaldi\" | \"phir dekhunga please\" | \"please soch ke batata hoon batao\" | \"zara baad me order karunga jaldi\" | \"mujhe soch ke batata hoon jaldi\" | \"snakitos phir dekhunga\" | \"snakitos maybe later please\" | \"snakitos phir dekhunga chahiye\" | \"bhai baad me order karunga Snakitos se\" | \"salam soch ke batata hoon\" | \"yar baad me order karunga jaldi\" | \"please maybe later jaldi\". Approved answer patterns: \"No problem. Jane se pehle kya main aapko best-value bundle suggest karun? Bundles usually zyada variety dete hain aur family, kids, office ya movie night ke liye best hotay hain.\".",
+    "type": "knowledge",
+    "category": "dataset_cart-later",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0113",
+    "name": "General Dataset: whatsapp_order (roman_urdu)",
+    "description": "Intent: whatsapp_order. Language: roman_urdu. Total examples: 1427. Escalation rate: 0%. Tags: whatsapp, support, order. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"mujhe mujhe WhatsApp se order karna hai batao\" | \"snakitos whatsApp pe order ho sakta hai\" | \"mujhe whatsApp number do jaldi\" | \"whatsApp support hai batao\" | \"zara whatsApp number do Snakitos se\" | \"salam support order le sakti hai Snakitos se\" | \"snakitos support order le sakti hai batao\" | \"mujhe support oder le sakti hai abhi\" | \"please whatsApp pe order ho sakta hai?\" | \"snakitos mujhe WhatsApp se order karna hai\" | \"salam whatsApp support hai batao\" | \"please whatsApp pe order ho sakta hai jaldi\". Approved answer patterns: \"Ji, aap Snakitos support ko WhatsApp par ordering, product suggestions ya order updates ke liye contact kar sakte hain. Support ko message karne se pehle main aapke taste aur budget ke hisaab se best bundle suggest kar sakta hoon.\".",
+    "type": "knowledge",
+    "category": "dataset_whatsapp-order",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "general-200k-runtime-0114",
+    "name": "General Dataset: budget_under_500 (roman_urdu)",
+    "description": "Intent: budget_under_500. Language: roman_urdu. Total examples: 1426. Escalation rate: 0%. Tags: budget, under_500. Quality rules: answer_first_recommend_or_escalate_never_hallucinate. Customer examples: \"acha 500 ke andar kya milega?\" | \"bhai 500 ke andar kya milega Pakistan me\" | \"salam sasta acha snack batao please\" | \"mujhe sasta acha snack batao\" | \"bhai low budget snack chahiye chahiye\" | \"salam rs 500 me snacks batao Snakitos se\" | \"acha sasta acha snack batao Pakistan me\" | \"yar 500 ke andar kya milega batao\" | \"snakitos sasta acha snack batao\" | \"salam low budget snack chahiye?\" | \"snakitos sasta acha snack batao please\" | \"snakitos 500 ke andar kya milega abhi\". Approved answer patterns: \"Rs. 500 ke andar Choco Stick, Patata, Stix, ChickPea Puffs, Banana Chips ya Wafer Rolls try kar sakte hain. Aap spicy, sweet ya salty chahte hain?\".",
+    "type": "knowledge",
+    "category": "dataset_budget-under-500",
+    "link": "https://snakitos.com"
   }
 ]

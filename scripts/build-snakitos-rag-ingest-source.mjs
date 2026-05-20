@@ -105,12 +105,28 @@ async function main() {
     importedGeneralDataset = [];
   }
 
+  let importedGeneralRuntime = [];
+  try {
+    importedGeneralRuntime = await loadJson("18-general-200k-runtime.json");
+  } catch {
+    importedGeneralRuntime = [];
+  }
+
   const items = toKnowledgeItems({
     generalTraining: [...generalTraining, ...importedGeneralDataset],
     faqs,
     recommendations,
     productRecords,
-  });
+  }).concat(
+    importedGeneralRuntime.map((item) => ({
+      id: item.id,
+      name: item.name,
+      description: item.text,
+      type: "knowledge",
+      category: item.category,
+      link: item.link || "https://snakitos.com",
+    })),
+  );
 
   await fs.writeFile(outPath, `${JSON.stringify(items, null, 2)}\n`, "utf8");
   console.log(`Generated ${items.length} ingest records at ${outPath}`);

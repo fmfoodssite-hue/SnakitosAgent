@@ -1,0 +1,2 @@
+.local/snakitos_general_200k_dataset/snakitos_general_200k_train.jsonl filter=lfs diff=lfs merge=lfs -text
+.local/snakitos_general_200k_dataset/snakitos_general_200k_train.csv filter=lfs diff=lfs merge=lfs -text

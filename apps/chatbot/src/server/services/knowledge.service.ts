@@ -3,6 +3,7 @@ import { config } from "../config";
 import capabilityKnowledgeData from "../data/capability-knowledge.json";
 import generalQueryRagData from "../data/general-query-rag.json";
 import snakitosGeneralTrainingData from "../data/snakitos-rag-pack/01-general-query-training-dataset.json";
+import snakitosGeneral200kRuntimeData from "../data/snakitos-rag-pack/18-general-200k-runtime.json";
 import snakitosProductFaqData from "../data/snakitos-rag-pack/02-product-faq-dataset.json";
 import snakitosProductRecommendationData from "../data/snakitos-rag-pack/03-product-recommendation-dataset.json";
 import snakitosProductRecordsData from "../data/snakitos-rag-pack/15-product-records.json";
@@ -71,6 +72,22 @@ type SnakitosGeneralTrainingItem = {
   ideal_answer: string;
   recommended_products?: string[];
   follow_up_question?: string;
+};
+type SnakitosGeneral200kRuntimeItem = {
+  id: string;
+  intent: string;
+  language: string;
+  name: string;
+  category: string;
+  source: string;
+  link: string;
+  total_examples: number;
+  escalation_rate: number;
+  tags?: string[];
+  quality_rules?: string[];
+  examples?: string[];
+  approved_answers?: string[];
+  text: string;
 };
 type SnakitosFaqItem = {
   question: string;
@@ -209,6 +226,7 @@ export class KnowledgeService {
     const retrievalQuery = route.searchQueries.join(" ");
     const capabilityResults = this.retrieveCapabilityKnowledge(retrievalQuery);
     const generalResults = this.retrieveGeneralKnowledge(retrievalQuery);
+    const general200kRuntimeResults = this.retrieveSnakitosGeneral200kRuntime(retrievalQuery);
     const storeFaqResults = this.retrieveStoreFaqKnowledge(retrievalQuery);
     const snakitosGeneralTrainingResults = this.retrieveSnakitosGeneralTraining(retrievalQuery);
     const snakitosFaqResults = this.retrieveSnakitosFaqKnowledge(retrievalQuery);
@@ -218,7 +236,10 @@ export class KnowledgeService {
     const merged =
       route.collectionToSearch === "store_faq_collection"
         ? this.mergeKnowledge(
-            this.mergeKnowledge(storeFaqResults, generalResults),
+            this.mergeKnowledge(
+              this.mergeKnowledge(storeFaqResults, generalResults),
+              general200kRuntimeResults,
+            ),
             this.mergeKnowledge(capabilityResults, snakitosGeneralTrainingResults),
           )
         : route.collectionToSearch === "products_collection"
@@ -229,7 +250,10 @@ export class KnowledgeService {
               ),
               capabilityResults,
             )
-          : this.mergeKnowledge(this.mergeKnowledge(storeFaqResults, generalResults), capabilityResults);
+          : this.mergeKnowledge(
+              this.mergeKnowledge(this.mergeKnowledge(storeFaqResults, generalResults), general200kRuntimeResults),
+              capabilityResults,
+            );
 
     return this.rerankKnowledge(route, merged);
   }
@@ -985,6 +1009,54 @@ export class KnowledgeService {
       .filter((item) => item.score > 2)
       .sort((left, right) => right.score - left.score)
       .slice(0, 4)
+      .map((item) => item.document);
+  }
+
+  private retrieveSnakitosGeneral200kRuntime(query: string): KnowledgeDocument[] {
+    const tokens = query.split(/[^a-z0-9_]+/).filter((token) => token.length >= 2);
+    const docs = snakitosGeneral200kRuntimeData as SnakitosGeneral200kRuntimeItem[];
+
+    return docs
+      .map((item) => {
+        const haystack = [
+          item.intent,
+          item.language,
+          item.text,
+          ...(item.tags ?? []),
+          ...(item.quality_rules ?? []),
+          ...(item.examples ?? []),
+          ...(item.approved_answers ?? []),
+        ]
+          .join(" ")
+          .toLowerCase();
+
+        const tokenMatches = tokens.filter((token) => haystack.includes(token)).length;
+        const phraseBoost =
+          (haystack.includes(query) ? 16 : 0) +
+          ((item.language === "roman_urdu" || item.language === "mixed") &&
+          /\b(bhai|kya|hai|hain|kaise|kitne|wapis|kharab|parcel|chahiye)\b/.test(query)
+            ? 6
+            : 0) +
+          (item.intent && query.includes(item.intent.replace(/_/g, " ")) ? 8 : 0);
+        const datasetBoost = item.total_examples >= 3000 ? 4 : 0;
+        const score = tokenMatches * 4 + phraseBoost + datasetBoost;
+
+        return {
+          score,
+          document: {
+            id: item.id,
+            name: item.name,
+            text: item.text,
+            link: item.link,
+            type: "knowledge",
+            category: item.category,
+            source: item.source,
+          } satisfies KnowledgeDocument,
+        };
+      })
+      .filter((item) => item.score > 2)
+      .sort((left, right) => right.score - left.score)
+      .slice(0, 6)
       .map((item) => item.document);
   }
 

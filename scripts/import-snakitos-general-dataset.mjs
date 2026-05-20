@@ -53,6 +53,14 @@ function normalizeDatasetRow(row) {
   };
 }
 
+function slugify(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+}
+
 function buildManifest(records, readmeText) {
   const intents = new Map();
   const languages = new Map();
@@ -74,6 +82,107 @@ function buildManifest(records, readmeText) {
     languages: Array.from(languages.entries()).map(([language, count]) => ({ language, count })),
     notes: readmeText.trim(),
   };
+}
+
+function buildRuntimeKnowledge(records) {
+  const grouped = new Map();
+
+  for (const record of records) {
+    const key = `${record.intent}::${record.language}`;
+    const existing =
+      grouped.get(key) ??
+      {
+        intent: record.intent || "general",
+        language: record.language || "english",
+        examples: [],
+        answers: [],
+        tags: new Map(),
+        qualityRules: new Map(),
+        source: record.source || "Snakitos chatbot master training guide",
+        total: 0,
+        escalations: 0,
+      };
+
+    existing.total += 1;
+    if (record.requires_escalation) {
+      existing.escalations += 1;
+    }
+
+    if (
+      record.user_message &&
+      !existing.examples.includes(record.user_message) &&
+      existing.examples.length < 12
+    ) {
+      existing.examples.push(record.user_message);
+    }
+
+    if (
+      record.ideal_answer &&
+      !existing.answers.includes(record.ideal_answer) &&
+      existing.answers.length < 6
+    ) {
+      existing.answers.push(record.ideal_answer);
+    }
+
+    for (const tag of record.tags) {
+      existing.tags.set(tag, (existing.tags.get(tag) || 0) + 1);
+    }
+
+    if (record.quality_rule) {
+      existing.qualityRules.set(
+        record.quality_rule,
+        (existing.qualityRules.get(record.quality_rule) || 0) + 1,
+      );
+    }
+
+    grouped.set(key, existing);
+  }
+
+  return Array.from(grouped.values())
+    .sort((left, right) => right.total - left.total)
+    .map((group, index) => {
+      const tags = Array.from(group.tags.entries())
+        .sort((left, right) => right[1] - left[1])
+        .slice(0, 12)
+        .map(([tag]) => tag);
+      const qualityRules = Array.from(group.qualityRules.entries())
+        .sort((left, right) => right[1] - left[1])
+        .slice(0, 4)
+        .map(([rule]) => rule);
+      const escalationRate = group.total > 0 ? Math.round((group.escalations / group.total) * 100) : 0;
+
+      return {
+        id: `general-200k-runtime-${String(index + 1).padStart(4, "0")}`,
+        intent: group.intent,
+        language: group.language,
+        name: `General Dataset: ${group.intent} (${group.language})`,
+        category: `dataset_${slugify(group.intent) || "general"}`,
+        source: "snakitos_general_200k_runtime",
+        link: "https://snakitos.com",
+        total_examples: group.total,
+        escalation_rate: escalationRate,
+        tags,
+        quality_rules: qualityRules,
+        examples: group.examples,
+        approved_answers: group.answers,
+        text: [
+          `Intent: ${group.intent}.`,
+          `Language: ${group.language}.`,
+          `Total examples: ${group.total}.`,
+          `Escalation rate: ${escalationRate}%.`,
+          tags.length > 0 ? `Tags: ${tags.join(", ")}.` : "",
+          qualityRules.length > 0 ? `Quality rules: ${qualityRules.join(", ")}.` : "",
+          group.examples.length > 0
+            ? `Customer examples: ${group.examples.map((item) => `"${item}"`).join(" | ")}.`
+            : "",
+          group.answers.length > 0
+            ? `Approved answer patterns: ${group.answers.map((item) => `"${item}"`).join(" | ")}.`
+            : "",
+        ]
+          .filter(Boolean)
+          .join(" "),
+      };
+    });
 }
 
 async function main() {
@@ -112,12 +221,20 @@ async function main() {
     "utf8",
   );
 
+  const runtimeKnowledge = buildRuntimeKnowledge(manifestRecords);
+  await fs.writeFile(
+    path.join(packDir, "18-general-200k-runtime.json"),
+    `${JSON.stringify(runtimeKnowledge, null, 2)}\n`,
+    "utf8",
+  );
+
   console.log(
     `Imported Snakitos general dataset sample (${sampleRecords.length} rows) into ${packDir}`,
   );
   console.log(
     `Generated manifest using ${manifestRecords.length} row(s)${sampleOnly ? " from sample only" : ""}.`,
   );
+  console.log(`Generated ${runtimeKnowledge.length} runtime knowledge item(s).`);
 }
 
 main().catch((error) => {
