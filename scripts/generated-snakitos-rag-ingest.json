@@ -160,6 +160,2166 @@
     "link": "https://snakitos.com"
   },
   {
+    "id": "suite-001",
+    "name": "Training: store_policy",
+    "description": "what do you sell Snakitos is a brand by FM Foods offering Pakistani snacks, bundles, and snack boxes. Language: english. Tags: category:general_store, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:direct_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-002",
+    "name": "Training: store_policy",
+    "description": "about Snakitos is a brand by FM Foods offering Pakistani snacks, bundles, and snack boxes. Language: english. Tags: category:general_store, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:direct_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-003",
+    "name": "Training: store_policy",
+    "description": "snakitos kya hai Customer ki query ka clear, safe, aur helpful jawab dein aur zarurat par support ko escalate karein. Language: roman_urdu. Tags: category:general_store, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:direct_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-004",
+    "name": "Training: store_policy",
+    "description": "ye store kis cheez ka hai Customer ki query ka clear, safe, aur helpful jawab dein aur zarurat par support ko escalate karein. Language: roman_urdu. Tags: category:general_store, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:direct_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-005",
+    "name": "Training: store_policy",
+    "description": "ap log kya bechte ho Customer ki query ka clear, safe, aur helpful jawab dein aur zarurat par support ko escalate karein. Language: roman_urdu. Tags: category:general_store, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:direct_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-006",
+    "name": "Training: store_policy",
+    "description": "pakistani snacks hain? Snakitos FM Foods ka brand hai jahan Pakistani snacks, bundles, aur snack boxes milte hain. Language: mixed. Tags: category:general_store, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:direct_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-007",
+    "name": "Training: store_policy",
+    "description": "brand kis ka hai Customer ki query ka clear, safe, aur helpful jawab dein aur zarurat par support ko escalate karein. Language: roman_urdu. Tags: category:general_store, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:direct_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-008",
+    "name": "Training: store_policy",
+    "description": "fm foods hai kya Customer ki query ka clear, safe, aur helpful jawab dein aur zarurat par support ko escalate karein. Language: roman_urdu. Tags: category:general_store, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:direct_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-009",
+    "name": "Training: store_policy",
+    "description": "shop online hai? Snakitos FM Foods ka brand hai jahan Pakistani snacks, bundles, aur snack boxes milte hain. Language: roman_urdu. Tags: category:general_store, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:direct_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-010",
+    "name": "Training: store_policy",
+    "description": "kya ye original site hai Customer ki query ka clear, safe, aur helpful jawab dein aur zarurat par support ko escalate karein. Language: roman_urdu. Tags: category:general_store, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:direct_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-013",
+    "name": "Training: store_policy",
+    "description": "email Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:general_store, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:direct_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-015",
+    "name": "Training: store_policy",
+    "description": "location Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:general_store, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:direct_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-016",
+    "name": "Training: store_policy",
+    "description": "karachi kahan Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:general_store, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:direct_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-017",
+    "name": "Training: store_policy",
+    "description": "complaint form Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:general_store, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:direct_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-018",
+    "name": "Training: store_policy",
+    "description": "support chahiye Customer ki query ka clear, safe, aur helpful jawab dein aur zarurat par support ko escalate karein. Language: roman_urdu. Tags: category:general_store, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:direct_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-020",
+    "name": "Training: store_policy",
+    "description": "human se baat Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:general_store, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:direct_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-021",
+    "name": "Training: store_policy",
+    "description": "hello Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:general_store, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:direct_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-022",
+    "name": "Training: store_policy",
+    "description": "salam Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:general_store, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:direct_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-023",
+    "name": "Training: store_policy",
+    "description": "help Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:general_store, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:direct_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-024",
+    "name": "Training: store_policy",
+    "description": "shop ka naam Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:general_store, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:direct_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-025",
+    "name": "Training: store_policy",
+    "description": "ye snacks kis company ke hain Customer ki query ka clear, safe, aur helpful jawab dein aur zarurat par support ko escalate karein. Language: mixed. Tags: category:general_store, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:direct_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-026",
+    "name": "Training: mixed_by_trigger",
+    "description": "delivery This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:one_word, intent:mixed_by_trigger, collection:trigger_router_then_correct_collection, action:expand_then_retrieve, answer:expanded_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed_by_trigger",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-027",
+    "name": "Training: mixed_by_trigger",
+    "description": "shipping This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:one_word, intent:mixed_by_trigger, collection:trigger_router_then_correct_collection, action:expand_then_retrieve, answer:expanded_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed_by_trigger",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-028",
+    "name": "Training: mixed_by_trigger",
+    "description": "charges This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:one_word, intent:mixed_by_trigger, collection:trigger_router_then_correct_collection, action:expand_then_retrieve, answer:expanded_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed_by_trigger",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-029",
+    "name": "Training: mixed_by_trigger",
+    "description": "tracking This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:one_word, intent:mixed_by_trigger, collection:trigger_router_then_correct_collection, action:expand_then_retrieve, answer:expanded_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed_by_trigger",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-030",
+    "name": "Training: mixed_by_trigger",
+    "description": "order This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:one_word, intent:mixed_by_trigger, collection:trigger_router_then_correct_collection, action:expand_then_retrieve, answer:expanded_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed_by_trigger",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-034",
+    "name": "Training: mixed_by_trigger",
+    "description": "damaged This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:one_word, intent:mixed_by_trigger, collection:trigger_router_then_correct_collection, action:expand_then_retrieve, answer:expanded_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed_by_trigger",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-035",
+    "name": "Training: mixed_by_trigger",
+    "description": "complaint This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:one_word, intent:mixed_by_trigger, collection:trigger_router_then_correct_collection, action:expand_then_retrieve, answer:expanded_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed_by_trigger",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-040",
+    "name": "Training: mixed_by_trigger",
+    "description": "payment This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:one_word, intent:mixed_by_trigger, collection:trigger_router_then_correct_collection, action:expand_then_retrieve, answer:expanded_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed_by_trigger",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-041",
+    "name": "Training: mixed_by_trigger",
+    "description": "discount This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:one_word, intent:mixed_by_trigger, collection:trigger_router_then_correct_collection, action:expand_then_retrieve, answer:expanded_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed_by_trigger",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-042",
+    "name": "Training: mixed_by_trigger",
+    "description": "deal This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:one_word, intent:mixed_by_trigger, collection:trigger_router_then_correct_collection, action:expand_then_retrieve, answer:expanded_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed_by_trigger",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-043",
+    "name": "Training: mixed_by_trigger",
+    "description": "coupon This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:one_word, intent:mixed_by_trigger, collection:trigger_router_then_correct_collection, action:expand_then_retrieve, answer:expanded_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed_by_trigger",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-044",
+    "name": "Training: mixed_by_trigger",
+    "description": "banana This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:one_word, intent:mixed_by_trigger, collection:trigger_router_then_correct_collection, action:expand_then_retrieve, answer:expanded_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed_by_trigger",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-045",
+    "name": "Training: mixed_by_trigger",
+    "description": "chips This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:one_word, intent:mixed_by_trigger, collection:trigger_router_then_correct_collection, action:expand_then_retrieve, answer:expanded_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed_by_trigger",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-048",
+    "name": "Training: mixed_by_trigger",
+    "description": "choco This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:one_word, intent:mixed_by_trigger, collection:trigger_router_then_correct_collection, action:expand_then_retrieve, answer:expanded_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed_by_trigger",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-051",
+    "name": "Training: mixed",
+    "description": "order kab ayega This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-052",
+    "name": "Training: mixed",
+    "description": "mera parcel kidar hai Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye. Language: roman_urdu. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-053",
+    "name": "Training: mixed",
+    "description": "delivery kitny din Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye. Language: mixed. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-054",
+    "name": "Training: mixed",
+    "description": "dilevry charges kia This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-057",
+    "name": "Training: mixed",
+    "description": "kharab product aya This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-058",
+    "name": "Training: mixed",
+    "description": "packet phata hua This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-059",
+    "name": "Training: mixed",
+    "description": "wrong item bhej dia This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-060",
+    "name": "Training: mixed",
+    "description": "number do This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-061",
+    "name": "Training: mixed",
+    "description": "address kya hai Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye. Language: roman_urdu. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-062",
+    "name": "Training: mixed",
+    "description": "cod hai? Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye. Language: roman_urdu. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-063",
+    "name": "Training: mixed",
+    "description": "cash pe milega? This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-064",
+    "name": "Training: mixed",
+    "description": "payment fail hogya This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-065",
+    "name": "Training: mixed",
+    "description": "paisa kat gaya order nahi This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-066",
+    "name": "Training: mixed",
+    "description": "kids ke liye kya acha Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye. Language: roman_urdu. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-067",
+    "name": "Training: mixed",
+    "description": "spicy snacks batao Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye. Language: mixed. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-068",
+    "name": "Training: mixed",
+    "description": "meetha snack This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-069",
+    "name": "Training: mixed",
+    "description": "sasta bundle This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-070",
+    "name": "Training: mixed",
+    "description": "2000 ke andar kya hai Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye. Language: roman_urdu. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-071",
+    "name": "Training: mixed",
+    "description": "office ke liye snacks Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye. Language: mixed. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-072",
+    "name": "Training: mixed",
+    "description": "gift dena hai Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye. Language: roman_urdu. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-073",
+    "name": "Training: mixed",
+    "description": "halal hai? Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye. Language: roman_urdu. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-075",
+    "name": "Training: mixed",
+    "description": "nut allergy hai Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye. Language: roman_urdu. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-076",
+    "name": "Training: mixed",
+    "description": "bulk order chahiye Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye. Language: mixed. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-077",
+    "name": "Training: mixed",
+    "description": "dukandar rate chahiye Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye. Language: roman_urdu. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-078",
+    "name": "Training: mixed",
+    "description": "bhai chips chahiye Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye. Language: roman_urdu. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-079",
+    "name": "Training: mixed",
+    "description": "parcel late hogya This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-080",
+    "name": "Training: mixed",
+    "description": "complain kaise karni This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path. Language: english. Tags: category:roman_urdu, intent:mixed, collection:router_selects_correct_collection, action:retrieve_or_escalate, answer:same_language_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_mixed",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-081",
+    "name": "Training: product_query",
+    "description": "banana chips This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-082",
+    "name": "Training: product_query",
+    "description": "banana bbq This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-083",
+    "name": "Training: product_query",
+    "description": "banana sea salt This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-084",
+    "name": "Training: product_query",
+    "description": "achari banana This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-085",
+    "name": "Training: product_query",
+    "description": "cheese banana This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-087",
+    "name": "Training: product_query",
+    "description": "stix hot spicy This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-088",
+    "name": "Training: product_query",
+    "description": "peri peri stix This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-089",
+    "name": "Training: product_query",
+    "description": "lemon chilli stix This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-090",
+    "name": "Training: product_query",
+    "description": "masala stix This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-091",
+    "name": "Training: product_query",
+    "description": "salty stix This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-092",
+    "name": "Training: product_query",
+    "description": "patata This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-093",
+    "name": "Training: product_query",
+    "description": "patata masala This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-094",
+    "name": "Training: product_query",
+    "description": "patata salty This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-095",
+    "name": "Training: product_query",
+    "description": "potato slims This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-097",
+    "name": "Training: product_query",
+    "description": "hazelnut wafer This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-098",
+    "name": "Training: product_query",
+    "description": "strawberry wafer This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-099",
+    "name": "Training: product_query",
+    "description": "dark chocolate wafer This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-100",
+    "name": "Training: product_query",
+    "description": "cappuccino wafer This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-101",
+    "name": "Training: product_query",
+    "description": "choco stick This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-102",
+    "name": "Training: product_query",
+    "description": "chocolate stick This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-103",
+    "name": "Training: product_query",
+    "description": "strawberry choco This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-104",
+    "name": "Training: product_query",
+    "description": "coco choco can This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-106",
+    "name": "Training: product_query",
+    "description": "nachos salsa This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-107",
+    "name": "Training: product_query",
+    "description": "nachos paprika This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-108",
+    "name": "Training: product_query",
+    "description": "snaktory This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-109",
+    "name": "Training: product_query",
+    "description": "snaktory namkeen This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-111",
+    "name": "Training: product_query",
+    "description": "mega deal This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-112",
+    "name": "Training: product_query",
+    "description": "office box This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-113",
+    "name": "Training: product_query",
+    "description": "kids box This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-114",
+    "name": "Training: product_query",
+    "description": "movie night bundle This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-115",
+    "name": "Training: product_query",
+    "description": "chickpea puffs This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-116",
+    "name": "Training: product_query",
+    "description": "chana puff This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-117",
+    "name": "Training: product_query",
+    "description": "multi grain snacks This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-118",
+    "name": "Training: product_query",
+    "description": "sweet tooth snacks This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-119",
+    "name": "Training: product_query",
+    "description": "deals collection This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-120",
+    "name": "Training: product_query",
+    "description": "can tray This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-121",
+    "name": "Training: product_query",
+    "description": "wafer wonder bundle This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-122",
+    "name": "Training: product_query",
+    "description": "flavor fiesta This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-123",
+    "name": "Training: product_query",
+    "description": "craving combo This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-124",
+    "name": "Training: product_query",
+    "description": "snack heaven This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-125",
+    "name": "Training: product_query",
+    "description": "patata pack of 6 This should retrieve the matching product or collection details directly. Language: english. Tags: category:products, intent:product_query, collection:products_collection, action:retrieve, answer:product_answer. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_product_query",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-126",
+    "name": "Training: recommendation",
+    "description": "recommend something I can suggest the best snacks based on taste, budget, or occasion. Would you like spicy, sweet, salty, crunchy, or mixed snacks? Language: english. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-127",
+    "name": "Training: recommendation",
+    "description": "kya loon Main aapko taste, budget, ya occasion ke hisaab se best snacks suggest kar sakta hoon. Aap spicy, sweet, salty, crunchy, ya mixed kya lena chahenge? Language: roman_urdu. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-128",
+    "name": "Training: recommendation",
+    "description": "best snack I can suggest the best snacks based on taste, budget, or occasion. Would you like spicy, sweet, salty, crunchy, or mixed snacks? Language: english. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-129",
+    "name": "Training: recommendation",
+    "description": "best seller I can suggest the best snacks based on taste, budget, or occasion. Would you like spicy, sweet, salty, crunchy, or mixed snacks? Language: english. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-130",
+    "name": "Training: recommendation",
+    "description": "spicy snacks If you enjoy spicy snacks, strong options include Stix Hot & Spicy, Stix Peri Peri, Nachos Salsa, and Banana Chips Achari Masti. Would you like spicy, sweet, salty, crunchy, or mixed snacks? Language: english. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-131",
+    "name": "Training: recommendation",
+    "description": "bohat teekha If you enjoy spicy snacks, strong options include Stix Hot & Spicy, Stix Peri Peri, Nachos Salsa, and Banana Chips Achari Masti. Would you like spicy, sweet, salty, crunchy, or mixed snacks? Language: english. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-132",
+    "name": "Training: recommendation",
+    "description": "non spicy If you enjoy spicy snacks, strong options include Stix Hot & Spicy, Stix Peri Peri, Nachos Salsa, and Banana Chips Achari Masti. Would you like spicy, sweet, salty, crunchy, or mixed snacks? Language: english. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-133",
+    "name": "Training: recommendation",
+    "description": "sweet snacks For sweet cravings, Choco Stick, Wafer Rolls, and Coco Choco Can are good options. Would you like spicy, sweet, salty, crunchy, or mixed snacks? Language: english. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-134",
+    "name": "Training: recommendation",
+    "description": "meetha chahiye Meetha craving ke liye Choco Stick, Wafer Rolls, aur Coco Choco Can achay options hain. Aap spicy, sweet, salty, crunchy, ya mixed kya lena chahenge? Language: roman_urdu. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-135",
+    "name": "Training: recommendation",
+    "description": "salty snack I can suggest the best snacks based on taste, budget, or occasion. Would you like spicy, sweet, salty, crunchy, or mixed snacks? Language: english. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-136",
+    "name": "Training: recommendation",
+    "description": "crunchy snack I can suggest the best snacks based on taste, budget, or occasion. Would you like spicy, sweet, salty, crunchy, or mixed snacks? Language: english. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-137",
+    "name": "Training: recommendation",
+    "description": "kids ke liye Main aapko taste, budget, ya occasion ke hisaab se best snacks suggest kar sakta hoon. Aap spicy, sweet, salty, crunchy, ya mixed kya lena chahenge? Language: roman_urdu. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-138",
+    "name": "Training: recommendation",
+    "description": "school lunch I can suggest the best snacks based on taste, budget, or occasion. Would you like spicy, sweet, salty, crunchy, or mixed snacks? Language: english. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-139",
+    "name": "Training: recommendation",
+    "description": "office snack I can suggest the best snacks based on taste, budget, or occasion. Would you like spicy, sweet, salty, crunchy, or mixed snacks? Language: english. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-140",
+    "name": "Training: recommendation",
+    "description": "movie night I can suggest the best snacks based on taste, budget, or occasion. Would you like spicy, sweet, salty, crunchy, or mixed snacks? Language: english. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-141",
+    "name": "Training: recommendation",
+    "description": "netflix snack I can suggest the best snacks based on taste, budget, or occasion. Would you like spicy, sweet, salty, crunchy, or mixed snacks? Language: english. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-142",
+    "name": "Training: recommendation",
+    "description": "cricket match snack I can suggest the best snacks based on taste, budget, or occasion. Would you like spicy, sweet, salty, crunchy, or mixed snacks? Language: english. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-143",
+    "name": "Training: recommendation",
+    "description": "family ke liye Main aapko taste, budget, ya occasion ke hisaab se best snacks suggest kar sakta hoon. Aap spicy, sweet, salty, crunchy, ya mixed kya lena chahenge? Language: roman_urdu. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-144",
+    "name": "Training: recommendation",
+    "description": "gift ke liye Main aapko taste, budget, ya occasion ke hisaab se best snacks suggest kar sakta hoon. Aap spicy, sweet, salty, crunchy, ya mixed kya lena chahenge? Language: roman_urdu. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-145",
+    "name": "Training: recommendation",
+    "description": "birthday snack I can suggest the best snacks based on taste, budget, or occasion. Would you like spicy, sweet, salty, crunchy, or mixed snacks? Language: english. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-146",
+    "name": "Training: recommendation",
+    "description": "party snacks I can suggest the best snacks based on taste, budget, or occasion. Would you like spicy, sweet, salty, crunchy, or mixed snacks? Language: english. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-147",
+    "name": "Training: recommendation",
+    "description": "chai ke sath Main aapko taste, budget, ya occasion ke hisaab se best snacks suggest kar sakta hoon. Aap spicy, sweet, salty, crunchy, ya mixed kya lena chahenge? Language: roman_urdu. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-148",
+    "name": "Training: recommendation",
+    "description": "late night craving I can suggest the best snacks based on taste, budget, or occasion. Would you like spicy, sweet, salty, crunchy, or mixed snacks? Language: english. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-149",
+    "name": "Training: recommendation",
+    "description": "under 500 I can suggest the best snacks based on taste, budget, or occasion. Would you like spicy, sweet, or mixed snacks? Language: english. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-150",
+    "name": "Training: recommendation",
+    "description": "under 1000 I can suggest the best snacks based on taste, budget, or occasion. Would you like spicy, sweet, or mixed snacks? Language: english. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-151",
+    "name": "Training: recommendation",
+    "description": "under 2000 I can suggest the best snacks based on taste, budget, or occasion. Would you like spicy, sweet, or mixed snacks? Language: english. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-152",
+    "name": "Training: recommendation",
+    "description": "3000 ka box I can suggest the best snacks based on taste, budget, or occasion. Would you like spicy, sweet, or mixed snacks? Language: english. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-153",
+    "name": "Training: recommendation",
+    "description": "cheap snacks I can suggest the best snacks based on taste, budget, or occasion. Would you like spicy, sweet, salty, crunchy, or mixed snacks? Language: english. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-154",
+    "name": "Training: recommendation",
+    "description": "sasti cheez batao Main aapko taste, budget, ya occasion ke hisaab se best snacks suggest kar sakta hoon. Aap spicy, sweet, salty, crunchy, ya mixed kya lena chahenge? Language: roman_urdu. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-155",
+    "name": "Training: recommendation",
+    "description": "mujhy mix chahiye Main aapko taste, budget, ya occasion ke hisaab se best snacks suggest kar sakta hoon. Aap spicy, sweet, salty, crunchy, ya mixed kya lena chahenge? Language: roman_urdu. Tags: category:recommendations, intent:recommendation, collection:products_collection, action:retrieve_then_recommend, answer:recommendation_with_followup. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_recommendation",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-156",
+    "name": "Training: store_policy",
+    "description": "delivery time Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:shipping_delivery, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:policy_answer_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-157",
+    "name": "Training: store_policy",
+    "description": "how long delivery Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:shipping_delivery, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:policy_answer_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-158",
+    "name": "Training: store_policy",
+    "description": "shipping charges Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:shipping_delivery, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:policy_answer_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-159",
+    "name": "Training: store_policy",
+    "description": "delivery charges Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:shipping_delivery, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:policy_answer_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-160",
+    "name": "Training: store_policy",
+    "description": "karachi delivery Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:shipping_delivery, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:policy_answer_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-161",
+    "name": "Training: store_policy",
+    "description": "lahore delivery Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:shipping_delivery, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:policy_answer_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-162",
+    "name": "Training: store_policy",
+    "description": "islamabad delivery Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:shipping_delivery, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:policy_answer_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-163",
+    "name": "Training: store_policy",
+    "description": "do you deliver pakistan Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:shipping_delivery, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:policy_answer_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-164",
+    "name": "Training: store_policy",
+    "description": "same day delivery Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:shipping_delivery, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:policy_answer_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-165",
+    "name": "Training: store_policy",
+    "description": "free delivery Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:shipping_delivery, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:policy_answer_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-166",
+    "name": "Training: store_policy",
+    "description": "courier name Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:shipping_delivery, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:policy_answer_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-167",
+    "name": "Training: store_policy",
+    "description": "tracking email Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:shipping_delivery, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:policy_answer_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-168",
+    "name": "Training: store_policy",
+    "description": "parcel late Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:shipping_delivery, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:policy_answer_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-169",
+    "name": "Training: store_policy",
+    "description": "wrong address Snakitos is a brand by FM Foods offering Pakistani snacks, bundles, and snack boxes. Language: english. Tags: category:shipping_delivery, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:policy_answer_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-170",
+    "name": "Training: store_policy",
+    "description": "change address Snakitos is a brand by FM Foods offering Pakistani snacks, bundles, and snack boxes. Language: english. Tags: category:shipping_delivery, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:policy_answer_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-171",
+    "name": "Training: store_policy",
+    "description": "failed delivery Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:shipping_delivery, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:policy_answer_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-172",
+    "name": "Training: store_policy",
+    "description": "delivery weekend Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:shipping_delivery, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:policy_answer_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-173",
+    "name": "Training: store_policy",
+    "description": "delivery village Provide a clear, safe, and helpful answer, and escalate to support when needed. Language: english. Tags: category:shipping_delivery, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:policy_answer_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-174",
+    "name": "Training: store_policy",
+    "description": "city delivery hai? Customer ki query ka clear, safe, aur helpful jawab dein aur zarurat par support ko escalate karein. Language: mixed. Tags: category:shipping_delivery, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:policy_answer_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-175",
+    "name": "Training: store_policy",
+    "description": "shipping kitni hai Customer ki query ka clear, safe, aur helpful jawab dein aur zarurat par support ko escalate karein. Language: mixed. Tags: category:shipping_delivery, intent:store_policy, collection:store_faq_collection, action:retrieve, answer:policy_answer_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-176",
+    "name": "Training: order_status",
+    "description": "where is my order Sure. Please share your order number or the phone number used at checkout so support can check your order status. Can you share the order number, or the phone number used at checkout? Language: english. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-177",
+    "name": "Training: order_status",
+    "description": "track my order Sure. Please share your order number or the phone number used at checkout so support can check your order status. Can you share the order number, or the phone number used at checkout? Language: english. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-178",
+    "name": "Training: order_status",
+    "description": "order status Sure. Please share your order number or the phone number used at checkout so support can check your order status. Can you share the order number, or the phone number used at checkout? Language: english. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-179",
+    "name": "Training: order_status",
+    "description": "tracking number Sure. Please share your order number or the phone number used at checkout so support can check your order status. Can you share the order number, or the phone number used at checkout? Language: english. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-180",
+    "name": "Training: order_status",
+    "description": "my parcel Sure. Please share your order number or the phone number used at checkout so support can check your order status. Can you share the order number, or the phone number used at checkout? Language: english. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-181",
+    "name": "Training: order_status",
+    "description": "order id 12345 Sure. Please share your order number or the phone number used at checkout so support can check your order status. Can you share the order number, or the phone number used at checkout? Language: english. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-182",
+    "name": "Training: order_status",
+    "description": "phone se check karo Sure. Please share your order number or the phone number used at checkout so support can check your order status. Can you share the order number, or the phone number used at checkout? Language: english. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-183",
+    "name": "Training: order_status",
+    "description": "i dont have order number Sure. Please share your order number or the phone number used at checkout so support can check your order status. Can you share the order number, or the phone number used at checkout? Language: english. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-184",
+    "name": "Training: order_status",
+    "description": "mera order nahi aya Zaroor. Apna order number ya checkout wala phone number share kar dein taake support aapka order status check kar sake. Kya aap order number share kar sakte hain, ya checkout wala phone number? Language: mixed. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-185",
+    "name": "Training: order_status",
+    "description": "tracking update nahi ho rahi Sure. Please share your order number or the phone number used at checkout so support can check your order status. Can you share the order number, or the phone number used at checkout? Language: english. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-186",
+    "name": "Training: order_status",
+    "description": "courier status nahi aa raha Sure. Please share your order number or the phone number used at checkout so support can check your order status. Can you share the order number, or the phone number used at checkout? Language: english. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-187",
+    "name": "Training: order_status",
+    "description": "order cancel karna hai Zaroor. Apna order number ya checkout wala phone number share kar dein taake support aapka order status check kar sake. Kya aap order number share kar sakte hain, ya checkout wala phone number? Language: mixed. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-188",
+    "name": "Training: order_status",
+    "description": "address change karna hai Zaroor. Apna order number ya checkout wala phone number share kar dein taake support aapka order status check kar sake. Kya aap order number share kar sakte hain, ya checkout wala phone number? Language: roman_urdu. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-189",
+    "name": "Training: order_status",
+    "description": "order 555 status Sure. Please share your order number or the phone number used at checkout so support can check your order status. Can you share the order number, or the phone number used at checkout? Language: english. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-190",
+    "name": "Training: order_status",
+    "description": "mujhy order dekhna hai Zaroor. Apna order number ya checkout wala phone number share kar dein taake support aapka order status check kar sake. Kya aap order number share kar sakte hain, ya checkout wala phone number? Language: mixed. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-191",
+    "name": "Training: order_status",
+    "description": "parcel kaha hai Zaroor. Apna order number ya checkout wala phone number share kar dein taake support aapka order status check kar sake. Kya aap order number share kar sakte hain, ya checkout wala phone number? Language: roman_urdu. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-192",
+    "name": "Training: order_status",
+    "description": "mera package Zaroor. Apna order number ya checkout wala phone number share kar dein taake support aapka order status check kar sake. Kya aap order number share kar sakte hain, ya checkout wala phone number? Language: roman_urdu. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-193",
+    "name": "Training: order_status",
+    "description": "shipment status Sure. Please share your order number or the phone number used at checkout so support can check your order status. Can you share the order number, or the phone number used at checkout? Language: english. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-194",
+    "name": "Training: order_status",
+    "description": "order detail Sure. Please share your order number or the phone number used at checkout so support can check your order status. Can you share the order number, or the phone number used at checkout? Language: english. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-195",
+    "name": "Training: order_status",
+    "description": "track by phone Sure. Please share your order number or the phone number used at checkout so support can check your order status. Can you share the order number, or the phone number used at checkout? Language: english. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-196",
+    "name": "Training: order_status",
+    "description": "delivery guy number Sure. Please share your order number or the phone number used at checkout so support can check your order status. Can you share the order number, or the phone number used at checkout? Language: english. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-197",
+    "name": "Training: order_status",
+    "description": "awb number Sure. Please share your order number or the phone number used at checkout so support can check your order status. Can you share the order number, or the phone number used at checkout? Language: english. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-198",
+    "name": "Training: order_status",
+    "description": "order shipped? Sure. Please share your order number or the phone number used at checkout so support can check your order status. Can you share the order number, or the phone number used at checkout? Language: english. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-199",
+    "name": "Training: order_status",
+    "description": "order confirm hua? Sure. Please share your order number or the phone number used at checkout so support can check your order status. Can you share the order number, or the phone number used at checkout? Language: english. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-200",
+    "name": "Training: order_status",
+    "description": "payment ke bad order Sure. Please share your order number or the phone number used at checkout so support can check your order status. Can you share the order number, or the phone number used at checkout? Language: english. Tags: category:order_tracking, intent:order_status, collection:orders_collection, action:ask_order_number_or_lookup, answer:ask_order_info. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_order_status",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-204",
+    "name": "Training: store_policy_or_complaint",
+    "description": "can i return food For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed. Language: english. Tags: category:refund_return_exchange, intent:store_policy_or_complaint, collection:store_faq_collection, action:retrieve_or_escalate, answer:policy_or_escalation. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-205",
+    "name": "Training: store_policy_or_complaint",
+    "description": "opened packet return For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed. Language: english. Tags: category:refund_return_exchange, intent:store_policy_or_complaint, collection:store_faq_collection, action:retrieve_or_escalate, answer:policy_or_escalation. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-206",
+    "name": "Training: store_policy_or_complaint",
+    "description": "14 days return For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed. Language: english. Tags: category:refund_return_exchange, intent:store_policy_or_complaint, collection:store_faq_collection, action:retrieve_or_escalate, answer:policy_or_escalation. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-207",
+    "name": "Training: store_policy_or_complaint",
+    "description": "refund kab milega For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed. Language: english. Tags: category:refund_return_exchange, intent:store_policy_or_complaint, collection:store_faq_collection, action:retrieve_or_escalate, answer:policy_or_escalation. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-208",
+    "name": "Training: store_policy_or_complaint",
+    "description": "refund approve karo For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed. Language: english. Tags: category:refund_return_exchange, intent:store_policy_or_complaint, collection:store_faq_collection, action:retrieve_or_escalate, answer:policy_or_escalation. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-209",
+    "name": "Training: store_policy_or_complaint",
+    "description": "wrong item For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed. Language: english. Tags: category:refund_return_exchange, intent:store_policy_or_complaint, collection:store_faq_collection, action:retrieve_or_escalate, answer:policy_or_escalation. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-210",
+    "name": "Training: store_policy_or_complaint",
+    "description": "damaged product For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed. Language: english. Tags: category:refund_return_exchange, intent:store_policy_or_complaint, collection:store_faq_collection, action:retrieve_or_escalate, answer:policy_or_escalation. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-211",
+    "name": "Training: store_policy_or_complaint",
+    "description": "defective product For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed. Language: english. Tags: category:refund_return_exchange, intent:store_policy_or_complaint, collection:store_faq_collection, action:retrieve_or_escalate, answer:policy_or_escalation. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-212",
+    "name": "Training: store_policy_or_complaint",
+    "description": "packet broken For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed. Language: english. Tags: category:refund_return_exchange, intent:store_policy_or_complaint, collection:store_faq_collection, action:retrieve_or_escalate, answer:policy_or_escalation. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-213",
+    "name": "Training: store_policy_or_complaint",
+    "description": "taste bad For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed. Language: english. Tags: category:refund_return_exchange, intent:store_policy_or_complaint, collection:store_faq_collection, action:retrieve_or_escalate, answer:policy_or_escalation. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-214",
+    "name": "Training: store_policy_or_complaint",
+    "description": "expired item For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed. Language: english. Tags: category:refund_return_exchange, intent:store_policy_or_complaint, collection:store_faq_collection, action:retrieve_or_escalate, answer:policy_or_escalation. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-215",
+    "name": "Training: store_policy_or_complaint",
+    "description": "replace item For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed. Language: english. Tags: category:refund_return_exchange, intent:store_policy_or_complaint, collection:store_faq_collection, action:retrieve_or_escalate, answer:policy_or_escalation. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-216",
+    "name": "Training: store_policy_or_complaint",
+    "description": "flavor change For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed. Language: english. Tags: category:refund_return_exchange, intent:store_policy_or_complaint, collection:store_faq_collection, action:retrieve_or_escalate, answer:policy_or_escalation. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-217",
+    "name": "Training: store_policy_or_complaint",
+    "description": "order shipped exchange For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed. Language: english. Tags: category:refund_return_exchange, intent:store_policy_or_complaint, collection:store_faq_collection, action:retrieve_or_escalate, answer:policy_or_escalation. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-220",
+    "name": "Training: store_policy_or_complaint",
+    "description": "galat flavor bhej dia For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed. Language: english. Tags: category:refund_return_exchange, intent:store_policy_or_complaint, collection:store_faq_collection, action:retrieve_or_escalate, answer:policy_or_escalation. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-221",
+    "name": "Training: store_policy_or_complaint",
+    "description": "packet khul gaya return For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed. Language: english. Tags: category:refund_return_exchange, intent:store_policy_or_complaint, collection:store_faq_collection, action:retrieve_or_escalate, answer:policy_or_escalation. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-222",
+    "name": "Training: store_policy_or_complaint",
+    "description": "return pickup For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed. Language: english. Tags: category:refund_return_exchange, intent:store_policy_or_complaint, collection:store_faq_collection, action:retrieve_or_escalate, answer:policy_or_escalation. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-223",
+    "name": "Training: store_policy_or_complaint",
+    "description": "shipping cost refund For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed. Language: english. Tags: category:refund_return_exchange, intent:store_policy_or_complaint, collection:store_faq_collection, action:retrieve_or_escalate, answer:policy_or_escalation. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-224",
+    "name": "Training: store_policy_or_complaint",
+    "description": "refund method For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed. Language: english. Tags: category:refund_return_exchange, intent:store_policy_or_complaint, collection:store_faq_collection, action:retrieve_or_escalate, answer:policy_or_escalation. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-225",
+    "name": "Training: store_policy_or_complaint",
+    "description": "wrong quantity For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed. Language: english. Tags: category:refund_return_exchange, intent:store_policy_or_complaint, collection:store_faq_collection, action:retrieve_or_escalate, answer:policy_or_escalation. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-227",
+    "name": "Training: store_policy",
+    "description": "cash on delivery Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support. Language: english. Tags: category:payment_cod_checkout, intent:store_policy, collection:store_faq_collection, action:retrieve_or_fallback, answer:policy_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-228",
+    "name": "Training: store_policy",
+    "description": "payment methods Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support. Language: english. Tags: category:payment_cod_checkout, intent:store_policy, collection:store_faq_collection, action:retrieve_or_fallback, answer:policy_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-229",
+    "name": "Training: store_policy",
+    "description": "online payment Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support. Language: english. Tags: category:payment_cod_checkout, intent:store_policy, collection:store_faq_collection, action:retrieve_or_fallback, answer:policy_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-230",
+    "name": "Training: store_policy",
+    "description": "card payment Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support. Language: english. Tags: category:payment_cod_checkout, intent:store_policy, collection:store_faq_collection, action:retrieve_or_fallback, answer:policy_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-231",
+    "name": "Training: store_policy",
+    "description": "bank transfer Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support. Language: english. Tags: category:payment_cod_checkout, intent:store_policy, collection:store_faq_collection, action:retrieve_or_fallback, answer:policy_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-232",
+    "name": "Training: store_policy",
+    "description": "easypaisa Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support. Language: english. Tags: category:payment_cod_checkout, intent:store_policy, collection:store_faq_collection, action:retrieve_or_fallback, answer:policy_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-233",
+    "name": "Training: store_policy",
+    "description": "jazzcash Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support. Language: english. Tags: category:payment_cod_checkout, intent:store_policy, collection:store_faq_collection, action:retrieve_or_fallback, answer:policy_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-234",
+    "name": "Training: store_policy",
+    "description": "payment failed Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support. Language: english. Tags: category:payment_cod_checkout, intent:store_policy, collection:store_faq_collection, action:retrieve_or_fallback, answer:policy_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-235",
+    "name": "Training: store_policy",
+    "description": "amount deducted Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support. Language: english. Tags: category:payment_cod_checkout, intent:store_policy, collection:store_faq_collection, action:retrieve_or_fallback, answer:policy_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-236",
+    "name": "Training: store_policy",
+    "description": "order not confirmed Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support. Language: english. Tags: category:payment_cod_checkout, intent:store_policy, collection:store_faq_collection, action:retrieve_or_fallback, answer:policy_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-237",
+    "name": "Training: store_policy",
+    "description": "coupon not working Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support. Language: english. Tags: category:payment_cod_checkout, intent:store_policy, collection:store_faq_collection, action:retrieve_or_fallback, answer:policy_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-238",
+    "name": "Training: store_policy",
+    "description": "discount code Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support. Language: english. Tags: category:payment_cod_checkout, intent:store_policy, collection:store_faq_collection, action:retrieve_or_fallback, answer:policy_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-239",
+    "name": "Training: store_policy",
+    "description": "checkout issue Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support. Language: english. Tags: category:payment_cod_checkout, intent:store_policy, collection:store_faq_collection, action:retrieve_or_fallback, answer:policy_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-240",
+    "name": "Training: store_policy",
+    "description": "secure payment Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support. Language: english. Tags: category:payment_cod_checkout, intent:store_policy, collection:store_faq_collection, action:retrieve_or_fallback, answer:policy_or_fallback. Requires escalation: no.",
+    "type": "knowledge",
+    "category": "training_store_policy",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-241",
+    "name": "Training: complaint",
+    "description": "service bakwas I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly. Language: english. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-242",
+    "name": "Training: complaint",
+    "description": "fraud hai Mujhe afsos hai. Please order number aur issue details share kar dein taake support is complaint ko properly handle kar sake. Language: roman_urdu. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-243",
+    "name": "Training: complaint",
+    "description": "mujhe refund do Mujhe afsos hai. Please order number aur issue details share kar dein taake support is complaint ko properly handle kar sake. Language: mixed. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-244",
+    "name": "Training: complaint",
+    "description": "wrong item mila I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly. Language: english. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-245",
+    "name": "Training: complaint",
+    "description": "damaged item I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly. Language: english. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-246",
+    "name": "Training: complaint",
+    "description": "paisa kat gaya I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly. Language: english. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-247",
+    "name": "Training: complaint",
+    "description": "order missing I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly. Language: english. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-248",
+    "name": "Training: complaint",
+    "description": "allergy issue I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly. Language: english. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-249",
+    "name": "Training: complaint",
+    "description": "certificate copy chahiye Mujhe afsos hai. Please order number aur issue details share kar dein taake support is complaint ko properly handle kar sake. Language: roman_urdu. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-250",
+    "name": "Training: complaint",
+    "description": "wholesale rate do I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly. Language: english. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-252",
+    "name": "Training: complaint",
+    "description": "human chahiye Mujhe afsos hai. Please order number aur issue details share kar dein taake support is complaint ko properly handle kar sake. Language: roman_urdu. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-253",
+    "name": "Training: complaint",
+    "description": "complaint karni hai Mujhe afsos hai. Please order number aur issue details share kar dein taake support is complaint ko properly handle kar sake. Language: roman_urdu. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-254",
+    "name": "Training: complaint",
+    "description": "repeat complaint I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly. Language: english. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-255",
+    "name": "Training: complaint",
+    "description": "legal issue I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly. Language: english. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-256",
+    "name": "Training: complaint",
+    "description": "privacy issue I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly. Language: english. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-257",
+    "name": "Training: complaint",
+    "description": "support call back I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly. Language: english. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-258",
+    "name": "Training: complaint",
+    "description": "bohat gussa hoon I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly. Language: english. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-259",
+    "name": "Training: complaint",
+    "description": "i will report you I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly. Language: english. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-260",
+    "name": "Training: complaint",
+    "description": "bad quality I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly. Language: english. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-261",
+    "name": "Training: complaint",
+    "description": "parcel open aya I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly. Language: english. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-262",
+    "name": "Training: complaint",
+    "description": "item missing I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly. Language: english. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-263",
+    "name": "Training: complaint",
+    "description": "taste expired jaisa I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly. Language: english. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-264",
+    "name": "Training: complaint",
+    "description": "payment fraud I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly. Language: english. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-265",
+    "name": "Training: complaint",
+    "description": "return reject kyu I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly. Language: english. Tags: category:complaint_escalation, intent:complaint, collection:store_faq_collection, action:escalate_to_support, answer:apology_plus_details. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_complaint",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-266",
+    "name": "Training: store_policy_or_product_detail",
+    "description": "halal For ingredients, allergens, halal, or certification, provide only safe confirmed guidance and direct exact confirmation to support or packaging. If you share the exact product, I can give more targeted guidance. Language: english. Tags: category:ingredients_allergy_certification, intent:store_policy_or_product_detail, collection:store_faq_collection, action:retrieve_or_escalate, answer:safe_answer. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_product_detail",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-267",
+    "name": "Training: store_policy_or_product_detail",
+    "description": "is it halal For ingredients, allergens, halal, or certification, provide only safe confirmed guidance and direct exact confirmation to support or packaging. If you share the exact product, I can give more targeted guidance. Language: english. Tags: category:ingredients_allergy_certification, intent:store_policy_or_product_detail, collection:store_faq_collection, action:retrieve_or_escalate, answer:safe_answer. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_product_detail",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-268",
+    "name": "Training: store_policy_or_product_detail",
+    "description": "certified hai? Ingredients, allergens, halal, ya certification ke liye sirf safe confirmed guidance deni chahiye aur exact confirmation support ya packaging se leni chahiye. Agar exact product batayen to main zyada targeted guidance de sakta hoon. Language: roman_urdu. Tags: category:ingredients_allergy_certification, intent:store_policy_or_product_detail, collection:store_faq_collection, action:retrieve_or_escalate, answer:safe_answer. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_product_detail",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-269",
+    "name": "Training: store_policy_or_product_detail",
+    "description": "iso hai? Ingredients, allergens, halal, ya certification ke liye sirf safe confirmed guidance deni chahiye aur exact confirmation support ya packaging se leni chahiye. Agar exact product batayen to main zyada targeted guidance de sakta hoon. Language: roman_urdu. Tags: category:ingredients_allergy_certification, intent:store_policy_or_product_detail, collection:store_faq_collection, action:retrieve_or_escalate, answer:safe_answer. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_product_detail",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-270",
+    "name": "Training: store_policy_or_product_detail",
+    "description": "haccp hai? Ingredients, allergens, halal, ya certification ke liye sirf safe confirmed guidance deni chahiye aur exact confirmation support ya packaging se leni chahiye. Agar exact product batayen to main zyada targeted guidance de sakta hoon. Language: roman_urdu. Tags: category:ingredients_allergy_certification, intent:store_policy_or_product_detail, collection:store_faq_collection, action:retrieve_or_escalate, answer:safe_answer. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_product_detail",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-271",
+    "name": "Training: store_policy_or_product_detail",
+    "description": "fda approved? For ingredients, allergens, halal, or certification, provide only safe confirmed guidance and direct exact confirmation to support or packaging. If you share the exact product, I can give more targeted guidance. Language: english. Tags: category:ingredients_allergy_certification, intent:store_policy_or_product_detail, collection:store_faq_collection, action:retrieve_or_escalate, answer:safe_answer. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_product_detail",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-272",
+    "name": "Training: store_policy_or_product_detail",
+    "description": "ingredients For ingredients, allergens, halal, or certification, provide only safe confirmed guidance and direct exact confirmation to support or packaging. If you share the exact product, I can give more targeted guidance. Language: english. Tags: category:ingredients_allergy_certification, intent:store_policy_or_product_detail, collection:store_faq_collection, action:retrieve_or_escalate, answer:safe_answer. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_product_detail",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-273",
+    "name": "Training: store_policy_or_product_detail",
+    "description": "oil konsa use hota For ingredients, allergens, halal, or certification, provide only safe confirmed guidance and direct exact confirmation to support or packaging. If you share the exact product, I can give more targeted guidance. Language: english. Tags: category:ingredients_allergy_certification, intent:store_policy_or_product_detail, collection:store_faq_collection, action:retrieve_or_escalate, answer:safe_answer. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_product_detail",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-274",
+    "name": "Training: store_policy_or_product_detail",
+    "description": "msg hai kya Ingredients, allergens, halal, ya certification ke liye sirf safe confirmed guidance deni chahiye aur exact confirmation support ya packaging se leni chahiye. Agar exact product batayen to main zyada targeted guidance de sakta hoon. Language: roman_urdu. Tags: category:ingredients_allergy_certification, intent:store_policy_or_product_detail, collection:store_faq_collection, action:retrieve_or_escalate, answer:safe_answer. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_product_detail",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-276",
+    "name": "Training: store_policy_or_product_detail",
+    "description": "chicken extract hai? Ingredients, allergens, halal, ya certification ke liye sirf safe confirmed guidance deni chahiye aur exact confirmation support ya packaging se leni chahiye. Agar exact product batayen to main zyada targeted guidance de sakta hoon. Language: roman_urdu. Tags: category:ingredients_allergy_certification, intent:store_policy_or_product_detail, collection:store_faq_collection, action:retrieve_or_escalate, answer:safe_answer. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_product_detail",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-277",
+    "name": "Training: store_policy_or_product_detail",
+    "description": "beef extract hai? Ingredients, allergens, halal, ya certification ke liye sirf safe confirmed guidance deni chahiye aur exact confirmation support ya packaging se leni chahiye. Agar exact product batayen to main zyada targeted guidance de sakta hoon. Language: roman_urdu. Tags: category:ingredients_allergy_certification, intent:store_policy_or_product_detail, collection:store_faq_collection, action:retrieve_or_escalate, answer:safe_answer. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_product_detail",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-278",
+    "name": "Training: store_policy_or_product_detail",
+    "description": "gluten free? For ingredients, allergens, halal, or certification, provide only safe confirmed guidance and direct exact confirmation to support or packaging. If you share the exact product, I can give more targeted guidance. Language: english. Tags: category:ingredients_allergy_certification, intent:store_policy_or_product_detail, collection:store_faq_collection, action:retrieve_or_escalate, answer:safe_answer. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_product_detail",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-279",
+    "name": "Training: store_policy_or_product_detail",
+    "description": "nuts hain? Ingredients, allergens, halal, ya certification ke liye sirf safe confirmed guidance deni chahiye aur exact confirmation support ya packaging se leni chahiye. Agar exact product batayen to main zyada targeted guidance de sakta hoon. Language: roman_urdu. Tags: category:ingredients_allergy_certification, intent:store_policy_or_product_detail, collection:store_faq_collection, action:retrieve_or_escalate, answer:safe_answer. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_product_detail",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-280",
+    "name": "Training: store_policy_or_product_detail",
+    "description": "peanut allergy For ingredients, allergens, halal, or certification, provide only safe confirmed guidance and direct exact confirmation to support or packaging. If you share the exact product, I can give more targeted guidance. Language: english. Tags: category:ingredients_allergy_certification, intent:store_policy_or_product_detail, collection:store_faq_collection, action:retrieve_or_escalate, answer:safe_answer. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_product_detail",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-281",
+    "name": "Training: store_policy_or_product_detail",
+    "description": "milk hai? Ingredients, allergens, halal, ya certification ke liye sirf safe confirmed guidance deni chahiye aur exact confirmation support ya packaging se leni chahiye. Agar exact product batayen to main zyada targeted guidance de sakta hoon. Language: roman_urdu. Tags: category:ingredients_allergy_certification, intent:store_policy_or_product_detail, collection:store_faq_collection, action:retrieve_or_escalate, answer:safe_answer. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_product_detail",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-282",
+    "name": "Training: store_policy_or_product_detail",
+    "description": "soy hai? Ingredients, allergens, halal, ya certification ke liye sirf safe confirmed guidance deni chahiye aur exact confirmation support ya packaging se leni chahiye. Agar exact product batayen to main zyada targeted guidance de sakta hoon. Language: roman_urdu. Tags: category:ingredients_allergy_certification, intent:store_policy_or_product_detail, collection:store_faq_collection, action:retrieve_or_escalate, answer:safe_answer. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_product_detail",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-283",
+    "name": "Training: store_policy_or_product_detail",
+    "description": "vegan hai? Ingredients, allergens, halal, ya certification ke liye sirf safe confirmed guidance deni chahiye aur exact confirmation support ya packaging se leni chahiye. Agar exact product batayen to main zyada targeted guidance de sakta hoon. Language: roman_urdu. Tags: category:ingredients_allergy_certification, intent:store_policy_or_product_detail, collection:store_faq_collection, action:retrieve_or_escalate, answer:safe_answer. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_product_detail",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-284",
+    "name": "Training: store_policy_or_product_detail",
+    "description": "vegetarian hai? Ingredients, allergens, halal, ya certification ke liye sirf safe confirmed guidance deni chahiye aur exact confirmation support ya packaging se leni chahiye. Agar exact product batayen to main zyada targeted guidance de sakta hoon. Language: roman_urdu. Tags: category:ingredients_allergy_certification, intent:store_policy_or_product_detail, collection:store_faq_collection, action:retrieve_or_escalate, answer:safe_answer. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_product_detail",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-285",
+    "name": "Training: store_policy_or_product_detail",
+    "description": "shelf life For ingredients, allergens, halal, or certification, provide only safe confirmed guidance and direct exact confirmation to support or packaging. If you share the exact product, I can give more targeted guidance. Language: english. Tags: category:ingredients_allergy_certification, intent:store_policy_or_product_detail, collection:store_faq_collection, action:retrieve_or_escalate, answer:safe_answer. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_store_policy_or_product_detail",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-286",
+    "name": "Training: wholesale",
+    "description": "wholesale For wholesale or corporate queries, ask for quantity, city, and business details, then hand off to support. Could you share the quantity, city, and business name? Language: english. Tags: category:wholesale_corporate, intent:wholesale, collection:store_faq_collection, action:ask_business_details, answer:lead_capture. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_wholesale",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-287",
+    "name": "Training: wholesale",
+    "description": "bulk order For wholesale or corporate queries, ask for quantity, city, and business details, then hand off to support. Could you share the quantity, city, and business name? Language: english. Tags: category:wholesale_corporate, intent:wholesale, collection:store_faq_collection, action:ask_business_details, answer:lead_capture. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_wholesale",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-288",
+    "name": "Training: wholesale",
+    "description": "retailer price For wholesale or corporate queries, ask for quantity, city, and business details, then hand off to support. Could you share the quantity, city, and business name? Language: english. Tags: category:wholesale_corporate, intent:wholesale, collection:store_faq_collection, action:ask_business_details, answer:lead_capture. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_wholesale",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-289",
+    "name": "Training: wholesale",
+    "description": "shop ke liye rate Wholesale ya corporate query mein quantity, city, aur business details mang kar support handoff karna chahiye. Quantity, city, aur business name share kar dein? Language: roman_urdu. Tags: category:wholesale_corporate, intent:wholesale, collection:store_faq_collection, action:ask_business_details, answer:lead_capture. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_wholesale",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-290",
+    "name": "Training: wholesale",
+    "description": "100 carton chahiye Wholesale ya corporate query mein quantity, city, aur business details mang kar support handoff karna chahiye. Quantity, city, aur business name share kar dein? Language: roman_urdu. Tags: category:wholesale_corporate, intent:wholesale, collection:store_faq_collection, action:ask_business_details, answer:lead_capture. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_wholesale",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-291",
+    "name": "Training: wholesale",
+    "description": "corporate gift For wholesale or corporate queries, ask for quantity, city, and business details, then hand off to support. Could you share the quantity, city, and business name? Language: english. Tags: category:wholesale_corporate, intent:wholesale, collection:store_faq_collection, action:ask_business_details, answer:lead_capture. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_wholesale",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-292",
+    "name": "Training: wholesale",
+    "description": "office ke liye 50 box Wholesale ya corporate query mein quantity, city, aur business details mang kar support handoff karna chahiye. Quantity, city, aur business name share kar dein? Language: roman_urdu. Tags: category:wholesale_corporate, intent:wholesale, collection:store_faq_collection, action:ask_business_details, answer:lead_capture. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_wholesale",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-293",
+    "name": "Training: wholesale",
+    "description": "event order For wholesale or corporate queries, ask for quantity, city, and business details, then hand off to support. Could you share the quantity, city, and business name? Language: english. Tags: category:wholesale_corporate, intent:wholesale, collection:store_faq_collection, action:ask_business_details, answer:lead_capture. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_wholesale",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-294",
+    "name": "Training: wholesale",
+    "description": "wedding snacks For wholesale or corporate queries, ask for quantity, city, and business details, then hand off to support. Could you share the quantity, city, and business name? Language: english. Tags: category:wholesale_corporate, intent:wholesale, collection:store_faq_collection, action:ask_business_details, answer:lead_capture. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_wholesale",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-295",
+    "name": "Training: wholesale",
+    "description": "school canteen For wholesale or corporate queries, ask for quantity, city, and business details, then hand off to support. Could you share the quantity, city, and business name? Language: english. Tags: category:wholesale_corporate, intent:wholesale, collection:store_faq_collection, action:ask_business_details, answer:lead_capture. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_wholesale",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-296",
+    "name": "Training: wholesale",
+    "description": "monthly supply For wholesale or corporate queries, ask for quantity, city, and business details, then hand off to support. Could you share the quantity, city, and business name? Language: english. Tags: category:wholesale_corporate, intent:wholesale, collection:store_faq_collection, action:ask_business_details, answer:lead_capture. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_wholesale",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-297",
+    "name": "Training: wholesale",
+    "description": "distributor banna hai Wholesale ya corporate query mein quantity, city, aur business details mang kar support handoff karna chahiye. Quantity, city, aur business name share kar dein? Language: roman_urdu. Tags: category:wholesale_corporate, intent:wholesale, collection:store_faq_collection, action:ask_business_details, answer:lead_capture. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_wholesale",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-298",
+    "name": "Training: wholesale",
+    "description": "dealership For wholesale or corporate queries, ask for quantity, city, and business details, then hand off to support. Could you share the quantity, city, and business name? Language: english. Tags: category:wholesale_corporate, intent:wholesale, collection:store_faq_collection, action:ask_business_details, answer:lead_capture. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_wholesale",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-299",
+    "name": "Training: wholesale",
+    "description": "rate list bhejo For wholesale or corporate queries, ask for quantity, city, and business details, then hand off to support. Could you share the quantity, city, and business name? Language: english. Tags: category:wholesale_corporate, intent:wholesale, collection:store_faq_collection, action:ask_business_details, answer:lead_capture. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_wholesale",
+    "link": "https://snakitos.com"
+  },
+  {
+    "id": "suite-300",
+    "name": "Training: wholesale",
+    "description": "business supply For wholesale or corporate queries, ask for quantity, city, and business details, then hand off to support. Could you share the quantity, city, and business name? Language: english. Tags: category:wholesale_corporate, intent:wholesale, collection:store_faq_collection, action:ask_business_details, answer:lead_capture. Requires escalation: yes.",
+    "type": "knowledge",
+    "category": "training_wholesale",
+    "link": "https://snakitos.com"
+  },
+  {
     "id": "9d391b94de397fd3",
     "name": "Training: gifting",
     "description": "mujhe gift ke liye snacks chahiye Snakitos se Gifting ke liye Ultimate Mega Snack Box, All Time Favorites, Choco Lovers Bundle ya Snakitos Flavor Fiesta Bundle achay options hain agar available hon. Ye individual packs se zyada complete lagte hain. Gift kids, family, office ya friend ke liye hai? Language: roman_urdu. Tags: occasion, gift, bundle. Requires escalation: no.",

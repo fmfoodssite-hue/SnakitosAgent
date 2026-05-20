@@ -98,6 +98,13 @@ async function main() {
     loadJson("15-product-records.json"),
   ]);
 
+  let evalSuiteTraining = [];
+  try {
+    evalSuiteTraining = await loadJson("19-eval-suite-training-dataset.json");
+  } catch {
+    evalSuiteTraining = [];
+  }
+
   let importedGeneralDataset = [];
   try {
     importedGeneralDataset = await loadJson("18-general-200k-sample.json");
@@ -113,7 +120,7 @@ async function main() {
   }
 
   const items = toKnowledgeItems({
-    generalTraining: [...generalTraining, ...importedGeneralDataset],
+    generalTraining: [...generalTraining, ...evalSuiteTraining, ...importedGeneralDataset],
     faqs,
     recommendations,
     productRecords,

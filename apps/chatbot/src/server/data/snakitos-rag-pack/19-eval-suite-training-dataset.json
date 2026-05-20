@@ -1,0 +1,4809 @@
+[
+  {
+    "id": "suite-001",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "what do you sell",
+    "ideal_answer": "Snakitos is a brand by FM Foods offering Pakistani snacks, bundles, and snack boxes.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:general_store",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:direct_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-002",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "about",
+    "ideal_answer": "Snakitos is a brand by FM Foods offering Pakistani snacks, bundles, and snack boxes.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:general_store",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:direct_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-003",
+    "intent": "store_policy",
+    "language": "roman_urdu",
+    "user_query": "snakitos kya hai",
+    "ideal_answer": "Customer ki query ka clear, safe, aur helpful jawab dein aur zarurat par support ko escalate karein.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:general_store",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:direct_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-004",
+    "intent": "store_policy",
+    "language": "roman_urdu",
+    "user_query": "ye store kis cheez ka hai",
+    "ideal_answer": "Customer ki query ka clear, safe, aur helpful jawab dein aur zarurat par support ko escalate karein.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:general_store",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:direct_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-005",
+    "intent": "store_policy",
+    "language": "roman_urdu",
+    "user_query": "ap log kya bechte ho",
+    "ideal_answer": "Customer ki query ka clear, safe, aur helpful jawab dein aur zarurat par support ko escalate karein.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:general_store",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:direct_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-006",
+    "intent": "store_policy",
+    "language": "mixed",
+    "user_query": "pakistani snacks hain?",
+    "ideal_answer": "Snakitos FM Foods ka brand hai jahan Pakistani snacks, bundles, aur snack boxes milte hain.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:general_store",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:direct_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-007",
+    "intent": "store_policy",
+    "language": "roman_urdu",
+    "user_query": "brand kis ka hai",
+    "ideal_answer": "Customer ki query ka clear, safe, aur helpful jawab dein aur zarurat par support ko escalate karein.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:general_store",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:direct_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-008",
+    "intent": "store_policy",
+    "language": "roman_urdu",
+    "user_query": "fm foods hai kya",
+    "ideal_answer": "Customer ki query ka clear, safe, aur helpful jawab dein aur zarurat par support ko escalate karein.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:general_store",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:direct_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-009",
+    "intent": "store_policy",
+    "language": "roman_urdu",
+    "user_query": "shop online hai?",
+    "ideal_answer": "Snakitos FM Foods ka brand hai jahan Pakistani snacks, bundles, aur snack boxes milte hain.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:general_store",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:direct_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-010",
+    "intent": "store_policy",
+    "language": "roman_urdu",
+    "user_query": "kya ye original site hai",
+    "ideal_answer": "Customer ki query ka clear, safe, aur helpful jawab dein aur zarurat par support ko escalate karein.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:general_store",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:direct_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-013",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "email",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:general_store",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:direct_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-015",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "location",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:general_store",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:direct_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-016",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "karachi kahan",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:general_store",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:direct_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-017",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "complaint form",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:general_store",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:direct_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-018",
+    "intent": "store_policy",
+    "language": "roman_urdu",
+    "user_query": "support chahiye",
+    "ideal_answer": "Customer ki query ka clear, safe, aur helpful jawab dein aur zarurat par support ko escalate karein.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:general_store",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:direct_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-020",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "human se baat",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:general_store",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:direct_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-021",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "hello",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:general_store",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:direct_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-022",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "salam",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:general_store",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:direct_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-023",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "help",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:general_store",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:direct_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-024",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "shop ka naam",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:general_store",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:direct_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-025",
+    "intent": "store_policy",
+    "language": "mixed",
+    "user_query": "ye snacks kis company ke hain",
+    "ideal_answer": "Customer ki query ka clear, safe, aur helpful jawab dein aur zarurat par support ko escalate karein.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:general_store",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:direct_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-026",
+    "intent": "mixed_by_trigger",
+    "language": "english",
+    "user_query": "delivery",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:one_word",
+      "intent:mixed_by_trigger",
+      "collection:trigger_router_then_correct_collection",
+      "action:expand_then_retrieve",
+      "answer:expanded_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-027",
+    "intent": "mixed_by_trigger",
+    "language": "english",
+    "user_query": "shipping",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:one_word",
+      "intent:mixed_by_trigger",
+      "collection:trigger_router_then_correct_collection",
+      "action:expand_then_retrieve",
+      "answer:expanded_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-028",
+    "intent": "mixed_by_trigger",
+    "language": "english",
+    "user_query": "charges",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:one_word",
+      "intent:mixed_by_trigger",
+      "collection:trigger_router_then_correct_collection",
+      "action:expand_then_retrieve",
+      "answer:expanded_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-029",
+    "intent": "mixed_by_trigger",
+    "language": "english",
+    "user_query": "tracking",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:one_word",
+      "intent:mixed_by_trigger",
+      "collection:trigger_router_then_correct_collection",
+      "action:expand_then_retrieve",
+      "answer:expanded_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-030",
+    "intent": "mixed_by_trigger",
+    "language": "english",
+    "user_query": "order",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:one_word",
+      "intent:mixed_by_trigger",
+      "collection:trigger_router_then_correct_collection",
+      "action:expand_then_retrieve",
+      "answer:expanded_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-034",
+    "intent": "mixed_by_trigger",
+    "language": "english",
+    "user_query": "damaged",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:one_word",
+      "intent:mixed_by_trigger",
+      "collection:trigger_router_then_correct_collection",
+      "action:expand_then_retrieve",
+      "answer:expanded_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-035",
+    "intent": "mixed_by_trigger",
+    "language": "english",
+    "user_query": "complaint",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:one_word",
+      "intent:mixed_by_trigger",
+      "collection:trigger_router_then_correct_collection",
+      "action:expand_then_retrieve",
+      "answer:expanded_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-040",
+    "intent": "mixed_by_trigger",
+    "language": "english",
+    "user_query": "payment",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:one_word",
+      "intent:mixed_by_trigger",
+      "collection:trigger_router_then_correct_collection",
+      "action:expand_then_retrieve",
+      "answer:expanded_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-041",
+    "intent": "mixed_by_trigger",
+    "language": "english",
+    "user_query": "discount",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [
+      "Snack Sampler Deal",
+      "All Time Favorites"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:one_word",
+      "intent:mixed_by_trigger",
+      "collection:trigger_router_then_correct_collection",
+      "action:expand_then_retrieve",
+      "answer:expanded_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-042",
+    "intent": "mixed_by_trigger",
+    "language": "english",
+    "user_query": "deal",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [
+      "Snack Sampler Deal",
+      "All Time Favorites"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:one_word",
+      "intent:mixed_by_trigger",
+      "collection:trigger_router_then_correct_collection",
+      "action:expand_then_retrieve",
+      "answer:expanded_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-043",
+    "intent": "mixed_by_trigger",
+    "language": "english",
+    "user_query": "coupon",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:one_word",
+      "intent:mixed_by_trigger",
+      "collection:trigger_router_then_correct_collection",
+      "action:expand_then_retrieve",
+      "answer:expanded_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-044",
+    "intent": "mixed_by_trigger",
+    "language": "english",
+    "user_query": "banana",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [
+      "Banana Chips Sea Salt",
+      "Banana Chips Achari Masti"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:one_word",
+      "intent:mixed_by_trigger",
+      "collection:trigger_router_then_correct_collection",
+      "action:expand_then_retrieve",
+      "answer:expanded_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-045",
+    "intent": "mixed_by_trigger",
+    "language": "english",
+    "user_query": "chips",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [
+      "Banana Chips Sea Salt",
+      "Banana Chips Achari Masti"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:one_word",
+      "intent:mixed_by_trigger",
+      "collection:trigger_router_then_correct_collection",
+      "action:expand_then_retrieve",
+      "answer:expanded_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-048",
+    "intent": "mixed_by_trigger",
+    "language": "english",
+    "user_query": "choco",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [
+      "Choco Stick Chocolate",
+      "Wafer Rolls Hazelnut",
+      "Choco Lovers Bundle"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:one_word",
+      "intent:mixed_by_trigger",
+      "collection:trigger_router_then_correct_collection",
+      "action:expand_then_retrieve",
+      "answer:expanded_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-051",
+    "intent": "mixed",
+    "language": "english",
+    "user_query": "order kab ayega",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-052",
+    "intent": "mixed",
+    "language": "roman_urdu",
+    "user_query": "mera parcel kidar hai",
+    "ideal_answer": "Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-053",
+    "intent": "mixed",
+    "language": "mixed",
+    "user_query": "delivery kitny din",
+    "ideal_answer": "Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-054",
+    "intent": "mixed",
+    "language": "english",
+    "user_query": "dilevry charges kia",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-057",
+    "intent": "mixed",
+    "language": "english",
+    "user_query": "kharab product aya",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-058",
+    "intent": "mixed",
+    "language": "english",
+    "user_query": "packet phata hua",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-059",
+    "intent": "mixed",
+    "language": "english",
+    "user_query": "wrong item bhej dia",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-060",
+    "intent": "mixed",
+    "language": "english",
+    "user_query": "number do",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-061",
+    "intent": "mixed",
+    "language": "roman_urdu",
+    "user_query": "address kya hai",
+    "ideal_answer": "Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-062",
+    "intent": "mixed",
+    "language": "roman_urdu",
+    "user_query": "cod hai?",
+    "ideal_answer": "Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-063",
+    "intent": "mixed",
+    "language": "english",
+    "user_query": "cash pe milega?",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-064",
+    "intent": "mixed",
+    "language": "english",
+    "user_query": "payment fail hogya",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-065",
+    "intent": "mixed",
+    "language": "english",
+    "user_query": "paisa kat gaya order nahi",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-066",
+    "intent": "mixed",
+    "language": "roman_urdu",
+    "user_query": "kids ke liye kya acha",
+    "ideal_answer": "Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye.",
+    "recommended_products": [
+      "Kids Fun Box",
+      "Choco Stick Strawberry"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-067",
+    "intent": "mixed",
+    "language": "mixed",
+    "user_query": "spicy snacks batao",
+    "ideal_answer": "Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye.",
+    "recommended_products": [
+      "Stix Hot & Spicy",
+      "Stix Peri Peri",
+      "Nachos Salsa"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-068",
+    "intent": "mixed",
+    "language": "english",
+    "user_query": "meetha snack",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [
+      "Choco Stick Chocolate",
+      "Wafer Rolls Hazelnut",
+      "Choco Lovers Bundle"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-069",
+    "intent": "mixed",
+    "language": "english",
+    "user_query": "sasta bundle",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [
+      "Snack Sampler Deal",
+      "All Time Favorites"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-070",
+    "intent": "mixed",
+    "language": "roman_urdu",
+    "user_query": "2000 ke andar kya hai",
+    "ideal_answer": "Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye.",
+    "recommended_products": [
+      "Snack Sampler Deal",
+      "All Time Favorites"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-071",
+    "intent": "mixed",
+    "language": "mixed",
+    "user_query": "office ke liye snacks",
+    "ideal_answer": "Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye.",
+    "recommended_products": [
+      "Office Snack Box",
+      "All Time Favorites"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-072",
+    "intent": "mixed",
+    "language": "roman_urdu",
+    "user_query": "gift dena hai",
+    "ideal_answer": "Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye.",
+    "recommended_products": [
+      "Ultimate Mega Snack Box",
+      "Flavor Fiesta Bundle"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-073",
+    "intent": "mixed",
+    "language": "roman_urdu",
+    "user_query": "halal hai?",
+    "ideal_answer": "Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-075",
+    "intent": "mixed",
+    "language": "roman_urdu",
+    "user_query": "nut allergy hai",
+    "ideal_answer": "Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-076",
+    "intent": "mixed",
+    "language": "mixed",
+    "user_query": "bulk order chahiye",
+    "ideal_answer": "Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-077",
+    "intent": "mixed",
+    "language": "roman_urdu",
+    "user_query": "dukandar rate chahiye",
+    "ideal_answer": "Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye.",
+    "recommended_products": [
+      "Snack Sampler Deal",
+      "All Time Favorites"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-078",
+    "intent": "mixed",
+    "language": "roman_urdu",
+    "user_query": "bhai chips chahiye",
+    "ideal_answer": "Is short ya mixed prompt ko expand karke sahi policy, support, ya product path par le jana chahiye.",
+    "recommended_products": [
+      "Banana Chips Sea Salt",
+      "Banana Chips Achari Masti"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-079",
+    "intent": "mixed",
+    "language": "english",
+    "user_query": "parcel late hogya",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-080",
+    "intent": "mixed",
+    "language": "english",
+    "user_query": "complain kaise karni",
+    "ideal_answer": "This short or mixed prompt should be expanded first, then routed to the correct policy, support, or product path.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:roman_urdu",
+      "intent:mixed",
+      "collection:router_selects_correct_collection",
+      "action:retrieve_or_escalate",
+      "answer:same_language_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-081",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "banana chips",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Banana Chips Sea Salt",
+      "Banana Chips Achari Masti"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-082",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "banana bbq",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Banana Chips Sea Salt",
+      "Banana Chips Achari Masti"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-083",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "banana sea salt",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Banana Chips Sea Salt",
+      "Banana Chips Achari Masti"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-084",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "achari banana",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Banana Chips Sea Salt",
+      "Banana Chips Achari Masti"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-085",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "cheese banana",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Banana Chips Sea Salt",
+      "Banana Chips Achari Masti"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-087",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "stix hot spicy",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Stix Hot & Spicy",
+      "Stix Peri Peri",
+      "Nachos Salsa"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-088",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "peri peri stix",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Stix Hot & Spicy",
+      "Stix Salty"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-089",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "lemon chilli stix",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Stix Hot & Spicy",
+      "Stix Salty"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-090",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "masala stix",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Stix Hot & Spicy",
+      "Stix Salty"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-091",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "salty stix",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Stix Hot & Spicy",
+      "Stix Salty"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-092",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "patata",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-093",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "patata masala",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-094",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "patata salty",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-095",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "potato slims",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-097",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "hazelnut wafer",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Choco Stick Chocolate",
+      "Wafer Rolls Hazelnut",
+      "Choco Lovers Bundle"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-098",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "strawberry wafer",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Choco Stick Chocolate",
+      "Wafer Rolls Hazelnut",
+      "Choco Lovers Bundle"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-099",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "dark chocolate wafer",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Choco Stick Chocolate",
+      "Wafer Rolls Hazelnut",
+      "Choco Lovers Bundle"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-100",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "cappuccino wafer",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Choco Stick Chocolate",
+      "Wafer Rolls Hazelnut",
+      "Choco Lovers Bundle"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-101",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "choco stick",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Choco Stick Chocolate",
+      "Wafer Rolls Hazelnut",
+      "Choco Lovers Bundle"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-102",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "chocolate stick",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Choco Stick Chocolate",
+      "Wafer Rolls Hazelnut",
+      "Choco Lovers Bundle"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-103",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "strawberry choco",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Choco Stick Chocolate",
+      "Wafer Rolls Hazelnut",
+      "Choco Lovers Bundle"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-104",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "coco choco can",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Choco Stick Chocolate",
+      "Wafer Rolls Hazelnut",
+      "Choco Lovers Bundle"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-106",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "nachos salsa",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Nachos Salsa",
+      "Nachos Paprika"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-107",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "nachos paprika",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Nachos Salsa",
+      "Nachos Paprika"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-108",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "snaktory",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-109",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "snaktory namkeen",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-111",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "mega deal",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Snack Sampler Deal",
+      "All Time Favorites"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-112",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "office box",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Office Snack Box",
+      "All Time Favorites"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-113",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "kids box",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Kids Fun Box",
+      "Choco Stick Strawberry"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-114",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "movie night bundle",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Movie Night Nachos Bundle",
+      "Stix Party"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-115",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "chickpea puffs",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-116",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "chana puff",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-117",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "multi grain snacks",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-118",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "sweet tooth snacks",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Choco Stick Chocolate",
+      "Wafer Rolls Hazelnut",
+      "Choco Lovers Bundle"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-119",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "deals collection",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Snack Sampler Deal",
+      "All Time Favorites"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-120",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "can tray",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-121",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "wafer wonder bundle",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [
+      "Choco Stick Chocolate",
+      "Wafer Rolls Hazelnut",
+      "Choco Lovers Bundle"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-122",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "flavor fiesta",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-123",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "craving combo",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-124",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "snack heaven",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-125",
+    "intent": "product_query",
+    "language": "english",
+    "user_query": "patata pack of 6",
+    "ideal_answer": "This should retrieve the matching product or collection details directly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:products",
+      "intent:product_query",
+      "collection:products_collection",
+      "action:retrieve",
+      "answer:product_answer"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-126",
+    "intent": "recommendation",
+    "language": "english",
+    "user_query": "recommend something",
+    "ideal_answer": "I can suggest the best snacks based on taste, budget, or occasion.",
+    "recommended_products": [],
+    "follow_up_question": "Would you like spicy, sweet, salty, crunchy, or mixed snacks?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-127",
+    "intent": "recommendation",
+    "language": "roman_urdu",
+    "user_query": "kya loon",
+    "ideal_answer": "Main aapko taste, budget, ya occasion ke hisaab se best snacks suggest kar sakta hoon.",
+    "recommended_products": [],
+    "follow_up_question": "Aap spicy, sweet, salty, crunchy, ya mixed kya lena chahenge?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-128",
+    "intent": "recommendation",
+    "language": "english",
+    "user_query": "best snack",
+    "ideal_answer": "I can suggest the best snacks based on taste, budget, or occasion.",
+    "recommended_products": [],
+    "follow_up_question": "Would you like spicy, sweet, salty, crunchy, or mixed snacks?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-129",
+    "intent": "recommendation",
+    "language": "english",
+    "user_query": "best seller",
+    "ideal_answer": "I can suggest the best snacks based on taste, budget, or occasion.",
+    "recommended_products": [],
+    "follow_up_question": "Would you like spicy, sweet, salty, crunchy, or mixed snacks?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-130",
+    "intent": "recommendation",
+    "language": "english",
+    "user_query": "spicy snacks",
+    "ideal_answer": "If you enjoy spicy snacks, strong options include Stix Hot & Spicy, Stix Peri Peri, Nachos Salsa, and Banana Chips Achari Masti.",
+    "recommended_products": [
+      "Stix Hot & Spicy",
+      "Stix Peri Peri",
+      "Nachos Salsa"
+    ],
+    "follow_up_question": "Would you like spicy, sweet, salty, crunchy, or mixed snacks?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-131",
+    "intent": "recommendation",
+    "language": "english",
+    "user_query": "bohat teekha",
+    "ideal_answer": "If you enjoy spicy snacks, strong options include Stix Hot & Spicy, Stix Peri Peri, Nachos Salsa, and Banana Chips Achari Masti.",
+    "recommended_products": [
+      "Stix Hot & Spicy",
+      "Stix Peri Peri",
+      "Nachos Salsa"
+    ],
+    "follow_up_question": "Would you like spicy, sweet, salty, crunchy, or mixed snacks?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-132",
+    "intent": "recommendation",
+    "language": "english",
+    "user_query": "non spicy",
+    "ideal_answer": "If you enjoy spicy snacks, strong options include Stix Hot & Spicy, Stix Peri Peri, Nachos Salsa, and Banana Chips Achari Masti.",
+    "recommended_products": [
+      "Stix Hot & Spicy",
+      "Stix Peri Peri",
+      "Nachos Salsa"
+    ],
+    "follow_up_question": "Would you like spicy, sweet, salty, crunchy, or mixed snacks?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-133",
+    "intent": "recommendation",
+    "language": "english",
+    "user_query": "sweet snacks",
+    "ideal_answer": "For sweet cravings, Choco Stick, Wafer Rolls, and Coco Choco Can are good options.",
+    "recommended_products": [
+      "Choco Stick Chocolate",
+      "Wafer Rolls Hazelnut",
+      "Choco Lovers Bundle"
+    ],
+    "follow_up_question": "Would you like spicy, sweet, salty, crunchy, or mixed snacks?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-134",
+    "intent": "recommendation",
+    "language": "roman_urdu",
+    "user_query": "meetha chahiye",
+    "ideal_answer": "Meetha craving ke liye Choco Stick, Wafer Rolls, aur Coco Choco Can achay options hain.",
+    "recommended_products": [
+      "Choco Stick Chocolate",
+      "Wafer Rolls Hazelnut",
+      "Choco Lovers Bundle"
+    ],
+    "follow_up_question": "Aap spicy, sweet, salty, crunchy, ya mixed kya lena chahenge?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-135",
+    "intent": "recommendation",
+    "language": "english",
+    "user_query": "salty snack",
+    "ideal_answer": "I can suggest the best snacks based on taste, budget, or occasion.",
+    "recommended_products": [],
+    "follow_up_question": "Would you like spicy, sweet, salty, crunchy, or mixed snacks?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-136",
+    "intent": "recommendation",
+    "language": "english",
+    "user_query": "crunchy snack",
+    "ideal_answer": "I can suggest the best snacks based on taste, budget, or occasion.",
+    "recommended_products": [],
+    "follow_up_question": "Would you like spicy, sweet, salty, crunchy, or mixed snacks?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-137",
+    "intent": "recommendation",
+    "language": "roman_urdu",
+    "user_query": "kids ke liye",
+    "ideal_answer": "Main aapko taste, budget, ya occasion ke hisaab se best snacks suggest kar sakta hoon.",
+    "recommended_products": [
+      "Kids Fun Box",
+      "Choco Stick Strawberry"
+    ],
+    "follow_up_question": "Aap spicy, sweet, salty, crunchy, ya mixed kya lena chahenge?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-138",
+    "intent": "recommendation",
+    "language": "english",
+    "user_query": "school lunch",
+    "ideal_answer": "I can suggest the best snacks based on taste, budget, or occasion.",
+    "recommended_products": [
+      "Kids Fun Box",
+      "Choco Stick Strawberry"
+    ],
+    "follow_up_question": "Would you like spicy, sweet, salty, crunchy, or mixed snacks?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-139",
+    "intent": "recommendation",
+    "language": "english",
+    "user_query": "office snack",
+    "ideal_answer": "I can suggest the best snacks based on taste, budget, or occasion.",
+    "recommended_products": [
+      "Office Snack Box",
+      "All Time Favorites"
+    ],
+    "follow_up_question": "Would you like spicy, sweet, salty, crunchy, or mixed snacks?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-140",
+    "intent": "recommendation",
+    "language": "english",
+    "user_query": "movie night",
+    "ideal_answer": "I can suggest the best snacks based on taste, budget, or occasion.",
+    "recommended_products": [
+      "Movie Night Nachos Bundle",
+      "Stix Party"
+    ],
+    "follow_up_question": "Would you like spicy, sweet, salty, crunchy, or mixed snacks?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-141",
+    "intent": "recommendation",
+    "language": "english",
+    "user_query": "netflix snack",
+    "ideal_answer": "I can suggest the best snacks based on taste, budget, or occasion.",
+    "recommended_products": [
+      "Movie Night Nachos Bundle",
+      "Stix Party"
+    ],
+    "follow_up_question": "Would you like spicy, sweet, salty, crunchy, or mixed snacks?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-142",
+    "intent": "recommendation",
+    "language": "english",
+    "user_query": "cricket match snack",
+    "ideal_answer": "I can suggest the best snacks based on taste, budget, or occasion.",
+    "recommended_products": [
+      "Movie Night Nachos Bundle",
+      "Stix Party"
+    ],
+    "follow_up_question": "Would you like spicy, sweet, salty, crunchy, or mixed snacks?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-143",
+    "intent": "recommendation",
+    "language": "roman_urdu",
+    "user_query": "family ke liye",
+    "ideal_answer": "Main aapko taste, budget, ya occasion ke hisaab se best snacks suggest kar sakta hoon.",
+    "recommended_products": [
+      "Ultimate Mega Snack Box",
+      "Flavor Fiesta Bundle"
+    ],
+    "follow_up_question": "Aap spicy, sweet, salty, crunchy, ya mixed kya lena chahenge?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-144",
+    "intent": "recommendation",
+    "language": "roman_urdu",
+    "user_query": "gift ke liye",
+    "ideal_answer": "Main aapko taste, budget, ya occasion ke hisaab se best snacks suggest kar sakta hoon.",
+    "recommended_products": [
+      "Ultimate Mega Snack Box",
+      "Flavor Fiesta Bundle"
+    ],
+    "follow_up_question": "Aap spicy, sweet, salty, crunchy, ya mixed kya lena chahenge?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-145",
+    "intent": "recommendation",
+    "language": "english",
+    "user_query": "birthday snack",
+    "ideal_answer": "I can suggest the best snacks based on taste, budget, or occasion.",
+    "recommended_products": [
+      "Ultimate Mega Snack Box",
+      "Flavor Fiesta Bundle"
+    ],
+    "follow_up_question": "Would you like spicy, sweet, salty, crunchy, or mixed snacks?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-146",
+    "intent": "recommendation",
+    "language": "english",
+    "user_query": "party snacks",
+    "ideal_answer": "I can suggest the best snacks based on taste, budget, or occasion.",
+    "recommended_products": [
+      "Ultimate Mega Snack Box",
+      "Flavor Fiesta Bundle"
+    ],
+    "follow_up_question": "Would you like spicy, sweet, salty, crunchy, or mixed snacks?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-147",
+    "intent": "recommendation",
+    "language": "roman_urdu",
+    "user_query": "chai ke sath",
+    "ideal_answer": "Main aapko taste, budget, ya occasion ke hisaab se best snacks suggest kar sakta hoon.",
+    "recommended_products": [],
+    "follow_up_question": "Aap spicy, sweet, salty, crunchy, ya mixed kya lena chahenge?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-148",
+    "intent": "recommendation",
+    "language": "english",
+    "user_query": "late night craving",
+    "ideal_answer": "I can suggest the best snacks based on taste, budget, or occasion.",
+    "recommended_products": [],
+    "follow_up_question": "Would you like spicy, sweet, salty, crunchy, or mixed snacks?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-149",
+    "intent": "recommendation",
+    "language": "english",
+    "user_query": "under 500",
+    "ideal_answer": "I can suggest the best snacks based on taste, budget, or occasion.",
+    "recommended_products": [
+      "Snack Sampler Deal",
+      "All Time Favorites"
+    ],
+    "follow_up_question": "Would you like spicy, sweet, or mixed snacks?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-150",
+    "intent": "recommendation",
+    "language": "english",
+    "user_query": "under 1000",
+    "ideal_answer": "I can suggest the best snacks based on taste, budget, or occasion.",
+    "recommended_products": [
+      "Snack Sampler Deal",
+      "All Time Favorites"
+    ],
+    "follow_up_question": "Would you like spicy, sweet, or mixed snacks?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-151",
+    "intent": "recommendation",
+    "language": "english",
+    "user_query": "under 2000",
+    "ideal_answer": "I can suggest the best snacks based on taste, budget, or occasion.",
+    "recommended_products": [
+      "Snack Sampler Deal",
+      "All Time Favorites"
+    ],
+    "follow_up_question": "Would you like spicy, sweet, or mixed snacks?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-152",
+    "intent": "recommendation",
+    "language": "english",
+    "user_query": "3000 ka box",
+    "ideal_answer": "I can suggest the best snacks based on taste, budget, or occasion.",
+    "recommended_products": [],
+    "follow_up_question": "Would you like spicy, sweet, or mixed snacks?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-153",
+    "intent": "recommendation",
+    "language": "english",
+    "user_query": "cheap snacks",
+    "ideal_answer": "I can suggest the best snacks based on taste, budget, or occasion.",
+    "recommended_products": [
+      "Snack Sampler Deal",
+      "All Time Favorites"
+    ],
+    "follow_up_question": "Would you like spicy, sweet, salty, crunchy, or mixed snacks?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-154",
+    "intent": "recommendation",
+    "language": "roman_urdu",
+    "user_query": "sasti cheez batao",
+    "ideal_answer": "Main aapko taste, budget, ya occasion ke hisaab se best snacks suggest kar sakta hoon.",
+    "recommended_products": [
+      "Snack Sampler Deal",
+      "All Time Favorites"
+    ],
+    "follow_up_question": "Aap spicy, sweet, salty, crunchy, ya mixed kya lena chahenge?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-155",
+    "intent": "recommendation",
+    "language": "roman_urdu",
+    "user_query": "mujhy mix chahiye",
+    "ideal_answer": "Main aapko taste, budget, ya occasion ke hisaab se best snacks suggest kar sakta hoon.",
+    "recommended_products": [],
+    "follow_up_question": "Aap spicy, sweet, salty, crunchy, ya mixed kya lena chahenge?",
+    "tags": [
+      "category:recommendations",
+      "intent:recommendation",
+      "collection:products_collection",
+      "action:retrieve_then_recommend",
+      "answer:recommendation_with_followup"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-156",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "delivery time",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:shipping_delivery",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:policy_answer_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-157",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "how long delivery",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:shipping_delivery",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:policy_answer_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-158",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "shipping charges",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:shipping_delivery",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:policy_answer_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-159",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "delivery charges",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:shipping_delivery",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:policy_answer_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-160",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "karachi delivery",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:shipping_delivery",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:policy_answer_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-161",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "lahore delivery",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:shipping_delivery",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:policy_answer_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-162",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "islamabad delivery",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:shipping_delivery",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:policy_answer_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-163",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "do you deliver pakistan",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:shipping_delivery",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:policy_answer_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-164",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "same day delivery",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:shipping_delivery",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:policy_answer_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-165",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "free delivery",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:shipping_delivery",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:policy_answer_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-166",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "courier name",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:shipping_delivery",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:policy_answer_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-167",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "tracking email",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:shipping_delivery",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:policy_answer_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-168",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "parcel late",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:shipping_delivery",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:policy_answer_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-169",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "wrong address",
+    "ideal_answer": "Snakitos is a brand by FM Foods offering Pakistani snacks, bundles, and snack boxes.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:shipping_delivery",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:policy_answer_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-170",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "change address",
+    "ideal_answer": "Snakitos is a brand by FM Foods offering Pakistani snacks, bundles, and snack boxes.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:shipping_delivery",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:policy_answer_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-171",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "failed delivery",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:shipping_delivery",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:policy_answer_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-172",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "delivery weekend",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:shipping_delivery",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:policy_answer_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-173",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "delivery village",
+    "ideal_answer": "Provide a clear, safe, and helpful answer, and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:shipping_delivery",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:policy_answer_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-174",
+    "intent": "store_policy",
+    "language": "mixed",
+    "user_query": "city delivery hai?",
+    "ideal_answer": "Customer ki query ka clear, safe, aur helpful jawab dein aur zarurat par support ko escalate karein.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:shipping_delivery",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:policy_answer_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-175",
+    "intent": "store_policy",
+    "language": "mixed",
+    "user_query": "shipping kitni hai",
+    "ideal_answer": "Customer ki query ka clear, safe, aur helpful jawab dein aur zarurat par support ko escalate karein.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:shipping_delivery",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve",
+      "answer:policy_answer_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-176",
+    "intent": "order_status",
+    "language": "english",
+    "user_query": "where is my order",
+    "ideal_answer": "Sure. Please share your order number or the phone number used at checkout so support can check your order status.",
+    "recommended_products": [],
+    "follow_up_question": "Can you share the order number, or the phone number used at checkout?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-177",
+    "intent": "order_status",
+    "language": "english",
+    "user_query": "track my order",
+    "ideal_answer": "Sure. Please share your order number or the phone number used at checkout so support can check your order status.",
+    "recommended_products": [],
+    "follow_up_question": "Can you share the order number, or the phone number used at checkout?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-178",
+    "intent": "order_status",
+    "language": "english",
+    "user_query": "order status",
+    "ideal_answer": "Sure. Please share your order number or the phone number used at checkout so support can check your order status.",
+    "recommended_products": [],
+    "follow_up_question": "Can you share the order number, or the phone number used at checkout?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-179",
+    "intent": "order_status",
+    "language": "english",
+    "user_query": "tracking number",
+    "ideal_answer": "Sure. Please share your order number or the phone number used at checkout so support can check your order status.",
+    "recommended_products": [],
+    "follow_up_question": "Can you share the order number, or the phone number used at checkout?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-180",
+    "intent": "order_status",
+    "language": "english",
+    "user_query": "my parcel",
+    "ideal_answer": "Sure. Please share your order number or the phone number used at checkout so support can check your order status.",
+    "recommended_products": [],
+    "follow_up_question": "Can you share the order number, or the phone number used at checkout?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-181",
+    "intent": "order_status",
+    "language": "english",
+    "user_query": "order id 12345",
+    "ideal_answer": "Sure. Please share your order number or the phone number used at checkout so support can check your order status.",
+    "recommended_products": [],
+    "follow_up_question": "Can you share the order number, or the phone number used at checkout?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-182",
+    "intent": "order_status",
+    "language": "english",
+    "user_query": "phone se check karo",
+    "ideal_answer": "Sure. Please share your order number or the phone number used at checkout so support can check your order status.",
+    "recommended_products": [],
+    "follow_up_question": "Can you share the order number, or the phone number used at checkout?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-183",
+    "intent": "order_status",
+    "language": "english",
+    "user_query": "i dont have order number",
+    "ideal_answer": "Sure. Please share your order number or the phone number used at checkout so support can check your order status.",
+    "recommended_products": [],
+    "follow_up_question": "Can you share the order number, or the phone number used at checkout?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-184",
+    "intent": "order_status",
+    "language": "mixed",
+    "user_query": "mera order nahi aya",
+    "ideal_answer": "Zaroor. Apna order number ya checkout wala phone number share kar dein taake support aapka order status check kar sake.",
+    "recommended_products": [],
+    "follow_up_question": "Kya aap order number share kar sakte hain, ya checkout wala phone number?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-185",
+    "intent": "order_status",
+    "language": "english",
+    "user_query": "tracking update nahi ho rahi",
+    "ideal_answer": "Sure. Please share your order number or the phone number used at checkout so support can check your order status.",
+    "recommended_products": [],
+    "follow_up_question": "Can you share the order number, or the phone number used at checkout?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-186",
+    "intent": "order_status",
+    "language": "english",
+    "user_query": "courier status nahi aa raha",
+    "ideal_answer": "Sure. Please share your order number or the phone number used at checkout so support can check your order status.",
+    "recommended_products": [],
+    "follow_up_question": "Can you share the order number, or the phone number used at checkout?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-187",
+    "intent": "order_status",
+    "language": "mixed",
+    "user_query": "order cancel karna hai",
+    "ideal_answer": "Zaroor. Apna order number ya checkout wala phone number share kar dein taake support aapka order status check kar sake.",
+    "recommended_products": [],
+    "follow_up_question": "Kya aap order number share kar sakte hain, ya checkout wala phone number?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-188",
+    "intent": "order_status",
+    "language": "roman_urdu",
+    "user_query": "address change karna hai",
+    "ideal_answer": "Zaroor. Apna order number ya checkout wala phone number share kar dein taake support aapka order status check kar sake.",
+    "recommended_products": [],
+    "follow_up_question": "Kya aap order number share kar sakte hain, ya checkout wala phone number?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-189",
+    "intent": "order_status",
+    "language": "english",
+    "user_query": "order 555 status",
+    "ideal_answer": "Sure. Please share your order number or the phone number used at checkout so support can check your order status.",
+    "recommended_products": [],
+    "follow_up_question": "Can you share the order number, or the phone number used at checkout?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-190",
+    "intent": "order_status",
+    "language": "mixed",
+    "user_query": "mujhy order dekhna hai",
+    "ideal_answer": "Zaroor. Apna order number ya checkout wala phone number share kar dein taake support aapka order status check kar sake.",
+    "recommended_products": [],
+    "follow_up_question": "Kya aap order number share kar sakte hain, ya checkout wala phone number?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-191",
+    "intent": "order_status",
+    "language": "roman_urdu",
+    "user_query": "parcel kaha hai",
+    "ideal_answer": "Zaroor. Apna order number ya checkout wala phone number share kar dein taake support aapka order status check kar sake.",
+    "recommended_products": [],
+    "follow_up_question": "Kya aap order number share kar sakte hain, ya checkout wala phone number?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-192",
+    "intent": "order_status",
+    "language": "roman_urdu",
+    "user_query": "mera package",
+    "ideal_answer": "Zaroor. Apna order number ya checkout wala phone number share kar dein taake support aapka order status check kar sake.",
+    "recommended_products": [],
+    "follow_up_question": "Kya aap order number share kar sakte hain, ya checkout wala phone number?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-193",
+    "intent": "order_status",
+    "language": "english",
+    "user_query": "shipment status",
+    "ideal_answer": "Sure. Please share your order number or the phone number used at checkout so support can check your order status.",
+    "recommended_products": [],
+    "follow_up_question": "Can you share the order number, or the phone number used at checkout?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-194",
+    "intent": "order_status",
+    "language": "english",
+    "user_query": "order detail",
+    "ideal_answer": "Sure. Please share your order number or the phone number used at checkout so support can check your order status.",
+    "recommended_products": [],
+    "follow_up_question": "Can you share the order number, or the phone number used at checkout?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-195",
+    "intent": "order_status",
+    "language": "english",
+    "user_query": "track by phone",
+    "ideal_answer": "Sure. Please share your order number or the phone number used at checkout so support can check your order status.",
+    "recommended_products": [],
+    "follow_up_question": "Can you share the order number, or the phone number used at checkout?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-196",
+    "intent": "order_status",
+    "language": "english",
+    "user_query": "delivery guy number",
+    "ideal_answer": "Sure. Please share your order number or the phone number used at checkout so support can check your order status.",
+    "recommended_products": [],
+    "follow_up_question": "Can you share the order number, or the phone number used at checkout?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-197",
+    "intent": "order_status",
+    "language": "english",
+    "user_query": "awb number",
+    "ideal_answer": "Sure. Please share your order number or the phone number used at checkout so support can check your order status.",
+    "recommended_products": [],
+    "follow_up_question": "Can you share the order number, or the phone number used at checkout?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-198",
+    "intent": "order_status",
+    "language": "english",
+    "user_query": "order shipped?",
+    "ideal_answer": "Sure. Please share your order number or the phone number used at checkout so support can check your order status.",
+    "recommended_products": [],
+    "follow_up_question": "Can you share the order number, or the phone number used at checkout?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-199",
+    "intent": "order_status",
+    "language": "english",
+    "user_query": "order confirm hua?",
+    "ideal_answer": "Sure. Please share your order number or the phone number used at checkout so support can check your order status.",
+    "recommended_products": [],
+    "follow_up_question": "Can you share the order number, or the phone number used at checkout?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-200",
+    "intent": "order_status",
+    "language": "english",
+    "user_query": "payment ke bad order",
+    "ideal_answer": "Sure. Please share your order number or the phone number used at checkout so support can check your order status.",
+    "recommended_products": [],
+    "follow_up_question": "Can you share the order number, or the phone number used at checkout?",
+    "tags": [
+      "category:order_tracking",
+      "intent:order_status",
+      "collection:orders_collection",
+      "action:ask_order_number_or_lookup",
+      "answer:ask_order_info"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-204",
+    "intent": "store_policy_or_complaint",
+    "language": "english",
+    "user_query": "can i return food",
+    "ideal_answer": "For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:refund_return_exchange",
+      "intent:store_policy_or_complaint",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:policy_or_escalation"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-205",
+    "intent": "store_policy_or_complaint",
+    "language": "english",
+    "user_query": "opened packet return",
+    "ideal_answer": "For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:refund_return_exchange",
+      "intent:store_policy_or_complaint",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:policy_or_escalation"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-206",
+    "intent": "store_policy_or_complaint",
+    "language": "english",
+    "user_query": "14 days return",
+    "ideal_answer": "For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:refund_return_exchange",
+      "intent:store_policy_or_complaint",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:policy_or_escalation"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-207",
+    "intent": "store_policy_or_complaint",
+    "language": "english",
+    "user_query": "refund kab milega",
+    "ideal_answer": "For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:refund_return_exchange",
+      "intent:store_policy_or_complaint",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:policy_or_escalation"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-208",
+    "intent": "store_policy_or_complaint",
+    "language": "english",
+    "user_query": "refund approve karo",
+    "ideal_answer": "For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:refund_return_exchange",
+      "intent:store_policy_or_complaint",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:policy_or_escalation"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-209",
+    "intent": "store_policy_or_complaint",
+    "language": "english",
+    "user_query": "wrong item",
+    "ideal_answer": "For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:refund_return_exchange",
+      "intent:store_policy_or_complaint",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:policy_or_escalation"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-210",
+    "intent": "store_policy_or_complaint",
+    "language": "english",
+    "user_query": "damaged product",
+    "ideal_answer": "For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:refund_return_exchange",
+      "intent:store_policy_or_complaint",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:policy_or_escalation"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-211",
+    "intent": "store_policy_or_complaint",
+    "language": "english",
+    "user_query": "defective product",
+    "ideal_answer": "For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:refund_return_exchange",
+      "intent:store_policy_or_complaint",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:policy_or_escalation"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-212",
+    "intent": "store_policy_or_complaint",
+    "language": "english",
+    "user_query": "packet broken",
+    "ideal_answer": "For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:refund_return_exchange",
+      "intent:store_policy_or_complaint",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:policy_or_escalation"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-213",
+    "intent": "store_policy_or_complaint",
+    "language": "english",
+    "user_query": "taste bad",
+    "ideal_answer": "For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:refund_return_exchange",
+      "intent:store_policy_or_complaint",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:policy_or_escalation"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-214",
+    "intent": "store_policy_or_complaint",
+    "language": "english",
+    "user_query": "expired item",
+    "ideal_answer": "For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:refund_return_exchange",
+      "intent:store_policy_or_complaint",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:policy_or_escalation"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-215",
+    "intent": "store_policy_or_complaint",
+    "language": "english",
+    "user_query": "replace item",
+    "ideal_answer": "For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:refund_return_exchange",
+      "intent:store_policy_or_complaint",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:policy_or_escalation"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-216",
+    "intent": "store_policy_or_complaint",
+    "language": "english",
+    "user_query": "flavor change",
+    "ideal_answer": "For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:refund_return_exchange",
+      "intent:store_policy_or_complaint",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:policy_or_escalation"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-217",
+    "intent": "store_policy_or_complaint",
+    "language": "english",
+    "user_query": "order shipped exchange",
+    "ideal_answer": "For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:refund_return_exchange",
+      "intent:store_policy_or_complaint",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:policy_or_escalation"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-220",
+    "intent": "store_policy_or_complaint",
+    "language": "english",
+    "user_query": "galat flavor bhej dia",
+    "ideal_answer": "For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:refund_return_exchange",
+      "intent:store_policy_or_complaint",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:policy_or_escalation"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-221",
+    "intent": "store_policy_or_complaint",
+    "language": "english",
+    "user_query": "packet khul gaya return",
+    "ideal_answer": "For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:refund_return_exchange",
+      "intent:store_policy_or_complaint",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:policy_or_escalation"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-222",
+    "intent": "store_policy_or_complaint",
+    "language": "english",
+    "user_query": "return pickup",
+    "ideal_answer": "For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:refund_return_exchange",
+      "intent:store_policy_or_complaint",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:policy_or_escalation"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-223",
+    "intent": "store_policy_or_complaint",
+    "language": "english",
+    "user_query": "shipping cost refund",
+    "ideal_answer": "For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:refund_return_exchange",
+      "intent:store_policy_or_complaint",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:policy_or_escalation"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-224",
+    "intent": "store_policy_or_complaint",
+    "language": "english",
+    "user_query": "refund method",
+    "ideal_answer": "For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:refund_return_exchange",
+      "intent:store_policy_or_complaint",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:policy_or_escalation"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-225",
+    "intent": "store_policy_or_complaint",
+    "language": "english",
+    "user_query": "wrong quantity",
+    "ideal_answer": "For return, refund, or replacement cases, explain the policy carefully and escalate to support when needed.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:refund_return_exchange",
+      "intent:store_policy_or_complaint",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:policy_or_escalation"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-227",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "cash on delivery",
+    "ideal_answer": "Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:payment_cod_checkout",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve_or_fallback",
+      "answer:policy_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-228",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "payment methods",
+    "ideal_answer": "Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:payment_cod_checkout",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve_or_fallback",
+      "answer:policy_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-229",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "online payment",
+    "ideal_answer": "Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:payment_cod_checkout",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve_or_fallback",
+      "answer:policy_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-230",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "card payment",
+    "ideal_answer": "Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:payment_cod_checkout",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve_or_fallback",
+      "answer:policy_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-231",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "bank transfer",
+    "ideal_answer": "Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:payment_cod_checkout",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve_or_fallback",
+      "answer:policy_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-232",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "easypaisa",
+    "ideal_answer": "Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:payment_cod_checkout",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve_or_fallback",
+      "answer:policy_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-233",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "jazzcash",
+    "ideal_answer": "Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:payment_cod_checkout",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve_or_fallback",
+      "answer:policy_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-234",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "payment failed",
+    "ideal_answer": "Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:payment_cod_checkout",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve_or_fallback",
+      "answer:policy_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-235",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "amount deducted",
+    "ideal_answer": "Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:payment_cod_checkout",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve_or_fallback",
+      "answer:policy_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-236",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "order not confirmed",
+    "ideal_answer": "Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:payment_cod_checkout",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve_or_fallback",
+      "answer:policy_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-237",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "coupon not working",
+    "ideal_answer": "Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support.",
+    "recommended_products": [
+      "Office Snack Box",
+      "All Time Favorites"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:payment_cod_checkout",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve_or_fallback",
+      "answer:policy_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-238",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "discount code",
+    "ideal_answer": "Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support.",
+    "recommended_products": [
+      "Snack Sampler Deal",
+      "All Time Favorites"
+    ],
+    "follow_up_question": "",
+    "tags": [
+      "category:payment_cod_checkout",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve_or_fallback",
+      "answer:policy_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-239",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "checkout issue",
+    "ideal_answer": "Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:payment_cod_checkout",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve_or_fallback",
+      "answer:policy_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-240",
+    "intent": "store_policy",
+    "language": "english",
+    "user_query": "secure payment",
+    "ideal_answer": "Provide safe policy guidance, and if exact details are not confirmed, guide the customer to checkout or support.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:payment_cod_checkout",
+      "intent:store_policy",
+      "collection:store_faq_collection",
+      "action:retrieve_or_fallback",
+      "answer:policy_or_fallback"
+    ],
+    "requires_escalation": false
+  },
+  {
+    "id": "suite-241",
+    "intent": "complaint",
+    "language": "english",
+    "user_query": "service bakwas",
+    "ideal_answer": "I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-242",
+    "intent": "complaint",
+    "language": "roman_urdu",
+    "user_query": "fraud hai",
+    "ideal_answer": "Mujhe afsos hai. Please order number aur issue details share kar dein taake support is complaint ko properly handle kar sake.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-243",
+    "intent": "complaint",
+    "language": "mixed",
+    "user_query": "mujhe refund do",
+    "ideal_answer": "Mujhe afsos hai. Please order number aur issue details share kar dein taake support is complaint ko properly handle kar sake.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-244",
+    "intent": "complaint",
+    "language": "english",
+    "user_query": "wrong item mila",
+    "ideal_answer": "I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-245",
+    "intent": "complaint",
+    "language": "english",
+    "user_query": "damaged item",
+    "ideal_answer": "I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-246",
+    "intent": "complaint",
+    "language": "english",
+    "user_query": "paisa kat gaya",
+    "ideal_answer": "I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-247",
+    "intent": "complaint",
+    "language": "english",
+    "user_query": "order missing",
+    "ideal_answer": "I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-248",
+    "intent": "complaint",
+    "language": "english",
+    "user_query": "allergy issue",
+    "ideal_answer": "I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-249",
+    "intent": "complaint",
+    "language": "roman_urdu",
+    "user_query": "certificate copy chahiye",
+    "ideal_answer": "Mujhe afsos hai. Please order number aur issue details share kar dein taake support is complaint ko properly handle kar sake.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-250",
+    "intent": "complaint",
+    "language": "english",
+    "user_query": "wholesale rate do",
+    "ideal_answer": "I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-252",
+    "intent": "complaint",
+    "language": "roman_urdu",
+    "user_query": "human chahiye",
+    "ideal_answer": "Mujhe afsos hai. Please order number aur issue details share kar dein taake support is complaint ko properly handle kar sake.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-253",
+    "intent": "complaint",
+    "language": "roman_urdu",
+    "user_query": "complaint karni hai",
+    "ideal_answer": "Mujhe afsos hai. Please order number aur issue details share kar dein taake support is complaint ko properly handle kar sake.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-254",
+    "intent": "complaint",
+    "language": "english",
+    "user_query": "repeat complaint",
+    "ideal_answer": "I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-255",
+    "intent": "complaint",
+    "language": "english",
+    "user_query": "legal issue",
+    "ideal_answer": "I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-256",
+    "intent": "complaint",
+    "language": "english",
+    "user_query": "privacy issue",
+    "ideal_answer": "I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-257",
+    "intent": "complaint",
+    "language": "english",
+    "user_query": "support call back",
+    "ideal_answer": "I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-258",
+    "intent": "complaint",
+    "language": "english",
+    "user_query": "bohat gussa hoon",
+    "ideal_answer": "I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-259",
+    "intent": "complaint",
+    "language": "english",
+    "user_query": "i will report you",
+    "ideal_answer": "I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-260",
+    "intent": "complaint",
+    "language": "english",
+    "user_query": "bad quality",
+    "ideal_answer": "I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-261",
+    "intent": "complaint",
+    "language": "english",
+    "user_query": "parcel open aya",
+    "ideal_answer": "I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-262",
+    "intent": "complaint",
+    "language": "english",
+    "user_query": "item missing",
+    "ideal_answer": "I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-263",
+    "intent": "complaint",
+    "language": "english",
+    "user_query": "taste expired jaisa",
+    "ideal_answer": "I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-264",
+    "intent": "complaint",
+    "language": "english",
+    "user_query": "payment fraud",
+    "ideal_answer": "I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-265",
+    "intent": "complaint",
+    "language": "english",
+    "user_query": "return reject kyu",
+    "ideal_answer": "I’m sorry about that. Please share your order number and issue details so support can handle this complaint properly.",
+    "recommended_products": [],
+    "follow_up_question": "",
+    "tags": [
+      "category:complaint_escalation",
+      "intent:complaint",
+      "collection:store_faq_collection",
+      "action:escalate_to_support",
+      "answer:apology_plus_details"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-266",
+    "intent": "store_policy_or_product_detail",
+    "language": "english",
+    "user_query": "halal",
+    "ideal_answer": "For ingredients, allergens, halal, or certification, provide only safe confirmed guidance and direct exact confirmation to support or packaging.",
+    "recommended_products": [],
+    "follow_up_question": "If you share the exact product, I can give more targeted guidance.",
+    "tags": [
+      "category:ingredients_allergy_certification",
+      "intent:store_policy_or_product_detail",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:safe_answer"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-267",
+    "intent": "store_policy_or_product_detail",
+    "language": "english",
+    "user_query": "is it halal",
+    "ideal_answer": "For ingredients, allergens, halal, or certification, provide only safe confirmed guidance and direct exact confirmation to support or packaging.",
+    "recommended_products": [],
+    "follow_up_question": "If you share the exact product, I can give more targeted guidance.",
+    "tags": [
+      "category:ingredients_allergy_certification",
+      "intent:store_policy_or_product_detail",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:safe_answer"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-268",
+    "intent": "store_policy_or_product_detail",
+    "language": "roman_urdu",
+    "user_query": "certified hai?",
+    "ideal_answer": "Ingredients, allergens, halal, ya certification ke liye sirf safe confirmed guidance deni chahiye aur exact confirmation support ya packaging se leni chahiye.",
+    "recommended_products": [],
+    "follow_up_question": "Agar exact product batayen to main zyada targeted guidance de sakta hoon.",
+    "tags": [
+      "category:ingredients_allergy_certification",
+      "intent:store_policy_or_product_detail",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:safe_answer"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-269",
+    "intent": "store_policy_or_product_detail",
+    "language": "roman_urdu",
+    "user_query": "iso hai?",
+    "ideal_answer": "Ingredients, allergens, halal, ya certification ke liye sirf safe confirmed guidance deni chahiye aur exact confirmation support ya packaging se leni chahiye.",
+    "recommended_products": [],
+    "follow_up_question": "Agar exact product batayen to main zyada targeted guidance de sakta hoon.",
+    "tags": [
+      "category:ingredients_allergy_certification",
+      "intent:store_policy_or_product_detail",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:safe_answer"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-270",
+    "intent": "store_policy_or_product_detail",
+    "language": "roman_urdu",
+    "user_query": "haccp hai?",
+    "ideal_answer": "Ingredients, allergens, halal, ya certification ke liye sirf safe confirmed guidance deni chahiye aur exact confirmation support ya packaging se leni chahiye.",
+    "recommended_products": [],
+    "follow_up_question": "Agar exact product batayen to main zyada targeted guidance de sakta hoon.",
+    "tags": [
+      "category:ingredients_allergy_certification",
+      "intent:store_policy_or_product_detail",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:safe_answer"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-271",
+    "intent": "store_policy_or_product_detail",
+    "language": "english",
+    "user_query": "fda approved?",
+    "ideal_answer": "For ingredients, allergens, halal, or certification, provide only safe confirmed guidance and direct exact confirmation to support or packaging.",
+    "recommended_products": [],
+    "follow_up_question": "If you share the exact product, I can give more targeted guidance.",
+    "tags": [
+      "category:ingredients_allergy_certification",
+      "intent:store_policy_or_product_detail",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:safe_answer"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-272",
+    "intent": "store_policy_or_product_detail",
+    "language": "english",
+    "user_query": "ingredients",
+    "ideal_answer": "For ingredients, allergens, halal, or certification, provide only safe confirmed guidance and direct exact confirmation to support or packaging.",
+    "recommended_products": [],
+    "follow_up_question": "If you share the exact product, I can give more targeted guidance.",
+    "tags": [
+      "category:ingredients_allergy_certification",
+      "intent:store_policy_or_product_detail",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:safe_answer"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-273",
+    "intent": "store_policy_or_product_detail",
+    "language": "english",
+    "user_query": "oil konsa use hota",
+    "ideal_answer": "For ingredients, allergens, halal, or certification, provide only safe confirmed guidance and direct exact confirmation to support or packaging.",
+    "recommended_products": [],
+    "follow_up_question": "If you share the exact product, I can give more targeted guidance.",
+    "tags": [
+      "category:ingredients_allergy_certification",
+      "intent:store_policy_or_product_detail",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:safe_answer"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-274",
+    "intent": "store_policy_or_product_detail",
+    "language": "roman_urdu",
+    "user_query": "msg hai kya",
+    "ideal_answer": "Ingredients, allergens, halal, ya certification ke liye sirf safe confirmed guidance deni chahiye aur exact confirmation support ya packaging se leni chahiye.",
+    "recommended_products": [],
+    "follow_up_question": "Agar exact product batayen to main zyada targeted guidance de sakta hoon.",
+    "tags": [
+      "category:ingredients_allergy_certification",
+      "intent:store_policy_or_product_detail",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:safe_answer"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-276",
+    "intent": "store_policy_or_product_detail",
+    "language": "roman_urdu",
+    "user_query": "chicken extract hai?",
+    "ideal_answer": "Ingredients, allergens, halal, ya certification ke liye sirf safe confirmed guidance deni chahiye aur exact confirmation support ya packaging se leni chahiye.",
+    "recommended_products": [],
+    "follow_up_question": "Agar exact product batayen to main zyada targeted guidance de sakta hoon.",
+    "tags": [
+      "category:ingredients_allergy_certification",
+      "intent:store_policy_or_product_detail",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:safe_answer"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-277",
+    "intent": "store_policy_or_product_detail",
+    "language": "roman_urdu",
+    "user_query": "beef extract hai?",
+    "ideal_answer": "Ingredients, allergens, halal, ya certification ke liye sirf safe confirmed guidance deni chahiye aur exact confirmation support ya packaging se leni chahiye.",
+    "recommended_products": [],
+    "follow_up_question": "Agar exact product batayen to main zyada targeted guidance de sakta hoon.",
+    "tags": [
+      "category:ingredients_allergy_certification",
+      "intent:store_policy_or_product_detail",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:safe_answer"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-278",
+    "intent": "store_policy_or_product_detail",
+    "language": "english",
+    "user_query": "gluten free?",
+    "ideal_answer": "For ingredients, allergens, halal, or certification, provide only safe confirmed guidance and direct exact confirmation to support or packaging.",
+    "recommended_products": [],
+    "follow_up_question": "If you share the exact product, I can give more targeted guidance.",
+    "tags": [
+      "category:ingredients_allergy_certification",
+      "intent:store_policy_or_product_detail",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:safe_answer"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-279",
+    "intent": "store_policy_or_product_detail",
+    "language": "roman_urdu",
+    "user_query": "nuts hain?",
+    "ideal_answer": "Ingredients, allergens, halal, ya certification ke liye sirf safe confirmed guidance deni chahiye aur exact confirmation support ya packaging se leni chahiye.",
+    "recommended_products": [],
+    "follow_up_question": "Agar exact product batayen to main zyada targeted guidance de sakta hoon.",
+    "tags": [
+      "category:ingredients_allergy_certification",
+      "intent:store_policy_or_product_detail",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:safe_answer"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-280",
+    "intent": "store_policy_or_product_detail",
+    "language": "english",
+    "user_query": "peanut allergy",
+    "ideal_answer": "For ingredients, allergens, halal, or certification, provide only safe confirmed guidance and direct exact confirmation to support or packaging.",
+    "recommended_products": [],
+    "follow_up_question": "If you share the exact product, I can give more targeted guidance.",
+    "tags": [
+      "category:ingredients_allergy_certification",
+      "intent:store_policy_or_product_detail",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:safe_answer"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-281",
+    "intent": "store_policy_or_product_detail",
+    "language": "roman_urdu",
+    "user_query": "milk hai?",
+    "ideal_answer": "Ingredients, allergens, halal, ya certification ke liye sirf safe confirmed guidance deni chahiye aur exact confirmation support ya packaging se leni chahiye.",
+    "recommended_products": [],
+    "follow_up_question": "Agar exact product batayen to main zyada targeted guidance de sakta hoon.",
+    "tags": [
+      "category:ingredients_allergy_certification",
+      "intent:store_policy_or_product_detail",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:safe_answer"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-282",
+    "intent": "store_policy_or_product_detail",
+    "language": "roman_urdu",
+    "user_query": "soy hai?",
+    "ideal_answer": "Ingredients, allergens, halal, ya certification ke liye sirf safe confirmed guidance deni chahiye aur exact confirmation support ya packaging se leni chahiye.",
+    "recommended_products": [],
+    "follow_up_question": "Agar exact product batayen to main zyada targeted guidance de sakta hoon.",
+    "tags": [
+      "category:ingredients_allergy_certification",
+      "intent:store_policy_or_product_detail",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:safe_answer"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-283",
+    "intent": "store_policy_or_product_detail",
+    "language": "roman_urdu",
+    "user_query": "vegan hai?",
+    "ideal_answer": "Ingredients, allergens, halal, ya certification ke liye sirf safe confirmed guidance deni chahiye aur exact confirmation support ya packaging se leni chahiye.",
+    "recommended_products": [],
+    "follow_up_question": "Agar exact product batayen to main zyada targeted guidance de sakta hoon.",
+    "tags": [
+      "category:ingredients_allergy_certification",
+      "intent:store_policy_or_product_detail",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:safe_answer"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-284",
+    "intent": "store_policy_or_product_detail",
+    "language": "roman_urdu",
+    "user_query": "vegetarian hai?",
+    "ideal_answer": "Ingredients, allergens, halal, ya certification ke liye sirf safe confirmed guidance deni chahiye aur exact confirmation support ya packaging se leni chahiye.",
+    "recommended_products": [],
+    "follow_up_question": "Agar exact product batayen to main zyada targeted guidance de sakta hoon.",
+    "tags": [
+      "category:ingredients_allergy_certification",
+      "intent:store_policy_or_product_detail",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:safe_answer"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-285",
+    "intent": "store_policy_or_product_detail",
+    "language": "english",
+    "user_query": "shelf life",
+    "ideal_answer": "For ingredients, allergens, halal, or certification, provide only safe confirmed guidance and direct exact confirmation to support or packaging.",
+    "recommended_products": [],
+    "follow_up_question": "If you share the exact product, I can give more targeted guidance.",
+    "tags": [
+      "category:ingredients_allergy_certification",
+      "intent:store_policy_or_product_detail",
+      "collection:store_faq_collection",
+      "action:retrieve_or_escalate",
+      "answer:safe_answer"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-286",
+    "intent": "wholesale",
+    "language": "english",
+    "user_query": "wholesale",
+    "ideal_answer": "For wholesale or corporate queries, ask for quantity, city, and business details, then hand off to support.",
+    "recommended_products": [],
+    "follow_up_question": "Could you share the quantity, city, and business name?",
+    "tags": [
+      "category:wholesale_corporate",
+      "intent:wholesale",
+      "collection:store_faq_collection",
+      "action:ask_business_details",
+      "answer:lead_capture"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-287",
+    "intent": "wholesale",
+    "language": "english",
+    "user_query": "bulk order",
+    "ideal_answer": "For wholesale or corporate queries, ask for quantity, city, and business details, then hand off to support.",
+    "recommended_products": [],
+    "follow_up_question": "Could you share the quantity, city, and business name?",
+    "tags": [
+      "category:wholesale_corporate",
+      "intent:wholesale",
+      "collection:store_faq_collection",
+      "action:ask_business_details",
+      "answer:lead_capture"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-288",
+    "intent": "wholesale",
+    "language": "english",
+    "user_query": "retailer price",
+    "ideal_answer": "For wholesale or corporate queries, ask for quantity, city, and business details, then hand off to support.",
+    "recommended_products": [],
+    "follow_up_question": "Could you share the quantity, city, and business name?",
+    "tags": [
+      "category:wholesale_corporate",
+      "intent:wholesale",
+      "collection:store_faq_collection",
+      "action:ask_business_details",
+      "answer:lead_capture"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-289",
+    "intent": "wholesale",
+    "language": "roman_urdu",
+    "user_query": "shop ke liye rate",
+    "ideal_answer": "Wholesale ya corporate query mein quantity, city, aur business details mang kar support handoff karna chahiye.",
+    "recommended_products": [],
+    "follow_up_question": "Quantity, city, aur business name share kar dein?",
+    "tags": [
+      "category:wholesale_corporate",
+      "intent:wholesale",
+      "collection:store_faq_collection",
+      "action:ask_business_details",
+      "answer:lead_capture"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-290",
+    "intent": "wholesale",
+    "language": "roman_urdu",
+    "user_query": "100 carton chahiye",
+    "ideal_answer": "Wholesale ya corporate query mein quantity, city, aur business details mang kar support handoff karna chahiye.",
+    "recommended_products": [],
+    "follow_up_question": "Quantity, city, aur business name share kar dein?",
+    "tags": [
+      "category:wholesale_corporate",
+      "intent:wholesale",
+      "collection:store_faq_collection",
+      "action:ask_business_details",
+      "answer:lead_capture"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-291",
+    "intent": "wholesale",
+    "language": "english",
+    "user_query": "corporate gift",
+    "ideal_answer": "For wholesale or corporate queries, ask for quantity, city, and business details, then hand off to support.",
+    "recommended_products": [
+      "Ultimate Mega Snack Box",
+      "Flavor Fiesta Bundle"
+    ],
+    "follow_up_question": "Could you share the quantity, city, and business name?",
+    "tags": [
+      "category:wholesale_corporate",
+      "intent:wholesale",
+      "collection:store_faq_collection",
+      "action:ask_business_details",
+      "answer:lead_capture"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-292",
+    "intent": "wholesale",
+    "language": "roman_urdu",
+    "user_query": "office ke liye 50 box",
+    "ideal_answer": "Wholesale ya corporate query mein quantity, city, aur business details mang kar support handoff karna chahiye.",
+    "recommended_products": [
+      "Office Snack Box",
+      "All Time Favorites"
+    ],
+    "follow_up_question": "Quantity, city, aur business name share kar dein?",
+    "tags": [
+      "category:wholesale_corporate",
+      "intent:wholesale",
+      "collection:store_faq_collection",
+      "action:ask_business_details",
+      "answer:lead_capture"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-293",
+    "intent": "wholesale",
+    "language": "english",
+    "user_query": "event order",
+    "ideal_answer": "For wholesale or corporate queries, ask for quantity, city, and business details, then hand off to support.",
+    "recommended_products": [],
+    "follow_up_question": "Could you share the quantity, city, and business name?",
+    "tags": [
+      "category:wholesale_corporate",
+      "intent:wholesale",
+      "collection:store_faq_collection",
+      "action:ask_business_details",
+      "answer:lead_capture"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-294",
+    "intent": "wholesale",
+    "language": "english",
+    "user_query": "wedding snacks",
+    "ideal_answer": "For wholesale or corporate queries, ask for quantity, city, and business details, then hand off to support.",
+    "recommended_products": [],
+    "follow_up_question": "Could you share the quantity, city, and business name?",
+    "tags": [
+      "category:wholesale_corporate",
+      "intent:wholesale",
+      "collection:store_faq_collection",
+      "action:ask_business_details",
+      "answer:lead_capture"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-295",
+    "intent": "wholesale",
+    "language": "english",
+    "user_query": "school canteen",
+    "ideal_answer": "For wholesale or corporate queries, ask for quantity, city, and business details, then hand off to support.",
+    "recommended_products": [],
+    "follow_up_question": "Could you share the quantity, city, and business name?",
+    "tags": [
+      "category:wholesale_corporate",
+      "intent:wholesale",
+      "collection:store_faq_collection",
+      "action:ask_business_details",
+      "answer:lead_capture"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-296",
+    "intent": "wholesale",
+    "language": "english",
+    "user_query": "monthly supply",
+    "ideal_answer": "For wholesale or corporate queries, ask for quantity, city, and business details, then hand off to support.",
+    "recommended_products": [],
+    "follow_up_question": "Could you share the quantity, city, and business name?",
+    "tags": [
+      "category:wholesale_corporate",
+      "intent:wholesale",
+      "collection:store_faq_collection",
+      "action:ask_business_details",
+      "answer:lead_capture"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-297",
+    "intent": "wholesale",
+    "language": "roman_urdu",
+    "user_query": "distributor banna hai",
+    "ideal_answer": "Wholesale ya corporate query mein quantity, city, aur business details mang kar support handoff karna chahiye.",
+    "recommended_products": [],
+    "follow_up_question": "Quantity, city, aur business name share kar dein?",
+    "tags": [
+      "category:wholesale_corporate",
+      "intent:wholesale",
+      "collection:store_faq_collection",
+      "action:ask_business_details",
+      "answer:lead_capture"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-298",
+    "intent": "wholesale",
+    "language": "english",
+    "user_query": "dealership",
+    "ideal_answer": "For wholesale or corporate queries, ask for quantity, city, and business details, then hand off to support.",
+    "recommended_products": [
+      "Snack Sampler Deal",
+      "All Time Favorites"
+    ],
+    "follow_up_question": "Could you share the quantity, city, and business name?",
+    "tags": [
+      "category:wholesale_corporate",
+      "intent:wholesale",
+      "collection:store_faq_collection",
+      "action:ask_business_details",
+      "answer:lead_capture"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-299",
+    "intent": "wholesale",
+    "language": "english",
+    "user_query": "rate list bhejo",
+    "ideal_answer": "For wholesale or corporate queries, ask for quantity, city, and business details, then hand off to support.",
+    "recommended_products": [],
+    "follow_up_question": "Could you share the quantity, city, and business name?",
+    "tags": [
+      "category:wholesale_corporate",
+      "intent:wholesale",
+      "collection:store_faq_collection",
+      "action:ask_business_details",
+      "answer:lead_capture"
+    ],
+    "requires_escalation": true
+  },
+  {
+    "id": "suite-300",
+    "intent": "wholesale",
+    "language": "english",
+    "user_query": "business supply",
+    "ideal_answer": "For wholesale or corporate queries, ask for quantity, city, and business details, then hand off to support.",
+    "recommended_products": [],
+    "follow_up_question": "Could you share the quantity, city, and business name?",
+    "tags": [
+      "category:wholesale_corporate",
+      "intent:wholesale",
+      "collection:store_faq_collection",
+      "action:ask_business_details",
+      "answer:lead_capture"
+    ],
+    "requires_escalation": true
+  }
+]

@@ -602,8 +602,21 @@ export class SupportAgentService {
       return { intent: "confirmation_continue", language };
     }
 
-    if (/^(hi|hello|hey|assalamualaikum|salam|kya haal|help)$/i.test(normalized)) {
+    if (/^(hi|hello|hey|assalamualaikum|salam|kya haal)$/i.test(normalized)) {
       return { intent: "greeting", language };
+    }
+
+    if (
+      /^(help|about|contact|number|email|address|location)$/.test(normalized) ||
+      /(snakitos kya hai|ye store kis cheez ka hai|ap log kya bechte ho|brand kis ka hai|fm foods hai kya|shop online hai|kya ye original site hai|shop ka naam|ye snacks kis company ke hain|pakistani snacks hain)/i.test(
+        normalized,
+      )
+    ) {
+      return { intent: "general_brand_query", language };
+    }
+
+    if (/(what do you sell|what snacks do you have|what products are available)/i.test(normalized)) {
+      return { intent: "what_do_you_sell", language };
     }
 
     if (/(damaged item|damaged product|arrived damaged|product is damaged|damaged$|items? are broken|product broken|product toot gaya|packet phata hua|chips tuti hui|items? tootay hue|item kharab hai|expiry wali cheez bheji|smell aa rahi|taste kharab hai)/i.test(normalized)) {
@@ -614,7 +627,21 @@ export class SupportAgentService {
       return { intent: "wrong_product", language };
     }
 
-    if (/(where is my order|track my order|mera order kahan hai|order kahan hai|track order|parcel kab ayega|order kab milega|mujhy tracking do|tracking do|tracking kidar hai|track$|tracker number|email tracking nahi aya|parcel late|rider kidar hai|order$|mera order|ordar no nahi hai|phone se order dekho|order id bhool gaya|courier update nhi|status batao|3 din hogaye order nahi aya|kal order kia tha)/i.test(normalized)) {
+    if (
+      /(service bakwas|fraud hai|mujhe refund do|wrong item mila|damaged item|paisa kat gaya|order missing|allergy issue|certificate copy chahiye|wholesale rate do|agent se baat|complaint karni hai|repeat complaint|legal issue|privacy issue|support call back|bohat gussa hoon|i will report you|bad quality|payment fraud)/i.test(
+        normalized,
+      )
+    ) {
+      return { intent: "support_request", language };
+    }
+
+    if (/(do you deliver pakistan|courier name|tracking email|parcel late)/i.test(normalized)) {
+      return /(parcel late)/i.test(normalized)
+        ? { intent: "delayed_order", language }
+        : { intent: "shipping_policy", language };
+    }
+
+    if (/(where is my order|track my order|mera order kahan hai|order kahan hai|track order|parcel kab ayega|order kab milega|mujhy tracking do|tracking do|tracking kidar hai|track$|tracker number|email tracking nahi aya|rider kidar hai|order$|mera order|ordar no nahi hai|phone se order dekho|order id bhool gaya|courier update nhi|status batao|3 din hogaye order nahi aya|kal order kia tha|order id \d+|order \d+ status|phone se check karo|i dont have order number|i don't have order number|i dont have order no|i don't have order no|mera order nahi aya|courier status nahi aa raha|order cancel karna hai|address change karna hai|mujhy order dekhna hai|mera package|shipment status|order detail|delivery guy number|awb number|order shipped|order confirm hua|payment ke bad order)/i.test(normalized)) {
       return { intent: "order_tracking", language };
     }
 
@@ -627,16 +654,16 @@ export class SupportAgentService {
       return { intent: "order_tracking", language };
     }
 
-    if (/(talk to agent|human support|talk to support|support chahiye|agent se baat|whatsapp support|koi agent se bat krni)/i.test(normalized)) {
+    if (/(talk to agent|human support|talk to support|support chahiye|agent se baat|whatsapp support|koi agent se bat krni|human chahiye|number do)/i.test(normalized)) {
       return { intent: "support_request", language };
+    }
+
+    if (/(wholesale|bulk order|dukaan ke liye rate|retailer price|shop ke liye rate|100 carton chahiye|corporate gift|office ke liye 50 box|event order|wedding snacks|school canteen|monthly supply|rate list bhejo|agency chahiye|dealership|dealership milti|shop pr rakhna hai|school canteen supply|distributor banna hai|business supply)/i.test(normalized)) {
+      return { intent: "wholesale_query", language };
     }
 
     if (/(shipping and refund policy|shipping refund policy|shipping & refund)/i.test(normalized)) {
       return { intent: "shipping_refund_policy", language };
-    }
-
-    if (/(what do you sell|what snacks do you have|what products are available)/i.test(normalized)) {
-      return { intent: "what_do_you_sell", language };
     }
 
     if (/(new customer|first time|pehli dafa|first order|i'm new here|im new here)/i.test(normalized)) {
@@ -655,19 +682,23 @@ export class SupportAgentService {
       return { intent: "best_deals", language };
     }
 
-    if (/(recommend something|what should i buy|suggest snacks|recommend me)/i.test(normalized)) {
+    if (/(recommend something|what should i buy|suggest snacks|recommend me|kya loon|best snack)/i.test(normalized)) {
       return { intent: "product_recommendation", language };
     }
 
-    if (/(are your snacks spicy|spicy snacks|spicy snack|bhai spicy snacks batao|teekha|teekay|spicy combo|bohat teekha|hot spicy|spcy snacks)/i.test(normalized)) {
+    if (/\b(stix hot spicy|sweet tooth snacks|snaktory namkeen|office box|kids box|chana puff|multi grain snacks|deals collection|can tray|craving combo|snack heaven)\b/i.test(normalized)) {
+      return { intent: "product_specific_query", language, productName: productName || normalized };
+    }
+
+    if (/(are your snacks spicy|spicy snacks|spicy snack|bhai spicy snacks batao|teekha|teekay|spicy combo|bohat teekha|spcy snacks)/i.test(normalized) && !/\bstix hot spicy\b/i.test(normalized)) {
       return { intent: "spicy_recommendation", language, taste: "spicy" };
     }
 
-    if (/(sweet snacks|kuch meetha recommend karo|meetha|sweet craving|suggest chocolate snacks|chocolate wala)/i.test(normalized)) {
+    if (/(sweet snacks|kuch meetha recommend karo|meetha|sweet craving|suggest chocolate snacks|chocolate wala|meetha chahiye)/i.test(normalized) && !/\bsweet tooth snacks\b/i.test(normalized)) {
       return { intent: "sweet_recommendation", language, taste: "sweet" };
     }
 
-    if (/(salty|namkeen|mild and salty)/i.test(normalized)) {
+    if (/(salty snack|salty|namkeen|mild and salty)/i.test(normalized)) {
       return { intent: "salty_recommendation", language, taste: "salty" };
     }
 
@@ -675,11 +706,11 @@ export class SupportAgentService {
       return { intent: "mild_recommendation", language, taste: "mild" };
     }
 
-    if (/(crunchy snacks|crunchy|crispy)/i.test(normalized)) {
+    if (/(crunchy snack|crunchy snacks|crunchy|crispy)/i.test(normalized)) {
       return { intent: "crunchy_recommendation", language, taste: "crunchy" };
     }
 
-    if (/(^mixed$|show me mixed|mixed snack box|mixed snacks|recommend mixed snacks|mixed bundle|mix of both)/i.test(normalized)) {
+    if (/(^mixed$|show me mixed|mixed snack box|mixed snacks|recommend mixed snacks|mixed bundle|mix of both|mujhy mix chahiye)/i.test(normalized)) {
       return { intent: "mixed_recommendation", language, taste: "mixed" };
     }
 
@@ -687,11 +718,11 @@ export class SupportAgentService {
       return { intent: "kids_recommendation", language, occasion: "kids" };
     }
 
-    if (/(office snacks|office ke liye|team snacks|work snacks|office mein rakhna|office box)/i.test(normalized)) {
+    if (/(office snacks|office ke liye|office ke liye snacks|team snacks|work snacks|office mein rakhna|office box)/i.test(normalized)) {
       return { intent: "office_recommendation", language, occasion: "office" };
     }
 
-    if (/(movie night snacks|movie night|netflix snacks|netflix snack|cricket match snacks)/i.test(normalized)) {
+    if (/(movie night snacks|movie night|netflix snacks|netflix snack|cricket match snacks|cricket match snack)/i.test(normalized)) {
       return { intent: "movie_night_recommendation", language, occasion: "movie night" };
     }
 
@@ -703,12 +734,16 @@ export class SupportAgentService {
       return { intent: "gifting_recommendation", language, occasion: "gifting" };
     }
 
-    if (/(party snacks|party bundle|guests|mehman arhy snacks)/i.test(normalized)) {
+    if (/(family ke liye|party snacks|party bundle|guests|mehman arhy snacks|birthday snack|late night craving)/i.test(normalized)) {
       return { intent: "party_recommendation", language, occasion: "party" };
     }
 
     if (/(tea time|chai time|chai ke sath)/i.test(normalized)) {
       return { intent: "tea_time_recommendation", language, occasion: "tea time" };
+    }
+
+    if (/(under 500|under 1000|under 2000|3000 ka box|cheap snacks|sasti cheez batao)/i.test(normalized)) {
+      return { intent: "budget_recommendation", language, budget };
     }
 
     if (budget) {
@@ -719,7 +754,7 @@ export class SupportAgentService {
       return { intent: detailFollowUpIntent, language, productName };
     }
 
-    if (/(iso|certified|certification|certificate|which authority certified|haccp|export quality|approved for export|fda approved)/i.test(normalized)) {
+    if (/(iso|certified|certification|certificate|which authority certified|haccp|export quality|approved for export|fda approved|certified hai)/i.test(normalized)) {
       return { intent: "certification_query", language };
     }
 
@@ -735,7 +770,7 @@ export class SupportAgentService {
       };
     }
 
-    if (/(ingredients|gelatin|msg|made of|oil use|vegetable oil|preservatives|natural or artificial|chicken extract|beef extract|imported ingredients)/i.test(normalized)) {
+    if (/(ingredients|gelatin|msg|made of|oil use|oil konsa use hota|vegetable oil|preservatives|natural or artificial|chicken extract|beef extract|imported ingredients)/i.test(normalized)) {
       return {
         intent: "ingredient_query",
         language,
@@ -746,6 +781,14 @@ export class SupportAgentService {
     if (/(vegan|vegetarian)/i.test(normalized)) {
       return {
         intent: "vegan_vegetarian_query",
+        language,
+        productName,
+      };
+    }
+
+    if (/(shelf life)/i.test(normalized)) {
+      return {
+        intent: "product_freshness",
         language,
         productName,
       };
@@ -811,7 +854,7 @@ export class SupportAgentService {
       return { intent: "shipping_policy", language };
     }
 
-    if (/(deliver across pakistan|delivery cities|which cities|city delivery|do you deliver to|lahore|karachi|islamabad)/i.test(normalized)) {
+    if (/(deliver across pakistan|delivery cities|which cities|city delivery|do you deliver to|do you deliver pakistan|lahore|karachi|islamabad)/i.test(normalized)) {
       return { intent: "delivery_city", language };
     }
 
@@ -823,15 +866,15 @@ export class SupportAgentService {
       return { intent: "address_change", language };
     }
 
-    if (/(delayed order|late delivery|order delayed)/i.test(normalized)) {
+    if (/(delayed order|late delivery|order delayed|parcel late)/i.test(normalized)) {
       return { intent: "delayed_order", language };
     }
 
-    if (/(cod available|cash on delivery|cod hai|do you offer cod|cash pay kr sakty)/i.test(normalized)) {
+    if (/(^cod$|cod available|cash on delivery|cod hai|do you offer cod|cash pay kr sakty)/i.test(normalized)) {
       return { intent: "cod_query", language };
     }
 
-    if (/(online payment|card payment|bank transfer|wallet payment|can i pay online|payment$|card chalta|easypaisa|jazzcash)/i.test(normalized)) {
+    if (/(online payment|card payment|bank transfer|wallet payment|can i pay online|payment$|card chalta|easypaisa|jazzcash|checkout issue)/i.test(normalized)) {
       return { intent: "online_payment", language };
     }
 
@@ -847,27 +890,27 @@ export class SupportAgentService {
       return { intent: "secure_payment", language };
     }
 
-    if (/(return food items|return request|can i return|return$|return krna|return karna|wapis karna hai|food wapis hota|14 din bad return|packet khol dia return)/i.test(normalized)) {
+    if (/(return food items|return request|can i return|return$|return krna|return karna|wapis karna hai|food wapis hota|14 din bad return|packet khol dia return|return pickup)/i.test(normalized)) {
       return { intent: "return_request", language };
     }
 
-    if (/(refund request|i want a refund|need a refund|mujhe refund|refund chahiye|refund mil|refund policy|refund$|refnd|paise wapis)/i.test(normalized)) {
+    if (/(refund request|i want a refund|need a refund|mujhe refund|refund chahiye|refund mil|refund policy|refund$|refnd|paise wapis|refund approve karo|refund method)/i.test(normalized)) {
       return { intent: "refund_request", language };
     }
 
-    if (/(refund time|kab refund|paisy wapis kab)/i.test(normalized)) {
+    if (/(refund time|kab refund|paisy wapis kab|refund kab milega)/i.test(normalized)) {
       return { intent: "refund_time", language };
     }
 
-    if (/(replacement|replace item|exchange$)/i.test(normalized)) {
+    if (/(replacement|replace item|exchange$|flavor change|galat flavor bhej dia)/i.test(normalized)) {
       return { intent: "replacement_request", language };
     }
 
-    if (/(damaged item|damaged product|arrived damaged|product is damaged|damaged$|items? are broken|product broken|product toot gaya|packet phata hua|chips tuti hui|items? tootay hue|item kharab hai|expiry wali cheez bheji|smell aa rahi|taste kharab hai)/i.test(normalized)) {
+    if (/(damaged item|damaged product|arrived damaged|product is damaged|damaged$|items? are broken|product broken|product toot gaya|packet phata hua|chips tuti hui|items? tootay hue|item kharab hai|expiry wali cheez bheji|smell aa rahi|taste kharab hai|defective product|packet broken|expired item|parcel open aya|taste bad|taste expired jaisa|item missing|wrong quantity)/i.test(normalized)) {
       return { intent: "damaged_product", language };
     }
 
-    if (/(wrong product|wrong item received|wrong item aya|ghalat saman)/i.test(normalized)) {
+    if (/(wrong product|wrong item received|wrong item aya|ghalat saman|wrong item)/i.test(normalized)) {
       return { intent: "wrong_product", language };
     }
 
@@ -879,7 +922,7 @@ export class SupportAgentService {
       return { intent: "cancellation_query", language };
     }
 
-    if (/(discount|coupon|promo code|discount code|eid deals|sale hai kya|deal$)/i.test(normalized)) {
+    if (/(discount|coupon|promo code|discount code|eid deals|sale hai kya|deal$|coupon not working)/i.test(normalized)) {
       return /(coupon not working|promo code not working|coupon nahi lag raha)/i.test(normalized)
         ? { intent: "coupon_not_working", language }
         : { intent: "discount_query", language };
@@ -897,7 +940,7 @@ export class SupportAgentService {
       return { intent: "cross_sell_request", language };
     }
 
-    if (/(wholesale|bulk order|dukaan ke liye rate|retailer price|monthly supply|rate list bhejo|agency chahiye|dealership milti|shop pr rakhna hai|school canteen supply)/i.test(normalized)) {
+    if (/(wholesale|bulk order|dukaan ke liye rate|retailer price|shop ke liye rate|100 carton chahiye|corporate gift|office ke liye 50 box|event order|wedding snacks|school canteen|monthly supply|rate list bhejo|agency chahiye|dealership|dealership milti|shop pr rakhna hai|school canteen supply|distributor banna hai|business supply)/i.test(normalized)) {
       return { intent: "wholesale_query", language };
     }
 
@@ -1091,6 +1134,12 @@ export class SupportAgentService {
       "karo",
       "meetha",
       "teekha",
+      "kitny",
+      "kitna",
+      "din",
+      "kab",
+      "sath",
+      "gussa",
       "nachos",
     ].filter((token) => normalized.includes(token)).length;
     const englishHits = [
@@ -1133,6 +1182,8 @@ export class SupportAgentService {
       .replace(/\brefnd\b/g, "refund")
       .replace(/\briturn\b/g, "return")
       .replace(/\bordar\b/g, "order")
+      .replace(/\bkitny\b/g, "kitne")
+      .replace(/\bkidr\b/g, "kidar")
       .replace(/\bbnana\b/g, "banana")
       .replace(/\bstiks\b/g, "stix")
       .replace(/\bwaffer\b/g, "wafer")
@@ -1150,13 +1201,16 @@ export class SupportAgentService {
     const normalized = this.normalizeSnakitosMessage(message);
     const categoryAliases: Array<{ category: string; pattern: RegExp }> = [
       { category: "Nachos", pattern: /\b(nachos|tortilla chips)\b/i },
-      { category: "Stix", pattern: /\b(stix|sticks|hot spicy|peri peri|lemon chilli|masala stix|salty stix)\b/i },
+      { category: "Stix", pattern: /\b(stix|sticks|hot spicy|peri peri|lemon chilli|masala stix|salty stix|multi grain snacks)\b/i },
       { category: "Patata", pattern: /\b(patata|potato slim|potato slims)\b/i },
       { category: "Banana Chips", pattern: /\b(banana|banana chips|achari banana|banana bbq|banana sea salt|cheese banana)\b/i },
       { category: "Choco Sticks", pattern: /\b(choco stick|chocolate stick|spread wali stick|strawberry choco)\b/i },
       { category: "Wafer Rolls", pattern: /\b(wafer|wafer rolls|hazelnut wafer|strawberry wafer|cappuccino wafer|dark chocolate wafer)\b/i },
       { category: "ChickPea Puffs", pattern: /\b(chickpea|chickpea puffs|chana puff|chana chips)\b/i },
-      { category: "Snaktory", pattern: /\b(snaktory|can tray)\b/i },
+      { category: "Snaktory", pattern: /\b(snaktory|can tray|snack heaven)\b/i },
+      { category: "Office Snack Box", pattern: /\b(office box|office snack box)\b/i },
+      { category: "Kids Fun Box", pattern: /\b(kids box|kids fun box)\b/i },
+      { category: "Deals Collection", pattern: /\b(deals collection|craving combo)\b/i },
     ];
 
     return categoryAliases.find((item) => item.pattern.test(normalized))?.category ?? "";
@@ -1411,7 +1465,9 @@ export class SupportAgentService {
         return this.buildCuratedRecommendationResponse(
           userMessage,
           "movie night nachos bundle party crunch shareable snacks",
-          "Great! For movie night, I recommend crunchy and shareable snacks like a Movie Night Nachos Bundle, Snakitos Stix Party, Patata Crunch Deal, Nachos Salsa, and Ultimate Snack Deal. How many people are you ordering for?",
+          this.prefersRomanUrdu(language)
+            ? "Movie night ke liye crunchy aur shareable snacks best rehte hain, jaise Movie Night Nachos Bundle, Snakitos Stix Party, Patata Crunch Deal, Nachos Salsa, aur Ultimate Snack Deal. Kitne logon ke liye order karna hai?"
+            : "Great! For movie night, I recommend crunchy and shareable snacks like a Movie Night Nachos Bundle, Snakitos Stix Party, Patata Crunch Deal, Nachos Salsa, and Ultimate Snack Deal. How many people are you ordering for?",
           "movie night",
         );
       case "gaming_netflix_recommendation":
@@ -1425,14 +1481,18 @@ export class SupportAgentService {
         return this.buildCuratedRecommendationResponse(
           userMessage,
           "office snack box shareable banana chips wafer rolls patata puffs",
-          "For office snacking, I’d recommend Office Snack Box, All Time Favorites, Banana Chips Sea Salt, Wafer Rolls, Patata Salty, and ChickPea Puffs. These are easy to share and give a good sweet + savory mix. How many people are in your team?",
+          this.prefersRomanUrdu(language)
+            ? "Office snacking ke liye Office Snack Box, All Time Favorites, Banana Chips Sea Salt, Wafer Rolls, Patata Salty, aur ChickPea Puffs achay options hain. Ye share karna easy hota hai aur sweet + savory mix bhi mil jata hai. Team mein kitne log hain?"
+            : "For office snacking, I’d recommend Office Snack Box, All Time Favorites, Banana Chips Sea Salt, Wafer Rolls, Patata Salty, and ChickPea Puffs. These are easy to share and give a good sweet + savory mix. How many people are in your team?",
           "office",
         );
       case "gifting_recommendation":
         return this.buildCuratedRecommendationResponse(
           userMessage,
           "gift bundles mega snack box choco lovers flavor fiesta",
-          "Nice idea! For gifting, I’d recommend an Ultimate Mega Snack Box, All Time Favorites, a Choco Lovers Bundle, or a Snakitos Flavor Fiesta Bundle. These feel better than individual packs because they give more variety. Is this gift for kids, family, office, or a friend?",
+          this.prefersRomanUrdu(language)
+            ? "Gift ke liye Ultimate Mega Snack Box, All Time Favorites, Choco Lovers Bundle, ya Snakitos Flavor Fiesta Bundle achay options hain. Individual packs ke muqable mein in mein zyada variety milti hai. Ye gift kids, family, office, ya kisi dost ke liye hai?"
+            : "Nice idea! For gifting, I’d recommend an Ultimate Mega Snack Box, All Time Favorites, a Choco Lovers Bundle, or a Snakitos Flavor Fiesta Bundle. These feel better than individual packs because they give more variety. Is this gift for kids, family, office, or a friend?",
           "gifting",
         );
       case "party_recommendation":
@@ -1608,26 +1668,34 @@ export class SupportAgentService {
       case "shipping_policy":
         return this.buildPolicyTemplateResponse(
           userMessage,
-          "Orders are processed within 1-2 business days after payment confirmation. Delivery usually takes 2-5 business days after order fulfillment depending on the destination city. Shipping rates are shown at checkout, and tracking number is shared by email after shipment.",
+          this.prefersRomanUrdu(language)
+            ? "Payment confirmation ke baad orders aam tor par 1-2 business days mein process hotay hain. Delivery usually 2-5 business days leti hai, city ke hisaab se vary kar sakti hai. Shipping charges checkout par dikhaye jate hain aur shipment ke baad tracking number email se share hota hai."
+            : "Orders are processed within 1-2 business days after payment confirmation. Delivery usually takes 2-5 business days after order fulfillment depending on the destination city. Shipping rates are shown at checkout, and tracking number is shared by email after shipment.",
           "https://snakitos.com/policies/shipping-policy",
         );
       case "delivery_charges":
       case "free_shipping_query":
         return this.buildPolicyTemplateResponse(
           userMessage,
-          "Shipping rates are calculated at checkout based on the weight and dimensions of your order and the destination. I don’t have confirmed free-shipping details in the current public policy, so please check checkout or contact support for confirmation.",
+          this.prefersRomanUrdu(language)
+            ? "Delivery charges checkout par order ke weight, size, aur city ke hisaab se calculate hotay hain. Current public policy mein free shipping ka exact confirmation available nahi hai, is liye latest details ke liye checkout ya support check kar lein."
+            : "Shipping rates are calculated at checkout based on the weight and dimensions of your order and the destination. I don’t have confirmed free-shipping details in the current public policy, so please check checkout or contact support for confirmation.",
           "https://snakitos.com/policies/shipping-policy",
         );
       case "delivery_time":
         return this.buildPolicyTemplateResponse(
           userMessage,
-          "Orders are processed within 1-2 business days after payment confirmation. Delivery usually takes 2-5 business days after order fulfillment depending on the destination city.",
+          this.prefersRomanUrdu(language)
+            ? "Payment confirmation ke baad orders aam tor par 1-2 business days mein process hotay hain. Us ke baad delivery usually 2-5 business days leti hai, jo city ke hisaab se vary kar sakti hai."
+            : "Orders are processed within 1-2 business days after payment confirmation. Delivery usually takes 2-5 business days after order fulfillment depending on the destination city.",
           "https://snakitos.com/policies/shipping-policy",
         );
       case "delivery_city":
         return this.buildPolicyTemplateResponse(
           userMessage,
-          "Snakitos delivers across Pakistan through courier service. Delivery time and charges may vary by city.",
+          this.prefersRomanUrdu(language)
+            ? "Snakitos courier service ke through Pakistan ke mukhtalif cities mein delivery karta hai. Delivery time aur charges city ke hisaab se vary kar sakte hain."
+            : "Snakitos delivers across Pakistan through courier service. Delivery time and charges may vary by city.",
           "https://snakitos.com/policies/shipping-policy",
         );
       case "same_day_delivery":
@@ -1874,7 +1942,9 @@ export class SupportAgentService {
           response: await this.buildResponseWithSuggestions({
             type: "fallback",
             message:
-              "Sure, you can contact Snakitos support on WhatsApp at +92-345-828-3827. You can also email info@snakitos.com. If you want, share your issue briefly and I'll point you the right way first.",
+              this.prefersRomanUrdu(language)
+                ? "Zaroor. Aap Snakitos support se WhatsApp par +92-345-828-3827 par contact kar sakte hain. Email ke liye info@snakitos.com use karein. Agar aap chahein to apna issue yahin brief mein bata dein, main aapko sahi direction de deta hoon."
+                : "Sure, you can contact Snakitos support on WhatsApp at +92-345-828-3827. You can also email info@snakitos.com. If you want, share your issue briefly and I'll point you the right way first.",
             userMessage,
             options: [
               { label: "WhatsApp Support", value: "whatsapp support number" },
@@ -1889,7 +1959,9 @@ export class SupportAgentService {
           response: await this.buildResponseWithSuggestions({
             type: "fallback",
             message:
-              "Snakitos offers a wide range of Pakistani snacks, sweet treats, spicy snacks, bundles, and snack boxes. It is a brand by FM Foods, with focus on quality, hygiene, taste, and export-quality production standards. Bundles are especially good if you want more variety and better value.",
+              this.prefersRomanUrdu(language)
+                ? "Snakitos FM Foods ka brand hai jahan aap Pakistani snacks, sweet treats, spicy snacks, bundles, aur snack boxes explore kar sakte hain. Focus quality, hygiene, taste, aur achi variety par hai. Agar aap better value chahte hain to bundles usually zyada useful rehte hain."
+                : "Snakitos offers a wide range of Pakistani snacks, sweet treats, spicy snacks, bundles, and snack boxes. It is a brand by FM Foods, with focus on quality, hygiene, taste, and export-quality production standards. Bundles are especially good if you want more variety and better value.",
             userMessage,
             options: [
               { label: "Best Deals", value: "show best deals" },

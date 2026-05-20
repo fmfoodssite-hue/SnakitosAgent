@@ -18,6 +18,7 @@
     "dev:chatbot": "npm --prefix apps/chatbot run dev",
     "dev:admin": "npm --prefix apps/admin run dev",
     "import:snakitos-general-dataset": "node scripts/import-snakitos-general-dataset.mjs",
+    "import:snakitos-300-suite": "node scripts/import-snakitos-300-suite.mjs",
     "build:snakitos-rag-source": "node scripts/build-snakitos-rag-ingest-source.mjs",
     "ingest:json": "node scripts/ingest-json-to-pinecone.mjs",
     "ingest:capability": "node scripts/ingest-json-to-pinecone.mjs apps/chatbot/src/server/data/capability-knowledge.json",

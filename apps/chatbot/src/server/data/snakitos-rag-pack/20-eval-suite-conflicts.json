@@ -1,0 +1,317 @@
+[
+  {
+    "user_message": "contact",
+    "rows": [
+      {
+        "id": "11",
+        "category": "General Store",
+        "expected_intent": "store_policy",
+        "expected_collection": "store_faq_collection",
+        "expected_action": "retrieve",
+        "should_escalate": "No"
+      },
+      {
+        "id": "36",
+        "category": "One Word",
+        "expected_intent": "mixed_by_trigger",
+        "expected_collection": "trigger_router_then_correct_collection",
+        "expected_action": "expand_then_retrieve",
+        "should_escalate": "No"
+      }
+    ]
+  },
+  {
+    "user_message": "number",
+    "rows": [
+      {
+        "id": "12",
+        "category": "General Store",
+        "expected_intent": "store_policy",
+        "expected_collection": "store_faq_collection",
+        "expected_action": "retrieve",
+        "should_escalate": "No"
+      },
+      {
+        "id": "37",
+        "category": "One Word",
+        "expected_intent": "mixed_by_trigger",
+        "expected_collection": "trigger_router_then_correct_collection",
+        "expected_action": "expand_then_retrieve",
+        "should_escalate": "No"
+      }
+    ]
+  },
+  {
+    "user_message": "address",
+    "rows": [
+      {
+        "id": "14",
+        "category": "General Store",
+        "expected_intent": "store_policy",
+        "expected_collection": "store_faq_collection",
+        "expected_action": "retrieve",
+        "should_escalate": "No"
+      },
+      {
+        "id": "38",
+        "category": "One Word",
+        "expected_intent": "mixed_by_trigger",
+        "expected_collection": "trigger_router_then_correct_collection",
+        "expected_action": "expand_then_retrieve",
+        "should_escalate": "No"
+      }
+    ]
+  },
+  {
+    "user_message": "agent se baat",
+    "rows": [
+      {
+        "id": "19",
+        "category": "General Store",
+        "expected_intent": "store_policy",
+        "expected_collection": "store_faq_collection",
+        "expected_action": "retrieve",
+        "should_escalate": "No"
+      },
+      {
+        "id": "251",
+        "category": "Complaint Escalation",
+        "expected_intent": "complaint",
+        "expected_collection": "store_faq_collection",
+        "expected_action": "escalate_to_support",
+        "should_escalate": "Yes"
+      }
+    ]
+  },
+  {
+    "user_message": "refund",
+    "rows": [
+      {
+        "id": "31",
+        "category": "One Word",
+        "expected_intent": "mixed_by_trigger",
+        "expected_collection": "trigger_router_then_correct_collection",
+        "expected_action": "expand_then_retrieve",
+        "should_escalate": "No"
+      },
+      {
+        "id": "201",
+        "category": "Refund Return Exchange",
+        "expected_intent": "store_policy_or_complaint",
+        "expected_collection": "store_faq_collection",
+        "expected_action": "retrieve_or_escalate",
+        "should_escalate": "Yes"
+      }
+    ]
+  },
+  {
+    "user_message": "return",
+    "rows": [
+      {
+        "id": "32",
+        "category": "One Word",
+        "expected_intent": "mixed_by_trigger",
+        "expected_collection": "trigger_router_then_correct_collection",
+        "expected_action": "expand_then_retrieve",
+        "should_escalate": "No"
+      },
+      {
+        "id": "202",
+        "category": "Refund Return Exchange",
+        "expected_intent": "store_policy_or_complaint",
+        "expected_collection": "store_faq_collection",
+        "expected_action": "retrieve_or_escalate",
+        "should_escalate": "Yes"
+      }
+    ]
+  },
+  {
+    "user_message": "exchange",
+    "rows": [
+      {
+        "id": "33",
+        "category": "One Word",
+        "expected_intent": "mixed_by_trigger",
+        "expected_collection": "trigger_router_then_correct_collection",
+        "expected_action": "expand_then_retrieve",
+        "should_escalate": "No"
+      },
+      {
+        "id": "203",
+        "category": "Refund Return Exchange",
+        "expected_intent": "store_policy_or_complaint",
+        "expected_collection": "store_faq_collection",
+        "expected_action": "retrieve_or_escalate",
+        "should_escalate": "Yes"
+      }
+    ]
+  },
+  {
+    "user_message": "cod",
+    "rows": [
+      {
+        "id": "39",
+        "category": "One Word",
+        "expected_intent": "mixed_by_trigger",
+        "expected_collection": "trigger_router_then_correct_collection",
+        "expected_action": "expand_then_retrieve",
+        "should_escalate": "No"
+      },
+      {
+        "id": "226",
+        "category": "Payment COD Checkout",
+        "expected_intent": "store_policy",
+        "expected_collection": "store_faq_collection",
+        "expected_action": "retrieve_or_fallback",
+        "should_escalate": "No"
+      }
+    ]
+  },
+  {
+    "user_message": "stix",
+    "rows": [
+      {
+        "id": "46",
+        "category": "One Word",
+        "expected_intent": "mixed_by_trigger",
+        "expected_collection": "trigger_router_then_correct_collection",
+        "expected_action": "expand_then_retrieve",
+        "should_escalate": "No"
+      },
+      {
+        "id": "86",
+        "category": "Products",
+        "expected_intent": "product_query",
+        "expected_collection": "products_collection",
+        "expected_action": "retrieve",
+        "should_escalate": "No"
+      }
+    ]
+  },
+  {
+    "user_message": "wafer",
+    "rows": [
+      {
+        "id": "47",
+        "category": "One Word",
+        "expected_intent": "mixed_by_trigger",
+        "expected_collection": "trigger_router_then_correct_collection",
+        "expected_action": "expand_then_retrieve",
+        "should_escalate": "No"
+      },
+      {
+        "id": "96",
+        "category": "Products",
+        "expected_intent": "product_query",
+        "expected_collection": "products_collection",
+        "expected_action": "retrieve",
+        "should_escalate": "No"
+      }
+    ]
+  },
+  {
+    "user_message": "nachos",
+    "rows": [
+      {
+        "id": "49",
+        "category": "One Word",
+        "expected_intent": "mixed_by_trigger",
+        "expected_collection": "trigger_router_then_correct_collection",
+        "expected_action": "expand_then_retrieve",
+        "should_escalate": "No"
+      },
+      {
+        "id": "105",
+        "category": "Products",
+        "expected_intent": "product_query",
+        "expected_collection": "products_collection",
+        "expected_action": "retrieve",
+        "should_escalate": "No"
+      }
+    ]
+  },
+  {
+    "user_message": "bundle",
+    "rows": [
+      {
+        "id": "50",
+        "category": "One Word",
+        "expected_intent": "mixed_by_trigger",
+        "expected_collection": "trigger_router_then_correct_collection",
+        "expected_action": "expand_then_retrieve",
+        "should_escalate": "No"
+      },
+      {
+        "id": "110",
+        "category": "Products",
+        "expected_intent": "product_query",
+        "expected_collection": "products_collection",
+        "expected_action": "retrieve",
+        "should_escalate": "No"
+      }
+    ]
+  },
+  {
+    "user_message": "paise wapis",
+    "rows": [
+      {
+        "id": "55",
+        "category": "Roman Urdu",
+        "expected_intent": "mixed",
+        "expected_collection": "router_selects_correct_collection",
+        "expected_action": "retrieve_or_escalate",
+        "should_escalate": "No"
+      },
+      {
+        "id": "218",
+        "category": "Refund Return Exchange",
+        "expected_intent": "store_policy_or_complaint",
+        "expected_collection": "store_faq_collection",
+        "expected_action": "retrieve_or_escalate",
+        "should_escalate": "Yes"
+      }
+    ]
+  },
+  {
+    "user_message": "wapis karna hai",
+    "rows": [
+      {
+        "id": "56",
+        "category": "Roman Urdu",
+        "expected_intent": "mixed",
+        "expected_collection": "router_selects_correct_collection",
+        "expected_action": "retrieve_or_escalate",
+        "should_escalate": "No"
+      },
+      {
+        "id": "219",
+        "category": "Refund Return Exchange",
+        "expected_intent": "store_policy_or_complaint",
+        "expected_collection": "store_faq_collection",
+        "expected_action": "retrieve_or_escalate",
+        "should_escalate": "Yes"
+      }
+    ]
+  },
+  {
+    "user_message": "gelatin hai?",
+    "rows": [
+      {
+        "id": "74",
+        "category": "Roman Urdu",
+        "expected_intent": "mixed",
+        "expected_collection": "router_selects_correct_collection",
+        "expected_action": "retrieve_or_escalate",
+        "should_escalate": "No"
+      },
+      {
+        "id": "275",
+        "category": "Ingredients Allergy Certification",
+        "expected_intent": "store_policy_or_product_detail",
+        "expected_collection": "store_faq_collection",
+        "expected_action": "retrieve_or_escalate",
+        "should_escalate": "Yes"
+      }
+    ]
+  }
+]
