@@ -106,6 +106,7 @@ type SendRequest = {
 };
 
 const STORE_PRODUCTS_URL = "https://snakitos.com/collections/all";
+const STORE_TRACKING_URL = "https://snakitos.com/policies/shipping-policy";
 const CHAT_SESSION_EVENT = "chat-session-change";
 
 type ChatSessionSnapshot = {
@@ -957,6 +958,15 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
             <>
               <strong>Pending after shipment</strong>
               <p>The courier number will show up here as soon as the order is fulfilled.</p>
+              <a
+                href={STORE_TRACKING_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.trackingLink}
+              >
+                Track order
+                <ExternalLink size={12} />
+              </a>
             </>
           )}
         </div>

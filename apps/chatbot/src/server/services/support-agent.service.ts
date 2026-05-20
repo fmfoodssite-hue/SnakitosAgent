@@ -4223,6 +4223,7 @@ export class SupportAgentService {
         { label: "Back", value: "show categories" },
         { label: "Home", value: "home" },
       ],
+      skipSuggestions: true,
     });
   }
 
