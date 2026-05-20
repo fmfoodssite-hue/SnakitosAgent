@@ -714,7 +714,7 @@ export class SupportAgentService {
       return { intent: "mixed_recommendation", language, taste: "mixed" };
     }
 
-    if (/(kids ke liye|snacks for children|kids snacks|bachon ke liye|best for children|safe for kids|school lunch|what should i order for kids|bachy kha sakty)/i.test(normalized)) {
+    if (/(kids ke liye|snacks for children|kids snacks|bachon ke liye|best for children|safe for kid|safe for kids|school lunch|what should i order for kids|bachy kha sakty)/i.test(normalized)) {
       return { intent: "kids_recommendation", language, occasion: "kids" };
     }
 
@@ -1523,7 +1523,7 @@ export class SupportAgentService {
           response: await this.buildResponseWithSuggestions({
             type: "fallback",
             message:
-              "Yes! Snakitos is a brand by FM Foods, and FM Foods publicly lists Halal certification as part of its quality and food safety standards. If you want, share a product name and I can help narrow it down for that item.",
+              "Yes! Snakitos is a brand by FM Foods, and FM Foods publicly lists Halal certification as part of its quality and food safety standards.",
             userMessage,
             options: [
               { label: "Kids Snacks", value: "kids snacks" },
@@ -2142,11 +2142,17 @@ export class SupportAgentService {
     message: string,
     rankingMessage?: string,
   ): Promise<string> {
+    let finalMessage = message;
+    if (rankingMessage === "kids") {
+      finalMessage = this.prefersRomanUrdu(this.detectSnakitosLanguage(userMessage))
+        ? "Kids-friendly options mein Choco Stick, Coco Choco Can, Wafer Rolls Strawberry, Patata Salty, aur Kids Fun Box achay choices hain. Ye taste mein mild hote hain aur sharing ke liye bhi theek rehte hain."
+        : "Kids-friendly options include Choco Stick Chocolate, Choco Stick Strawberry, Coco Choco Can, Wafer Rolls Strawberry, Patata Salty, and the Kids Fun Box. These are milder picks and work well for sharing.";
+    }
     const products = await this.getProductsForStructuredQuery(query, rankingMessage || userMessage);
     const freeShippingHint = this.buildFreeShippingHint(products);
     return this.buildResponseWithSuggestions({
       type: "product",
-      message: [message, freeShippingHint].filter(Boolean).join("\n\n"),
+      message: [finalMessage, freeShippingHint].filter(Boolean).join("\n\n"),
       userMessage,
       products: this.buildProductCards(products, rankingMessage || userMessage),
       options: [
@@ -2239,7 +2245,7 @@ export class SupportAgentService {
     const productLead = productName ? `${productName}: ` : "";
     return this.buildResponseWithSuggestions({
       type: "fallback",
-      message: `${productLead}${baseMessage} ${productName ? "" : "Which product are you asking about?"}`.trim(),
+      message: `${productLead}${baseMessage}`.trim(),
       userMessage,
       options: [
         { label: "Talk to Support", value: "talk to support" },
@@ -4032,13 +4038,23 @@ export class SupportAgentService {
     const productPayload = this.buildProductCards(displayProducts, userMessage);
     const bestMatch = displayProducts[0];
     const names = displayProducts.map((product) => product.title);
-
-    let message = "I couldn't find exact details, but here's what I know...";
+    const category = this.extractKnownCategory(userMessage);
+    const isDiscoveryStyleQuery = this.looksLikeProductDiscovery(userMessage);
+    let message =
+      category || isDiscoveryStyleQuery
+        ? category
+          ? `Here are the ${category} options I found:`
+          : "Here are the closest options I found:"
+        : "Here are the closest details I found:";
 
     if (bestMatch) {
       const crispDescription = this.extractDirectProductDescription(bestMatch, userMessage);
       const productListLine =
-        names.length > 1 ? `I found these close matches: ${names.join(", ")}.` : `I found ${names[0]}.`;
+        names.length > 1
+          ? category
+            ? `Top matches: ${names.join(", ")}.`
+            : `Closest matches: ${names.join(", ")}.`
+          : `${names[0]}.`;
       message = `${message}\n\n${productListLine}\n\n${crispDescription}`;
     }
 
@@ -4640,15 +4656,15 @@ export class SupportAgentService {
     }
 
     if (/\b(halal|halaal|halal hain|halal hai)\b/i.test(normalizedMessage)) {
-      return "Yes, Snakitos is a brand by FM Foods, and FM Foods publicly lists Halal certification as part of its quality and food safety standards. If you want product-specific confirmation, please contact support with the product name.";
+      return "Yes, Snakitos is a brand by FM Foods, and FM Foods publicly lists Halal certification as part of its quality and food safety standards. For product-specific confirmation, please contact support.";
     }
 
     if (/\b(vegetarian|vegan)\b/i.test(normalizedMessage)) {
-      return "I can help check a specific snack, but the current catalog does not clearly confirm vegetarian or vegan status across all items. Share the product name and I'll narrow it down for you.";
+      return "The current catalog does not clearly confirm vegetarian or vegan status across all items. Please check the product page or contact support for exact confirmation.";
     }
 
     if (/\b(ingredients?|ingredients kya hain)\b/i.test(normalizedMessage)) {
-      return "Ingredients vary by snack. Common bases include corn, potato, banana, multigrain blends, chickpea, wafer, and chocolate fillings. Share a product name and I'll narrow it down for you.";
+      return "Ingredients vary by snack. Common bases include corn, potato, banana, multigrain blends, chickpea, wafer, and chocolate fillings.";
     }
 
     if (/\b(expiry duration|expiry|expiry kitni hai|kitni expiry)\b/i.test(normalizedMessage)) {
@@ -4656,10 +4672,10 @@ export class SupportAgentService {
     }
 
     if (/\b(imported or local|imported|local)\b/i.test(normalizedMessage)) {
-      return "I can help check a specific snack, but the current catalog does not clearly label every item as imported or local. Share the product name and I'll narrow it down for you.";
+      return "The current catalog does not clearly label every item as imported or local. Please check the product page or contact support for exact confirmation.";
     }
 
-    return "I can help check a specific product, but the current catalog does not explicitly confirm that detail across all items. Share the product name and I'll narrow it down for you.";
+    return "The current catalog does not explicitly confirm that detail across all items. Please check the product page or contact support for exact confirmation.";
   }
 
   private getProductMetadata(product: ProductLookupResult): {
