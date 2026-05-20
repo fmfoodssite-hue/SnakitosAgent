@@ -4196,58 +4196,16 @@ export class SupportAgentService {
     userMessage: string,
   ): Promise<string> {
     const safeOrder = order ?? {};
-    const contactParts = [
-      safeOrder.customerPhone ? `Phone: ${safeOrder.customerPhone}` : "",
-      safeOrder.shippingPhone && safeOrder.shippingPhone !== safeOrder.customerPhone
-        ? `Shipping phone: ${safeOrder.shippingPhone}`
-        : "",
-    ].filter(Boolean);
-
-    const itemLines =
-      Array.isArray(safeOrder.lineItems) && safeOrder.lineItems.length > 0
-        ? safeOrder.lineItems
-            .map((item) => {
-              const title = item.title?.trim() || "Item";
-              const variant = item.variantTitle?.trim();
-              const quantity = Number.isFinite(item.quantity) ? `x${item.quantity}` : "";
-              const amount =
-                item.total && item.currencyCode ? `${item.currencyCode} ${item.total}` : item.total || "";
-              return [title, variant, quantity, amount].filter(Boolean).join(" | ");
-            })
-            .filter(Boolean)
-        : [];
-
-    const trackingLines =
+    const tracking =
       Array.isArray(safeOrder.tracking) && safeOrder.tracking.length > 0
-        ? safeOrder.tracking.map((tracking) =>
-            [
-              tracking.number ? `Tracking number: ${tracking.number}` : "",
-              tracking.company ? `Carrier: ${tracking.company}` : "",
-              tracking.status ? `Status: ${tracking.status}` : "",
-            ]
-              .filter(Boolean)
-              .join(" | "),
-          ).filter(Boolean)
+        ? safeOrder.tracking.filter(
+            (entry) => entry && (entry.number || entry.company || entry.url || entry.status),
+          )
         : [];
-
-    const summaryBlocks = [
-      safeOrder.orderName ? `Order: ${safeOrder.orderName}` : "",
-      safeOrder.customerName ? `Customer: ${safeOrder.customerName}` : "",
-      contactParts.length > 0 ? `Contact: ${contactParts.join(" | ")}` : "",
-      safeOrder.fulfillmentStatus ? `Fulfillment: ${safeOrder.fulfillmentStatus}` : "",
-      safeOrder.financialStatus ? `Payment: ${safeOrder.financialStatus}` : "",
-      safeOrder.totalAmount
-        ? `Total: ${safeOrder.currencyCode ? `${safeOrder.currencyCode} ` : ""}${safeOrder.totalAmount}`
-        : "",
-      itemLines.length > 0 ? `Order items:\n- ${itemLines.join("\n- ")}` : "",
-      trackingLines.length > 0
-        ? `Tracking:\n- ${trackingLines.join("\n- ")}`
-        : "Tracking: Tracking will be shared after shipment if available.",
-    ].filter(Boolean);
 
     return this.buildResponseWithSuggestions({
       type: "fallback",
-      message: summaryBlocks.join("\n\n"),
+      message: "",
       userMessage,
       order: {
         orderName: safeOrder.orderName,
@@ -4259,8 +4217,7 @@ export class SupportAgentService {
         fulfillmentStatus: safeOrder.fulfillmentStatus,
         totalAmount: safeOrder.totalAmount,
         currencyCode: safeOrder.currencyCode,
-        tracking: safeOrder.tracking,
-        lineItems: safeOrder.lineItems,
+        tracking,
       },
       options: [
         { label: "Back", value: "show categories" },
