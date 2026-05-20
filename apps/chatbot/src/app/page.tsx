@@ -828,6 +828,10 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
   const trackingEntries = (order.tracking ?? []).filter(
     (entry) => entry.number || entry.company || entry.url || entry.status,
   );
+  const isFulfilledOrder = /\b(fulfilled|shipped|delivered)\b/i.test(
+    order.fulfillmentStatus ?? "",
+  );
+  const shouldShowFallbackTrackingLink = trackingEntries.length === 0 && isFulfilledOrder;
   const contactRows = getOrderContactRows(order);
   const orderItems = Array.isArray(order.lineItems) ? order.lineItems : [];
   const totalQuantity = orderItems.reduce(
@@ -847,7 +851,9 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
           <p>
             {trackingEntries.length > 0
               ? "Tracking details are ready below."
-              : "Tracking will appear here once the shipment is created."}
+              : shouldShowFallbackTrackingLink
+                ? "Your order has been fulfilled. Use the tracking link below for shipment updates."
+                : "Tracking will appear here once the shipment is created."}
           </p>
         </div>
 
@@ -956,17 +962,23 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
             </div>
           ) : (
             <>
-              <strong>Pending after shipment</strong>
-              <p>The courier number will show up here as soon as the order is fulfilled.</p>
-              <a
-                href={STORE_TRACKING_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.trackingLink}
-              >
-                Track order
-                <ExternalLink size={12} />
-              </a>
+              <strong>{shouldShowFallbackTrackingLink ? "Tracking link available" : "Pending after shipment"}</strong>
+              <p>
+                {shouldShowFallbackTrackingLink
+                  ? "The courier number is not shown yet, but you can open the tracking page now."
+                  : "The courier number will show up here as soon as the order is fulfilled."}
+              </p>
+              {shouldShowFallbackTrackingLink ? (
+                <a
+                  href={STORE_TRACKING_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.trackingLink}
+                >
+                  Track order
+                  <ExternalLink size={12} />
+                </a>
+              ) : null}
             </>
           )}
         </div>
