@@ -3157,18 +3157,10 @@ export class SupportAgentService {
     if (this.isUnclearQuery(userMessage)) {
       return {
         intent: "general",
-        response: await this.buildGeneralPlaybookResponse({
+        response: await this.buildGeneralSupportFallback(
           userMessage,
-          answer: "Sure, I can help with snacks, orders, delivery, and store policies.",
-          assistLine: "Just tell me what you need, and I'll keep it simple.",
-          type: "fallback",
-          options: [
-            { label: "Deals", value: "show best deals" },
-            { label: "Track Order", value: "track my order" },
-            { label: "Policies", value: "show shipping and refund policy" },
-            { label: "Home", value: "home" },
-          ],
-        }),
+          "I’m not fully sure what you need from that message. Please contact support and they’ll guide you quickly.",
+        ),
       };
     }
 
@@ -3181,17 +3173,10 @@ export class SupportAgentService {
     if (relevantKnowledge.length === 0) {
       return {
         intent: "general",
-        response: await this.buildGeneralPlaybookResponse({
+        response: await this.buildGeneralSupportFallback(
           userMessage,
-          answer: "I don't have the exact detail right now, but I'm happy to help.",
-          assistLine: "If you want, I can still help with products, delivery, refunds, or order tracking.",
-          type: "fallback",
-          options: [
-            { label: "Deals", value: "show best deals" },
-            { label: "Policies", value: "show shipping and refund policy" },
-            { label: "Home", value: "home" },
-          ],
-        }),
+          "I don’t have the exact detail for that right now. Please contact support so they can confirm it properly.",
+        ),
         data: [],
       };
     }
@@ -3233,6 +3218,23 @@ export class SupportAgentService {
     }
 
     return this.buildStoreInfoResponse(userMessage);
+  }
+
+  private async buildGeneralSupportFallback(
+    userMessage: string,
+    message: string,
+  ): Promise<string> {
+    return this.buildResponseWithSuggestions({
+      type: "fallback",
+      message,
+      userMessage,
+      options: [
+        { label: "Contact Support", value: "How can I contact support?" },
+        { label: "Track Order", value: "track my order" },
+        { label: "Home", value: "home" },
+      ],
+      skipSuggestions: true,
+    });
   }
 
   private async buildComplaintOrEscalationResponse(userMessage: string): Promise<string | null> {
@@ -4146,6 +4148,21 @@ export class SupportAgentService {
       .map((item) => this.normalizeKnowledgeSnippet(item.text, item.name))
       .filter(Boolean)
       .slice(0, 2);
+
+    const hasUncertainGeneralKnowledge =
+      !policyLink &&
+      snippets.some((snippet) =>
+        /not fully sure|don't want to misguide|do not clearly confirm|does not explicitly confirm|please check .*support|contact support/i.test(
+          snippet,
+        ),
+      );
+
+    if (hasUncertainGeneralKnowledge) {
+      return this.buildGeneralSupportFallback(
+        userMessage,
+        "I’m not fully sure about that query. Please contact support so they can confirm it properly.",
+      );
+    }
 
     const intro = policyLink
       ? "Here is the quick policy update from Snakitos."
