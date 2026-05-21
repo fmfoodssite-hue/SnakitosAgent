@@ -649,7 +649,7 @@
 .orderHeroCopy p {
   margin: 10px 0 0;
   max-width: 38ch;
-  color: #7d5034;
+  color: #5f6773;
   font-size: 0.82rem;
   line-height: 1.6;
 }
@@ -664,12 +664,12 @@
   min-width: 158px;
   padding: 14px 16px;
   border-radius: 20px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 248, 242, 0.9));
-  border: 1px solid rgba(187, 104, 37, 0.12);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 249, 251, 0.96));
+  border: 1px solid rgba(31, 41, 55, 0.08);
   display: grid;
   gap: 6px;
   text-align: right;
-  box-shadow: 0 10px 20px rgba(124, 67, 31, 0.08);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.06);
 }
 
 .trackingButton {
@@ -686,6 +686,7 @@
   font-weight: 800;
   letter-spacing: 0.01em;
   box-shadow: 0 12px 24px rgba(191, 86, 22, 0.24);
+  white-space: nowrap;
 }
 
 .orderTotalCard span,
@@ -698,7 +699,7 @@
 }
 
 .orderTotalCard span {
-  color: #a06740;
+  color: #667085;
   font-size: 0.66rem;
 }
 
@@ -714,11 +715,15 @@
   gap: 10px;
 }
 
+.orderInfoGrid {
+  grid-template-columns: 1fr;
+}
+
 .statusCard,
 .infoTile {
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.88);
-  border: 1px solid rgba(187, 104, 37, 0.1);
+  border: 1px solid rgba(31, 41, 55, 0.08);
 }
 
 .statusCard {
@@ -728,7 +733,7 @@
 }
 
 .statusLabel {
-  color: #a56a40;
+  color: #667085;
   font-size: 0.66rem;
 }
 
@@ -768,15 +773,13 @@
   align-items: flex-start;
   flex-wrap: wrap;
   gap: 8px;
-  color: #8a5b3c;
+  color: #667085;
   font-size: 0.7rem;
   line-height: 1.35;
 }
 
 .trackingTile {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 247, 241, 0.92)),
-    linear-gradient(135deg, rgba(255, 240, 227, 0.86), rgba(255, 255, 255, 0.86));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.94));
 }
 
 .infoTileIcon,
@@ -788,8 +791,8 @@
   justify-content: center;
   border-radius: 11px;
   flex-shrink: 0;
-  color: #d86d22;
-  background: linear-gradient(135deg, rgba(255, 139, 58, 0.18), rgba(255, 209, 171, 0.26));
+  color: #475467;
+  background: linear-gradient(135deg, rgba(226, 232, 240, 0.9), rgba(248, 250, 252, 0.98));
 }
 
 .infoTile strong,
@@ -797,13 +800,13 @@
   color: #2f190e;
   font-size: 0.88rem;
   line-height: 1.45;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .infoTile p,
 .infoRowText p {
   margin: 0;
-  color: #85563b;
+  color: #667085;
   font-size: 0.76rem;
   line-height: 1.52;
 }
@@ -814,16 +817,16 @@
 }
 
 .orderMetaRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(88px, 112px) minmax(0, 1fr);
+  align-items: start;
   gap: 12px;
   padding-top: 10px;
-  border-top: 1px solid rgba(187, 104, 37, 0.08);
+  border-top: 1px solid rgba(31, 41, 55, 0.08);
 }
 
 .orderMetaRow span {
-  color: #9d6944;
+  color: #667085;
   font-size: 0.68rem;
   font-weight: 900;
   letter-spacing: 0.12em;
@@ -831,7 +834,7 @@
 }
 
 .orderMetaRow strong {
-  text-align: right;
+  text-align: left;
 }
 
 .infoList {
@@ -846,8 +849,8 @@
   min-width: 0;
   padding: 12px;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(187, 104, 37, 0.08);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(31, 41, 55, 0.08);
 }
 
 .infoRowText {
@@ -858,7 +861,7 @@
 }
 
 .infoRowText span {
-  color: #9d6944;
+  color: #667085;
   font-size: 0.64rem;
   line-height: 1.35;
 }
@@ -890,22 +893,31 @@
   }
 
   .orderInfoGrid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 980px) {
   .orderInfoGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 1fr;
   }
 
   .orderHero {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 
+  .orderHeroAside,
   .orderTotalCard {
     width: 100%;
     text-align: left;
+  }
+
+  .orderHeroAside {
+    justify-items: stretch;
+  }
+
+  .trackingButton {
+    width: 100%;
   }
 }
 
@@ -980,6 +992,15 @@
     padding: 14px;
   }
 
+  .orderHeroCopy h3 {
+    font-size: 1.08rem;
+  }
+
+  .orderHeroCopy p {
+    max-width: none;
+    font-size: 0.78rem;
+  }
+
   .orderInfoGrid {
     grid-template-columns: 1fr;
   }
@@ -987,6 +1008,16 @@
   .infoTile,
   .statusCard {
     padding: 13px;
+  }
+
+  .orderMetaRow {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .trackingButton {
+    min-height: 42px;
+    font-size: 0.74rem;
   }
 }
 
@@ -1030,6 +1061,29 @@
   .orderTotalCard {
     width: 100%;
     text-align: left;
+  }
+
+  .orderCard {
+    padding: 12px;
+    border-radius: 22px;
+  }
+
+  .orderHero,
+  .statusGrid,
+  .orderInfoGrid {
+    gap: 8px;
+  }
+
+  .infoTile,
+  .statusCard,
+  .orderTotalCard,
+  .infoRow {
+    padding: 11px;
+  }
+
+  .infoTile strong,
+  .infoRowText strong {
+    font-size: 0.82rem;
   }
 
   .productTopRow span,
