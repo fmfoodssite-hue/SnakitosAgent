@@ -628,10 +628,7 @@
 }
 
 .orderHero {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 16px;
-  align-items: start;
+  display: block;
 }
 
 .orderHeroCopy {
@@ -654,24 +651,6 @@
   line-height: 1.6;
 }
 
-.orderHeroAside {
-  display: grid;
-  gap: 10px;
-  justify-items: end;
-}
-
-.orderTotalCard {
-  min-width: 158px;
-  padding: 14px 16px;
-  border-radius: 20px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 249, 251, 0.96));
-  border: 1px solid rgba(31, 41, 55, 0.08);
-  display: grid;
-  gap: 6px;
-  text-align: right;
-  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.06);
-}
-
 .trackingButton {
   display: inline-flex;
   align-items: center;
@@ -689,34 +668,12 @@
   white-space: nowrap;
 }
 
-.orderTotalCard span,
 .statusLabel,
 .infoTileHeader,
 .infoRowText span {
   font-weight: 900;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-}
-
-.orderTotalCard span {
-  color: #667085;
-  font-size: 0.66rem;
-}
-
-.orderTotalCard strong {
-  color: #2f190e;
-  font-size: 1.08rem;
-  line-height: 1.1;
-}
-
-.statusGrid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.orderInfoGrid {
-  grid-template-columns: 1fr;
 }
 
 .statusCard,
@@ -872,6 +829,44 @@
   padding: 4px 0 0;
 }
 
+.orderSimpleCard {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(31, 41, 55, 0.08);
+}
+
+.orderSimpleRow {
+  display: grid;
+  grid-template-columns: minmax(92px, 120px) minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(31, 41, 55, 0.08);
+}
+
+.orderSimpleRow:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.orderSimpleRow span {
+  color: #667085;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.orderSimpleRow strong {
+  color: #2f190e;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  overflow-wrap: break-word;
+}
+
 @keyframes spin {
   from {
     transform: rotate(0deg);
@@ -891,31 +886,9 @@
   .chatShell {
     height: min(90vh, 920px);
   }
-
-  .orderInfoGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 @media (max-width: 980px) {
-  .orderInfoGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .orderHero {
-    grid-template-columns: 1fr;
-  }
-
-  .orderHeroAside,
-  .orderTotalCard {
-    width: 100%;
-    text-align: left;
-  }
-
-  .orderHeroAside {
-    justify-items: stretch;
-  }
-
   .trackingButton {
     width: 100%;
   }
@@ -1001,16 +974,7 @@
     font-size: 0.78rem;
   }
 
-  .orderInfoGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .infoTile,
-  .statusCard {
-    padding: 13px;
-  }
-
-  .orderMetaRow {
+  .orderSimpleRow {
     grid-template-columns: 1fr;
     gap: 6px;
   }
@@ -1069,26 +1033,16 @@
   }
 
   .orderHero,
-  .statusGrid,
-  .orderInfoGrid {
+  .orderSimpleCard {
     gap: 8px;
   }
 
-  .infoTile,
-  .statusCard,
-  .orderTotalCard,
-  .infoRow {
+  .orderSimpleCard {
     padding: 11px;
   }
 
-  .infoTile strong,
-  .infoRowText strong {
+  .orderSimpleRow strong {
     font-size: 0.82rem;
-  }
-
-  .productTopRow span,
-  .statusPill {
-    width: fit-content;
   }
 
   .navButton {

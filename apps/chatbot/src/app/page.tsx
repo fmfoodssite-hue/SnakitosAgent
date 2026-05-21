@@ -826,14 +826,11 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
   const trackingEntries = (order.tracking ?? []).filter(
     (entry) => entry.number || entry.company || entry.url || entry.status,
   );
-  const fulfillmentLabel = formatStatusLabel(order.fulfillmentStatus) || "Pending";
-  const paymentLabel = formatStatusLabel(order.financialStatus) || "Pending";
   const primaryTracking = trackingEntries[0] ?? null;
-  const trackingTitle = primaryTracking?.company || "Courier tracking";
-  const trackingNumber = primaryTracking?.number || "Tracking link available";
-  const trackingMessage = primaryTracking?.url
-    ? "Live courier link is ready."
-    : "Tracking will appear here once Shopify creates the shipment.";
+  const customerName = order.customerName || "Not available";
+  const orderNumber = order.orderNumber ? `#${order.orderNumber}` : "Not available";
+  const trackingNumber = primaryTracking?.number || "Not available";
+  const trackingLink = primaryTracking?.url || "";
 
   return (
     <section className={styles.orderCard}>
@@ -841,20 +838,31 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
         <div className={styles.orderHeroCopy}>
           <span className={styles.orderEyebrow}>Order Summary</span>
           <h3>{formatOrderHeading(order)}</h3>
-          <p>{trackingMessage}</p>
+          <p>Customer details and tracking link.</p>
+        </div>
+      </div>
+
+      <div className={styles.orderSimpleCard}>
+        <div className={styles.orderSimpleRow}>
+          <span>Name</span>
+          <strong>{customerName}</strong>
         </div>
 
-        <div className={styles.orderHeroAside}>
-          {order.totalAmount ? (
-            <div className={styles.orderTotalCard}>
-              <span>Total</span>
-              <strong>{formatCurrency(order.totalAmount, order.currencyCode)}</strong>
-            </div>
-          ) : null}
+        <div className={styles.orderSimpleRow}>
+          <span>Order No</span>
+          <strong>{orderNumber}</strong>
+        </div>
 
-          {primaryTracking?.url ? (
+        <div className={styles.orderSimpleRow}>
+          <span>Tracking No</span>
+          <strong>{trackingNumber}</strong>
+        </div>
+
+        <div className={styles.orderSimpleRow}>
+          <span>Link</span>
+          {trackingLink ? (
             <a
-              href={primaryTracking.url}
+              href={trackingLink}
               target="_blank"
               rel="noopener noreferrer"
               className={styles.trackingButton}
@@ -862,75 +870,8 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
               Open tracking link
               <ExternalLink size={14} />
             </a>
-          ) : null}
-        </div>
-      </div>
-
-      <div className={styles.statusGrid}>
-        <div className={styles.statusCard}>
-          <span className={styles.statusLabel}>Fulfillment</span>
-          <span
-            className={`${styles.statusPill} ${getStatusToneClass(order.fulfillmentStatus)}`}
-          >
-            {fulfillmentLabel}
-          </span>
-        </div>
-
-        <div className={styles.statusCard}>
-          <span className={styles.statusLabel}>Payment</span>
-          <span className={`${styles.statusPill} ${getStatusToneClass(order.financialStatus)}`}>
-            {paymentLabel}
-          </span>
-        </div>
-      </div>
-
-      <div className={styles.orderInfoGrid}>
-        <div className={styles.infoTile}>
-          <div className={styles.infoTileHeader}>
-            <span className={styles.infoTileIcon}>
-              <User size={15} />
-            </span>
-            <span>Customer</span>
-          </div>
-          <strong>{order.customerName || formatOrderHeading(order)}</strong>
-          <div className={styles.orderMetaList}>
-            <div className={styles.orderMetaRow}>
-              <span>Reference</span>
-              <strong>{order.orderNumber ? `#${order.orderNumber}` : "Available above"}</strong>
-            </div>
-            <div className={styles.orderMetaRow}>
-              <span>Courier</span>
-              <strong>{primaryTracking?.company || "Pending dispatch"}</strong>
-            </div>
-          </div>
-        </div>
-
-        <div className={`${styles.infoTile} ${styles.trackingTile}`}>
-          <div className={styles.infoTileHeader}>
-            <span className={styles.infoTileIcon}>
-              <Truck size={15} />
-            </span>
-            <span>Tracking</span>
-          </div>
-          {primaryTracking ? (
-            <div className={styles.infoList}>
-              <div className={styles.infoRow}>
-                <span className={styles.infoRowIcon}>
-                  <Package size={14} />
-                </span>
-                <div className={styles.infoRowText}>
-                  <span>{trackingTitle}</span>
-                  <strong>{trackingNumber}</strong>
-                  {primaryTracking.status ? <p>{formatStatusLabel(primaryTracking.status)}</p> : null}
-                  <p>{primaryTracking.url ? "Courier tracking is active." : "Waiting for courier link."}</p>
-                </div>
-              </div>
-            </div>
           ) : (
-            <div className={styles.trackingEmptyState}>
-              <strong>Tracking pending</strong>
-              <p>The courier link will appear here as soon as Shopify adds it to the order.</p>
-            </div>
+            <strong>Not available</strong>
           )}
         </div>
       </div>
