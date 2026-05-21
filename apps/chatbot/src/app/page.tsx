@@ -826,14 +826,9 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
   const trackingEntries = (order.tracking ?? []).filter(
     (entry) => entry.number || entry.company || entry.url || entry.status,
   );
-  const orderItems = Array.isArray(order.lineItems) ? order.lineItems : [];
-  const totalQuantity = orderItems.reduce(
-    (sum, item) => sum + (Number.isFinite(item.quantity) ? item.quantity : 0),
-    0,
-  );
-  const displayItemCount = totalQuantity || orderItems.length;
   const fulfillmentLabel = formatStatusLabel(order.fulfillmentStatus) || "Pending";
   const paymentLabel = formatStatusLabel(order.financialStatus) || "Pending";
+  const primaryTracking = trackingEntries[0] ?? null;
 
   return (
     <section className={styles.orderCard}>
@@ -842,8 +837,8 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
           <span className={styles.orderEyebrow}>Order Summary</span>
           <h3>{formatOrderHeading(order)}</h3>
           <p>
-            {trackingEntries.length > 0
-              ? "Your original Shopify tracking link is ready below."
+            {primaryTracking?.url
+              ? "Your courier tracking link is ready below."
               : "Tracking will appear here once Shopify creates the shipment."}
           </p>
         </div>
@@ -884,9 +879,7 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
           </div>
           <strong>{order.customerName || formatOrderHeading(order)}</strong>
           <p>{order.orderNumber ? `Reference #${order.orderNumber}` : "Order reference available above."}</p>
-          {displayItemCount > 0 ? (
-            <p>{`${displayItemCount} item${displayItemCount === 1 ? "" : "s"} in this order.`}</p>
-          ) : null}
+          <p>{primaryTracking?.company ? `Courier: ${primaryTracking.company}` : "Courier will appear after dispatch."}</p>
         </div>
 
         <div className={styles.infoTile}>
@@ -896,34 +889,29 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
             </span>
             <span>Tracking</span>
           </div>
-          {trackingEntries.length > 0 ? (
+          {primaryTracking ? (
             <div className={styles.infoList}>
-              {trackingEntries.map((entry, index) => (
-                <div
-                  key={`${entry.number || entry.url || entry.company || "tracking"}-${index}`}
-                  className={styles.infoRow}
-                >
-                  <span className={styles.infoRowIcon}>
-                    <Package size={14} />
-                  </span>
-                  <div className={styles.infoRowText}>
-                    <span>{entry.company || `Shipment ${index + 1}`}</span>
-                    <strong>{entry.number || "Tracking link available"}</strong>
-                    {entry.status ? <p>{formatStatusLabel(entry.status)}</p> : null}
-                    {entry.url ? (
-                      <a
-                        href={entry.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.trackingLink}
-                      >
-                        Track shipment
-                        <ExternalLink size={12} />
-                      </a>
-                    ) : null}
-                  </div>
+              <div className={styles.infoRow}>
+                <span className={styles.infoRowIcon}>
+                  <Package size={14} />
+                </span>
+                <div className={styles.infoRowText}>
+                  <span>{primaryTracking.company || "Courier tracking"}</span>
+                  <strong>{primaryTracking.number || "Tracking link available"}</strong>
+                  {primaryTracking.status ? <p>{formatStatusLabel(primaryTracking.status)}</p> : null}
+                  {primaryTracking.url ? (
+                    <a
+                      href={primaryTracking.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.trackingLink}
+                    >
+                      Open tracking link
+                      <ExternalLink size={12} />
+                    </a>
+                  ) : null}
                 </div>
-              ))}
+              </div>
             </div>
           ) : (
             <>
@@ -933,46 +921,9 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
           )}
         </div>
       </div>
-
-      {orderItems.length > 0 ? (
-        <div className={styles.orderItemsSection}>
-          <div className={styles.orderItemsHeader}>
-            <div>
-              <span className={styles.orderEyebrow}>Order Items</span>
-              <h4>{`${displayItemCount} item${displayItemCount === 1 ? "" : "s"} in this order`}</h4>
-            </div>
-          </div>
-
-          <div className={styles.orderItemList}>
-            {orderItems.map((item, index) => {
-              const itemMeta = [item.variantTitle, item.sku ? `SKU ${item.sku}` : ""]
-                .filter(Boolean)
-                .join(" • ");
-
-              return (
-                <div key={`${item.title}-${index}`} className={styles.orderItemCard}>
-                  <div className={styles.orderItemTop}>
-                    <strong>{item.title}</strong>
-                    <span className={styles.orderQty}>x{item.quantity}</span>
-                  </div>
-                  <p>{itemMeta || "Standard order item"}</p>
-                  {item.total ? (
-                    <div className={styles.orderItemFooter}>
-                      <span className={styles.orderItemTotal}>
-                        {formatCurrency(item.total, item.currencyCode)}
-                      </span>
-                    </div>
-                  ) : null}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      ) : null}
     </section>
   );
 }
-
 function formatCurrency(amount?: string, currencyCode?: string): string {
   if (!amount) {
     return "";
@@ -1044,3 +995,4 @@ function renderShortcutIcon(icon: "order" | "deals" | "collections" | "policy") 
       return <ShoppingBag size={18} />;
   }
 }
+

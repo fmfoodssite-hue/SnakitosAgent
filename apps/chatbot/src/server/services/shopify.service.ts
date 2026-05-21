@@ -350,6 +350,11 @@ export class ShopifyService {
                   id
                   legacyResourceId
                   name
+                  note
+                  customAttributes {
+                    key
+                    value
+                  }
                   displayFinancialStatus
                   displayFulfillmentStatus
                   createdAt
@@ -630,6 +635,11 @@ export class ShopifyService {
                   id
                   legacyResourceId
                   name
+                  note
+                  customAttributes {
+                    key
+                    value
+                  }
                   displayFinancialStatus
                   displayFulfillmentStatus
                   createdAt
@@ -691,6 +701,7 @@ export class ShopifyService {
 
   private mapOrder(node: OrderSearchNode): OrderLookupResult {
     const derivedOrderNumber = extractNumericOrderId(node.name) || String(node.legacyResourceId);
+    const tracking = this.buildOrderTracking(node);
 
     return {
       id: node.legacyResourceId,
@@ -718,14 +729,7 @@ export class ShopifyService {
             .filter(Boolean)
             .join(", ")
         : null,
-      tracking: node.fulfillments.flatMap((fulfillment) =>
-        fulfillment.trackingInfo.map((tracking) => ({
-          company: tracking.company ?? null,
-          number: tracking.number ?? null,
-          url: tracking.url ?? null,
-          status: fulfillment.status ?? null,
-        })),
-      ),
+      tracking,
       lineItems: node.lineItems.edges.map(({ node: lineItem }) => ({
         title: lineItem.title,
         quantity: lineItem.quantity,
@@ -735,6 +739,78 @@ export class ShopifyService {
         currencyCode: lineItem.discountedTotalSet.shopMoney.currencyCode,
       })),
     };
+  }
+
+  private buildOrderTracking(node: OrderSearchNode): OrderLookupResult["tracking"] {
+    const fulfillmentTracking = node.fulfillments.flatMap((fulfillment) =>
+      fulfillment.trackingInfo.map((tracking) => ({
+        company: tracking.company ?? null,
+        number: tracking.number ?? null,
+        url: tracking.url ?? null,
+        status: fulfillment.status ?? null,
+      })),
+    );
+
+    const customAttributeMap = new Map(
+      (node.customAttributes ?? []).map((attribute) => [
+        attribute.key.trim().toLowerCase(),
+        (attribute.value ?? "").trim(),
+      ]),
+    );
+
+    const noteText = (node.note ?? "").trim();
+    const noteUrlMatch = noteText.match(/https?:\/\/[^\s)]+/i);
+    const noteTrackingMatch = noteText.match(/\btracking\s+([a-z0-9-]+)/i);
+    const noteCompanyMatch = noteText.match(/\bshipped\s+via\s+(.+?)\s+with\s+tracking\b/i);
+
+    const fallbackTracking = {
+      company:
+        customAttributeMap.get("hxs_courier_name") ||
+        customAttributeMap.get("courier_name") ||
+        customAttributeMap.get("tracking_company") ||
+        (noteCompanyMatch?.[1]?.trim() || null),
+      number:
+        customAttributeMap.get("hxs_courier_tracking") ||
+        customAttributeMap.get("hxs_courier_tracking_number") ||
+        customAttributeMap.get("tracking_number") ||
+        customAttributeMap.get("awb") ||
+        (noteTrackingMatch?.[1]?.trim() || null),
+      url:
+        customAttributeMap.get("hxs_courier_url") ||
+        customAttributeMap.get("tracking_url") ||
+        customAttributeMap.get("courier_url") ||
+        (noteUrlMatch?.[0]?.trim() || null),
+      status: fulfillmentTracking[0]?.status ?? null,
+    };
+
+    if (fulfillmentTracking.length === 0) {
+      return fallbackTracking.company || fallbackTracking.number || fallbackTracking.url
+        ? [fallbackTracking]
+        : [];
+    }
+
+    let fallbackConsumed = false;
+
+    return fulfillmentTracking.map((entry, index) => {
+      if (index > 0 || fallbackConsumed) {
+        return entry;
+      }
+
+      const mergedEntry = {
+        company: entry.company ?? fallbackTracking.company,
+        number: entry.number ?? fallbackTracking.number,
+        url: entry.url ?? fallbackTracking.url,
+        status: entry.status ?? fallbackTracking.status,
+      };
+
+      fallbackConsumed =
+        mergedEntry.company !== entry.company ||
+        mergedEntry.number !== entry.number ||
+        mergedEntry.url !== entry.url ||
+        mergedEntry.status !== entry.status;
+
+      return mergedEntry;
+    });
   }
 
   private async graphql<TData>(query: string, variables: Record<string, unknown>): Promise<TData> {
