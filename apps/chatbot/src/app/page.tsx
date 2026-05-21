@@ -829,6 +829,11 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
   const fulfillmentLabel = formatStatusLabel(order.fulfillmentStatus) || "Pending";
   const paymentLabel = formatStatusLabel(order.financialStatus) || "Pending";
   const primaryTracking = trackingEntries[0] ?? null;
+  const trackingTitle = primaryTracking?.company || "Courier tracking";
+  const trackingNumber = primaryTracking?.number || "Tracking link available";
+  const trackingMessage = primaryTracking?.url
+    ? "Live courier link is ready."
+    : "Tracking will appear here once Shopify creates the shipment.";
 
   return (
     <section className={styles.orderCard}>
@@ -836,19 +841,29 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
         <div className={styles.orderHeroCopy}>
           <span className={styles.orderEyebrow}>Order Summary</span>
           <h3>{formatOrderHeading(order)}</h3>
-          <p>
-            {primaryTracking?.url
-              ? "Your courier tracking link is ready below."
-              : "Tracking will appear here once Shopify creates the shipment."}
-          </p>
+          <p>{trackingMessage}</p>
         </div>
 
-        {order.totalAmount ? (
-          <div className={styles.orderTotalCard}>
-            <span>Total</span>
-            <strong>{formatCurrency(order.totalAmount, order.currencyCode)}</strong>
-          </div>
-        ) : null}
+        <div className={styles.orderHeroAside}>
+          {order.totalAmount ? (
+            <div className={styles.orderTotalCard}>
+              <span>Total</span>
+              <strong>{formatCurrency(order.totalAmount, order.currencyCode)}</strong>
+            </div>
+          ) : null}
+
+          {primaryTracking?.url ? (
+            <a
+              href={primaryTracking.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.trackingButton}
+            >
+              Open tracking link
+              <ExternalLink size={14} />
+            </a>
+          ) : null}
+        </div>
       </div>
 
       <div className={styles.statusGrid}>
@@ -873,16 +888,24 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
         <div className={styles.infoTile}>
           <div className={styles.infoTileHeader}>
             <span className={styles.infoTileIcon}>
-              <Package size={15} />
+              <User size={15} />
             </span>
-            <span>Details</span>
+            <span>Customer</span>
           </div>
           <strong>{order.customerName || formatOrderHeading(order)}</strong>
-          <p>{order.orderNumber ? `Reference #${order.orderNumber}` : "Order reference available above."}</p>
-          <p>{primaryTracking?.company ? `Courier: ${primaryTracking.company}` : "Courier will appear after dispatch."}</p>
+          <div className={styles.orderMetaList}>
+            <div className={styles.orderMetaRow}>
+              <span>Reference</span>
+              <strong>{order.orderNumber ? `#${order.orderNumber}` : "Available above"}</strong>
+            </div>
+            <div className={styles.orderMetaRow}>
+              <span>Courier</span>
+              <strong>{primaryTracking?.company || "Pending dispatch"}</strong>
+            </div>
+          </div>
         </div>
 
-        <div className={styles.infoTile}>
+        <div className={`${styles.infoTile} ${styles.trackingTile}`}>
           <div className={styles.infoTileHeader}>
             <span className={styles.infoTileIcon}>
               <Truck size={15} />
@@ -896,28 +919,18 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
                   <Package size={14} />
                 </span>
                 <div className={styles.infoRowText}>
-                  <span>{primaryTracking.company || "Courier tracking"}</span>
-                  <strong>{primaryTracking.number || "Tracking link available"}</strong>
+                  <span>{trackingTitle}</span>
+                  <strong>{trackingNumber}</strong>
                   {primaryTracking.status ? <p>{formatStatusLabel(primaryTracking.status)}</p> : null}
-                  {primaryTracking.url ? (
-                    <a
-                      href={primaryTracking.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.trackingLink}
-                    >
-                      Open tracking link
-                      <ExternalLink size={12} />
-                    </a>
-                  ) : null}
+                  <p>{primaryTracking.url ? "Courier tracking is active." : "Waiting for courier link."}</p>
                 </div>
               </div>
             </div>
           ) : (
-            <>
+            <div className={styles.trackingEmptyState}>
               <strong>Tracking pending</strong>
-              <p>The tracking link will show here as soon as Shopify adds it to the order.</p>
-            </>
+              <p>The courier link will appear here as soon as Shopify adds it to the order.</p>
+            </div>
           )}
         </div>
       </div>
