@@ -1388,8 +1388,8 @@ export class SupportAgentService {
         return this.buildCuratedRecommendationResponse(
           userMessage,
           "best sellers bundle popular snacks",
-          "Some popular choices include Stix, Patata, Choco Sticks, Wafer Rolls, Banana Chips, Nachos, and snack bundles. If you want better value, I’d recommend starting with a bundle. Do you prefer spicy, sweet, or mixed?",
-          "popular snacks",
+          "These are the Snakitos picks customers usually go for first. I've lined up a few strongest sellers below, including everyday favorites and bundle-style value picks.",
+          "best selling snack deals",
         );
       case "best_deals":
       case "bundle_deals":
@@ -4045,17 +4045,17 @@ export class SupportAgentService {
     let message =
       category || isDiscoveryStyleQuery
         ? category
-          ? `Here are the ${category} options I found:`
-          : "Here are the closest options I found:"
-        : "Here are the closest details I found:";
+          ? `Here are the best ${category} options to start with:`
+          : "Here are the best matching options to start with:"
+        : "Here are the best details to start with:";
 
     if (bestMatch) {
       const crispDescription = this.extractDirectProductDescription(bestMatch, userMessage);
       const productListLine =
         names.length > 1
           ? category
-            ? `Top matches: ${names.join(", ")}.`
-            : `Closest matches: ${names.join(", ")}.`
+            ? `Recommended picks: ${names.join(", ")}.`
+            : `Top picks: ${names.join(", ")}.`
           : `${names[0]}.`;
       message = `${message}\n\n${productListLine}\n\n${crispDescription}`;
     }
@@ -4492,11 +4492,11 @@ export class SupportAgentService {
           : `${product.title} is not marked as halal in the current product details.`;
       }
 
-      return `I found ${product.title}, but the current catalog does not explicitly confirm halal status. Please check the product page or ask support for exact confirmation.`;
+      return `${product.title} is available, but the current catalog does not explicitly confirm halal status. Please check the product page or ask support for exact confirmation.`;
     }
 
     if (/\b(vegetarian|vegan)\b/i.test(normalizedMessage)) {
-      return `I found ${product.title}, but the current catalog does not explicitly confirm whether it is vegetarian or vegan. Please check the product page or ask support for exact confirmation.`;
+      return `${product.title} is available, but the current catalog does not explicitly confirm whether it is vegetarian or vegan. Please check the product page or ask support for exact confirmation.`;
     }
 
     if (/\b(ingredients?|made of|made from|ingredients kya hain)\b/i.test(normalizedMessage)) {
@@ -4510,7 +4510,7 @@ export class SupportAgentService {
         return `${productDescription} The product description does not list the full ingredients clearly, so please check the product page or ask support for the exact ingredient list.`;
       }
 
-      return `I found ${product.title}, but the current catalog does not list the full ingredients clearly here. Please open the product page or ask support for the exact ingredient list.`;
+      return `${product.title} is available, but the current catalog does not list the full ingredients clearly here. Please open the product page or ask support for the exact ingredient list.`;
     }
 
     if (/\b(expiry|shelf life|fresh|expiry kitni|kitni expiry)\b/i.test(normalizedMessage)) {
@@ -4520,7 +4520,7 @@ export class SupportAgentService {
           : `${product.title} usually has an expiry of ${metadata.expiry}.`;
       }
 
-      return `I found ${product.title}, but the current catalog does not clearly confirm the exact expiry or shelf-life details here. Please check the product page or ask support for exact confirmation.`;
+      return `${product.title} is available, but the current catalog does not clearly confirm the exact expiry or shelf-life details here. Please check the product page or ask support for exact confirmation.`;
     }
 
     if (/\b(storage|store|how to store)\b/i.test(normalizedMessage)) {
@@ -4530,11 +4530,11 @@ export class SupportAgentService {
     }
 
     if (/\b(nutrition|calories|protein|fat|healthy)\b/i.test(normalizedMessage)) {
-      return `I found ${product.title}, but the current catalog does not clearly confirm exact nutrition facts here. Please check the product page or packaging, or ask support for exact confirmation.`;
+      return `${product.title} is available, but the current catalog does not clearly confirm exact nutrition facts here. Please check the product page or packaging, or ask support for exact confirmation.`;
     }
 
     if (/\b(availability|available|restock|restocking|stock)\b/i.test(normalizedMessage)) {
-      return `I found ${product.title}, but I’m not fully sure about its live stock or restock timing. Please check the product page or contact support for confirmation.`;
+      return `${product.title} is in the catalog, but I'm not fully sure about its live stock or restock timing. Please check the product page or contact support for confirmation.`;
     }
 
     if (/\b(fried|dried|baked)\b/i.test(normalizedMessage)) {
@@ -4542,7 +4542,7 @@ export class SupportAgentService {
         return `${productDescription} The product description does not explicitly confirm whether it is fried, dried, or baked.`;
       }
 
-      return `I found ${product.title}, but the current catalog does not explicitly confirm whether it is fried, dried, or baked. Please check the product page or ask support for exact confirmation.`;
+      return `${product.title} is available, but the current catalog does not explicitly confirm whether it is fried, dried, or baked. Please check the product page or ask support for exact confirmation.`;
     }
 
     if (productDescription) {
@@ -4717,6 +4717,12 @@ export class SupportAgentService {
     totalCount: number,
     totalSavings: number,
   ): string {
+    if (this.isPopularIntent(userMessage)) {
+      return totalCount > 1
+        ? `These are some of the strongest Snakitos best sellers right now. ${bestMatch.name} is leading this set, and I added more popular picks below.`
+        : `${bestMatch.name} is one of the strongest Snakitos best sellers right now.`;
+    }
+
     if (this.isHighTicketIntent(userMessage)) {
       const savingsLine =
         totalSavings > 0
@@ -4728,12 +4734,18 @@ export class SupportAgentService {
     }
 
     return totalCount > 1
-      ? `${bestMatch.name} looks like a strong match. I also added a few close picks below.`
-      : `${bestMatch.name} looks like a strong match.`;
+      ? `${bestMatch.name} is one of the best picks for this request. I also added a few more strong options below.`
+      : `${bestMatch.name} is one of the best picks for this request.`;
   }
 
   private isHighTicketIntent(userMessage: string): boolean {
     return /(deal|deals|bundle|combo|offer|offers|value pack|gift pack|family pack|family|sharing|share pack|box|high ticket|premium|bulk|party|movie night)/i.test(
+      userMessage,
+    );
+  }
+
+  private isPopularIntent(userMessage: string): boolean {
+    return /(best sellers?|best selling|top selling|popular|trending|featured)/i.test(
       userMessage,
     );
   }
@@ -4898,6 +4910,7 @@ export class SupportAgentService {
     const wantsBanana = /banana/i.test(query);
     const wantsPotato = /potato|patata/i.test(query);
     const wantsFamily = /family|sharing|party|bundle|combo|gift|bulk|box|movie night/i.test(query);
+    const wantsPopular = this.isPopularIntent(userMessage);
 
     return products
       .map((product) => {
@@ -4969,6 +4982,19 @@ export class SupportAgentService {
           }
         }
 
+        if (wantsPopular) {
+          score += Math.min(18, (product.orderCount ?? 0) * 2);
+          score += Math.min(22, Math.ceil((product.unitsSold ?? 0) / 20));
+
+          if (/(best seller|trending|popular)/i.test(haystack)) {
+            score += 8;
+          }
+
+          if (/(bundle|combo|box|deal)/i.test(haystack)) {
+            score += 3;
+          }
+        }
+
         return { product, score };
       })
       .filter((item) => item.score > 0)
@@ -5024,6 +5050,21 @@ export class SupportAgentService {
       description = `${description} Save PKR ${savings.toFixed(0)} versus buying singles.`;
     }
 
+    if (this.isPopularIntent(userMessage ?? "")) {
+      const popularityBits = [
+        product.orderCount ? `seen in ${product.orderCount} recent orders` : "",
+        product.unitsSold ? `${product.unitsSold} units sold recently` : "",
+      ].filter(Boolean);
+
+      if (popularityBits.length > 0) {
+        description = `${description} Popular pick: ${popularityBits.join(" and ")}.`;
+      } else if (/bundle|combo|box|deal/i.test(product.title)) {
+        description = `${description} Popular value pick for variety and sharing.`;
+      } else {
+        description = `${description} Popular everyday pick from the Snakitos range.`;
+      }
+    }
+
     return description;
   }
 
@@ -5051,3 +5092,5 @@ export class SupportAgentService {
 }
 
 export const supportAgentService = new SupportAgentService();
+
+
