@@ -4020,7 +4020,7 @@ export class SupportAgentService {
       type: "product",
       message,
       userMessage,
-      products: [],
+      products: productPayload,
       options: [
         { label: "Back", value: "show categories" },
         { label: "Home", value: "home" },
@@ -4719,8 +4719,8 @@ export class SupportAgentService {
   ): string {
     if (this.isPopularIntent(userMessage)) {
       return totalCount > 1
-        ? `These are some of the strongest Snakitos best sellers right now. ${bestMatch.name} is leading this set, and I added more popular picks below.`
-        : `${bestMatch.name} is one of the strongest Snakitos best sellers right now.`;
+        ? "These are the Snakitos best sellers customers are picking most right now. I added the strongest options below."
+        : "This is one of the Snakitos best sellers customers are picking most right now.";
     }
 
     if (this.isHighTicketIntent(userMessage)) {
