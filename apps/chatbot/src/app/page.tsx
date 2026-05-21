@@ -11,7 +11,6 @@ import {
   Loader2,
   MessageCircle,
   Package,
-  Phone,
   ScrollText,
   Send,
   ShoppingBag,
@@ -106,7 +105,6 @@ type SendRequest = {
 };
 
 const STORE_PRODUCTS_URL = "https://snakitos.com/collections/all";
-const STORE_TRACKING_URL = "https://snakitos.com/policies/shipping-policy";
 const CHAT_SESSION_EVENT = "chat-session-change";
 
 type ChatSessionSnapshot = {
@@ -828,11 +826,6 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
   const trackingEntries = (order.tracking ?? []).filter(
     (entry) => entry.number || entry.company || entry.url || entry.status,
   );
-  const isFulfilledOrder = /\b(fulfilled|shipped|delivered)\b/i.test(
-    order.fulfillmentStatus ?? "",
-  );
-  const shouldShowFallbackTrackingLink = trackingEntries.length === 0 && isFulfilledOrder;
-  const contactRows = getOrderContactRows(order);
   const orderItems = Array.isArray(order.lineItems) ? order.lineItems : [];
   const totalQuantity = orderItems.reduce(
     (sum, item) => sum + (Number.isFinite(item.quantity) ? item.quantity : 0),
@@ -850,10 +843,8 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
           <h3>{formatOrderHeading(order)}</h3>
           <p>
             {trackingEntries.length > 0
-              ? "Tracking details are ready below."
-              : shouldShowFallbackTrackingLink
-                ? "Your order has been fulfilled. Use the tracking link below for shipment updates."
-                : "Tracking will appear here once the shipment is created."}
+              ? "Your original Shopify tracking link is ready below."
+              : "Tracking will appear here once Shopify creates the shipment."}
           </p>
         </div>
 
@@ -887,41 +878,15 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
         <div className={styles.infoTile}>
           <div className={styles.infoTileHeader}>
             <span className={styles.infoTileIcon}>
-              <User size={15} />
+              <Package size={15} />
             </span>
-            <span>Customer</span>
+            <span>Details</span>
           </div>
-          <strong>{order.customerName || "Not provided"}</strong>
+          <strong>{order.customerName || formatOrderHeading(order)}</strong>
           <p>{order.orderNumber ? `Reference #${order.orderNumber}` : "Order reference available above."}</p>
-        </div>
-
-        <div className={styles.infoTile}>
-          <div className={styles.infoTileHeader}>
-            <span className={styles.infoTileIcon}>
-              <Phone size={15} />
-            </span>
-            <span>Contact</span>
-          </div>
-          {contactRows.length > 0 ? (
-            <div className={styles.infoList}>
-              {contactRows.map((row) => (
-                <div key={`${row.label}-${row.value}`} className={styles.infoRow}>
-                  <span className={styles.infoRowIcon}>
-                    <Phone size={14} />
-                  </span>
-                  <div className={styles.infoRowText}>
-                    <span>{row.label}</span>
-                    <strong>{row.value}</strong>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <>
-              <strong>Not available</strong>
-              <p>No customer contact was returned for this order.</p>
-            </>
-          )}
+          {displayItemCount > 0 ? (
+            <p>{`${displayItemCount} item${displayItemCount === 1 ? "" : "s"} in this order.`}</p>
+          ) : null}
         </div>
 
         <div className={styles.infoTile}>
@@ -943,7 +908,7 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
                   </span>
                   <div className={styles.infoRowText}>
                     <span>{entry.company || `Shipment ${index + 1}`}</span>
-                    <strong>{entry.number || "Tracking pending"}</strong>
+                    <strong>{entry.number || "Tracking link available"}</strong>
                     {entry.status ? <p>{formatStatusLabel(entry.status)}</p> : null}
                     {entry.url ? (
                       <a
@@ -962,23 +927,8 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
             </div>
           ) : (
             <>
-              <strong>{shouldShowFallbackTrackingLink ? "Tracking link available" : "Pending after shipment"}</strong>
-              <p>
-                {shouldShowFallbackTrackingLink
-                  ? "The courier number is not shown yet, but you can open the tracking page now."
-                  : "The courier number will show up here as soon as the order is fulfilled."}
-              </p>
-              {shouldShowFallbackTrackingLink ? (
-                <a
-                  href={STORE_TRACKING_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.trackingLink}
-                >
-                  Track order
-                  <ExternalLink size={12} />
-                </a>
-              ) : null}
+              <strong>Tracking pending</strong>
+              <p>The tracking link will show here as soon as Shopify adds it to the order.</p>
             </>
           )}
         </div>
@@ -1021,22 +971,6 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
       ) : null}
     </section>
   );
-}
-
-function getOrderContactRows(
-  order: OrderSummary,
-): Array<{ label: string; value: string; kind: "phone" }> {
-  const rows: Array<{ label: string; value: string; kind: "phone" }> = [];
-
-  if (order.customerPhone) {
-    rows.push({ label: "Phone", value: order.customerPhone, kind: "phone" });
-  }
-
-  if (order.shippingPhone && order.shippingPhone !== order.customerPhone) {
-    rows.push({ label: "Shipping", value: order.shippingPhone, kind: "phone" });
-  }
-
-  return rows;
 }
 
 function formatCurrency(amount?: string, currencyCode?: string): string {

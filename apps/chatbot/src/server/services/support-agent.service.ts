@@ -4218,6 +4218,7 @@ export class SupportAgentService {
         totalAmount: safeOrder.totalAmount,
         currencyCode: safeOrder.currencyCode,
         tracking,
+        lineItems: Array.isArray(safeOrder.lineItems) ? safeOrder.lineItems : [],
       },
       options: [
         { label: "Back", value: "show categories" },
