@@ -51,9 +51,9 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 14px;
-  padding: 14px 18px;
-  min-height: 60px;
+  gap: 16px;
+  padding: 16px 18px;
+  min-height: 78px;
   background: #ff6b2c;
   color: #ffffff;
 }
@@ -61,13 +61,13 @@
 .chatIdentity {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   min-width: 0;
 }
 
 .botBadge {
-  width: 132px;
-  height: 44px;
+  width: 172px;
+  height: 56px;
   border-radius: 0;
   display: inline-flex;
   align-items: center;
@@ -1032,8 +1032,8 @@
   }
 
   .botBadge {
-    width: 112px;
-    height: 38px;
+    width: 144px;
+    height: 46px;
   }
 
   .shortcutCard {

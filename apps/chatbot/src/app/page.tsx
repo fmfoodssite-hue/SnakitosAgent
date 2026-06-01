@@ -480,8 +480,8 @@ export default function PublicChatbot() {
                 <Image
                   src="/Snakitos_Logo.png"
                   alt="Snakitos"
-                  width={160}
-                  height={52}
+                  width={220}
+                  height={72}
                   className={styles.botLogo}
                   priority
                 />
