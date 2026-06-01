@@ -674,10 +674,10 @@ function resolveSubtitle(
   }
 
   if (isEmbedded) {
-    return "Snakitos courier, delivery, and order support.";
+    return "Snakitos Customer, delivery, and order support.";
   }
 
-  return "Snakitos courier, delivery, and order support.";
+  return "Snakitos Customer, delivery, and order support.";
 }
 
 function extractPhoneNumber(value: string): string {
