@@ -920,14 +920,21 @@
     width: 100%;
   }
 
+  .shellWrapEmbedded {
+    height: auto;
+    align-self: flex-end;
+  }
+
   .chatShell {
-    height: 100dvh;
+    height: min(78dvh, 720px);
+    min-height: 560px;
     border-radius: 28px 28px 0 0;
     border-bottom: none;
   }
 
   .chatShellEmbedded {
-    height: 100dvh;
+    height: min(78dvh, 720px);
+    min-height: 560px;
     border-radius: 28px 28px 0 0;
   }
 
