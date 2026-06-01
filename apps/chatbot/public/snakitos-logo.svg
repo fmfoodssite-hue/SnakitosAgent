@@ -1,0 +1,38 @@
+<svg width="360" height="120" viewBox="0 0 360 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <path id="topArc" d="M 52 70 A 128 128 0 0 1 308 70" />
+    <path id="bottomArc" d="M 112 88 A 70 36 0 0 0 248 88" />
+  </defs>
+
+  <g>
+    <text fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" letter-spacing="4">
+      <textPath href="#topArc" startOffset="50%" text-anchor="middle">PREMIUM QUALITY</textPath>
+    </text>
+
+    <g transform="translate(180 58) rotate(-8)">
+      <text
+        x="0"
+        y="0"
+        fill="#FFFFFF"
+        text-anchor="middle"
+        font-family="Arial Black, Arial, Helvetica, sans-serif"
+        font-size="48"
+        font-weight="900"
+        letter-spacing="-2"
+      >
+        SNAKITOS
+      </text>
+    </g>
+
+    <text fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">
+      <textPath href="#bottomArc" startOffset="50%" text-anchor="middle">SNACKS</textPath>
+    </text>
+
+    <circle cx="132" cy="87" r="3" fill="#FFFFFF"/>
+    <circle cx="139" cy="82" r="2" fill="#FFFFFF"/>
+    <circle cx="146" cy="79" r="1.8" fill="#FFFFFF"/>
+    <circle cx="214" cy="79" r="1.8" fill="#FFFFFF"/>
+    <circle cx="221" cy="82" r="2" fill="#FFFFFF"/>
+    <circle cx="228" cy="87" r="3" fill="#FFFFFF"/>
+  </g>
+</svg>

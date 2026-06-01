@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React, { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   Bot,
@@ -261,6 +262,7 @@ export default function PublicChatbot() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!chatSession.userId) {
@@ -475,23 +477,20 @@ export default function PublicChatbot() {
           <header className={styles.chatHeader}>
             <div className={styles.chatIdentity}>
               <div className={styles.botBadge}>
-                <span>Sn</span>
+                <Image
+                  src="/Snakitos_Logo.png"
+                  alt="Snakitos"
+                  width={160}
+                  height={52}
+                  className={styles.botLogo}
+                  priority
+                />
               </div>
               <div>
-                <h1>Snakitos AI Assistant</h1>
+                <h1>How can I help you today?</h1>
                 <p>{resolveSubtitle(embedContext, isEmbedded)}</p>
               </div>
             </div>
-            {!isEmbedded ? (
-              <a
-                href={STORE_PRODUCTS_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.headerLink}
-              >
-                Shop
-              </a>
-            ) : null}
           </header>
 
           <div ref={scrollRef} className={styles.chatBody}>
@@ -572,6 +571,7 @@ export default function PublicChatbot() {
           <div className={styles.chatFooter}>
             <div className={styles.inputWrap}>
               <input
+                ref={inputRef}
                 type="text"
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
@@ -611,6 +611,18 @@ export default function PublicChatbot() {
               <span>Messages</span>
             </button>
           </nav>
+
+          <button
+            type="button"
+            className={styles.floatingAiButton}
+            onClick={() => {
+              setActiveView("messages");
+              inputRef.current?.focus();
+            }}
+            aria-label="Open assistant"
+          >
+            <Bot size={18} />
+          </button>
         </section>
       </div>
     </main>
@@ -650,22 +662,22 @@ function resolveSubtitle(
   isEmbedded: boolean,
 ): string {
   if (context?.product?.title) {
-    return `Ask me about ${context.product.title}, delivery, bundles, or order tracking.`;
+    return `Snakitos support for ${context.product.title}, delivery, and order help.`;
   }
 
   if (context?.pageType === "product") {
-    return "Ask about this product, bundle recommendations, delivery, or tracking.";
+    return "Product questions, delivery updates, and order support.";
   }
 
   if (context?.pageType === "cart") {
-    return "I can help with cart questions, checkout confidence, and order support.";
+    return "Checkout guidance, delivery questions, and order support.";
   }
 
   if (isEmbedded) {
-    return "Ask about snacks, bundles, delivery, and order tracking.";
+    return "Snakitos courier, delivery, and order support.";
   }
 
-  return "How can I help you today?";
+  return "Snakitos courier, delivery, and order support.";
 }
 
 function extractPhoneNumber(value: string): string {
