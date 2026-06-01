@@ -1943,8 +1943,8 @@ export class SupportAgentService {
             type: "fallback",
             message:
               this.prefersRomanUrdu(language)
-                ? "Zaroor. Aap Snakitos support se WhatsApp par +92-345-828-3827 par contact kar sakte hain. Email ke liye info@snakitos.com use karein. Agar aap chahein to apna issue yahin brief mein bata dein, main aapko sahi direction de deta hoon."
-                : "Sure, you can contact Snakitos support on WhatsApp at +92-345-828-3827. You can also email info@snakitos.com. If you want, share your issue briefly and I'll point you the right way first.",
+                ? "Zaroor. Aap Snakitos support se WhatsApp par +92-345-828-3827 par contact kar sakte hain. Email ke liye info@snakitos.com use karein."
+                : "Sure, you can contact Snakitos support on WhatsApp at +92-345-828-3827. You can also email info@snakitos.com.",
             userMessage,
             options: [
               { label: "WhatsApp Support", value: "whatsapp support number" },
