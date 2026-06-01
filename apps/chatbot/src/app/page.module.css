@@ -66,8 +66,10 @@
 }
 
 .botBadge {
-  width: 172px;
-  height: 56px;
+  width: auto;
+  max-width: 210px;
+  height: auto;
+  min-height: 56px;
   border-radius: 0;
   display: inline-flex;
   align-items: center;
@@ -81,8 +83,9 @@
 }
 
 .botLogo {
-  width: 100%;
-  height: 100%;
+  width: auto;
+  max-width: 100%;
+  height: 56px;
   object-fit: contain;
   display: block;
 }
@@ -488,6 +491,7 @@
   display: grid;
   justify-items: center;
   gap: 6px;
+  min-width: 0;
   padding: 8px 10px 4px;
   background: transparent;
   color: #999999;
@@ -495,6 +499,14 @@
   font-weight: 700;
   cursor: pointer;
   transition: color 180ms ease, transform 180ms ease;
+}
+
+.navButton span {
+  display: block;
+  max-width: 100%;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .navButtonActive {
@@ -867,24 +879,6 @@
   overflow-wrap: break-word;
 }
 
-.floatingAiButton {
-  position: absolute;
-  right: 16px;
-  bottom: 84px;
-  width: 52px;
-  height: 52px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  border-radius: 50%;
-  background: #ff6b2c;
-  color: #ffffff;
-  box-shadow: 0 10px 24px rgba(255, 107, 44, 0.28);
-  cursor: pointer;
-  z-index: 2;
-}
-
 @keyframes spin {
   from {
     transform: rotate(0deg);
@@ -1005,12 +999,6 @@
     font-size: 0.74rem;
   }
 
-  .floatingAiButton {
-    right: 14px;
-    bottom: 86px;
-    width: 48px;
-    height: 48px;
-  }
 }
 
 @media (max-width: 420px) {
@@ -1032,7 +1020,11 @@
   }
 
   .botBadge {
-    width: 144px;
+    max-width: 172px;
+    min-height: 46px;
+  }
+
+  .botLogo {
     height: 46px;
   }
 
@@ -1074,6 +1066,12 @@
   }
 
   .navButton {
-    font-size: 0.78rem;
+    gap: 5px;
+    padding: 8px 6px 4px;
+    font-size: 0.74rem;
+  }
+
+  .navButton span {
+    letter-spacing: -0.01em;
   }
 }

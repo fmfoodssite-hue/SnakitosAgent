@@ -262,7 +262,6 @@ export default function PublicChatbot() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!chatSession.userId) {
@@ -571,7 +570,6 @@ export default function PublicChatbot() {
           <div className={styles.chatFooter}>
             <div className={styles.inputWrap}>
               <input
-                ref={inputRef}
                 type="text"
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
@@ -611,18 +609,6 @@ export default function PublicChatbot() {
               <span>Messages</span>
             </button>
           </nav>
-
-          <button
-            type="button"
-            className={styles.floatingAiButton}
-            onClick={() => {
-              setActiveView("messages");
-              inputRef.current?.focus();
-            }}
-            aria-label="Open assistant"
-          >
-            <Bot size={18} />
-          </button>
         </section>
       </div>
     </main>
