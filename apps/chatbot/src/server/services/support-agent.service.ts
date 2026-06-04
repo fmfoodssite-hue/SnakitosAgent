@@ -1440,6 +1440,7 @@ export class SupportAgentService {
           options: [
             { label: "WhatsApp Support", value: "How can I contact support?" },
             { label: "Home", value: "home" },
+            { label: "Back", value: "show categories" },
           ],
           skipSuggestions: true,
         }),
@@ -1457,6 +1458,7 @@ export class SupportAgentService {
             { label: "Deals", value: "show best deals" },
             { label: "Recommendations", value: "recommend something" },
             { label: "Home", value: "home" },
+            { label: "Back", value: "show categories" },
           ],
           skipSuggestions: true,
         }),
@@ -1512,6 +1514,7 @@ export class SupportAgentService {
           options: [
             { label: "WhatsApp Support", value: "How can I contact support?" },
             { label: "Home", value: "home" },
+            { label: "Back", value: "show categories" },
           ],
           skipSuggestions: true,
         }),
@@ -1532,6 +1535,7 @@ export class SupportAgentService {
           options: [
             { label: "WhatsApp Support", value: "How can I contact support?" },
             { label: "Home", value: "home" },
+            { label: "Back", value: "show categories" },
           ],
           skipSuggestions: true,
         }),
@@ -2542,6 +2546,8 @@ export class SupportAgentService {
       { label: "Track Order", value: "track my order" },
       { label: "Refund", value: "refund" },
       { label: "WhatsApp Support", value: "How can I contact support?" },
+      { label: "Home", value: "home" },
+      { label: "Back", value: "show categories" },
     ];
   }
 
@@ -2551,6 +2557,8 @@ export class SupportAgentService {
       { label: "Salty", value: "salty snacks" },
       { label: "Sweet", value: "sweet snacks" },
       { label: "Mixed", value: "mixed snack box" },
+      { label: "Home", value: "home" },
+      { label: "Back", value: "show categories" },
     ];
   }
 
@@ -2560,6 +2568,8 @@ export class SupportAgentService {
       { label: "TikTok", value: "tiktok" },
       { label: "Facebook", value: "facebook" },
       { label: "YouTube", value: "youtube" },
+      { label: "Home", value: "home" },
+      { label: "Back", value: "show categories" },
     ];
   }
 
@@ -2675,6 +2685,8 @@ export class SupportAgentService {
       userMessage,
       products: this.buildProductCards(products, rankingMessage || userMessage),
       options: [
+        { label: "Deals", value: "show best deals" },
+        { label: "Recommendations", value: "recommend something" },
         { label: "Back", value: "show categories" },
         { label: "Home", value: "home" },
       ],
@@ -4066,6 +4078,56 @@ export class SupportAgentService {
   }
 
   private async buildStoreInfoResponse(userMessage: string): Promise<string | null> {
+    if (/(instagram\??|insta\??|instagram link)/i.test(userMessage)) {
+      return this.buildResponseWithSuggestions({
+        type: "fallback",
+        message: this.buildSocialMessage("instagram", this.detectSnakitosLanguage(userMessage)),
+        userMessage,
+        options: this.getSocialOptions(),
+        skipSuggestions: true,
+      });
+    }
+
+    if (/(tiktok\??|tik tok\??|tiktok link)/i.test(userMessage)) {
+      return this.buildResponseWithSuggestions({
+        type: "fallback",
+        message: this.buildSocialMessage("tiktok", this.detectSnakitosLanguage(userMessage)),
+        userMessage,
+        options: this.getSocialOptions(),
+        skipSuggestions: true,
+      });
+    }
+
+    if (/(facebook\??|facebook link)/i.test(userMessage)) {
+      return this.buildResponseWithSuggestions({
+        type: "fallback",
+        message: this.buildSocialMessage("facebook", this.detectSnakitosLanguage(userMessage)),
+        userMessage,
+        options: this.getSocialOptions(),
+        skipSuggestions: true,
+      });
+    }
+
+    if (/(youtube\??|youtube link)/i.test(userMessage)) {
+      return this.buildResponseWithSuggestions({
+        type: "fallback",
+        message: this.buildSocialMessage("youtube", this.detectSnakitosLanguage(userMessage)),
+        userMessage,
+        options: this.getSocialOptions(),
+        skipSuggestions: true,
+      });
+    }
+
+    if (/(social media|official page|official account)/i.test(userMessage)) {
+      return this.buildResponseWithSuggestions({
+        type: "fallback",
+        message: this.buildSocialMessage("all", this.detectSnakitosLanguage(userMessage)),
+        userMessage,
+        options: this.getSocialOptions(),
+        skipSuggestions: true,
+      });
+    }
+
     if (/(what is snakitos|about snakitos|what is your store about|tell me about your brand|brand ke bare mein|brand ke bare me|store ke bare mein|store ke bare me|are you a real store|can i trust this website|official website|ye store real hai|store real hai|real store ho|real hai|what makes your store different|what makes your brand different|who owns this brand|why(?:\s+should\s+i)?\s+buy\s+from\s+snakitos)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
@@ -4154,36 +4216,19 @@ export class SupportAgentService {
     if (/^(show categories|collections|menu)$/i.test(userMessage.trim())) {
       return this.buildResponseWithSuggestions({
         type: "fallback",
-        message: "Browse the main snack collections below.",
+        message: this.buildFallbackMessage(this.detectSnakitosLanguage(userMessage)),
         userMessage,
-        options: [
-          { label: "Sweet Tooth", value: "Show me Sweet Tooth snacks" },
-          { label: "Multi Grain", value: "Show me Multi Grain snacks" },
-          { label: "Banana Chips", value: "Show me Banana Chips" },
-          { label: "Nachos", value: "Show me Nachos" },
-          { label: "Deals", value: "show best deals" },
-          { label: "Track Order", value: "track my order" },
-          { label: "Home", value: "home" },
-        ],
+        options: this.getQuickMenuOptions(),
         skipSuggestions: true,
       });
     }
 
     return this.buildResponseWithSuggestions({
       type: "fallback",
-      message:
-        "I'm here to help with snacks, bundles, order tracking, and delivery details. You can chat in English, Urdu, or Roman Urdu.",
+      message: this.buildGreetingMessage(this.detectSnakitosLanguage(userMessage)),
       userMessage,
-      suggestionSeed: "best snack deals",
-      options: [
-        { label: "Deals", value: "show best deals" },
-        { label: "Sweet Tooth", value: "Show me Sweet Tooth snacks" },
-        { label: "Multi Grain", value: "Show me Multi Grain snacks" },
-        { label: "Banana Chips", value: "Show me Banana Chips" },
-        { label: "Track Order", value: "track my order" },
-        { label: "Policies", value: "show shipping and refund policy" },
-        { label: "Home", value: "home" },
-      ],
+      options: this.getQuickMenuOptions(),
+      skipSuggestions: true,
     });
   }
 
@@ -4202,25 +4247,11 @@ export class SupportAgentService {
   }
 
   private async buildRecommendationFollowUpResponse(userMessage: string): Promise<string> {
-    const isOccasion =
-      /\b(movie night|gift|gifting|party|ramzan|eid|office snacks|birthday)\b/i.test(
-        userMessage,
-      );
-
-    const message = isOccasion
-      ? "Happy to help. Before I recommend the best picks, how many people will be sharing, and do you prefer spicy, sweet, or mixed snacks?"
-      : "Sure. To recommend the best snacks, tell me your taste preference and budget. For example: spicy under 3000, sweet for gifting, or mixed snacks for 4 people.";
-
     return this.buildResponseWithSuggestions({
       type: "fallback",
-      message,
+      message: this.buildRecommendationPrompt(this.detectSnakitosLanguage(userMessage)),
       userMessage,
-      options: [
-        { label: "Spicy", value: "Recommend spicy snacks" },
-        { label: "Sweet", value: "Recommend sweet snacks" },
-        { label: "Mixed", value: "Recommend mixed snacks" },
-        { label: "Home", value: "home" },
-      ],
+      options: this.getRecommendationOptions(),
       skipSuggestions: true,
     });
   }
@@ -4813,6 +4844,10 @@ export class SupportAgentService {
     suggestionSeed?: string;
     order?: Record<string, unknown>;
   }): boolean {
+    if (this.isSupportOrSocialQuery(input.userMessage)) {
+      return false;
+    }
+
     if (input.type === "product") {
       return true;
     }
@@ -4822,6 +4857,12 @@ export class SupportAgentService {
     }
 
     return this.looksLikeProductDiscovery(input.userMessage);
+  }
+
+  private isSupportOrSocialQuery(message: string): boolean {
+    return /(instagram|insta|facebook|tiktok|tik tok|youtube|social media|official page|official account|refund|replacement|complaint|damaged|missing item|wrong item|track my order|where is my order|order status|delivery status|support|whatsapp|email|phone number|how to order|checkout|payment|photos|proof)/i.test(
+      message,
+    );
   }
 
   private async getSuggestedProductCards(
