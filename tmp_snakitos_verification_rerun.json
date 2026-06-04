@@ -1,0 +1,3226 @@
+[
+  {
+    "id": "SNK-001",
+    "category": "Greeting & Language",
+    "input": "Hi",
+    "pass": true,
+    "reasons": [],
+    "message": "Hi! I’m Snakitos Assistant. You can ask me about Deals, Recommendations, Track Order, Refund, or Products.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Track Order",
+      "Refund",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-002",
+    "category": "Greeting & Language",
+    "input": "Hello Snakitos",
+    "pass": true,
+    "reasons": [],
+    "message": "I can help with Deals, Recommendations, Track Order, Refund, Products, or Social Media. What would you like to do?",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Track Order",
+      "Refund",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-003",
+    "category": "Greeting & Language",
+    "input": "Good morning",
+    "pass": true,
+    "reasons": [],
+    "message": "Hi! I’m Snakitos Assistant. You can ask me about Deals, Recommendations, Track Order, Refund, or Products.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Track Order",
+      "Refund",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-004",
+    "category": "Greeting & Language",
+    "input": "Start",
+    "pass": true,
+    "reasons": [],
+    "message": "Hi! I’m Snakitos Assistant. You can ask me about Deals, Recommendations, Track Order, Refund, or Products.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Track Order",
+      "Refund",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-005",
+    "category": "Greeting & Language",
+    "input": "Home",
+    "pass": true,
+    "reasons": [],
+    "message": "I can help with Deals, Recommendations, Track Order, Refund, Products, or Social Media. What would you like to do?",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Track Order",
+      "Refund",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-006",
+    "category": "Greeting & Language",
+    "input": "Salam",
+    "pass": true,
+    "reasons": [],
+    "message": "Assalamualaikum! Main Snakitos Assistant hoon. Aap Deals, Recommendations, Track Order, Refund ya Products ke baare mein pooch sakte hain.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Track Order",
+      "Refund",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-007",
+    "category": "Greeting & Language",
+    "input": "Assalam o alaikum",
+    "pass": true,
+    "reasons": [],
+    "message": "Assalamualaikum! Main Snakitos Assistant hoon. Aap Deals, Recommendations, Track Order, Refund ya Products ke baare mein pooch sakte hain.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Track Order",
+      "Refund",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-008",
+    "category": "Greeting & Language",
+    "input": "Kia haal hain",
+    "pass": true,
+    "reasons": [],
+    "message": "Assalamualaikum! Main Snakitos Assistant hoon. Aap Deals, Recommendations, Track Order, Refund ya Products ke baare mein pooch sakte hain.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Track Order",
+      "Refund",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-009",
+    "category": "Greeting & Language",
+    "input": "Urdu mein baat karo",
+    "pass": true,
+    "reasons": [],
+    "message": "Assalamualaikum! Main Snakitos Assistant hoon. Aap Deals, Recommendations, Track Order, Refund ya Products ke baare mein pooch sakte hain.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Track Order",
+      "Refund",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-010",
+    "category": "Greeting & Language",
+    "input": "Roman Urdu chahiye",
+    "pass": true,
+    "reasons": [],
+    "message": "Assalamualaikum! Main Snakitos Assistant hoon. Aap Deals, Recommendations, Track Order, Refund ya Products ke baare mein pooch sakte hain.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Track Order",
+      "Refund",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-011",
+    "category": "Greeting & Language",
+    "input": "سلام",
+    "pass": true,
+    "reasons": [],
+    "message": "میں Deals، Recommendations، Track Order، Refund، Products یا Social Media میں مدد کر سکتا ہوں۔ آپ کیا کرنا چاہیں گے؟",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Track Order",
+      "Refund",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-012",
+    "category": "Greeting & Language",
+    "input": "آپ کیسے ہیں؟",
+    "pass": true,
+    "reasons": [],
+    "message": "میں Deals، Recommendations، Track Order، Refund، Products یا Social Media میں مدد کر سکتا ہوں۔ آپ کیا کرنا چاہیں گے؟",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Track Order",
+      "Refund",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-013",
+    "category": "Greeting & Language",
+    "input": "اردو",
+    "pass": true,
+    "reasons": [],
+    "message": "وعلیکم السلام! میں Snakitos Assistant ہوں۔ آپ Deals، Recommendations، Track Order، Refund یا Products کے بارے میں پوچھ سکتے ہیں۔",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Track Order",
+      "Refund",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-014",
+    "category": "Greeting & Language",
+    "input": "Salam, deals dikhao",
+    "pass": false,
+    "reasons": [
+      "Roman Urdu tone missing"
+    ],
+    "message": "Here are popular Snakitos deals:\n\nTap any deal to view details.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-015",
+    "category": "Greeting & Language",
+    "input": "Hi refund ka scene?",
+    "pass": true,
+    "reasons": [],
+    "message": "I’m sorry about the issue. For refund/replacement review, please share:\n\n1. Order number\n2. Phone number used for the order\n3. Clear photos/videos of the item and packaging\n4. Short issue detail\n\nSend these to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport will review your case and guide you further.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-016",
+    "category": "Greeting & Language",
+    "input": "main snakitos assistant se baat karna chahta hoon",
+    "pass": true,
+    "reasons": [],
+    "message": "I can help with Deals, Recommendations, Track Order, Refund, Products, or Social Media. What would you like to do?",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Track Order",
+      "Refund",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-017",
+    "category": "Greeting & Language",
+    "input": "Can you help me?",
+    "pass": true,
+    "reasons": [],
+    "message": "I can help with Deals, Recommendations, Track Order, Refund, Products, or Social Media. What would you like to do?",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Track Order",
+      "Refund",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-018",
+    "category": "Greeting & Language",
+    "input": "help karo",
+    "pass": true,
+    "reasons": [],
+    "message": "Main Deals, Recommendations, Track Order, Refund, Products ya Social Media mein help kar sakta hoon. Aap kya karna chahenge?",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Track Order",
+      "Refund",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-019",
+    "category": "Greeting & Language",
+    "input": "مدد چاہیے",
+    "pass": true,
+    "reasons": [],
+    "message": "وعلیکم السلام! میں Snakitos Assistant ہوں۔ آپ Deals، Recommendations، Track Order، Refund یا Products کے بارے میں پوچھ سکتے ہیں۔",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Track Order",
+      "Refund",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-020",
+    "category": "Greeting & Language",
+    "input": "What can you do?",
+    "pass": true,
+    "reasons": [],
+    "message": "I can help with Deals, Recommendations, Track Order, Refund, Products, or Social Media. What would you like to do?",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Track Order",
+      "Refund",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-021",
+    "category": "Refund, Complaint & Proof",
+    "input": "Refund",
+    "pass": true,
+    "reasons": [],
+    "message": "I’m sorry about the issue. For refund/replacement review, please share:\n\n1. Order number\n2. Phone number used for the order\n3. Clear photos/videos of the item and packaging\n4. Short issue detail\n\nSend these to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport will review your case and guide you further.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-022",
+    "category": "Refund, Complaint & Proof",
+    "input": "I want a refund",
+    "pass": true,
+    "reasons": [],
+    "message": "I’m sorry about the issue. For refund/replacement review, please share:\n\n1. Order number\n2. Phone number used for the order\n3. Clear photos/videos of the item and packaging\n4. Short issue detail\n\nSend these to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport will review your case and guide you further.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-023",
+    "category": "Refund, Complaint & Proof",
+    "input": "My item is damaged",
+    "pass": true,
+    "reasons": [],
+    "message": "I’m sorry about the issue. For refund/replacement review, please share:\n\n1. Order number\n2. Phone number used for the order\n3. Clear photos/videos of the item and packaging\n4. Short issue detail\n\nSend these to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport will review your case and guide you further.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-024",
+    "category": "Refund, Complaint & Proof",
+    "input": "Wrong item received",
+    "pass": true,
+    "reasons": [],
+    "message": "I’m sorry about the issue. For refund/replacement review, please share:\n\n1. Order number\n2. Phone number used for the order\n3. Clear photos/videos of the item and packaging\n4. Short issue detail\n\nSend these to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport will review your case and guide you further.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-025",
+    "category": "Refund, Complaint & Proof",
+    "input": "Missing item in my parcel",
+    "pass": true,
+    "reasons": [],
+    "message": "I’m sorry about the issue. For refund/replacement review, please share:\n\n1. Order number\n2. Phone number used for the order\n3. Clear photos/videos of the item and packaging\n4. Short issue detail\n\nSend these to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport will review your case and guide you further.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-026",
+    "category": "Refund, Complaint & Proof",
+    "input": "Packet was open",
+    "pass": true,
+    "reasons": [],
+    "message": "I’m sorry about the issue. For refund/replacement review, please share:\n\n1. Order number\n2. Phone number used for the order\n3. Clear photos/videos of the item and packaging\n4. Short issue detail\n\nSend these to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport will review your case and guide you further.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-027",
+    "category": "Refund, Complaint & Proof",
+    "input": "Snack was spoiled",
+    "pass": true,
+    "reasons": [],
+    "message": "I’m sorry about the issue. For refund/replacement review, please share:\n\n1. Order number\n2. Phone number used for the order\n3. Clear photos/videos of the item and packaging\n4. Short issue detail\n\nSend these to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport will review your case and guide you further.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-028",
+    "category": "Refund, Complaint & Proof",
+    "input": "Where to send photos?",
+    "pass": true,
+    "reasons": [],
+    "message": "Please send the photos/videos to Snakitos support:\n\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nAlso include your order number and the phone number used while placing the order.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-029",
+    "category": "Refund, Complaint & Proof",
+    "input": "Where to share the number and photos",
+    "pass": true,
+    "reasons": [],
+    "message": "Please send the photos/videos to Snakitos support:\n\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nAlso include your order number and the phone number used while placing the order.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-030",
+    "category": "Refund, Complaint & Proof",
+    "input": "Can I send video proof?",
+    "pass": true,
+    "reasons": [],
+    "message": "Please send the photos/videos to Snakitos support:\n\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nAlso include your order number and the phone number used while placing the order.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-031",
+    "category": "Refund, Complaint & Proof",
+    "input": "My box arrived crushed",
+    "pass": true,
+    "reasons": [],
+    "message": "I’m sorry about the issue. For refund/replacement review, please share:\n\n1. Order number\n2. Phone number used for the order\n3. Clear photos/videos of the item and packaging\n4. Short issue detail\n\nSend these to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport will review your case and guide you further.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-032",
+    "category": "Refund, Complaint & Proof",
+    "input": "Do you approve refunds?",
+    "pass": true,
+    "reasons": [],
+    "message": "I’m sorry about the issue. For refund/replacement review, please share:\n\n1. Order number\n2. Phone number used for the order\n3. Clear photos/videos of the item and packaging\n4. Short issue detail\n\nSend these to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport will review your case and guide you further.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-033",
+    "category": "Refund, Complaint & Proof",
+    "input": "Replacement please",
+    "pass": true,
+    "reasons": [],
+    "message": "I’m sorry about the issue. For refund/replacement review, please share:\n\n1. Order number\n2. Phone number used for the order\n3. Clear photos/videos of the item and packaging\n4. Short issue detail\n\nSend these to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport will review your case and guide you further.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-034",
+    "category": "Refund, Complaint & Proof",
+    "input": "I want to complain",
+    "pass": true,
+    "reasons": [],
+    "message": "I’m sorry about the issue. For refund/replacement review, please share:\n\n1. Order number\n2. Phone number used for the order\n3. Clear photos/videos of the item and packaging\n4. Short issue detail\n\nSend these to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport will review your case and guide you further.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-035",
+    "category": "Refund, Complaint & Proof",
+    "input": "I got expired product",
+    "pass": true,
+    "reasons": [],
+    "message": "I’m sorry about the issue. For refund/replacement review, please share:\n\n1. Order number\n2. Phone number used for the order\n3. Clear photos/videos of the item and packaging\n4. Short issue detail\n\nSend these to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport will review your case and guide you further.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-036",
+    "category": "Refund, Complaint & Proof",
+    "input": "My order came broken, recommend replacement snack",
+    "pass": true,
+    "reasons": [],
+    "message": "I’m sorry about the issue. For refund/replacement review, please share:\n\n1. Order number\n2. Phone number used for the order\n3. Clear photos/videos of the item and packaging\n4. Short issue detail\n\nSend these to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport will review your case and guide you further.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-037",
+    "category": "Refund, Complaint & Proof",
+    "input": "I need support email for complaint",
+    "pass": true,
+    "reasons": [],
+    "message": "I’m sorry about the issue. For refund/replacement review, please share:\n\n1. Order number\n2. Phone number used for the order\n3. Clear photos/videos of the item and packaging\n4. Short issue detail\n\nSend these to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport will review your case and guide you further.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-038",
+    "category": "Refund, Complaint & Proof",
+    "input": "Mujhe refund chahiye",
+    "pass": true,
+    "reasons": [],
+    "message": "Mujhe afsos hai ke aapko issue face hua. Refund/replacement review ke liye please yeh details share karein:\n\n1. Order number\n2. Order mein use hua phone number\n3. Item aur packaging ki clear photos/videos\n4. Issue ki short detail\n\nYeh details Snakitos support ko bhej dein:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport aapka case review karke guide karegi.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-039",
+    "category": "Refund, Complaint & Proof",
+    "input": "Packet damage aya hai",
+    "pass": true,
+    "reasons": [],
+    "message": "Mujhe afsos hai ke aapko issue face hua. Refund/replacement review ke liye please yeh details share karein:\n\n1. Order number\n2. Order mein use hua phone number\n3. Item aur packaging ki clear photos/videos\n4. Issue ki short detail\n\nYeh details Snakitos support ko bhej dein:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport aapka case review karke guide karegi.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-040",
+    "category": "Refund, Complaint & Proof",
+    "input": "Photos kahan bhejun?",
+    "pass": true,
+    "reasons": [],
+    "message": "Photos/videos Snakitos support ko bhej dein:\n\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSaath mein order number aur order wala phone number bhi zaroor bhejein.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-041",
+    "category": "Refund, Complaint & Proof",
+    "input": "Video kidhar send karni hai?",
+    "pass": true,
+    "reasons": [],
+    "message": "Photos/videos Snakitos support ko bhej dein:\n\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSaath mein order number aur order wala phone number bhi zaroor bhejein.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-042",
+    "category": "Refund, Complaint & Proof",
+    "input": "Mera item missing hai",
+    "pass": true,
+    "reasons": [],
+    "message": "Mujhe afsos hai ke aapko issue face hua. Refund/replacement review ke liye please yeh details share karein:\n\n1. Order number\n2. Order mein use hua phone number\n3. Item aur packaging ki clear photos/videos\n4. Issue ki short detail\n\nYeh details Snakitos support ko bhej dein:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport aapka case review karke guide karegi.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-043",
+    "category": "Refund, Complaint & Proof",
+    "input": "galat product aya",
+    "pass": true,
+    "reasons": [],
+    "message": "I’m sorry about the issue. For refund/replacement review, please share:\n\n1. Order number\n2. Phone number used for the order\n3. Clear photos/videos of the item and packaging\n4. Short issue detail\n\nSend these to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport will review your case and guide you further.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-044",
+    "category": "Refund, Complaint & Proof",
+    "input": "packaging khuli hui thi",
+    "pass": true,
+    "reasons": [],
+    "message": "I’m sorry about the issue. For refund/replacement review, please share:\n\n1. Order number\n2. Phone number used for the order\n3. Clear photos/videos of the item and packaging\n4. Short issue detail\n\nSend these to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport will review your case and guide you further.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-045",
+    "category": "Refund, Complaint & Proof",
+    "input": "replacement ho sakti hai?",
+    "pass": true,
+    "reasons": [],
+    "message": "Mujhe afsos hai ke aapko issue face hua. Refund/replacement review ke liye please yeh details share karein:\n\n1. Order number\n2. Order mein use hua phone number\n3. Item aur packaging ki clear photos/videos\n4. Issue ki short detail\n\nYeh details Snakitos support ko bhej dein:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport aapka case review karke guide karegi.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-046",
+    "category": "Refund, Complaint & Proof",
+    "input": "complaint number chahiye",
+    "pass": true,
+    "reasons": [],
+    "message": "Mujhe afsos hai ke aapko issue face hua. Refund/replacement review ke liye please yeh details share karein:\n\n1. Order number\n2. Order mein use hua phone number\n3. Item aur packaging ki clear photos/videos\n4. Issue ki short detail\n\nYeh details Snakitos support ko bhej dein:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport aapka case review karke guide karegi.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-047",
+    "category": "Refund, Complaint & Proof",
+    "input": "مجھے ریفنڈ چاہیے",
+    "pass": false,
+    "reasons": [
+      "Refund flow missing order number",
+      "Refund flow missing phone",
+      "Refund flow missing photos/videos",
+      "Refund flow missing issue detail request"
+    ],
+    "message": "ہمیں افسوس ہے کہ آپ کو مسئلہ پیش آیا۔ ریفنڈ/ریپلیسمنٹ ریویو کے لیے براہِ کرم یہ معلومات شیئر کریں:\n\n1. آرڈر نمبر\n2. آرڈر میں استعمال کیا گیا فون نمبر\n3. آئٹم اور پیکجنگ کی واضح تصاویر/ویڈیوز\n4. مسئلے کی مختصر تفصیل\n\nیہ معلومات سناکیتوس سپورٹ کو بھیجیں:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nسپورٹ ٹیم آپ کا کیس ریویو کر کے مزید رہنمائی کرے گی۔",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-048",
+    "category": "Refund, Complaint & Proof",
+    "input": "آئٹم خراب آیا ہے",
+    "pass": false,
+    "reasons": [
+      "Refund flow missing order number",
+      "Refund flow missing phone",
+      "Refund flow missing photos/videos",
+      "Refund flow missing issue detail request"
+    ],
+    "message": "ہمیں افسوس ہے کہ آپ کو مسئلہ پیش آیا۔ ریفنڈ/ریپلیسمنٹ ریویو کے لیے براہِ کرم یہ معلومات شیئر کریں:\n\n1. آرڈر نمبر\n2. آرڈر میں استعمال کیا گیا فون نمبر\n3. آئٹم اور پیکجنگ کی واضح تصاویر/ویڈیوز\n4. مسئلے کی مختصر تفصیل\n\nیہ معلومات سناکیتوس سپورٹ کو بھیجیں:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nسپورٹ ٹیم آپ کا کیس ریویو کر کے مزید رہنمائی کرے گی۔",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-049",
+    "category": "Refund, Complaint & Proof",
+    "input": "تصاویر کہاں بھیجوں؟",
+    "pass": false,
+    "reasons": [
+      "Refund flow missing order number",
+      "Refund flow missing phone",
+      "Refund flow missing photos/videos",
+      "Refund flow missing issue detail request"
+    ],
+    "message": "براہِ کرم تصاویر/ویڈیوز سناکیتوس سپورٹ کو بھیجیں:\n\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nساتھ میں اپنا آرڈر نمبر اور آرڈر میں استعمال کیا گیا فون نمبر بھی ضرور بھیجیں۔",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-050",
+    "category": "Refund, Complaint & Proof",
+    "input": "میرا پیکٹ کھلا ہوا تھا",
+    "pass": false,
+    "reasons": [
+      "Refund flow missing order number",
+      "Refund flow missing phone",
+      "Refund flow missing photos/videos",
+      "Refund flow missing issue detail request"
+    ],
+    "message": "ہمیں افسوس ہے کہ آپ کو مسئلہ پیش آیا۔ ریفنڈ/ریپلیسمنٹ ریویو کے لیے براہِ کرم یہ معلومات شیئر کریں:\n\n1. آرڈر نمبر\n2. آرڈر میں استعمال کیا گیا فون نمبر\n3. آئٹم اور پیکجنگ کی واضح تصاویر/ویڈیوز\n4. مسئلے کی مختصر تفصیل\n\nیہ معلومات سناکیتوس سپورٹ کو بھیجیں:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nسپورٹ ٹیم آپ کا کیس ریویو کر کے مزید رہنمائی کرے گی۔",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-051",
+    "category": "Refund, Complaint & Proof",
+    "input": "غلط چیز ملی ہے",
+    "pass": false,
+    "reasons": [
+      "Refund flow missing order number",
+      "Refund flow missing phone",
+      "Refund flow missing photos/videos",
+      "Refund flow missing issue detail request"
+    ],
+    "message": "ہمیں افسوس ہے کہ آپ کو مسئلہ پیش آیا۔ ریفنڈ/ریپلیسمنٹ ریویو کے لیے براہِ کرم یہ معلومات شیئر کریں:\n\n1. آرڈر نمبر\n2. آرڈر میں استعمال کیا گیا فون نمبر\n3. آئٹم اور پیکجنگ کی واضح تصاویر/ویڈیوز\n4. مسئلے کی مختصر تفصیل\n\nیہ معلومات سناکیتوس سپورٹ کو بھیجیں:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nسپورٹ ٹیم آپ کا کیس ریویو کر کے مزید رہنمائی کرے گی۔",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-052",
+    "category": "Refund, Complaint & Proof",
+    "input": "Order issue: photos attached, what now?",
+    "pass": true,
+    "reasons": [],
+    "message": "Please send the photos/videos to Snakitos support:\n\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nAlso include your order number and the phone number used while placing the order.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-053",
+    "category": "Refund, Complaint & Proof",
+    "input": "Can I get money back to bank?",
+    "pass": true,
+    "reasons": [],
+    "message": "I’m sorry about the issue. For refund/replacement review, please share:\n\n1. Order number\n2. Phone number used for the order\n3. Clear photos/videos of the item and packaging\n4. Short issue detail\n\nSend these to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport will review your case and guide you further.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-054",
+    "category": "Refund, Complaint & Proof",
+    "input": "Refund and Instagram?",
+    "pass": false,
+    "reasons": [
+      "Refund flow missing order number",
+      "Refund flow missing phone",
+      "Refund flow missing photos/videos",
+      "Refund flow missing issue detail request"
+    ],
+    "message": "Here is Snakitos official Instagram:\nhttps://www.instagram.com/snakitos.pk/",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-055",
+    "category": "Refund, Complaint & Proof",
+    "input": "I paid but parcel damaged",
+    "pass": true,
+    "reasons": [],
+    "message": "I’m sorry about the issue. For refund/replacement review, please share:\n\n1. Order number\n2. Phone number used for the order\n3. Clear photos/videos of the item and packaging\n4. Short issue detail\n\nSend these to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport will review your case and guide you further.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-056",
+    "category": "Order Tracking",
+    "input": "Track order",
+    "pass": true,
+    "reasons": [],
+    "message": "Sure, I can help track it. Please share your order number or the phone number used when placing the order so support can check the status.",
+    "options": [
+      "Track Order",
+      "WhatsApp Support",
+      "Back",
+      "Home"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-057",
+    "category": "Order Tracking",
+    "input": "Where is my order?",
+    "pass": true,
+    "reasons": [],
+    "message": "Sure, I can help guide you. Please share your order number or the phone number used while placing the order so support can check the status.",
+    "options": [
+      "Track Order",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-058",
+    "category": "Order Tracking",
+    "input": "Delivery status please",
+    "pass": true,
+    "reasons": [],
+    "message": "Sure, I can help guide you. Please share your order number or the phone number used while placing the order so support can check the status.",
+    "options": [
+      "Track Order",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-059",
+    "category": "Order Tracking",
+    "input": "Mera order kahan hai?",
+    "pass": true,
+    "reasons": [],
+    "message": "Zaroor, main help karta hoon. Please apna order number ya checkout wala phone number share kar dein taake support aapka order status check kar sake.",
+    "options": [
+      "Track Order",
+      "WhatsApp Support",
+      "Back",
+      "Home"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-060",
+    "category": "Order Tracking",
+    "input": "order track karna hai",
+    "pass": true,
+    "reasons": [],
+    "message": "Zaroor, main help karta hoon. Please apna order number ya checkout wala phone number share kar dein taake support aapka order status check kar sake.",
+    "options": [
+      "Track Order",
+      "WhatsApp Support",
+      "Back",
+      "Home"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-061",
+    "category": "Order Tracking",
+    "input": "parcel abhi tak nahi aya",
+    "pass": true,
+    "reasons": [],
+    "message": "Zaroor, main guide kar deta hoon. Please apna order number ya order mein use hua phone number share karein taake support status check kar sake.",
+    "options": [
+      "Track Order",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-062",
+    "category": "Order Tracking",
+    "input": "delivery kab hogi?",
+    "pass": true,
+    "reasons": [],
+    "message": "Zaroor, main guide kar deta hoon. Please apna order number ya order mein use hua phone number share karein taake support status check kar sake.",
+    "options": [
+      "Track Order",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-063",
+    "category": "Order Tracking",
+    "input": "rider ka number chahiye",
+    "pass": true,
+    "reasons": [],
+    "message": "Zaroor, main guide kar deta hoon. Please apna order number ya order mein use hua phone number share karein taake support status check kar sake.",
+    "options": [
+      "Track Order",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-064",
+    "category": "Order Tracking",
+    "input": "My order is late",
+    "pass": true,
+    "reasons": [],
+    "message": "Sure, I can help guide you. Please share your order number or the phone number used while placing the order so support can check the status.",
+    "options": [
+      "Track Order",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-065",
+    "category": "Order Tracking",
+    "input": "Shipment number?",
+    "pass": true,
+    "reasons": [],
+    "message": "Sure, I can help guide you. Please share your order number or the phone number used while placing the order so support can check the status.",
+    "options": [
+      "Track Order",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-066",
+    "category": "Order Tracking",
+    "input": "Order #12345 status",
+    "pass": true,
+    "reasons": [],
+    "message": "Sure, I can help track it. Please share your order number or the phone number used when placing the order so support can check the status.",
+    "options": [
+      "Track Order",
+      "WhatsApp Support",
+      "Back",
+      "Home"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-067",
+    "category": "Order Tracking",
+    "input": "I placed order yesterday",
+    "pass": true,
+    "reasons": [],
+    "message": "Sure, I can help track it. Please share your order number or the phone number used when placing the order so support can check the status.",
+    "options": [
+      "Track Order",
+      "WhatsApp Support",
+      "Back",
+      "Home"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-068",
+    "category": "Order Tracking",
+    "input": "میرا آرڈر کہاں ہے؟",
+    "pass": false,
+    "reasons": [
+      "Tracking should ask for order/phone"
+    ],
+    "message": "ضرور، میں رہنمائی کر دیتا ہوں۔ براہِ کرم اپنا آرڈر نمبر یا آرڈر میں استعمال کیا گیا فون نمبر شیئر کریں تاکہ سپورٹ status چیک کر سکے۔",
+    "options": [
+      "Track Order",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-069",
+    "category": "Order Tracking",
+    "input": "آرڈر ٹریک کرنا ہے",
+    "pass": false,
+    "reasons": [
+      "Tracking should ask for order/phone"
+    ],
+    "message": "ضرور، میں رہنمائی کر دیتا ہوں۔ براہِ کرم اپنا آرڈر نمبر یا آرڈر میں استعمال کیا گیا فون نمبر شیئر کریں تاکہ سپورٹ status چیک کر سکے۔",
+    "options": [
+      "Track Order",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-070",
+    "category": "Order Tracking",
+    "input": "ڈیلیوری کب آئے گی؟",
+    "pass": false,
+    "reasons": [
+      "Tracking should ask for order/phone"
+    ],
+    "message": "ضرور، میں رہنمائی کر دیتا ہوں۔ براہِ کرم اپنا آرڈر نمبر یا آرڈر میں استعمال کیا گیا فون نمبر شیئر کریں تاکہ سپورٹ status چیک کر سکے۔",
+    "options": [
+      "Track Order",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-071",
+    "category": "Order Tracking",
+    "input": "Track my damaged order",
+    "pass": true,
+    "reasons": [],
+    "message": "Sure, I can help track it. Please share your order number or the phone number used when placing the order so support can check the status.",
+    "options": [
+      "Track Order",
+      "WhatsApp Support",
+      "Back",
+      "Home"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-072",
+    "category": "Order Tracking",
+    "input": "Can support check my order?",
+    "pass": true,
+    "reasons": [],
+    "message": "Sure, I can help guide you. Please share your order number or the phone number used while placing the order so support can check the status.",
+    "options": [
+      "Track Order",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-073",
+    "category": "Order Tracking",
+    "input": "order number share karun?",
+    "pass": true,
+    "reasons": [],
+    "message": "Sure, I can help guide you. Please share your order number or the phone number used while placing the order so support can check the status.",
+    "options": [
+      "Track Order",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-074",
+    "category": "Order Tracking",
+    "input": "I need live tracking link",
+    "pass": true,
+    "reasons": [],
+    "message": "Sure, I can help track it. Please share your order number or the phone number used when placing the order so support can check the status.",
+    "options": [
+      "Track Order",
+      "WhatsApp Support",
+      "Back",
+      "Home"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-075",
+    "category": "Order Tracking",
+    "input": "Track order Urdu mein batao",
+    "pass": true,
+    "reasons": [],
+    "message": "Zaroor, main help karta hoon. Please apna order number ya checkout wala phone number share kar dein taake support aapka order status check kar sake.",
+    "options": [
+      "Track Order",
+      "WhatsApp Support",
+      "Back",
+      "Home"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-076",
+    "category": "How to Order & Payment",
+    "input": "How to order?",
+    "pass": true,
+    "reasons": [],
+    "message": "To order from Snakitos:\n\n1. Open the product or deal you like\n2. Add it to cart\n3. Go to checkout\n4. Enter your delivery details\n5. Choose the available payment method\n6. Place your order\n\nAvailable payment methods will show at checkout.\n\nIf you need help, contact support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-077",
+    "category": "How to Order & Payment",
+    "input": "How can I buy snacks?",
+    "pass": true,
+    "reasons": [],
+    "message": "To order from Snakitos:\n\n1. Open the product or deal you like\n2. Add it to cart\n3. Go to checkout\n4. Enter your delivery details\n5. Choose the available payment method\n6. Place your order\n\nAvailable payment methods will show at checkout.\n\nIf you need help, contact support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-078",
+    "category": "How to Order & Payment",
+    "input": "Do you have COD?",
+    "pass": true,
+    "reasons": [],
+    "message": "To order from Snakitos:\n\n1. Open the product or deal you like\n2. Add it to cart\n3. Go to checkout\n4. Enter your delivery details\n5. Choose the available payment method\n6. Place your order\n\nAvailable payment methods will show at checkout.\n\nIf you need help, contact support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-079",
+    "category": "How to Order & Payment",
+    "input": "Payment methods?",
+    "pass": true,
+    "reasons": [],
+    "message": "To order from Snakitos:\n\n1. Open the product or deal you like\n2. Add it to cart\n3. Go to checkout\n4. Enter your delivery details\n5. Choose the available payment method\n6. Place your order\n\nAvailable payment methods will show at checkout.\n\nIf you need help, contact support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-080",
+    "category": "How to Order & Payment",
+    "input": "Checkout help",
+    "pass": true,
+    "reasons": [],
+    "message": "To order from Snakitos:\n\n1. Open the product or deal you like\n2. Add it to cart\n3. Go to checkout\n4. Enter your delivery details\n5. Choose the available payment method\n6. Place your order\n\nAvailable payment methods will show at checkout.\n\nIf you need help, contact support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-081",
+    "category": "How to Order & Payment",
+    "input": "order kaise karna hai?",
+    "pass": true,
+    "reasons": [],
+    "message": "Snakitos se order karne ke liye:\n\n1. Jo product/deal pasand ho open karein\n2. Add to cart karein\n3. Checkout par jayein\n4. Delivery details add karein\n5. Available payment method select karein\n6. Order place kar dein\n\nAvailable payment methods checkout par show honge.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-082",
+    "category": "How to Order & Payment",
+    "input": "cash on delivery hai?",
+    "pass": true,
+    "reasons": [],
+    "message": "Snakitos se order karne ke liye:\n\n1. Jo product/deal pasand ho open karein\n2. Add to cart karein\n3. Checkout par jayein\n4. Delivery details add karein\n5. Available payment method select karein\n6. Order place kar dein\n\nAvailable payment methods checkout par show honge.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-083",
+    "category": "How to Order & Payment",
+    "input": "snacks kaise khareedun?",
+    "pass": true,
+    "reasons": [],
+    "message": "To order from Snakitos:\n\n1. Open the product or deal you like\n2. Add it to cart\n3. Go to checkout\n4. Enter your delivery details\n5. Choose the available payment method\n6. Place your order\n\nAvailable payment methods will show at checkout.\n\nIf you need help, contact support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-084",
+    "category": "How to Order & Payment",
+    "input": "checkout mein issue hai",
+    "pass": true,
+    "reasons": [],
+    "message": "Snakitos se order karne ke liye:\n\n1. Jo product/deal pasand ho open karein\n2. Add to cart karein\n3. Checkout par jayein\n4. Delivery details add karein\n5. Available payment method select karein\n6. Order place kar dein\n\nAvailable payment methods checkout par show honge.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-085",
+    "category": "How to Order & Payment",
+    "input": "آرڈر کیسے کرنا ہے؟",
+    "pass": true,
+    "reasons": [],
+    "message": "Snakitos سے order کرنے کے لیے:\n\n1. جو product/deal پسند ہو اسے open کریں\n2. Add to cart کریں\n3. Checkout پر جائیں\n4. Delivery details add کریں\n5. Available payment method select کریں\n6. Order place کر دیں\n\nAvailable payment methods checkout پر show ہوں گے۔\n\nمدد چاہیے تو رابطہ کریں:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-086",
+    "category": "How to Order & Payment",
+    "input": "کیش آن ڈیلیوری ہے؟",
+    "pass": true,
+    "reasons": [],
+    "message": "Snakitos سے order کرنے کے لیے:\n\n1. جو product/deal پسند ہو اسے open کریں\n2. Add to cart کریں\n3. Checkout پر جائیں\n4. Delivery details add کریں\n5. Available payment method select کریں\n6. Order place کر دیں\n\nAvailable payment methods checkout پر show ہوں گے۔\n\nمدد چاہیے تو رابطہ کریں:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-087",
+    "category": "How to Order & Payment",
+    "input": "خریدنا کیسے ہے؟",
+    "pass": true,
+    "reasons": [],
+    "message": "Snakitos سے order کرنے کے لیے:\n\n1. جو product/deal پسند ہو اسے open کریں\n2. Add to cart کریں\n3. Checkout پر جائیں\n4. Delivery details add کریں\n5. Available payment method select کریں\n6. Order place کر دیں\n\nAvailable payment methods checkout پر show ہوں گے۔\n\nمدد چاہیے تو رابطہ کریں:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-088",
+    "category": "How to Order & Payment",
+    "input": "I want to order from Instagram",
+    "pass": true,
+    "reasons": [],
+    "message": "To order from Snakitos:\n\n1. Open the product or deal you like\n2. Add it to cart\n3. Go to checkout\n4. Enter your delivery details\n5. Choose the available payment method\n6. Place your order\n\nAvailable payment methods will show at checkout.\n\nIf you need help, contact support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-089",
+    "category": "How to Order & Payment",
+    "input": "How to order refund?",
+    "pass": true,
+    "reasons": [],
+    "message": "To order from Snakitos:\n\n1. Open the product or deal you like\n2. Add it to cart\n3. Go to checkout\n4. Enter your delivery details\n5. Choose the available payment method\n6. Place your order\n\nAvailable payment methods will show at checkout.\n\nIf you need help, contact support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-090",
+    "category": "How to Order & Payment",
+    "input": "delivery details kahan add karni hain?",
+    "pass": true,
+    "reasons": [],
+    "message": "Snakitos se order karne ke liye:\n\n1. Jo product/deal pasand ho open karein\n2. Add to cart karein\n3. Checkout par jayein\n4. Delivery details add karein\n5. Available payment method select karein\n6. Order place kar dein\n\nAvailable payment methods checkout par show honge.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-091",
+    "category": "Official Social Media",
+    "input": "Instagram?",
+    "pass": true,
+    "reasons": [],
+    "message": "Here is Snakitos official Instagram:\nhttps://www.instagram.com/snakitos.pk/",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-092",
+    "category": "Official Social Media",
+    "input": "Share Instagram link",
+    "pass": true,
+    "reasons": [],
+    "message": "Here is Snakitos official Instagram:\nhttps://www.instagram.com/snakitos.pk/",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-093",
+    "category": "Official Social Media",
+    "input": "Instagram link do",
+    "pass": true,
+    "reasons": [],
+    "message": "Here is Snakitos official Instagram:\nhttps://www.instagram.com/snakitos.pk/",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-094",
+    "category": "Official Social Media",
+    "input": "Instagram لنک چاہیے",
+    "pass": true,
+    "reasons": [],
+    "message": "Yeh Snakitos official Instagram hai:\nhttps://www.instagram.com/snakitos.pk/",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-095",
+    "category": "Official Social Media",
+    "input": "TikTok?",
+    "pass": true,
+    "reasons": [],
+    "message": "Here is Snakitos official TikTok:\nhttps://www.tiktok.com/@snakitos",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-096",
+    "category": "Official Social Media",
+    "input": "Share TikTok link",
+    "pass": true,
+    "reasons": [],
+    "message": "Here is Snakitos official TikTok:\nhttps://www.tiktok.com/@snakitos",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-097",
+    "category": "Official Social Media",
+    "input": "TikTok link do",
+    "pass": true,
+    "reasons": [],
+    "message": "Here is Snakitos official TikTok:\nhttps://www.tiktok.com/@snakitos",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-098",
+    "category": "Official Social Media",
+    "input": "TikTok لنک چاہیے",
+    "pass": true,
+    "reasons": [],
+    "message": "Yeh Snakitos official TikTok hai:\nhttps://www.tiktok.com/@snakitos",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-099",
+    "category": "Official Social Media",
+    "input": "Facebook?",
+    "pass": true,
+    "reasons": [],
+    "message": "Here is Snakitos official Facebook:\nhttps://www.facebook.com/snakitoss/",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-100",
+    "category": "Official Social Media",
+    "input": "Share Facebook link",
+    "pass": true,
+    "reasons": [],
+    "message": "Here is Snakitos official Facebook:\nhttps://www.facebook.com/snakitoss/",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-101",
+    "category": "Official Social Media",
+    "input": "Facebook link do",
+    "pass": true,
+    "reasons": [],
+    "message": "Here is Snakitos official Facebook:\nhttps://www.facebook.com/snakitoss/",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-102",
+    "category": "Official Social Media",
+    "input": "Facebook لنک چاہیے",
+    "pass": true,
+    "reasons": [],
+    "message": "Yeh Snakitos official Facebook hai:\nhttps://www.facebook.com/snakitoss/",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-103",
+    "category": "Official Social Media",
+    "input": "YouTube?",
+    "pass": true,
+    "reasons": [],
+    "message": "Here is Snakitos official YouTube:\nhttps://www.youtube.com/@snakitos5728",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-104",
+    "category": "Official Social Media",
+    "input": "Share YouTube link",
+    "pass": true,
+    "reasons": [],
+    "message": "Here is Snakitos official YouTube:\nhttps://www.youtube.com/@snakitos5728",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-105",
+    "category": "Official Social Media",
+    "input": "YouTube link do",
+    "pass": true,
+    "reasons": [],
+    "message": "Here is Snakitos official YouTube:\nhttps://www.youtube.com/@snakitos5728",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-106",
+    "category": "Official Social Media",
+    "input": "YouTube لنک چاہیے",
+    "pass": true,
+    "reasons": [],
+    "message": "Yeh Snakitos official YouTube hai:\nhttps://www.youtube.com/@snakitos5728",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-107",
+    "category": "Official Social Media",
+    "input": "Instagram handle?",
+    "pass": true,
+    "reasons": [],
+    "message": "Here is Snakitos official Instagram:\nhttps://www.instagram.com/snakitos.pk/",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-108",
+    "category": "Official Social Media",
+    "input": "Insta?",
+    "pass": true,
+    "reasons": [],
+    "message": "Here is Snakitos official Instagram:\nhttps://www.instagram.com/snakitos.pk/",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-109",
+    "category": "Official Social Media",
+    "input": "FB page?",
+    "pass": true,
+    "reasons": [],
+    "message": "Here is Snakitos official Facebook:\nhttps://www.facebook.com/snakitoss/",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-110",
+    "category": "Official Social Media",
+    "input": "YT channel?",
+    "pass": true,
+    "reasons": [],
+    "message": "Here is Snakitos official YouTube:\nhttps://www.youtube.com/@snakitos5728",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-111",
+    "category": "Official Social Media",
+    "input": "Social media links",
+    "pass": true,
+    "reasons": [],
+    "message": "You can follow Snakitos on our official social pages:\n\nInstagram: https://www.instagram.com/snakitos.pk/\nTikTok: https://www.tiktok.com/@snakitos\nFacebook: https://www.facebook.com/snakitoss/\nYouTube: https://www.youtube.com/@snakitos5728\n\nFor any other platform or official contact, please reach out to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-112",
+    "category": "Official Social Media",
+    "input": "official pages?",
+    "pass": true,
+    "reasons": [],
+    "message": "You can follow Snakitos on our official social pages:\n\nInstagram: https://www.instagram.com/snakitos.pk/\nTikTok: https://www.tiktok.com/@snakitos\nFacebook: https://www.facebook.com/snakitoss/\nYouTube: https://www.youtube.com/@snakitos5728\n\nFor any other platform or official contact, please reach out to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-113",
+    "category": "Official Social Media",
+    "input": "Where can I see reels?",
+    "pass": true,
+    "reasons": [],
+    "message": "You can follow Snakitos on our official social pages:\n\nInstagram: https://www.instagram.com/snakitos.pk/\nTikTok: https://www.tiktok.com/@snakitos\nFacebook: https://www.facebook.com/snakitoss/\nYouTube: https://www.youtube.com/@snakitos5728\n\nFor any other platform or official contact, please reach out to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-114",
+    "category": "Official Social Media",
+    "input": "Where can I watch videos?",
+    "pass": true,
+    "reasons": [],
+    "message": "Here is Snakitos official YouTube:\nhttps://www.youtube.com/@snakitos5728",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-115",
+    "category": "Official Social Media",
+    "input": "social pages batao",
+    "pass": true,
+    "reasons": [],
+    "message": "Aap Snakitos ko hamare official social pages par follow kar sakte hain:\n\nInstagram: https://www.instagram.com/snakitos.pk/\nTikTok: https://www.tiktok.com/@snakitos\nFacebook: https://www.facebook.com/snakitoss/\nYouTube: https://www.youtube.com/@snakitos5728\n\nKisi aur platform ya official contact ke liye please support se rabta karein:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-116",
+    "category": "Official Social Media",
+    "input": "insta handle kya hai?",
+    "pass": true,
+    "reasons": [],
+    "message": "Yeh Snakitos official Instagram hai:\nhttps://www.instagram.com/snakitos.pk/",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-117",
+    "category": "Official Social Media",
+    "input": "facebook page do",
+    "pass": true,
+    "reasons": [],
+    "message": "Here is Snakitos official Facebook:\nhttps://www.facebook.com/snakitoss/",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-118",
+    "category": "Official Social Media",
+    "input": "youtube channel send karo",
+    "pass": true,
+    "reasons": [],
+    "message": "Yeh Snakitos official YouTube hai:\nhttps://www.youtube.com/@snakitos5728",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-119",
+    "category": "Official Social Media",
+    "input": "سوشل میڈیا لنکس",
+    "pass": true,
+    "reasons": [],
+    "message": "آپ Snakitos کو ہمارے official social pages پر follow کر سکتے ہیں:\n\nInstagram: https://www.instagram.com/snakitos.pk/\nTikTok: https://www.tiktok.com/@snakitos\nFacebook: https://www.facebook.com/snakitoss/\nYouTube: https://www.youtube.com/@snakitos5728\n\nکسی اور platform یا official contact کے لیے براہِ کرم سپورٹ سے رابطہ کریں:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-120",
+    "category": "Official Social Media",
+    "input": "انسٹاگرام؟",
+    "pass": true,
+    "reasons": [],
+    "message": "آپ Snakitos کو ہمارے official social pages پر follow کر سکتے ہیں:\n\nInstagram: https://www.instagram.com/snakitos.pk/\nTikTok: https://www.tiktok.com/@snakitos\nFacebook: https://www.facebook.com/snakitoss/\nYouTube: https://www.youtube.com/@snakitos5728\n\nکسی اور platform یا official contact کے لیے براہِ کرم سپورٹ سے رابطہ کریں:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-121",
+    "category": "Other Platform Handling",
+    "input": "LinkedIn?",
+    "pass": true,
+    "reasons": [],
+    "message": "Currently, I only have Snakitos official Instagram, TikTok, Facebook, and YouTube links. For any other platform or official contact, please contact Snakitos support:\n\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-122",
+    "category": "Other Platform Handling",
+    "input": "Snapchat account?",
+    "pass": true,
+    "reasons": [],
+    "message": "Currently, I only have Snakitos official Instagram, TikTok, Facebook, and YouTube links. For any other platform or official contact, please contact Snakitos support:\n\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-123",
+    "category": "Other Platform Handling",
+    "input": "Pinterest page?",
+    "pass": true,
+    "reasons": [],
+    "message": "Currently, I only have Snakitos official Instagram, TikTok, Facebook, and YouTube links. For any other platform or official contact, please contact Snakitos support:\n\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-124",
+    "category": "Other Platform Handling",
+    "input": "X/Twitter link?",
+    "pass": true,
+    "reasons": [],
+    "message": "Currently, I only have Snakitos official Instagram, TikTok, Facebook, and YouTube links. For any other platform or official contact, please contact Snakitos support:\n\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-125",
+    "category": "Other Platform Handling",
+    "input": "WhatsApp channel?",
+    "pass": true,
+    "reasons": [],
+    "message": "Currently, I only have Snakitos official Instagram, TikTok, Facebook, and YouTube links. For any other platform or official contact, please contact Snakitos support:\n\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-126",
+    "category": "Other Platform Handling",
+    "input": "Threads account?",
+    "pass": true,
+    "reasons": [],
+    "message": "Currently, I only have Snakitos official Instagram, TikTok, Facebook, and YouTube links. For any other platform or official contact, please contact Snakitos support:\n\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-127",
+    "category": "Other Platform Handling",
+    "input": "Collaboration page?",
+    "pass": true,
+    "reasons": [],
+    "message": "Currently, I only have Snakitos official Instagram, TikTok, Facebook, and YouTube links. For any other platform or official contact, please contact Snakitos support:\n\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-128",
+    "category": "Other Platform Handling",
+    "input": "LinkedIn page hai?",
+    "pass": true,
+    "reasons": [],
+    "message": "Currently, I only have Snakitos official Instagram, TikTok, Facebook, and YouTube links. For any other platform or official contact, please contact Snakitos support:\n\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-129",
+    "category": "Other Platform Handling",
+    "input": "snapchat do",
+    "pass": true,
+    "reasons": [],
+    "message": "Currently, I only have Snakitos official Instagram, TikTok, Facebook, and YouTube links. For any other platform or official contact, please contact Snakitos support:\n\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-130",
+    "category": "Other Platform Handling",
+    "input": "influencer collab kahan karun?",
+    "pass": true,
+    "reasons": [],
+    "message": "Currently, I only have Snakitos official Instagram, TikTok, Facebook, and YouTube links. For any other platform or official contact, please contact Snakitos support:\n\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-131",
+    "category": "Other Platform Handling",
+    "input": "لنکڈ اِن لنک؟",
+    "pass": false,
+    "reasons": [
+      "Should state only official four links are available",
+      "Should route to support"
+    ],
+    "message": "میں Deals، Recommendations، Track Order، Refund، Products یا Social Media میں مدد کر سکتا ہوں۔ آپ کیا کرنا چاہیں گے؟",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Track Order",
+      "Refund",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-132",
+    "category": "Other Platform Handling",
+    "input": "سنیپ چیٹ ہے؟",
+    "pass": false,
+    "reasons": [
+      "Should state only official four links are available",
+      "Should route to support"
+    ],
+    "message": "میں Deals، Recommendations، Track Order، Refund، Products یا Social Media میں مدد کر سکتا ہوں۔ آپ کیا کرنا چاہیں گے؟",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Track Order",
+      "Refund",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-133",
+    "category": "Other Platform Handling",
+    "input": "Is this your Telegram?",
+    "pass": true,
+    "reasons": [],
+    "message": "Currently, I only have Snakitos official Instagram, TikTok, Facebook, and YouTube links. For any other platform or official contact, please contact Snakitos support:\n\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-134",
+    "category": "Other Platform Handling",
+    "input": "Do you have app store page?",
+    "pass": true,
+    "reasons": [],
+    "message": "Currently, I only have Snakitos official Instagram, TikTok, Facebook, and YouTube links. For any other platform or official contact, please contact Snakitos support:\n\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-135",
+    "category": "Other Platform Handling",
+    "input": "TikTok aur Snapchat dono?",
+    "pass": true,
+    "reasons": [],
+    "message": "Currently, I only have Snakitos official Instagram, TikTok, Facebook, and YouTube links. For any other platform or official contact, please contact Snakitos support:\n\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-136",
+    "category": "Deals & Bundles",
+    "input": "Deals",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are popular Snakitos deals:\n\nTap any deal to view details.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-137",
+    "category": "Deals & Bundles",
+    "input": "Show bundles",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are popular Snakitos deals:\n\nTap any deal to view details.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-138",
+    "category": "Deals & Bundles",
+    "input": "Discounts?",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are popular Snakitos deals:\n\nTap any deal to view details.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-139",
+    "category": "Deals & Bundles",
+    "input": "Best deals today",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are popular Snakitos deals:\n\nTap any deal to view details.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-140",
+    "category": "Deals & Bundles",
+    "input": "Mega Snack Box deal",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are popular Snakitos deals:\n\nTap any deal to view details.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-141",
+    "category": "Deals & Bundles",
+    "input": "Party bundle?",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are popular Snakitos deals:\n\nTap any deal to view details.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-142",
+    "category": "Deals & Bundles",
+    "input": "Gift bundle",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are popular Snakitos deals:\n\nTap any deal to view details.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-143",
+    "category": "Deals & Bundles",
+    "input": "Cheap deals",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are popular Snakitos deals:\n\nTap any deal to view details.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-144",
+    "category": "Deals & Bundles",
+    "input": "Show all deals",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are popular Snakitos deals:\n\nTap any deal to view details.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-145",
+    "category": "Deals & Bundles",
+    "input": "Deals and Instagram",
+    "pass": false,
+    "reasons": [
+      "Deals should show deal cards",
+      "Deals missing quick reply Deals",
+      "Deals missing quick reply Recommendations"
+    ],
+    "message": "Here is Snakitos official Instagram:\nhttps://www.instagram.com/snakitos.pk/",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-146",
+    "category": "Deals & Bundles",
+    "input": "deals dikhao",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are popular Snakitos deals:\n\nTap any deal to view details.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-147",
+    "category": "Deals & Bundles",
+    "input": "bundles batao",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are popular Snakitos deals:\n\nTap any deal to view details.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-148",
+    "category": "Deals & Bundles",
+    "input": "sasti deals hain?",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are popular Snakitos deals:\n\nTap any deal to view details.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-149",
+    "category": "Deals & Bundles",
+    "input": "party ke liye bundle",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are popular Snakitos deals:\n\nTap any deal to view details.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-150",
+    "category": "Deals & Bundles",
+    "input": "gift ke liye deal",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are popular Snakitos deals:\n\nTap any deal to view details.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-151",
+    "category": "Deals & Bundles",
+    "input": "ڈیلز دکھائیں",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are popular Snakitos deals:\n\nTap any deal to view details.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-152",
+    "category": "Deals & Bundles",
+    "input": "بنڈلز؟",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are popular Snakitos deals:\n\nTap any deal to view details.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-153",
+    "category": "Deals & Bundles",
+    "input": "پارٹی کے لیے ڈیل",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are popular Snakitos deals:\n\nTap any deal to view details.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-154",
+    "category": "Deals & Bundles",
+    "input": "Open deal button test",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are popular Snakitos deals:\n\nTap any deal to view details.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-155",
+    "category": "Deals & Bundles",
+    "input": "Why deal card goes homepage?",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are popular Snakitos deals:\n\nTap any deal to view details.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-156",
+    "category": "Recommendations",
+    "input": "Recommendations",
+    "pass": true,
+    "reasons": [],
+    "message": "Sure! What flavor do you prefer?\n\nSpicy\nSalty\nSweet\nMixed",
+    "options": [
+      "Spicy",
+      "Salty",
+      "Sweet",
+      "Mixed",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-157",
+    "category": "Recommendations",
+    "input": "Recommend me",
+    "pass": true,
+    "reasons": [],
+    "message": "Sure! What flavor do you prefer?\n\nSpicy\nSalty\nSweet\nMixed",
+    "options": [
+      "Spicy",
+      "Salty",
+      "Sweet",
+      "Mixed",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-158",
+    "category": "Recommendations",
+    "input": "Show me recommend me",
+    "pass": true,
+    "reasons": [],
+    "message": "Sure! What flavor do you prefer?\n\nSpicy\nSalty\nSweet\nMixed",
+    "options": [
+      "Spicy",
+      "Salty",
+      "Sweet",
+      "Mixed",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-159",
+    "category": "Recommendations",
+    "input": "What should I buy?",
+    "pass": true,
+    "reasons": [],
+    "message": "Sure! What flavor do you prefer?\n\nSpicy\nSalty\nSweet\nMixed",
+    "options": [
+      "Spicy",
+      "Salty",
+      "Sweet",
+      "Mixed",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-160",
+    "category": "Recommendations",
+    "input": "Best snacks",
+    "pass": true,
+    "reasons": [],
+    "message": "Sure! What flavor do you prefer?\n\nSpicy\nSalty\nSweet\nMixed",
+    "options": [
+      "Spicy",
+      "Salty",
+      "Sweet",
+      "Mixed",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-161",
+    "category": "Recommendations",
+    "input": "Spicy",
+    "pass": true,
+    "reasons": [],
+    "message": "If you enjoy spicy snacks, I’d recommend Stix Hot & Spicy, Stix Peri Peri, Stix Lemon & Chilli, Nachos Salsa, Nachos Paprika, and Banana Chips Achari Masti. For better value, you can also go for a spicy bundle. Want me to suggest a spicy combo under your budget?",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-162",
+    "category": "Recommendations",
+    "input": "Sweet",
+    "pass": true,
+    "reasons": [],
+    "message": "For sweet cravings, I’d recommend Choco Stick Chocolate, Choco Stick Strawberry, Coco Choco Can, Wafer Rolls Hazelnut, Wafer Rolls Strawberry, and a Choco Lovers Bundle. Would you like sweet-only snacks or mixed picks?",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-163",
+    "category": "Recommendations",
+    "input": "Salty",
+    "pass": true,
+    "reasons": [],
+    "message": "For something mild and salty, I’d suggest Patata Salty, Banana Chips Sea Salt, ChickPea Puffs, and Stix Salty. You can also add a sweet item like Choco Stick or Wafer Rolls for balance.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-164",
+    "category": "Recommendations",
+    "input": "Mixed",
+    "pass": true,
+    "reasons": [],
+    "message": "For mixed snacks, I'd start with All Time Favorites, Snack Sampler Deal, Office Snack Box, and Ultimate Mega Snack Box. These give you sweet + savory variety instead of just one flavor. Do you want a budget-friendly mixed box or a family-size bundle?",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-165",
+    "category": "Recommendations",
+    "input": "Crunchy",
+    "pass": true,
+    "reasons": [],
+    "message": "Sure! What flavor do you prefer?\n\nSpicy\nSalty\nSweet\nMixed",
+    "options": [
+      "Spicy",
+      "Salty",
+      "Sweet",
+      "Mixed",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-166",
+    "category": "Recommendations",
+    "input": "I like spicy nachos",
+    "pass": true,
+    "reasons": [],
+    "message": "Zaroor! Agar aapko spicy snacks pasand hain to Stix Hot & Spicy, Stix Peri Peri, Stix Lemon & Chilli, Nachos Salsa, Nachos Paprika aur Banana Chips Achari Masti try karein. Better value ke liye aap spicy bundle bhi choose kar sakte hain.\n\nAapka budget kya hai - Rs. 500, Rs. 1,000, Rs. 2,000 ya above?",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-167",
+    "category": "Recommendations",
+    "input": "Recommend for kids",
+    "pass": true,
+    "reasons": [],
+    "message": "Sure! What flavor do you prefer?\n\nSpicy\nSalty\nSweet\nMixed",
+    "options": [
+      "Spicy",
+      "Salty",
+      "Sweet",
+      "Mixed",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-168",
+    "category": "Recommendations",
+    "input": "recommendations dikhao",
+    "pass": true,
+    "reasons": [],
+    "message": "Sure! What flavor do you prefer?\n\nSpicy\nSalty\nSweet\nMixed",
+    "options": [
+      "Spicy",
+      "Salty",
+      "Sweet",
+      "Mixed",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-169",
+    "category": "Recommendations",
+    "input": "mujhe recommend karo",
+    "pass": true,
+    "reasons": [],
+    "message": "Zaroor! Aapko kis flavor ki recommendation chahiye?\n\nSpicy\nSalty\nSweet\nMixed",
+    "options": [
+      "Spicy",
+      "Salty",
+      "Sweet",
+      "Mixed",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-170",
+    "category": "Recommendations",
+    "input": "kya loon?",
+    "pass": true,
+    "reasons": [],
+    "message": "Sure! What flavor do you prefer?\n\nSpicy\nSalty\nSweet\nMixed",
+    "options": [
+      "Spicy",
+      "Salty",
+      "Sweet",
+      "Mixed",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-171",
+    "category": "Recommendations",
+    "input": "spicy chahiye",
+    "pass": true,
+    "reasons": [],
+    "message": "Zaroor! Agar aapko spicy snacks pasand hain to Stix Hot & Spicy, Stix Peri Peri, Stix Lemon & Chilli, Nachos Salsa, Nachos Paprika aur Banana Chips Achari Masti try karein. Better value ke liye aap spicy bundle bhi choose kar sakte hain.\n\nAapka budget kya hai - Rs. 500, Rs. 1,000, Rs. 2,000 ya above?",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-172",
+    "category": "Recommendations",
+    "input": "sweet snacks batao",
+    "pass": true,
+    "reasons": [],
+    "message": "Sweet craving ke liye Choco Stick Chocolate, Choco Stick Strawberry, Wafer Rolls Hazelnut, aur Coco Choco Can best options hain. Aap sweet-only snacks lena chahenge ya mixed picks?",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-173",
+    "category": "Recommendations",
+    "input": "salty snacks",
+    "pass": true,
+    "reasons": [],
+    "message": "For something mild and salty, I’d suggest Patata Salty, Banana Chips Sea Salt, ChickPea Puffs, and Stix Salty. You can also add a sweet item like Choco Stick or Wafer Rolls for balance.",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-174",
+    "category": "Recommendations",
+    "input": "mixed flavor",
+    "pass": true,
+    "reasons": [],
+    "message": "For mixed snacks, I'd start with All Time Favorites, Snack Sampler Deal, Office Snack Box, and Ultimate Mega Snack Box. These give you sweet + savory variety instead of just one flavor. Do you want a budget-friendly mixed box or a family-size bundle?",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-175",
+    "category": "Recommendations",
+    "input": "سفارشات",
+    "pass": false,
+    "reasons": [
+      "Missing quick reply: Product cards"
+    ],
+    "message": "ضرور! آپ کو کس flavor کی recommendation چاہیے؟\n\nSpicy\nSalty\nSweet\nMixed",
+    "options": [
+      "Spicy",
+      "Salty",
+      "Sweet",
+      "Mixed",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-176",
+    "category": "Recommendations",
+    "input": "کیا خریدوں؟",
+    "pass": false,
+    "reasons": [
+      "Missing quick reply: Product cards"
+    ],
+    "message": "ضرور! آپ کو کس flavor کی recommendation چاہیے؟\n\nSpicy\nSalty\nSweet\nMixed",
+    "options": [
+      "Spicy",
+      "Salty",
+      "Sweet",
+      "Mixed",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-177",
+    "category": "Recommendations",
+    "input": "مصالحے دار چاہیے",
+    "pass": true,
+    "reasons": [],
+    "message": "If you enjoy spicy snacks, I’d recommend Stix Hot & Spicy, Stix Peri Peri, Stix Lemon & Chilli, Nachos Salsa, Nachos Paprika, and Banana Chips Achari Masti. For better value, you can also go for a spicy bundle. Want me to suggest a spicy combo under your budget?",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-178",
+    "category": "Recommendations",
+    "input": "میٹھا چاہیے",
+    "pass": true,
+    "reasons": [],
+    "message": "For sweet cravings, I’d recommend Choco Stick Chocolate, Choco Stick Strawberry, Coco Choco Can, Wafer Rolls Hazelnut, Wafer Rolls Strawberry, and a Choco Lovers Bundle. Would you like sweet-only snacks or mixed picks?",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Back",
+      "Home"
+    ],
+    "productCount": 5
+  },
+  {
+    "id": "SNK-179",
+    "category": "Recommendations",
+    "input": "Instagram recommendation?",
+    "pass": false,
+    "reasons": [
+      "Missing quick reply: Product cards"
+    ],
+    "message": "Here is Snakitos official Instagram:\nhttps://www.instagram.com/snakitos.pk/",
+    "options": [
+      "WhatsApp Support",
+      "Instagram",
+      "TikTok",
+      "Facebook",
+      "YouTube",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-180",
+    "category": "Recommendations",
+    "input": "Refund recommendation?",
+    "pass": false,
+    "reasons": [
+      "Missing quick reply: Product cards"
+    ],
+    "message": "I’m sorry about the issue. For refund/replacement review, please share:\n\n1. Order number\n2. Phone number used for the order\n3. Clear photos/videos of the item and packaging\n4. Short issue detail\n\nSend these to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport will review your case and guide you further.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-181",
+    "category": "Product Search",
+    "input": "Nachos Salsa 50g",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are the best Nachos options to start with:\n\nRecommended picks: nachos salsa, nachos paprika, FM Foods Snakitos Nachos Salsa & Paprika Pack (10 Packs).\n\nNachos Salsa is a spicy Nachos snack. Size: 50g. Taste: spicy, tangy, crunchy, savory. Good for: movie night, party, gaming, netflix. Bundle upgrade: Movie Night Nachos Bundle. Pairs well with: Nachos Paprika, Movie Night Bundle. Best seller. Trending pick.",
+    "options": [
+      "Back",
+      "Home"
+    ],
+    "productCount": 3
+  },
+  {
+    "id": "SNK-182",
+    "category": "Product Search",
+    "input": "Do you have nachos?",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are the best Nachos options to start with:\n\nRecommended picks: nachos salsa, nachos paprika, FM Foods Snakitos Nachos Salsa & Paprika Pack (10 Packs).\n\nNachos Salsa is a spicy Nachos snack. Size: 50g. Taste: spicy, tangy, crunchy, savory. Good for: movie night, party, gaming, netflix. Bundle upgrade: Movie Night Nachos Bundle. Pairs well with: Nachos Paprika, Movie Night Bundle. Best seller. Trending pick.",
+    "options": [
+      "Back",
+      "Home"
+    ],
+    "productCount": 3
+  },
+  {
+    "id": "SNK-183",
+    "category": "Product Search",
+    "input": "Ultimate Mega Snack Box",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are the best matching options to start with:\n\nTop picks: Ultimate Mega Snack Box, Party Pleaser Bundle, Flavor Fiesta Bundle.\n\nUltimate Mega Snack Box is a mixed Bundles snack. Size: mega box. Taste: spicy, sweet, salty, crunchy, savory. Good for: gift, party, family, office, movie night. Pairs well with: Flavor Fiesta Bundle, Party Pleaser Bundle. Best seller. Trending pick.",
+    "options": [
+      "Back",
+      "Home"
+    ],
+    "productCount": 3
+  },
+  {
+    "id": "SNK-184",
+    "category": "Product Search",
+    "input": "Show chocolate chips",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are the best details to start with:\n\nTop picks: Snakitos Snaktory Indulgence, Banana Chips Achari Masti, Wafer Rolls Hazelnut.\n\nSnakitos Snaktory Indulgence is a mixed Snacks snack. Size: mixed premium box. Taste: sweet, crunchy, savory. Good for: gift, office, family. Bundle upgrade: Ultimate Mega Snack Box. Pairs well with: Snaktory Wafer Rolls Collection, Banana Chips Sea Salt. Kids-friendly option.",
+    "options": [
+      "Back",
+      "Home"
+    ],
+    "productCount": 3
+  },
+  {
+    "id": "SNK-185",
+    "category": "Product Search",
+    "input": "nachos hain?",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are the best Nachos options to start with:\n\nRecommended picks: nachos salsa, nachos paprika, FM Foods Snakitos Nachos Salsa & Paprika Pack (10 Packs).\n\nNachos Salsa is a spicy Nachos snack. Size: 50g. Taste: spicy, tangy, crunchy, savory. Good for: movie night, party, gaming, netflix. Bundle upgrade: Movie Night Nachos Bundle. Pairs well with: Nachos Paprika, Movie Night Bundle. Best seller. Trending pick.",
+    "options": [
+      "Back",
+      "Home"
+    ],
+    "productCount": 3
+  },
+  {
+    "id": "SNK-186",
+    "category": "Product Search",
+    "input": "mega snack box price?",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are the best matching options to start with:\n\nTop picks: Ultimate Mega Snack Box, Party Pleaser Bundle, Flavor Fiesta Bundle.\n\nUltimate Mega Snack Box is a mixed Bundles snack. Size: mega box. Taste: spicy, sweet, salty, crunchy, savory. Good for: gift, party, family, office, movie night. Pairs well with: Flavor Fiesta Bundle, Party Pleaser Bundle. Best seller. Trending pick.",
+    "options": [
+      "Back",
+      "Home"
+    ],
+    "productCount": 3
+  },
+  {
+    "id": "SNK-187",
+    "category": "Product Search",
+    "input": "Nachos Salsa چاہیے",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are the best Nachos options to start with:\n\nRecommended picks: nachos salsa, nachos paprika, FM Foods Snakitos Nachos Salsa & Paprika Pack (10 Packs).\n\nNachos Salsa is a spicy Nachos snack. Size: 50g. Taste: spicy, tangy, crunchy, savory. Good for: movie night, party, gaming, netflix. Bundle upgrade: Movie Night Nachos Bundle. Pairs well with: Nachos Paprika, Movie Night Bundle. Best seller. Trending pick.",
+    "options": [
+      "Back",
+      "Home"
+    ],
+    "productCount": 3
+  },
+  {
+    "id": "SNK-188",
+    "category": "Product Search",
+    "input": "Mega Snack Box قیمت؟",
+    "pass": true,
+    "reasons": [],
+    "message": "Here are the best matching options to start with:\n\nTop picks: Ultimate Mega Snack Box, Party Pleaser Bundle, Flavor Fiesta Bundle.\n\nUltimate Mega Snack Box is a mixed Bundles snack. Size: mega box. Taste: spicy, sweet, salty, crunchy, savory. Good for: gift, party, family, office, movie night. Pairs well with: Flavor Fiesta Bundle, Party Pleaser Bundle. Best seller. Trending pick.",
+    "options": [
+      "Back",
+      "Home"
+    ],
+    "productCount": 3
+  },
+  {
+    "id": "SNK-189",
+    "category": "Product Search",
+    "input": "Is product in stock?",
+    "pass": true,
+    "reasons": [],
+    "message": "Please share the exact product name. I can then help with the product page link or guide you to the right item.",
+    "options": [
+      "WhatsApp Support",
+      "Show Products",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-190",
+    "category": "Product Search",
+    "input": "Give me product URL",
+    "pass": false,
+    "reasons": [
+      "Missing quick reply: Open on Snakitos"
+    ],
+    "message": "Please share the exact product name. I can then help with the product page link or guide you to the right item.",
+    "options": [
+      "WhatsApp Support",
+      "Show Products",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-191",
+    "category": "Freshness, Fallback & Safety",
+    "input": "Are products fresh?",
+    "pass": true,
+    "reasons": [],
+    "message": "Snakitos products are handled as fresh-stock snacks. For the exact manufacturing or expiry date, please check the packaging after delivery.",
+    "options": [
+      "Products",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-192",
+    "category": "Freshness, Fallback & Safety",
+    "input": "Expiry date?",
+    "pass": true,
+    "reasons": [],
+    "message": "Snakitos products are handled as fresh-stock snacks. For the exact manufacturing or expiry date, please check the packaging after delivery.",
+    "options": [
+      "Products",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-193",
+    "category": "Freshness, Fallback & Safety",
+    "input": "Manufacturing date of Nachos?",
+    "pass": true,
+    "reasons": [],
+    "message": "Snakitos products fresh-stock snacks ke taur par handle hote hain. Exact manufacturing ya expiry date ke liye delivery ke baad packaging check karein.",
+    "options": [
+      "Products",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-194",
+    "category": "Freshness, Fallback & Safety",
+    "input": "fresh hai?",
+    "pass": true,
+    "reasons": [],
+    "message": "Snakitos products fresh-stock snacks ke taur par handle hote hain. Exact manufacturing ya expiry date ke liye delivery ke baad packaging check karein.",
+    "options": [
+      "Products",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-195",
+    "category": "Freshness, Fallback & Safety",
+    "input": "ایکسپائری کب ہے؟",
+    "pass": true,
+    "reasons": [],
+    "message": "Snakitos products کو fresh-stock snacks کے طور پر handle کیا جاتا ہے۔ Exact manufacturing یا expiry date کے لیے delivery کے بعد packaging check کریں۔",
+    "options": [
+      "Products",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-196",
+    "category": "Freshness, Fallback & Safety",
+    "input": "asdfgh random",
+    "pass": true,
+    "reasons": [],
+    "message": "I can help with Deals, Recommendations, Track Order, Refund, Products, or Social Media. What would you like to do?",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Track Order",
+      "Refund",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-197",
+    "category": "Freshness, Fallback & Safety",
+    "input": "Give me OTP for my order",
+    "pass": true,
+    "reasons": [],
+    "message": "Sure, I can help guide you. Please share your order number or the phone number used while placing the order so support can check the status.",
+    "options": [
+      "Track Order",
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-198",
+    "category": "Freshness, Fallback & Safety",
+    "input": "Here are my card details, process refund",
+    "pass": true,
+    "reasons": [],
+    "message": "I’m sorry about the issue. For refund/replacement review, please share:\n\n1. Order number\n2. Phone number used for the order\n3. Clear photos/videos of the item and packaging\n4. Short issue detail\n\nSend these to Snakitos support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport will review your case and guide you further.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-199",
+    "category": "Freshness, Fallback & Safety",
+    "input": "CNIC doon refund ke liye?",
+    "pass": true,
+    "reasons": [],
+    "message": "Mujhe afsos hai ke aapko issue face hua. Refund/replacement review ke liye please yeh details share karein:\n\n1. Order number\n2. Order mein use hua phone number\n3. Item aur packaging ki clear photos/videos\n4. Issue ki short detail\n\nYeh details Snakitos support ko bhej dein:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com\n\nSupport aapka case review karke guide karegi.",
+    "options": [
+      "WhatsApp Support",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  },
+  {
+    "id": "SNK-200",
+    "category": "Freshness, Fallback & Safety",
+    "input": "Policy says COD?",
+    "pass": true,
+    "reasons": [],
+    "message": "To order from Snakitos:\n\n1. Open the product or deal you like\n2. Add it to cart\n3. Go to checkout\n4. Enter your delivery details\n5. Choose the available payment method\n6. Place your order\n\nAvailable payment methods will show at checkout.\n\nIf you need help, contact support:\nWhatsApp: +92-345-828-3827\nEmail: info@snakitos.com",
+    "options": [
+      "Deals",
+      "Recommendations",
+      "Home",
+      "Back"
+    ],
+    "productCount": 0
+  }
+]

@@ -76,7 +76,7 @@ expectIncludes(
 
 expectIncludes(
   supportAgentSource,
-  "Based on current Snakitos store knowledge, the products are handled as halal.",
+  "FM Foods publicly lists Halal certification as part of its quality and food safety standards.",
   "halal wording softened",
 );
 
