@@ -88,8 +88,11 @@ type ConversationState = {
   awaiting_input: string;
 };
 
+type SnakitosLanguage = "english" | "roman_urdu" | "mixed" | "urdu";
+
 type SnakitosIntent =
   | "greeting"
+  | "language_switch"
   | "what_do_you_sell"
   | "general_brand_query"
   | "main_categories"
@@ -156,6 +159,7 @@ type SnakitosIntent =
   | "refund_request"
   | "refund_time"
   | "replacement_request"
+  | "photos_proof"
   | "damaged_product"
   | "wrong_product"
   | "exchange_flavor"
@@ -164,13 +168,20 @@ type SnakitosIntent =
   | "bulk_discount"
   | "corporate_gifting"
   | "event_order"
+  | "how_to_order"
+  | "instagram_link"
+  | "tiktok_link"
+  | "facebook_link"
+  | "youtube_link"
+  | "social_media"
+  | "other_platform"
   | "order_tracking"
   | "confirmation_continue"
   | "back_home";
 
 type ClassifiedIntent = {
   intent: SnakitosIntent;
-  language: "english" | "roman_urdu" | "mixed";
+  language: SnakitosLanguage;
   budget?: string;
   category?: string;
   productName?: string;
@@ -198,6 +209,15 @@ const conversationStateStore = new Map<string, ConversationState>();
 const FREE_SHIPPING_THRESHOLD =
   Number((trainingGuideReference as { conversion_rules?: { free_shipping_threshold?: number } })
     .conversion_rules?.free_shipping_threshold) || 2500;
+const SUPPORT_WHATSAPP = "+92-345-828-3827";
+const SUPPORT_PHONE = "";
+const SUPPORT_EMAIL = "info@snakitos.com";
+const SOCIAL_LINKS = {
+  instagram: "https://www.instagram.com/snakitos.pk/",
+  tiktok: "https://www.tiktok.com/@snakitos",
+  facebook: "https://www.facebook.com/snakitoss/",
+  youtube: "https://www.youtube.com/@snakitos5728",
+} as const;
 
 export class SupportAgentService {
   async handleChat(input: ChatRequestInput): Promise<ChatResponsePayload> {
@@ -438,11 +458,30 @@ export class SupportAgentService {
       return supportIssueFollowUp;
     }
 
-    if (classified.intent === "fallback_unknown") {
-      return null;
-    }
-
     if (classified.intent === "order_tracking") {
+      if (!orderIntentResult.orderId && !orderIntentResult.phone) {
+        const response = {
+          intent: "general" as const,
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message: this.buildTrackOrderMessage(classified.language),
+            userMessage,
+            options: [
+              { label: "Track Order", value: "track my order" },
+              { label: "WhatsApp Support", value: "How can I contact support?" },
+              { label: "Home", value: "home" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
+        this.saveConversationState(chatId, userId, {
+          last_intent: classified.intent,
+          last_topic: "order_tracking",
+          pending_action: "",
+        });
+        return response;
+      }
+
       const orderResult =
         orderIntentResult.intent === "order"
           ? orderIntentResult
@@ -515,7 +554,7 @@ export class SupportAgentService {
         message,
         userMessage,
         options: [
-          { label: "WhatsApp Support", value: "whatsapp support number" },
+          { label: "WhatsApp Support", value: "How can I contact support?" },
           { label: "Home", value: "home" },
         ],
         skipSuggestions: true,
@@ -607,6 +646,78 @@ export class SupportAgentService {
     }
 
     if (
+      /(urdu mein|urdu me|urdu|roman urdu|roman-urdu|romanurdu|اردو|رومن اردو)/i.test(
+        userMessage,
+      )
+    ) {
+      return { intent: "language_switch", language };
+    }
+
+    if (
+      /(where to send photos|where should i send proof|where to send proof|where to send video|where to send photos|where to share number and photos|where to share number|damaged item pictures|photos kahan bhejun|photo kidhar send karni hai|proof kahan bhejun|video kahan bhejun)/i.test(
+        normalized,
+      )
+    ) {
+      return { intent: "photos_proof", language };
+    }
+
+    if (
+      /(instagram\??|insta\??|facebook\??|tiktok\??|tik tok\??|youtube\??|social media\??|official page\??|official account\??|page\??|account\??|reels\??|shorts\??|updates\??|x\/twitter|twitter|threads|snapchat|pinterest|linkedin|whatsapp channel)/i.test(
+        normalized,
+      )
+    ) {
+      if (/(instagram|insta)/i.test(normalized)) {
+        return { intent: "instagram_link", language };
+      }
+
+      if (/(tiktok|tik tok)/i.test(normalized)) {
+        return { intent: "tiktok_link", language };
+      }
+
+      if (/(facebook)/i.test(normalized)) {
+        return { intent: "facebook_link", language };
+      }
+
+      if (/(youtube|shorts)/i.test(normalized)) {
+        return { intent: "youtube_link", language };
+      }
+
+      if (/(snapchat|pinterest|linkedin|threads|twitter|x\/twitter|whatsapp channel)/i.test(normalized)) {
+        return { intent: "other_platform", language };
+      }
+
+      return { intent: "social_media", language };
+    }
+
+    if (
+      /(refund|replacement|complaint|damaged item|missing item|wrong item|spoiled item|broken packaging|issue with order|photos\/videos|photos videos)/i.test(
+        normalized,
+      )
+    ) {
+      if (/(wrong product|wrong item received|wrong item aya|ghalat saman)/i.test(normalized)) {
+        return { intent: "wrong_product", language };
+      }
+
+      if (
+        /(damaged item|damaged product|arrived damaged|product is damaged|damaged$|items? are broken|product broken|product toot gaya|packet phata hua|chips tuti hui|items? tootay hue|item kharab hai|expiry wali cheez bheji|smell aa rahi|taste kharab hai|defective product|packet broken|expired item|parcel open aya|taste bad|taste expired jaisa|item missing|wrong quantity)/i.test(
+          normalized,
+        )
+      ) {
+        return { intent: "damaged_product", language };
+      }
+
+      if (/(replacement|replace item|exchange$|flavor change|galat flavor bhej dia)/i.test(normalized)) {
+        return { intent: "replacement_request", language };
+      }
+
+      if (/(refund time|kab refund|paisy wapis kab|refund kab milega)/i.test(normalized)) {
+        return { intent: "refund_time", language };
+      }
+
+      return { intent: "refund_request", language };
+    }
+
+    if (
       /^(help|about|contact|number|email|address|location)$/.test(normalized) ||
       /(snakitos kya hai|ye store kis cheez ka hai|ap log kya bechte ho|brand kis ka hai|fm foods hai kya|shop online hai|kya ye original site hai|shop ka naam|ye snacks kis company ke hain|pakistani snacks hain)/i.test(
         normalized,
@@ -658,6 +769,14 @@ export class SupportAgentService {
       return { intent: "support_request", language };
     }
 
+    if (
+      /(how to order|how can i order|order kaise karna hai|order kaise karein|checkout kaise karun|payment kaise hoga|cod|cash on delivery|delivery kaise hogi)/i.test(
+        normalized,
+      )
+    ) {
+      return { intent: "how_to_order", language };
+    }
+
     if (/(wholesale|bulk order|dukaan ke liye rate|retailer price|shop ke liye rate|100 carton chahiye|corporate gift|office ke liye 50 box|event order|wedding snacks|school canteen|monthly supply|rate list bhejo|agency chahiye|dealership|dealership milti|shop pr rakhna hai|school canteen supply|distributor banna hai|business supply)/i.test(normalized)) {
       return { intent: "wholesale_query", language };
     }
@@ -682,7 +801,7 @@ export class SupportAgentService {
       return { intent: "best_deals", language };
     }
 
-    if (/(recommend something|what should i buy|suggest snacks|recommend me|kya loon|best snack)/i.test(normalized)) {
+    if (/(recommend something|what should i buy|suggest snacks|recommend me|show recommendations|kya loon|kya order karun|mujhe recommend karo|best snack|best item batao)/i.test(normalized)) {
       return { intent: "product_recommendation", language };
     }
 
@@ -707,7 +826,7 @@ export class SupportAgentService {
     }
 
     if (/(crunchy snack|crunchy snacks|crunchy|crispy)/i.test(normalized)) {
-      return { intent: "crunchy_recommendation", language, taste: "crunchy" };
+      return { intent: "product_recommendation", language };
     }
 
     if (/(^mixed$|show me mixed|mixed snack box|mixed snacks|recommend mixed snacks|mixed bundle|mix of both|mujhy mix chahiye)/i.test(normalized)) {
@@ -1109,8 +1228,9 @@ export class SupportAgentService {
 
   private detectSnakitosLanguage(
     message: string,
-  ): "english" | "roman_urdu" | "mixed" {
+  ): SnakitosLanguage {
     const normalized = message.toLowerCase();
+    const hasUrduScript = /[\u0600-\u06FF]/.test(message);
     const romanHits = [
       "bhai",
       "batao",
@@ -1155,6 +1275,10 @@ export class SupportAgentService {
       "snack",
     ].filter((token) => normalized.includes(token)).length;
 
+    if (hasUrduScript) {
+      return englishHits > 0 || romanHits > 0 ? "mixed" : "urdu";
+    }
+
     if (romanHits > 0 && englishHits > 0) {
       return "mixed";
     }
@@ -1162,9 +1286,7 @@ export class SupportAgentService {
     return romanHits > 0 ? "roman_urdu" : "english";
   }
 
-  private prefersRomanUrdu(
-    language: "english" | "roman_urdu" | "mixed",
-  ): boolean {
+  private prefersRomanUrdu(language: SnakitosLanguage): boolean {
     return language === "roman_urdu" || language === "mixed";
   }
 
@@ -1282,16 +1404,177 @@ export class SupportAgentService {
     const category = classified.category || "";
     const budget = classified.budget || "";
 
+    if (classified.intent === "greeting" || classified.intent === "language_switch") {
+      return {
+        intent: "general",
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message: this.buildGreetingMessage(language),
+          userMessage,
+          options: this.getQuickMenuOptions(),
+          skipSuggestions: true,
+        }),
+      };
+    }
+
+    if (classified.intent === "product_recommendation") {
+      return {
+        intent: "product",
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message: this.buildRecommendationPrompt(language),
+          userMessage,
+          options: this.getRecommendationOptions(),
+          skipSuggestions: true,
+        }),
+      };
+    }
+
+    if (classified.intent === "photos_proof") {
+      return {
+        intent: "general",
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message: this.buildPhotoProofMessage(language),
+          userMessage,
+          options: [
+            { label: "WhatsApp Support", value: "How can I contact support?" },
+            { label: "Home", value: "home" },
+          ],
+          skipSuggestions: true,
+        }),
+      };
+    }
+
+    if (classified.intent === "how_to_order") {
+      return {
+        intent: "general",
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message: this.buildHowToOrderMessage(language),
+          userMessage,
+          options: [
+            { label: "Deals", value: "show best deals" },
+            { label: "Recommendations", value: "recommend something" },
+            { label: "Home", value: "home" },
+          ],
+          skipSuggestions: true,
+        }),
+      };
+    }
+
+    if (
+      [
+        "instagram_link",
+        "tiktok_link",
+        "facebook_link",
+        "youtube_link",
+        "social_media",
+        "other_platform",
+      ].includes(classified.intent)
+    ) {
+      return {
+        intent: "general",
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message: this.buildSocialMessage(
+            classified.intent === "instagram_link"
+              ? "instagram"
+              : classified.intent === "tiktok_link"
+                ? "tiktok"
+                : classified.intent === "facebook_link"
+                  ? "facebook"
+                  : classified.intent === "youtube_link"
+                    ? "youtube"
+                    : classified.intent === "other_platform"
+                      ? "other"
+                      : "all",
+            language,
+          ),
+          userMessage,
+          options: this.getSocialOptions(),
+          skipSuggestions: true,
+        }),
+      };
+    }
+
+    if (
+      ["refund_request", "replacement_request", "damaged_product", "wrong_product"].includes(
+        classified.intent,
+      )
+    ) {
+      return {
+        intent: "general",
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message: this.buildRefundReviewMessage(language),
+          userMessage,
+          options: [
+            { label: "WhatsApp Support", value: "How can I contact support?" },
+            { label: "Home", value: "home" },
+          ],
+          skipSuggestions: true,
+        }),
+      };
+    }
+
+    if (classified.intent === "support_request") {
+      const message = SUPPORT_PHONE
+        ? `WhatsApp: ${SUPPORT_WHATSAPP}\nPhone: ${SUPPORT_PHONE}\nEmail: ${SUPPORT_EMAIL}`
+        : `Please contact Snakitos support by email at ${SUPPORT_EMAIL} or WhatsApp at ${SUPPORT_WHATSAPP}.`;
+
+      return {
+        intent: "general",
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message,
+          userMessage,
+          options: [
+            { label: "WhatsApp Support", value: "How can I contact support?" },
+            { label: "Home", value: "home" },
+          ],
+          skipSuggestions: true,
+        }),
+      };
+    }
+
+    if (classified.intent === "product_freshness") {
+      return {
+        intent: "general",
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message: this.buildFreshnessMessage(language),
+          userMessage,
+          options: [
+            { label: "Products", value: "show categories" },
+            { label: "Home", value: "home" },
+          ],
+          skipSuggestions: true,
+        }),
+      };
+    }
+
+    if (classified.intent === "fallback_unknown") {
+      return {
+        intent: "general",
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message: this.buildFallbackMessage(language),
+          userMessage,
+          options: this.getQuickMenuOptions(),
+          skipSuggestions: true,
+        }),
+      };
+    }
+
     switch (classified.intent) {
       case "greeting":
+      case "language_switch":
         return {
           intent: "general",
           response: await this.buildResponseWithSuggestions({
             type: "fallback",
-            message:
-              language === "roman_urdu"
-                ? "Hi! Main aapka Snakitos snack assistant hoon. Main snack deals, recommendations, shipping/refunds, aur collections mein help kar sakta hoon. Aaj aap ko spicy, sweet, crunchy, ya mixed snack box chahiye?"
-                : "Hi! I’m your Snakitos snack assistant. I can help you find snack deals, recommend snacks, explain shipping/refunds, or guide you to the right collection. What are you craving today — spicy, sweet, crunchy, or mixed?",
+            message: this.buildGreetingMessage(language),
             userMessage,
             options: this.getQuickMenuOptions(),
             skipSuggestions: true,
@@ -1369,18 +1652,67 @@ export class SupportAgentService {
           intent: "product",
           response: await this.buildResponseWithSuggestions({
             type: "fallback",
-            message:
-              language === "roman_urdu"
-                ? "Zaroor! Main best option recommend kar sakta hoon. Aapko spicy, sweet, salty, crunchy, ya mixed snack box chahiye?"
-                : "Sure! I can recommend the best option. What are you craving — spicy, sweet, salty, crunchy, or a mixed snack box?",
+            message: this.buildRecommendationPrompt(language),
+            userMessage,
+            options: this.getRecommendationOptions(),
+            skipSuggestions: true,
+          }),
+        };
+      case "photos_proof":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message: this.buildPhotoProofMessage(language),
             userMessage,
             options: [
-              { label: "Spicy", value: "spicy snacks" },
-              { label: "Sweet", value: "sweet snacks" },
-              { label: "Crunchy", value: "crunchy snacks" },
-              { label: "Mixed", value: "mixed snack box" },
+              { label: "WhatsApp Support", value: "How can I contact support?" },
               { label: "Home", value: "home" },
             ],
+            skipSuggestions: true,
+          }),
+        };
+      case "how_to_order":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message: this.buildHowToOrderMessage(language),
+            userMessage,
+            options: [
+              { label: "Deals", value: "show best deals" },
+              { label: "Recommendations", value: "recommend something" },
+              { label: "Home", value: "home" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
+      case "instagram_link":
+      case "tiktok_link":
+      case "facebook_link":
+      case "youtube_link":
+      case "social_media":
+      case "other_platform":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message: this.buildSocialMessage(
+              classified.intent === "instagram_link"
+                ? "instagram"
+                : classified.intent === "tiktok_link"
+                  ? "tiktok"
+                  : classified.intent === "facebook_link"
+                    ? "facebook"
+                    : classified.intent === "youtube_link"
+                      ? "youtube"
+                      : classified.intent === "other_platform"
+                        ? "other"
+                        : "all",
+              language,
+            ),
+            userMessage,
+            options: this.getSocialOptions(),
             skipSuggestions: true,
           }),
         };
@@ -1415,8 +1747,8 @@ export class SupportAgentService {
           userMessage,
           "sweet choco sticks wafer rolls coco choco sweet bundle",
           language === "roman_urdu"
-            ? "Sweet craving ke liye Choco Stick Chocolate, Choco Stick Strawberry, Wafer Rolls Hazelnut, aur Coco Choco Can best options hain. Aap chocolate-only snacks lena chahenge ya sweet + crunchy mix?"
-            : "For sweet cravings, I’d recommend Choco Stick Chocolate, Choco Stick Strawberry, Coco Choco Can, Wafer Rolls Hazelnut, Wafer Rolls Strawberry, and a Choco Lovers Bundle. Would you like chocolate-only snacks or a sweet + crunchy mix?",
+            ? "Sweet craving ke liye Choco Stick Chocolate, Choco Stick Strawberry, Wafer Rolls Hazelnut, aur Coco Choco Can best options hain. Aap sweet-only snacks lena chahenge ya mixed picks?"
+            : "For sweet cravings, I’d recommend Choco Stick Chocolate, Choco Stick Strawberry, Coco Choco Can, Wafer Rolls Hazelnut, Wafer Rolls Strawberry, and a Choco Lovers Bundle. Would you like sweet-only snacks or mixed picks?",
           "sweet",
         );
       case "mixed_recommendation":
@@ -1549,7 +1881,7 @@ export class SupportAgentService {
               "Snakitos is a brand by FM Foods. FM Foods lists quality and food safety standards including Halal, ISO 22000, HACCP, SFDA, and FDA-related approvals/compliance. If you need certificate copies for wholesale, export, or corporate buying, support can confirm.",
             userMessage,
             options: [
-              { label: "Talk to Support", value: "talk to support" },
+              { label: "WhatsApp Support", value: "How can I contact support?" },
               { label: "Bulk Orders", value: "wholesale" },
               { label: "Home", value: "home" },
             ],
@@ -1597,7 +1929,7 @@ export class SupportAgentService {
               "Some products may be vegetarian-friendly, but ingredients vary by product. Please check the specific product label for dairy, gelatin, or animal-derived ingredients. If you follow a strict vegan or vegetarian diet, support should confirm before you order.",
             userMessage,
             options: [
-              { label: "Talk to Support", value: "talk to support" },
+              { label: "WhatsApp Support", value: "How can I contact support?" },
               { label: "Show Products", value: "show categories" },
               { label: "Home", value: "home" },
             ],
@@ -1641,7 +1973,7 @@ export class SupportAgentService {
               "I don’t have confirmed exact nutrition information here, and I don’t want to misguide you. Please check the product packaging or product page, or confirm with support before ordering.",
             userMessage,
             options: [
-              { label: "Talk to Support", value: "talk to support" },
+              { label: "WhatsApp Support", value: "How can I contact support?" },
               { label: "Show Products", value: "show categories" },
               { label: "Home", value: "home" },
             ],
@@ -1659,7 +1991,7 @@ export class SupportAgentService {
             policyLink: "https://snakitos.com/policies/",
             options: [
               { label: "Track Order", value: "track my order" },
-              { label: "Talk to Support", value: "talk to support" },
+              { label: "WhatsApp Support", value: "How can I contact support?" },
               { label: "Home", value: "home" },
             ],
             skipSuggestions: true,
@@ -1886,7 +2218,7 @@ export class SupportAgentService {
             userMessage,
             options: [
               { label: "Show Snacks", value: "show categories" },
-              { label: "Talk to Support", value: "talk to support" },
+              { label: "WhatsApp Support", value: "How can I contact support?" },
               { label: "Home", value: "home" },
             ],
             skipSuggestions: true,
@@ -1929,7 +2261,7 @@ export class SupportAgentService {
               "I’m not fully sure about live stock or restock timing. Please check the product page or contact support for confirmation.",
             userMessage,
             options: [
-              { label: "Talk to Support", value: "talk to support" },
+              { label: "WhatsApp Support", value: "How can I contact support?" },
               { label: "Show Products", value: "show categories" },
               { label: "Home", value: "home" },
             ],
@@ -1944,10 +2276,10 @@ export class SupportAgentService {
             message:
               this.prefersRomanUrdu(language)
                 ? "Zaroor. Aap Snakitos support se WhatsApp par +92-345-828-3827 par contact kar sakte hain. Email ke liye info@snakitos.com use karein."
-                : "Sure, you can contact Snakitos support on WhatsApp at +92-345-828-3827. You can also email info@snakitos.com.",
+                : "Please contact Snakitos support by email at info@snakitos.com or WhatsApp at +92-345-828-3827.",
             userMessage,
             options: [
-              { label: "WhatsApp Support", value: "whatsapp support number" },
+              { label: "WhatsApp Support", value: "How can I contact support?" },
               { label: "Home", value: "home" },
             ],
             skipSuggestions: true,
@@ -1982,7 +2314,7 @@ export class SupportAgentService {
                 : "Yes. If you want to open a product, use the 'Open on Snakitos' button under it. If you want, I can also help narrow down the best option first.",
             userMessage,
             options: [
-              { label: "Recommend Me", value: "recommend something" },
+              { label: "Recommendations", value: "recommend something" },
               { label: "Show Products", value: "show categories" },
               { label: "Home", value: "home" },
             ],
@@ -2093,19 +2425,207 @@ export class SupportAgentService {
     };
   }
 
-  private getQuickMenuOptions(): Array<{ label: string; value: string }> {
+  private buildSupportContactBlock(language: SnakitosLanguage): string {
+    if (language === "urdu") {
+      return `WhatsApp: ${SUPPORT_WHATSAPP}\nEmail: ${SUPPORT_EMAIL}`;
+    }
+
+    return `WhatsApp: ${SUPPORT_WHATSAPP}\nEmail: ${SUPPORT_EMAIL}`;
+  }
+
+  private buildGreetingMessage(language: SnakitosLanguage): string {
+    if (language === "urdu") {
+      return "وعلیکم السلام! میں Snakitos Assistant ہوں۔ آپ Deals، Recommendations، Track Order، Refund یا Products کے بارے میں پوچھ سکتے ہیں۔";
+    }
+
+    if (this.prefersRomanUrdu(language)) {
+      return "Assalamualaikum! Main Snakitos Assistant hoon. Aap Deals, Recommendations, Track Order, Refund ya Products ke baare mein pooch sakte hain.";
+    }
+
+    return "Hi! I’m Snakitos Assistant. You can ask me about Deals, Recommendations, Track Order, Refund, or Products.";
+  }
+
+  private buildRecommendationPrompt(language: SnakitosLanguage): string {
+    if (language === "urdu") {
+      return "ضرور! آپ کو کس flavor کی recommendation چاہیے؟\n\nSpicy\nSalty\nSweet\nMixed";
+    }
+
+    if (this.prefersRomanUrdu(language)) {
+      return "Zaroor! Aapko kis flavor ki recommendation chahiye?\n\nSpicy\nSalty\nSweet\nMixed";
+    }
+
+    return "Sure! What flavor do you prefer?\n\nSpicy\nSalty\nSweet\nMixed";
+  }
+
+  private buildRefundReviewMessage(language: SnakitosLanguage): string {
+    const contactBlock = this.buildSupportContactBlock(language);
+
+    if (language === "urdu") {
+      return `ہمیں افسوس ہے کہ آپ کو مسئلہ پیش آیا۔ ریفنڈ/ریپلیسمنٹ ریویو کے لیے براہِ کرم یہ معلومات شیئر کریں:\n\n1. آرڈر نمبر\n2. آرڈر میں استعمال کیا گیا فون نمبر\n3. آئٹم اور پیکجنگ کی واضح تصاویر/ویڈیوز\n4. مسئلے کی مختصر تفصیل\n\nیہ معلومات سناکیتوس سپورٹ کو بھیجیں:\n${contactBlock}\n\nسپورٹ ٹیم آپ کا کیس ریویو کر کے مزید رہنمائی کرے گی۔`;
+    }
+
+    if (this.prefersRomanUrdu(language)) {
+      return `Mujhe afsos hai ke aapko issue face hua. Refund/replacement review ke liye please yeh details share karein:\n\n1. Order number\n2. Order mein use hua phone number\n3. Item aur packaging ki clear photos/videos\n4. Issue ki short detail\n\nYeh details Snakitos support ko bhej dein:\n${contactBlock}\n\nSupport aapka case review karke guide karegi.`;
+    }
+
+    return `I’m sorry about the issue. For refund/replacement review, please share:\n\n1. Order number\n2. Phone number used for the order\n3. Clear photos/videos of the item and packaging\n4. Short issue detail\n\nSend these to Snakitos support:\n${contactBlock}\n\nSupport will review your case and guide you further.`;
+  }
+
+  private buildPhotoProofMessage(language: SnakitosLanguage): string {
+    const contactBlock = this.buildSupportContactBlock(language);
+
+    if (language === "urdu") {
+      return `براہِ کرم تصاویر/ویڈیوز سناکیتوس سپورٹ کو بھیجیں:\n\n${contactBlock}\n\nساتھ میں اپنا آرڈر نمبر اور آرڈر میں استعمال کیا گیا فون نمبر بھی ضرور بھیجیں۔`;
+    }
+
+    if (this.prefersRomanUrdu(language)) {
+      return `Photos/videos Snakitos support ko bhej dein:\n\n${contactBlock}\n\nSaath mein order number aur order wala phone number bhi zaroor bhejein.`;
+    }
+
+    return `Please send the photos/videos to Snakitos support:\n\n${contactBlock}\n\nAlso include your order number and the phone number used while placing the order.`;
+  }
+
+  private buildTrackOrderMessage(language: SnakitosLanguage): string {
+    if (language === "urdu") {
+      return "ضرور، میں رہنمائی کر دیتا ہوں۔ براہِ کرم اپنا آرڈر نمبر یا آرڈر میں استعمال کیا گیا فون نمبر شیئر کریں تاکہ سپورٹ status چیک کر سکے۔";
+    }
+
+    if (this.prefersRomanUrdu(language)) {
+      return "Zaroor, main guide kar deta hoon. Please apna order number ya order mein use hua phone number share karein taake support status check kar sake.";
+    }
+
+    return "Sure, I can help guide you. Please share your order number or the phone number used while placing the order so support can check the status.";
+  }
+
+  private buildHowToOrderMessage(language: SnakitosLanguage): string {
+    const contactBlock = this.buildSupportContactBlock(language);
+
+    if (language === "urdu") {
+      return `Snakitos سے order کرنے کے لیے:\n\n1. جو product/deal پسند ہو اسے open کریں\n2. Add to cart کریں\n3. Checkout پر جائیں\n4. Delivery details add کریں\n5. Available payment method select کریں\n6. Order place کر دیں\n\nAvailable payment methods checkout پر show ہوں گے۔\n\nمدد چاہیے تو رابطہ کریں:\n${contactBlock}`;
+    }
+
+    if (this.prefersRomanUrdu(language)) {
+      return "Snakitos se order karne ke liye:\n\n1. Jo product/deal pasand ho open karein\n2. Add to cart karein\n3. Checkout par jayein\n4. Delivery details add karein\n5. Available payment method select karein\n6. Order place kar dein\n\nAvailable payment methods checkout par show honge.";
+    }
+
+    return `To order from Snakitos:\n\n1. Open the product or deal you like\n2. Add it to cart\n3. Go to checkout\n4. Enter your delivery details\n5. Choose the available payment method\n6. Place your order\n\nAvailable payment methods will show at checkout.\n\nIf you need help, contact support:\n${contactBlock}`;
+  }
+
+  private buildFreshnessMessage(language: SnakitosLanguage): string {
+    if (language === "urdu") {
+      return "Snakitos products کو fresh-stock snacks کے طور پر handle کیا جاتا ہے۔ Exact manufacturing یا expiry date کے لیے delivery کے بعد packaging check کریں۔";
+    }
+
+    if (this.prefersRomanUrdu(language)) {
+      return "Snakitos products fresh-stock snacks ke taur par handle hote hain. Exact manufacturing ya expiry date ke liye delivery ke baad packaging check karein.";
+    }
+
+    return "Snakitos products are handled as fresh-stock snacks. For the exact manufacturing or expiry date, please check the packaging after delivery.";
+  }
+
+  private buildFallbackMessage(language: SnakitosLanguage): string {
+    if (language === "urdu") {
+      return "میں Deals، Recommendations، Track Order، Refund، Products یا Social Media میں مدد کر سکتا ہوں۔ آپ کیا کرنا چاہیں گے؟";
+    }
+
+    if (this.prefersRomanUrdu(language)) {
+      return "Main Deals, Recommendations, Track Order, Refund, Products ya Social Media mein help kar sakta hoon. Aap kya karna chahenge?";
+    }
+
+    return "I can help with Deals, Recommendations, Track Order, Refund, Products, or Social Media. What would you like to do?";
+  }
+
+  private getPrimaryQuickReplyOptions(): Array<{ label: string; value: string }> {
     return [
+      { label: "Deals", value: "show best deals" },
+      { label: "Recommendations", value: "recommend something" },
       { label: "Track Order", value: "track my order" },
-      { label: "Snack Deals", value: "show best deals" },
-      { label: "Recommend Me Snacks", value: "recommend something" },
-      { label: "Shipping & Refunds", value: "show shipping and refund policy" },
-      { label: "Talk to Support", value: "talk to support" },
+      { label: "Refund", value: "refund" },
+      { label: "WhatsApp Support", value: "How can I contact support?" },
     ];
+  }
+
+  private getRecommendationOptions(): Array<{ label: string; value: string }> {
+    return [
+      { label: "Spicy", value: "spicy snacks" },
+      { label: "Salty", value: "salty snacks" },
+      { label: "Sweet", value: "sweet snacks" },
+      { label: "Mixed", value: "mixed snack box" },
+    ];
+  }
+
+  private getSocialOptions(): Array<{ label: string; value: string }> {
+    return [
+      { label: "Instagram", value: "instagram" },
+      { label: "TikTok", value: "tiktok" },
+      { label: "Facebook", value: "facebook" },
+      { label: "YouTube", value: "youtube" },
+    ];
+  }
+
+  private buildSocialMessage(
+    kind: "instagram" | "tiktok" | "facebook" | "youtube" | "all" | "other",
+    language: SnakitosLanguage,
+  ): string {
+    const contactBlock = this.buildSupportContactBlock(language);
+
+    if (kind === "instagram") {
+      return this.prefersRomanUrdu(language) || language === "urdu"
+        ? `Yeh Snakitos official Instagram hai:\n${SOCIAL_LINKS.instagram}`
+        : `Here is Snakitos official Instagram:\n${SOCIAL_LINKS.instagram}`;
+    }
+
+    if (kind === "tiktok") {
+      return this.prefersRomanUrdu(language) || language === "urdu"
+        ? `Yeh Snakitos official TikTok hai:\n${SOCIAL_LINKS.tiktok}`
+        : `Here is Snakitos official TikTok:\n${SOCIAL_LINKS.tiktok}`;
+    }
+
+    if (kind === "facebook") {
+      return this.prefersRomanUrdu(language) || language === "urdu"
+        ? `Yeh Snakitos official Facebook hai:\n${SOCIAL_LINKS.facebook}`
+        : `Here is Snakitos official Facebook:\n${SOCIAL_LINKS.facebook}`;
+    }
+
+    if (kind === "youtube") {
+      return this.prefersRomanUrdu(language) || language === "urdu"
+        ? `Yeh Snakitos official YouTube hai:\n${SOCIAL_LINKS.youtube}`
+        : `Here is Snakitos official YouTube:\n${SOCIAL_LINKS.youtube}`;
+    }
+
+    if (kind === "other") {
+      if (language === "urdu") {
+        return `فی الحال میرے پاس صرف Snakitos کے official Instagram، TikTok، Facebook اور YouTube links ہیں۔ کسی اور platform یا official contact کے لیے براہِ کرم سپورٹ سے رابطہ کریں:\n\n${contactBlock}`;
+      }
+
+      if (this.prefersRomanUrdu(language)) {
+        return `Filhal mere paas sirf Snakitos official Instagram, TikTok, Facebook, aur YouTube links hain. Kisi aur platform ya official contact ke liye please support se rabta karein:\n\n${contactBlock}`;
+      }
+
+      return `Currently, I only have Snakitos official Instagram, TikTok, Facebook, and YouTube links. For any other platform or official contact, please contact Snakitos support:\n\n${contactBlock}`;
+    }
+
+    if (language === "urdu") {
+      return `آپ Snakitos کو ہمارے official social pages پر follow کر سکتے ہیں:\n\nInstagram: ${SOCIAL_LINKS.instagram}\nTikTok: ${SOCIAL_LINKS.tiktok}\nFacebook: ${SOCIAL_LINKS.facebook}\nYouTube: ${SOCIAL_LINKS.youtube}\n\nکسی اور platform یا official contact کے لیے براہِ کرم سپورٹ سے رابطہ کریں:\n${contactBlock}`;
+    }
+
+    if (this.prefersRomanUrdu(language)) {
+      return `Aap Snakitos ko hamare official social pages par follow kar sakte hain:\n\nInstagram: ${SOCIAL_LINKS.instagram}\nTikTok: ${SOCIAL_LINKS.tiktok}\nFacebook: ${SOCIAL_LINKS.facebook}\nYouTube: ${SOCIAL_LINKS.youtube}\n\nKisi aur platform ya official contact ke liye please support se rabta karein:\n${contactBlock}`;
+    }
+
+    return `You can follow Snakitos on our official social pages:\n\nInstagram: ${SOCIAL_LINKS.instagram}\nTikTok: ${SOCIAL_LINKS.tiktok}\nFacebook: ${SOCIAL_LINKS.facebook}\nYouTube: ${SOCIAL_LINKS.youtube}\n\nFor any other platform or official contact, please reach out to Snakitos support:\n${contactBlock}`;
+  }
+
+  private getQuickMenuOptions(): Array<{ label: string; value: string }> {
+    return this.getPrimaryQuickReplyOptions();
   }
 
   private getMainCategoryOptions(): Array<{ label: string; value: string }> {
     return [
-      { label: "Snack Deals", value: "show best deals" },
+      { label: "Deals", value: "show best deals" },
+      { label: "Recommendations", value: "recommend something" },
+      { label: "Track Order", value: "track my order" },
+      { label: "Refund", value: "refund" },
       { label: "Best Sellers", value: "show best sellers" },
       { label: "Spicy Snacks", value: "spicy snacks" },
       { label: "Sweet Snacks", value: "sweet snacks" },
@@ -2119,8 +2639,7 @@ export class SupportAgentService {
       { label: "Office Snacks", value: "office snacks" },
       { label: "Gift Bundles", value: "gift bundles" },
       { label: "Movie Night Snacks", value: "movie night snacks" },
-      { label: "Shipping & Refunds", value: "show shipping and refund policy" },
-      { label: "Talk to Support", value: "talk to support" },
+      { label: "WhatsApp Support", value: "How can I contact support?" },
     ];
   }
 
@@ -2177,7 +2696,7 @@ export class SupportAgentService {
         products: this.buildProductCards(products, category),
         options: [
           { label: "Best Deals", value: "show best deals" },
-          { label: "Recommend Me", value: "recommend something" },
+          { label: "Recommendations", value: "recommend something" },
           { label: "Home", value: "home" },
         ],
         skipSuggestions: true,
@@ -2248,7 +2767,7 @@ export class SupportAgentService {
       message: `${productLead}${baseMessage}`.trim(),
       userMessage,
       options: [
-        { label: "Talk to Support", value: "talk to support" },
+        { label: "WhatsApp Support", value: "How can I contact support?" },
         { label: "Show Products", value: "show categories" },
         { label: "Home", value: "home" },
       ],
@@ -2272,7 +2791,7 @@ export class SupportAgentService {
           userMessage,
           options: [
             { label: "Show Products", value: "show categories" },
-            { label: "Talk to Support", value: "talk to support" },
+            { label: "WhatsApp Support", value: "How can I contact support?" },
             { label: "Home", value: "home" },
           ],
           skipSuggestions: true,
@@ -2300,7 +2819,7 @@ export class SupportAgentService {
         policyLink,
         options: [
           { label: "Track Order", value: "track my order" },
-          { label: "Talk to Support", value: "talk to support" },
+          { label: "WhatsApp Support", value: "How can I contact support?" },
           { label: "Home", value: "home" },
         ],
         skipSuggestions: true,
@@ -2320,6 +2839,7 @@ export class SupportAgentService {
         userMessage,
         options: [
           { label: "WhatsApp Support", value: "How can I contact support?" },
+          { label: "Back", value: "show categories" },
           { label: "Home", value: "home" },
         ],
         skipSuggestions: true,
@@ -2339,6 +2859,7 @@ export class SupportAgentService {
         userMessage,
         options: [
           { label: "WhatsApp Support", value: "How can I contact support?" },
+          { label: "Back", value: "show categories" },
           { label: "Home", value: "home" },
         ],
         skipSuggestions: true,
@@ -3576,7 +4097,7 @@ export class SupportAgentService {
     if (/(support hours|contact support|customer support|social media|instagram|facebook|whatsapp|whatsapp number|contact number|support number|support kaise contact karun|support kaise contact karon|support kese contact karun|support kese contact karon)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
-        answer: "You can contact Snakitos support on WhatsApp at +92-345-828-3827. You can also email info@snakitos.com or call +92-345-8283825 / +92-345-8283827.",
+        answer: "Please contact Snakitos support by email at info@snakitos.com or WhatsApp at +92-345-828-3827.",
         assistLine: "And if you want, I can still help with orders, shipping, refunds, or product picks right here.",
         type: "fallback",
         options: [
