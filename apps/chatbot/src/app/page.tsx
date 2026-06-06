@@ -134,21 +134,21 @@ const HOME_SHORTCUTS: Array<{
     icon: "order",
   },
   {
-    label: "Deals",
+    label: "Snack Deals",
     value: "show best deals",
-    blurb: "See bundle offers, discounts, and popular snack deals.",
+    blurb: "See bundle offers, gifting picks, and the best current value packs.",
     icon: "deals",
   },
   {
-    label: "Recommendations",
-    value: "recommend something",
-    blurb: "Get snack suggestions by flavor: Spicy, Salty, Sweet, or Mixed.",
+    label: "Shop Collections",
+    value: "show categories",
+    blurb: "Browse Sweet Tooth, Multi Grain, Banana Chips, Nachos, and more.",
     icon: "collections",
   },
   {
-    label: "Refund",
-    value: "refund",
-    blurb: "Get refund, replacement, complaint, or damaged item guidance.",
+    label: "Shipping & Refunds",
+    value: "show shipping and refund policy",
+    blurb: "Get clear answers about delivery timing, refunds, and store policies.",
     icon: "policy",
   },
 ];
@@ -234,7 +234,7 @@ export default function PublicChatbot() {
       content: JSON.stringify({
         type: "mixed",
         message:
-          "Hi! I’m Snakitos Assistant. You can ask me about Deals, Recommendations, Track Order, Refund, or Products.",
+          "Hi! I’m the Snakitos AI Assistant. I can help you track orders, find snack deals, recommend snacks by taste or budget, and answer questions about delivery, payments, and refunds. What are you craving today — spicy, sweet, crunchy, or a mixed snack box?",
       }),
     },
   ]);
@@ -706,14 +706,6 @@ function buildAutoClickText(value: string, fallbackLabel: string): string {
 
   if (/^show best deals$/i.test(normalizedValue)) {
     return "Show me the best snack deals available right now.";
-  }
-
-  if (/^recommend something$/i.test(normalizedValue)) {
-    return "Show me recommendations.";
-  }
-
-  if (/^refund$/i.test(normalizedValue)) {
-    return "I need refund or replacement help.";
   }
 
   if (/^show gift packs$/i.test(normalizedValue)) {
