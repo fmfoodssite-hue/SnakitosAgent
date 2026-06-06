@@ -1,7 +1,19 @@
 import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import AdminChrome from "@/components/AdminChrome";
 
+export const dynamic = "force-dynamic";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Admin Dashboard | Snakitos Agent",
@@ -15,7 +27,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className="admin-shell bg-[#09090b] text-zinc-100 antialiased">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} admin-shell bg-[#09090b] text-zinc-100 antialiased`}
+      >
         <AdminChrome>{children}</AdminChrome>
       </body>
     </html>

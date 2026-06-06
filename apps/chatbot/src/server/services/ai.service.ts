@@ -405,7 +405,7 @@ export class AiService {
       return true;
     });
 
-    return merged.slice(0, 7);
+    return merged.slice(0, 6);
   }
 
   private buildStructuredContext(intent: AgentIntent, context: unknown): string {

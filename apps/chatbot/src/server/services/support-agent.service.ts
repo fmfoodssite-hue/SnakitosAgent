@@ -626,7 +626,164 @@ export class SupportAgentService {
     const bareBudgetMatch = isBudgetFollowUp ? normalized.match(/^(\d{3,5})$/) : null;
     const budget = budgetMatch?.[1] ?? bareBudgetMatch?.[1] ?? "";
     const category = this.extractKnownCategory(userMessage);
-    const productName = this.extractPotentialProductName(userMessage);
+    const specificProductName = this.extractPotentialProductName(userMessage);
+    const productName = specificProductName;
+    const detailFollowUpIntent = this.getProductDetailFollowUpIntent(state, normalized, productName);
+
+    if (/^(back|home|take me back|main categories|show categories)$/i.test(normalized)) {
+      return { intent: "back_home", language };
+    }
+
+    if (
+      /^(sure|yes|ok|okay|continue|show me|han|haan|acha|theek|yes please)$/i.test(normalized) &&
+      state.pending_action
+    ) {
+      return { intent: "confirmation_continue", language };
+    }
+
+    if (/^(hi|hello|hey|assalamualaikum|salam|kya haal)$/i.test(normalized)) {
+      return { intent: "greeting", language };
+    }
+
+    if (
+      /(urdu mein|urdu me|urdu|roman urdu|roman-urdu|romanurdu|اردو|رومن اردو)/i.test(
+        userMessage,
+      )
+    ) {
+      return { intent: "language_switch", language };
+    }
+
+    if (
+      /(where to send photos|where should i send proof|where to send proof|where to send video|where to send photos|where to share number and photos|where to share number|damaged item pictures|photos kahan bhejun|photo kidhar send karni hai|proof kahan bhejun|video kahan bhejun)/i.test(
+        normalized,
+      )
+    ) {
+      return { intent: "photos_proof", language };
+    }
+
+    if (
+      /(instagram\??|insta\??|facebook\??|tiktok\??|tik tok\??|youtube\??|social media\??|official page\??|official account\??|page\??|account\??|reels\??|shorts\??|updates\??|x\/twitter|twitter|threads|snapchat|pinterest|linkedin|whatsapp channel)/i.test(
+        normalized,
+      )
+    ) {
+      if (/(instagram|insta)/i.test(normalized)) {
+        return { intent: "instagram_link", language };
+      }
+
+      if (/(tiktok|tik tok)/i.test(normalized)) {
+        return { intent: "tiktok_link", language };
+      }
+
+      if (/(facebook)/i.test(normalized)) {
+        return { intent: "facebook_link", language };
+      }
+
+      if (/(youtube|shorts)/i.test(normalized)) {
+        return { intent: "youtube_link", language };
+      }
+
+      if (/(snapchat|pinterest|linkedin|threads|twitter|x\/twitter|whatsapp channel)/i.test(normalized)) {
+        return { intent: "other_platform", language };
+      }
+
+      return { intent: "social_media", language };
+    }
+
+    if (
+      /(refund|replacement|complaint|damaged item|missing item|wrong item|spoiled item|broken packaging|issue with order|photos\/videos|photos videos)/i.test(
+        normalized,
+      )
+    ) {
+      if (/(wrong product|wrong item received|wrong item aya|ghalat saman)/i.test(normalized)) {
+        return { intent: "wrong_product", language };
+      }
+
+      if (
+        /(damaged item|damaged product|arrived damaged|product is damaged|damaged$|items? are broken|product broken|product toot gaya|packet phata hua|chips tuti hui|items? tootay hue|item kharab hai|expiry wali cheez bheji|smell aa rahi|taste kharab hai|defective product|packet broken|expired item|parcel open aya|taste bad|taste expired jaisa|item missing|wrong quantity)/i.test(
+          normalized,
+        )
+      ) {
+        return { intent: "damaged_product", language };
+      }
+
+      if (/(replacement|replace item|exchange$|flavor change|galat flavor bhej dia)/i.test(normalized)) {
+        return { intent: "replacement_request", language };
+      }
+
+      if (/(refund time|kab refund|paisy wapis kab|refund kab milega)/i.test(normalized)) {
+        return { intent: "refund_time", language };
+      }
+
+      return { intent: "refund_request", language };
+    }
+
+    if (
+      /^(help|about|contact|number|email|address|location)$/.test(normalized) ||
+      /(snakitos kya hai|ye store kis cheez ka hai|ap log kya bechte ho|brand kis ka hai|fm foods hai kya|shop online hai|kya ye original site hai|shop ka naam|ye snacks kis company ke hain|pakistani snacks hain)/i.test(
+        normalized,
+      )
+    ) {
+      return { intent: "general_brand_query", language };
+    }
+
+    if (/(what do you sell|what snacks do you have|what products are available)/i.test(normalized)) {
+      return { intent: "what_do_you_sell", language };
+    }
+
+    if (/(damaged item|damaged product|arrived damaged|product is damaged|damaged$|items? are broken|product broken|product toot gaya|packet phata hua|chips tuti hui|items? tootay hue|item kharab hai|expiry wali cheez bheji|smell aa rahi|taste kharab hai)/i.test(normalized)) {
+      return { intent: "damaged_product", language };
+    }
+
+    if (/(wrong product|wrong item received|wrong item aya|ghalat saman)/i.test(normalized)) {
+      return { intent: "wrong_product", language };
+    }
+
+    if (
+      /(service bakwas|fraud hai|mujhe refund do|wrong item mila|damaged item|paisa kat gaya|order missing|allergy issue|certificate copy chahiye|wholesale rate do|agent se baat|complaint karni hai|repeat complaint|legal issue|privacy issue|support call back|bohat gussa hoon|i will report you|bad quality|payment fraud)/i.test(
+        normalized,
+      )
+    ) {
+      return { intent: "support_request", language };
+    }
+
+    if (/(do you deliver pakistan|courier name|tracking email|parcel late)/i.test(normalized)) {
+      return /(parcel late)/i.test(normalized)
+        ? { intent: "delayed_order", language }
+        : { intent: "shipping_policy", language };
+    }
+
+    if (/(where is my order|track my order|mera order kahan hai|order kahan hai|track order|parcel kab ayega|order kab milega|mujhy tracking do|tracking do|tracking kidar hai|track$|tracker number|email tracking nahi aya|rider kidar hai|order$|mera order|ordar no nahi hai|phone se order dekho|order id bhool gaya|courier update nhi|status batao|3 din hogaye order nahi aya|kal order kia tha|order id \d+|order \d+ status|phone se check karo|i dont have order number|i don't have order number|i dont have order no|i don't have order no|mera order nahi aya|courier status nahi aa raha|order cancel karna hai|address change karna hai|mujhy order dekhna hai|mera package|shipment status|order detail|delivery guy number|awb number|order shipped|order confirm hua|payment ke bad order)/i.test(normalized)) {
+      return { intent: "order_tracking", language };
+    }
+
+    if (
+      state.last_topic === "order_tracking" &&
+      /(i don't have order no|i dont have order no|i don't have order number|i dont have order number|dont have order number|don't have order number|dont have order no|don't have order no|no order number|no order no|order number nahi hai|order no nahi hai|ordar no nahi hai|order id bhool gaya|no tracking number|tracking number nahi hai)/i.test(
+        normalized,
+      )
+    ) {
+      return { intent: "order_tracking", language };
+    }
+
+    if (/(talk to agent|human support|talk to support|support chahiye|agent se baat|whatsapp support|koi agent se bat krni|human chahiye|number do)/i.test(normalized)) {
+      return { intent: "support_request", language };
+    }
+
+    if (
+      /(how to order|how can i order|order kaise karna hai|order kaise karein|checkout kaise karun|payment kaise hoga|cod|cash on delivery|delivery kaise hogi)/i.test(
+        normalized,
+      )
+    ) {
+      return { intent: "how_to_order", language };
+    }
+
+    if (/(wholesale|bulk order|dukaan ke liye rate|retailer price|shop ke liye rate|100 carton chahiye|corporate gift|office ke liye 50 box|event order|wedding snacks|school canteen|monthly supply|rate list bhejo|agency chahiye|dealership|dealership milti|shop pr rakhna hai|school canteen supply|distributor banna hai|business supply)/i.test(normalized)) {
+      return { intent: "wholesale_query", language };
+    }
+
+    if (/(shipping and refund policy|shipping refund policy|shipping & refund)/i.test(normalized)) {
+      return { intent: "shipping_refund_policy", language };
+    }
 
     if (/(new customer|first time|pehli dafa|first order|i'm new here|im new here)/i.test(normalized)) {
       return { intent: "new_customer_query", language };
@@ -694,6 +851,174 @@ export class SupportAgentService {
 
     if (/(gift|gifting|gift bundle|dost ko gift|gift dena hai|birthday snack box|eid gift snack)/i.test(normalized)) {
       return { intent: "gifting_recommendation", language, occasion: "gifting" };
+    }
+
+    if (/(family ke liye|party snacks|party bundle|guests|mehman arhy snacks|birthday snack|late night craving)/i.test(normalized)) {
+      return { intent: "party_recommendation", language, occasion: "party" };
+    }
+
+    if (/(tea time|chai time|chai ke sath)/i.test(normalized)) {
+      return { intent: "tea_time_recommendation", language, occasion: "tea time" };
+    }
+
+    if (/(under 500|under 1000|under 2000|3000 ka box|cheap snacks|sasti cheez batao)/i.test(normalized)) {
+      return { intent: "budget_recommendation", language, budget };
+    }
+
+    if (budget) {
+      return { intent: "budget_recommendation", language, budget };
+    }
+
+    if (detailFollowUpIntent) {
+      return { intent: detailFollowUpIntent, language, productName };
+    }
+
+    if (/(iso|certified|certification|certificate|which authority certified|haccp|export quality|approved for export|fda approved|certified hai)/i.test(normalized)) {
+      return { intent: "certification_query", language };
+    }
+
+    if (/(halal|safe for muslims|haram to nahi)/i.test(normalized)) {
+      return { intent: "halal_query", language };
+    }
+
+    if (/(contain nuts|gluten free|milk|soy|allergen|allergy|peanut allergy|processed near nuts|dairy|nuts)/i.test(normalized)) {
+      return {
+        intent: "allergen_query",
+        language,
+        productName,
+      };
+    }
+
+    if (/(ingredients|gelatin|msg|made of|oil use|oil konsa use hota|vegetable oil|preservatives|natural or artificial|chicken extract|beef extract|imported ingredients)/i.test(normalized)) {
+      return {
+        intent: "ingredient_query",
+        language,
+        productName,
+      };
+    }
+
+    if (/(vegan|vegetarian)/i.test(normalized)) {
+      return {
+        intent: "vegan_vegetarian_query",
+        language,
+        productName,
+      };
+    }
+
+    if (/(shelf life)/i.test(normalized)) {
+      return {
+        intent: "product_freshness",
+        language,
+        productName,
+      };
+    }
+
+    if (category) {
+      return { intent: "product_category_query", language, category };
+    }
+
+    if (/(nutrition|calories|protein|fat|diet snack|healthy snack)/i.test(normalized)) {
+      return {
+        intent: "nutrition_query",
+        language,
+        productName,
+      };
+    }
+
+    if (/(spice level|how spicy|which one is very spicy|very spicy|sab se spicy|most spicy)/i.test(normalized)) {
+      return {
+        intent: "spice_level_query",
+        language,
+        productName,
+      };
+    }
+
+    if (/(fresh|freshness|are these fresh|are your products fresh)/i.test(normalized)) {
+      return {
+        intent: "product_freshness",
+        language,
+        productName,
+      };
+    }
+
+    if (/(storage|store these|how to store)/i.test(normalized)) {
+      return {
+        intent: "product_storage",
+        language,
+        productName,
+      };
+    }
+
+    if (/(out of stock|stock available|availability|available\?|restock|restocking|reserve this|new products coming|new arrivals)/i.test(normalized)) {
+      return /(restock|restocking)/i.test(normalized)
+        ? { intent: "product_restock", language, productName }
+        : { intent: "product_availability", language, productName };
+    }
+
+    if (/(too expensive|mehnga|expensive|prices high|price high|why are your prices high|i'll order later|ill order later|i am not sure|i'm not sure)/i.test(normalized)) {
+      return { intent: "price_objection", language };
+    }
+
+    if (/(delivery charges|shipping charges|free shipping|shipping charges|shiping charges|delivery charges kia|kitna paisa delivery ka|free delivery|free shipping kab)/i.test(normalized)) {
+      return /(free shipping)/i.test(normalized)
+        ? { intent: "free_shipping_query", language }
+        : { intent: "delivery_charges", language };
+    }
+
+    if (/(delivery time|kitne din|how long delivery|how long does delivery take|delivery kitny din|delivery$|shipping times)/i.test(normalized)) {
+      return { intent: "delivery_time", language };
+    }
+
+    if (/(shipping policy|delivery policy|shipping$|lahore delivery hoti|karachi me delivery|islamabad parcel bhejtay|gaon me deliver hoga)/i.test(normalized)) {
+      return { intent: "shipping_policy", language };
+    }
+
+    if (/(deliver across pakistan|delivery cities|which cities|city delivery|do you deliver to|do you deliver pakistan|lahore|karachi|islamabad)/i.test(normalized)) {
+      return { intent: "delivery_city", language };
+    }
+
+    if (/(same day delivery)/i.test(normalized)) {
+      return { intent: "same_day_delivery", language };
+    }
+
+    if (/(change address|address change)/i.test(normalized)) {
+      return { intent: "address_change", language };
+    }
+
+    if (/(delayed order|late delivery|order delayed|parcel late)/i.test(normalized)) {
+      return { intent: "delayed_order", language };
+    }
+
+    if (/(^cod$|cod available|cash on delivery|cod hai|do you offer cod|cash pay kr sakty)/i.test(normalized)) {
+      return { intent: "cod_query", language };
+    }
+
+    if (/(online payment|card payment|bank transfer|wallet payment|can i pay online|payment$|card chalta|easypaisa|jazzcash|checkout issue)/i.test(normalized)) {
+      return { intent: "online_payment", language };
+    }
+
+    if (/(whatsapp order|order on whatsapp|can i order on whatsapp)/i.test(normalized)) {
+      return { intent: "whatsapp_order", language };
+    }
+
+    if (/(payment failed|amount deducted|payment deducted|order not confirmed|paisa kat gya order nahi|payment fail hogya)/i.test(normalized)) {
+      return { intent: "payment_failed", language };
+    }
+
+    if (/(secure payment|safe to pay)/i.test(normalized)) {
+      return { intent: "secure_payment", language };
+    }
+
+    if (/(return food items|return request|can i return|return$|return krna|return karna|wapis karna hai|food wapis hota|14 din bad return|packet khol dia return|return pickup)/i.test(normalized)) {
+      return { intent: "return_request", language };
+    }
+
+    if (/(refund request|i want a refund|need a refund|mujhe refund|refund chahiye|refund mil|refund policy|refund$|refnd|paise wapis|refund approve karo|refund method)/i.test(normalized)) {
+      return { intent: "refund_request", language };
+    }
+
+    if (/(refund time|kab refund|paisy wapis kab|refund kab milega)/i.test(normalized)) {
+      return { intent: "refund_time", language };
     }
 
     if (/(replacement|replace item|exchange$|flavor change|galat flavor bhej dia)/i.test(normalized)) {
@@ -1078,6 +1403,173 @@ export class SupportAgentService {
     const language = classified.language;
     const category = classified.category || "";
     const budget = classified.budget || "";
+
+    if (classified.intent === "greeting" || classified.intent === "language_switch") {
+      return {
+        intent: "general",
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message: this.buildGreetingMessage(language),
+          userMessage,
+          options: this.getQuickMenuOptions(),
+          skipSuggestions: true,
+        }),
+      };
+    }
+
+    if (classified.intent === "product_recommendation") {
+      return {
+        intent: "product",
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message: this.buildRecommendationPrompt(language),
+          userMessage,
+          options: this.getRecommendationOptions(),
+          skipSuggestions: true,
+        }),
+      };
+    }
+
+    if (classified.intent === "photos_proof") {
+      return {
+        intent: "general",
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message: this.buildPhotoProofMessage(language),
+          userMessage,
+          options: [
+            { label: "WhatsApp Support", value: "How can I contact support?" },
+            { label: "Home", value: "home" },
+            { label: "Back", value: "show categories" },
+          ],
+          skipSuggestions: true,
+        }),
+      };
+    }
+
+    if (classified.intent === "how_to_order") {
+      return {
+        intent: "general",
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message: this.buildHowToOrderMessage(language),
+          userMessage,
+          options: [
+            { label: "Deals", value: "show best deals" },
+            { label: "Recommendations", value: "recommend something" },
+            { label: "Home", value: "home" },
+            { label: "Back", value: "show categories" },
+          ],
+          skipSuggestions: true,
+        }),
+      };
+    }
+
+    if (
+      [
+        "instagram_link",
+        "tiktok_link",
+        "facebook_link",
+        "youtube_link",
+        "social_media",
+        "other_platform",
+      ].includes(classified.intent)
+    ) {
+      return {
+        intent: "general",
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message: this.buildSocialMessage(
+            classified.intent === "instagram_link"
+              ? "instagram"
+              : classified.intent === "tiktok_link"
+                ? "tiktok"
+                : classified.intent === "facebook_link"
+                  ? "facebook"
+                  : classified.intent === "youtube_link"
+                    ? "youtube"
+                    : classified.intent === "other_platform"
+                      ? "other"
+                      : "all",
+            language,
+          ),
+          userMessage,
+          options: this.getSocialOptions(),
+          skipSuggestions: true,
+        }),
+      };
+    }
+
+    if (
+      ["refund_request", "replacement_request", "damaged_product", "wrong_product"].includes(
+        classified.intent,
+      )
+    ) {
+      return {
+        intent: "general",
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message: this.buildRefundReviewMessage(language),
+          userMessage,
+          options: [
+            { label: "WhatsApp Support", value: "How can I contact support?" },
+            { label: "Home", value: "home" },
+            { label: "Back", value: "show categories" },
+          ],
+          skipSuggestions: true,
+        }),
+      };
+    }
+
+    if (classified.intent === "support_request") {
+      const message = SUPPORT_PHONE
+        ? `WhatsApp: ${SUPPORT_WHATSAPP}\nPhone: ${SUPPORT_PHONE}\nEmail: ${SUPPORT_EMAIL}`
+        : `Please contact Snakitos support by email at ${SUPPORT_EMAIL} or WhatsApp at ${SUPPORT_WHATSAPP}.`;
+
+      return {
+        intent: "general",
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message,
+          userMessage,
+          options: [
+            { label: "WhatsApp Support", value: "How can I contact support?" },
+            { label: "Home", value: "home" },
+            { label: "Back", value: "show categories" },
+          ],
+          skipSuggestions: true,
+        }),
+      };
+    }
+
+    if (classified.intent === "product_freshness") {
+      return {
+        intent: "general",
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message: this.buildFreshnessMessage(language),
+          userMessage,
+          options: [
+            { label: "Products", value: "show categories" },
+            { label: "Home", value: "home" },
+          ],
+          skipSuggestions: true,
+        }),
+      };
+    }
+
+    if (classified.intent === "fallback_unknown") {
+      return {
+        intent: "general",
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message: this.buildFallbackMessage(language),
+          userMessage,
+          options: this.getQuickMenuOptions(),
+          skipSuggestions: true,
+        }),
+      };
+    }
 
     switch (classified.intent) {
       case "greeting":
@@ -2054,6 +2546,8 @@ export class SupportAgentService {
       { label: "Track Order", value: "track my order" },
       { label: "Refund", value: "refund" },
       { label: "WhatsApp Support", value: "How can I contact support?" },
+      { label: "Home", value: "home" },
+      { label: "Back", value: "show categories" },
     ];
   }
 
