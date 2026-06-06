@@ -59,7 +59,7 @@ export async function getStoreStats() {
     return {
       orderCount: data.count || 0,
     };
-  } catch (error) {
+  } catch {
     return null;
   }
 }

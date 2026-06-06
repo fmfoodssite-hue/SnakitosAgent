@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const adminBasePath = "/admin";
+const sessionCookie = "snakitos_admin_session";
 
 // Next.js 16 uses proxy.ts (renamed from middleware.ts)
 // The export must be named "proxy" in this file
@@ -20,7 +21,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const adminSession = request.cookies.get("admin_session");
+  const adminSession = request.cookies.get(sessionCookie);
 
   if (!adminSession) {
     const loginUrl = new URL(loginPath, request.url);

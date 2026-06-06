@@ -1,13 +1,21 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-
-const adminBasePath = "/admin";
+import { clearAdminSession, getAdminSession, getRequestIpAddress } from "@/lib/auth";
+import { writeAuditLog } from "@/lib/audit";
 
 export async function POST() {
-  const cookieStore = await cookies();
-  cookieStore.delete({
-    name: "admin_session",
-    path: adminBasePath,
-  });
+  const session = await getAdminSession();
+  await clearAdminSession();
+
+  if (session) {
+    await writeAuditLog({
+      adminId: session.adminId,
+      action: "admin.logout",
+      entityType: "auth_session",
+      entityId: session.adminId,
+      ipAddress: await getRequestIpAddress(),
+    });
+  }
+
   return NextResponse.json({ success: true });
 }
+

@@ -1,41 +1,25 @@
 "use client";
 
 import React from "react";
-import { Menu, Zap } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 
 export default function AdminChrome({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   return (
-    <div className="flex min-h-screen w-full bg-[#09090b] text-zinc-100">
-      <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
+    <div className="flex min-h-screen bg-[#09090b] text-zinc-100">
+      <Sidebar
+        mobileOpen={mobileOpen}
+        onOpen={() => setMobileOpen(true)}
+        onClose={() => setMobileOpen(false)}
+      />
       <main className="relative min-h-screen flex-1">
-        <div className="pointer-events-none absolute left-0 top-0 h-full w-full bg-[radial-gradient(circle_at_30%_20%,#1e1b4b_0%,transparent_50%)] opacity-20" />
-
-        <header className="sticky top-0 z-30 border-b border-white/5 bg-[#09090b]/90 backdrop-blur md:hidden">
-          <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
-            <button
-              type="button"
-              onClick={() => setMobileOpen(true)}
-              className="rounded-xl border border-white/10 p-2 text-zinc-200 transition hover:border-white/20 hover:bg-white/5"
-              aria-label="Open navigation"
-            >
-              <Menu className="h-5 w-5" />
-            </button>
-            <div className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-premium">
-                <Zap className="h-5 w-5 fill-current text-white" />
-              </div>
-              <span className="text-sm font-semibold tracking-tight text-white">Agent Admin</span>
-            </div>
-          </div>
-        </header>
-
-        <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 md:px-8 md:py-8">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(24,24,27,0.9),transparent_40%),radial-gradient(circle_at_80%_10%,rgba(79,70,229,0.16),transparent_22%),linear-gradient(180deg,rgba(9,9,11,0),rgba(9,9,11,0.9))]" />
+        <div className="relative mx-auto max-w-7xl px-4 pb-10 pt-20 sm:px-6 md:px-8 md:pt-8">
           {children}
         </div>
       </main>
     </div>
   );
 }
+

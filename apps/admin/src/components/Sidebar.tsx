@@ -1,133 +1,146 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
+import React from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { 
-  LayoutDashboard, 
-  ShoppingBag, 
-  Users, 
-  MessageSquare, 
-  Settings, 
-  Zap,
-  BarChart3,
+import {
   Bot,
+  FileStack,
+  FlaskConical,
+  FolderSync,
+  LayoutDashboard,
   LogOut,
-  X
+  MessageSquareText,
+  ShieldCheck,
+  ShoppingBag,
+  Ticket,
+  Settings,
+  ScrollText,
+  BarChart3,
+  Upload,
+  X,
+  Menu,
 } from "lucide-react";
+import { ADMIN_BASE_PATH } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
-const adminBasePath = process.env.NEXT_PUBLIC_ADMIN_BASE_PATH || "/admin";
-
-const menuItems = [
-  { icon: LayoutDashboard, label: "Dashboard", href: "/" },
-  { icon: ShoppingBag, label: "Orders", href: "/orders" },
-  { icon: Users, label: "Customers", href: "/customers" },
-  { icon: Bot, label: "AI Training", href: "/ai-training" },
-  { icon: MessageSquare, label: "Interactions", href: "/interactions" },
-  { icon: BarChart3, label: "Analytics", href: "/analytics" },
-  { icon: Settings, label: "Settings", href: "/settings" },
+const items = [
+  { label: "Overview", href: "/", icon: LayoutDashboard },
+  { label: "Knowledge Base", href: "/knowledge-base", icon: FileStack },
+  { label: "Uploads", href: "/uploads", icon: Upload },
+  { label: "Shopify Sync", href: "/shopify-sync", icon: ShoppingBag },
+  { label: "Prompt Control", href: "/prompt-control", icon: Bot },
+  { label: "Conversations", href: "/conversations", icon: MessageSquareText },
+  { label: "Handoffs", href: "/handoffs", icon: Ticket },
+  { label: "Testing Lab", href: "/testing-lab", icon: FlaskConical },
+  { label: "Analytics", href: "/analytics", icon: BarChart3 },
+  { label: "Guardrails", href: "/guardrails", icon: ShieldCheck },
+  { label: "Settings", href: "/settings", icon: Settings },
+  { label: "Audit Logs", href: "/audit-logs", icon: ScrollText },
 ];
 
 type SidebarProps = {
   mobileOpen?: boolean;
   onClose?: () => void;
+  onOpen?: () => void;
 };
 
-export default function Sidebar({ mobileOpen = false, onClose }: SidebarProps) {
+export default function Sidebar({ mobileOpen = false, onClose, onOpen }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
-  // Don't render sidebar on the login page
-  if (pathname === "/login") return null;
+  if (pathname === "/login") {
+    return null;
+  }
 
   const handleLogout = async () => {
-    await fetch(`${adminBasePath}/api/auth/logout`, { method: "POST" });
+    await fetch(`${ADMIN_BASE_PATH}/api/auth/logout`, { method: "POST" });
     router.push("/login");
     router.refresh();
   };
 
   return (
     <>
+      <button
+        type="button"
+        onClick={onOpen}
+        className="fixed left-4 top-4 z-40 rounded-xl border border-white/10 bg-[#09090b]/80 p-2 text-zinc-200 backdrop-blur md:hidden"
+        aria-label="Open sidebar"
+      >
+        <Menu className="h-5 w-5" />
+      </button>
+
       <div
         className={cn(
           "fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity md:hidden",
           mobileOpen ? "opacity-100" : "pointer-events-none opacity-0",
         )}
         onClick={onClose}
-        aria-hidden="true"
       />
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex h-screen w-72 max-w-[85vw] flex-col border-r border-white/5 bg-[#09090b] transition-transform duration-300 md:sticky md:top-0 md:z-auto md:w-64 md:max-w-none md:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 flex h-screen w-80 max-w-[88vw] flex-col border-r border-white/5 bg-[#09090b] px-4 py-5 transition-transform duration-300 md:sticky md:translate-x-0",
           mobileOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
-        <div className="flex items-center justify-between p-6 md:block">
-          <div className="flex items-center gap-3 px-2">
-            <div className="w-8 h-8 bg-gradient-premium rounded-lg flex items-center justify-center">
-              <Zap className="text-white w-5 h-5 fill-current" />
-            </div>
-            <span className="font-bold text-xl tracking-tight">Agent Admin</span>
+        <div className="mb-5 flex items-center justify-between px-2">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-indigo-300">Snakitos</p>
+            <h2 className="mt-2 text-xl font-semibold text-white">RAG Admin</h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl border border-white/10 p-2 text-zinc-400 transition hover:border-white/20 hover:text-white md:hidden"
-            aria-label="Close navigation"
+            className="rounded-xl border border-white/10 p-2 text-zinc-400 md:hidden"
+            aria-label="Close sidebar"
           >
-            <X className="w-5 h-5" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 
-        <nav className="flex-1 space-y-1 px-4 py-4">
-          {menuItems.map((item) => {
-            const href = item.href;
-            const isActive = pathname === href;
+        <div className="mb-5 rounded-3xl border border-indigo-500/15 bg-[radial-gradient(circle_at_top_left,rgba(99,102,241,0.18),transparent_55%)] p-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-indigo-500/15 text-indigo-200">
+              <FolderSync className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-white">Knowledge + Commerce</p>
+              <p className="text-xs text-zinc-400">Support, prompts, ingestion, and sync</p>
+            </div>
+          </div>
+        </div>
+
+        <nav className="flex-1 space-y-1 overflow-y-auto pr-1">
+          {items.map((item) => {
+            const isActive = pathname === item.href;
             return (
               <Link
                 key={item.href}
-                href={href}
+                href={item.href}
                 onClick={onClose}
                 className={cn(
-                  "group flex items-center gap-3 rounded-xl px-4 py-3 transition-all duration-200",
-                  isActive 
-                    ? "bg-white/5 text-white" 
-                    : "text-zinc-400 hover:bg-white/5 hover:text-white"
+                  "group flex items-center gap-3 rounded-2xl px-4 py-3 text-sm transition",
+                  isActive ? "bg-white/8 text-white" : "text-zinc-400 hover:bg-white/5 hover:text-white",
                 )}
               >
-                <item.icon className={cn(
-                  "h-5 w-5 transition-transform duration-200 group-hover:scale-110",
-                  isActive ? "text-indigo-400" : "text-zinc-500"
-                )} />
-                <span className="font-medium">{item.label}</span>
-                {isActive && (
-                  <div className="ml-auto h-5 w-1 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.5)]" />
-                )}
+                <item.icon className={cn("h-4 w-4", isActive ? "text-indigo-300" : "text-zinc-500")} />
+                <span>{item.label}</span>
               </Link>
             );
           })}
         </nav>
 
-        <div className="mt-auto space-y-2 p-4">
-          <button
-            onClick={handleLogout}
-            className="group flex w-full items-center gap-3 rounded-xl px-4 py-3 text-zinc-400 transition-all duration-200 hover:bg-red-500/5 hover:text-red-400"
-          >
-            <LogOut className="h-5 w-5 transition-transform group-hover:-translate-x-1" />
-            <span className="font-medium">Logout</span>
-          </button>
-
-          <div className="glass-card rounded-2xl border border-indigo-500/20 bg-gradient-to-br from-indigo-500/10 to-purple-500/10 p-4">
-            <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-indigo-400">Status</p>
-            <div className="flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="text-sm font-medium text-zinc-300">AI Agent Online</p>
-            </div>
-          </div>
-        </div>
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="mt-4 flex items-center gap-3 rounded-2xl border border-white/10 px-4 py-3 text-sm text-zinc-300 transition hover:border-red-400/30 hover:bg-red-500/10 hover:text-red-200"
+        >
+          <LogOut className="h-4 w-4" />
+          Sign Out
+        </button>
       </aside>
     </>
   );
 }
+

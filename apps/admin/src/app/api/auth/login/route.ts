@@ -1,35 +1,31 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-
-const adminBasePath = "/admin";
+import { authenticateAdmin, createAdminSession, getRequestIpAddress } from "@/lib/auth";
+import { writeAuditLog } from "@/lib/audit";
+import { loginSchema } from "@/lib/validations";
 
 export async function POST(request: Request) {
   try {
-    const { password } = await request.json();
-    const adminKey = process.env.ADMIN_SECRET_KEY;
+    const payload = loginSchema.parse(await request.json());
+    const admin = await authenticateAdmin(payload.email, payload.password);
 
-    if (!adminKey) {
-      console.error("ADMIN_SECRET_KEY is not defined in environment variables.");
-      return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+    if (!admin) {
+      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
     }
 
-    if (password === adminKey) {
-      const cookieStore = await cookies();
-      
-      // Set a secure session cookie
-      cookieStore.set("admin_session", "authenticated", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        maxAge: 60 * 60 * 24, // 24 hours
-        path: adminBasePath,
-      });
+    await createAdminSession(admin);
+    await writeAuditLog({
+      adminId: admin.id,
+      action: "admin.login",
+      entityType: "auth_session",
+      entityId: admin.id,
+      details: { role: admin.role, email: admin.email },
+      ipAddress: await getRequestIpAddress(),
+    });
 
-      return NextResponse.json({ success: true });
-    }
-
-    return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
+    return NextResponse.json({ success: true, admin });
   } catch (error) {
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    console.error("Admin login failed", error);
+    return NextResponse.json({ error: "Unable to login" }, { status: 400 });
   }
 }
+

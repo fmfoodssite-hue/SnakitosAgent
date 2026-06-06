@@ -1,36 +1,114 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Snakitos RAG Admin Dashboard
 
-## Getting Started
+Production-oriented admin dashboard for the Snakitos Shopify AI assistant.
 
-First, run the development server:
+## Modules
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Admin authentication with signed sessions and role checks
+- Overview analytics dashboard
+- Knowledge base manager
+- Upload and ingestion pipeline
+- Shopify product sync and reindexing
+- Prompt control with version history
+- Conversation inbox
+- Human handoff ticket manager
+- Order tracking and guardrail settings
+- Testing lab
+- Audit logs
+
+## Stack
+
+- Next.js App Router
+- TypeScript
+- Tailwind CSS
+- Supabase
+- OpenAI embeddings
+- Supabase pgvector or Pinecone
+- Shopify Admin API from server routes only
+
+## Folder Structure
+
+```text
+apps/admin
+├─ src/app
+│  ├─ api
+│  │  ├─ admin
+│  │  │  ├─ analytics
+│  │  │  ├─ chats
+│  │  │  ├─ handoffs
+│  │  │  ├─ knowledge
+│  │  │  ├─ prompts
+│  │  │  ├─ reindex
+│  │  │  ├─ settings
+│  │  │  ├─ shopify/sync
+│  │  │  ├─ tests
+│  │  │  └─ upload
+│  │  └─ auth
+│  ├─ analytics
+│  ├─ audit-logs
+│  ├─ conversations
+│  ├─ guardrails
+│  ├─ handoffs
+│  ├─ knowledge-base
+│  ├─ prompt-control
+│  ├─ settings
+│  ├─ shopify-sync
+│  ├─ testing-lab
+│  └─ uploads
+├─ src/components
+│  ├─ dashboard
+│  ├─ forms
+│  └─ ui
+├─ src/lib
+│  ├─ services
+│  ├─ auth.ts
+│  ├─ db.ts
+│  ├─ env.ts
+│  ├─ rate-limit.ts
+│  ├─ types.ts
+│  └─ validations.ts
+└─ supabase
+   └─ admin-rag-dashboard.sql
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Copy `apps/admin/.env.example` into your environment file.
+2. Run the SQL in [supabase/admin-rag-dashboard.sql](./supabase/admin-rag-dashboard.sql).
+3. Create a storage bucket matching `UPLOAD_STORAGE_BUCKET`.
+4. Install dependencies from `apps/admin/package.json`.
+5. Start the app with `npm --prefix apps/admin run dev`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Authentication
 
-## Learn More
+- Admin users are stored in the `admins` table.
+- Sessions are signed with `ADMIN_SESSION_SECRET`.
+- A bootstrap owner can be created from `ADMIN_BOOTSTRAP_EMAIL` and `ADMIN_BOOTSTRAP_PASSWORD`.
+- Every admin route verifies role access and writes audit logs.
 
-To learn more about Next.js, take a look at the following resources:
+## Upload Ingestion
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Supported file types: `pdf`, `txt`, `csv`, `docx`, `jsonl`
+- Files are stored in Supabase Storage
+- Extracted content is sanitized, chunked, embedded, and indexed
+- Chunk preview and embedding status are visible in the dashboard
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Vector Search
 
-## Deploy on Vercel
+Choose one provider:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `RAG_VECTOR_PROVIDER=supabase`
+- `RAG_VECTOR_PROVIDER=pinecone`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The ingestion service writes metadata in Supabase either way. Reindexing can be triggered from the dashboard or `/api/admin/reindex`.
+
+## Deployment Notes For Vercel
+
+- Deploy `apps/admin` as the project root if you want a dedicated admin deployment.
+- If the monorepo is deployed together, keep `basePath=/admin`.
+- Add all server-side secrets in the Vercel project settings.
+- Do not expose `SUPABASE_SERVICE_ROLE_KEY`, `OPENAI_API_KEY`, `PINECONE_API_KEY`, or `SHOPIFY_ADMIN_API_ACCESS_TOKEN` to the client.
+- Ensure the Vercel runtime has access to the same Supabase project and storage bucket used for ingestion.
+- Run the SQL migrations before first login.
+- Set `ADMIN_SESSION_SECRET` to a long random value.
+
