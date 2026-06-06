@@ -361,6 +361,18 @@
   white-space: pre-line;
 }
 
+.inlineLink {
+  color: #ff6b2c;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  word-break: break-all;
+}
+
+.inlineLink:hover {
+  color: #e45a1a;
+}
+
 .userMessageCard {
   display: grid;
   gap: 4px;

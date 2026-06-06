@@ -750,6 +750,28 @@ function ensureNavigationOptions(options: Option[]): Option[] {
   return items;
 }
 
+function renderTextWithLinks(content: string): React.ReactNode[] {
+  const parts = content.split(/(https?:\/\/[^\s]+)/g);
+
+  return parts
+    .filter(Boolean)
+    .map((part, index) =>
+      /^https?:\/\//i.test(part) ? (
+        <a
+          key={`${part}-${index}`}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.inlineLink}
+        >
+          {part}
+        </a>
+      ) : (
+        <React.Fragment key={`${part}-${index}`}>{part}</React.Fragment>
+      ),
+    );
+}
+
 function renderParagraphText(content: string): React.ReactNode {
   const blocks = content
     .split(/\n\s*\n/)
@@ -758,7 +780,7 @@ function renderParagraphText(content: string): React.ReactNode {
 
   return blocks.map((block, index) => (
     <p key={`${block}-${index}`} className={styles.assistantText}>
-      {block.replace(/\n/g, " ")}
+      {renderTextWithLinks(block)}
     </p>
   ));
 }
