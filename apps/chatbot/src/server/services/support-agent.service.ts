@@ -511,6 +511,27 @@ export class SupportAgentService {
       return null;
     }
 
+    if (
+      state.last_support_issue === "damaged_product" &&
+      this.isDamageOrExpiryComplaint(userMessage)
+    ) {
+      const language = this.detectSnakitosLanguage(userMessage);
+      return {
+        intent: "general",
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message: this.buildRefundOrReplacementMessage(language),
+          userMessage,
+          options: [
+            { label: "WhatsApp Support", value: "whatsapp support number" },
+            { label: "Home", value: "home" },
+            { label: "Back", value: "show categories" },
+          ],
+          skipSuggestions: true,
+        }),
+      };
+    }
+
     const hasOrderReference = Boolean(
       extractOrderReference(userMessage) || extractPhoneNumber(userMessage),
     );
@@ -599,6 +620,12 @@ export class SupportAgentService {
 
   private buildSupportContactBlock(): string {
     return this.getSupportContactLines().join("\n");
+  }
+
+  private isDamageOrExpiryComplaint(message: string): boolean {
+    return /(damaged item|damaged product|arrived damaged|product is damaged|damaged$|items? are broken|product broken|product toot gaya|packet phata hua|packet khula|packet open|chips tuti hui|items? tootay hue|item kharab hai|parcel kharab|parcel damaged|parcel open aya|expiry wali cheez bheji|expired item|expire tha|expired tha|expiry issue|expiry problem|smell aa rahi|taste kharab hai|taste bad|taste expired jaisa|خراب|ڈیمیج|ایکسپائر|معیاد|پیکٹ کھلا|پیکٹ پھٹا|مسئلہ)/i.test(
+      message,
+    );
   }
 
   private normalizeCatalogText(value: string): string {
@@ -1350,7 +1377,7 @@ YouTube: ${youtube}`;
       return { intent: "what_do_you_sell", language };
     }
 
-    if (/(damaged item|damaged product|arrived damaged|product is damaged|damaged$|items? are broken|product broken|product toot gaya|packet phata hua|chips tuti hui|items? tootay hue|item kharab hai|expiry wali cheez bheji|smell aa rahi|taste kharab hai|خراب|ڈیمیج|ٹوٹی ہوئی|غلط آئٹم|مسئلہ)/i.test(normalized)) {
+    if (this.isDamageOrExpiryComplaint(normalized)) {
       return { intent: "damaged_product", language };
     }
 
@@ -1439,6 +1466,15 @@ YouTube: ${youtube}`;
 
     if (/(show me best deals|best deals|snack deals|best value|bundles|deals available|combo deals|value packs)/i.test(normalized)) {
       return { intent: "best_deals", language };
+    }
+
+    if (
+      state.last_support_issue === "damaged_product" &&
+      /(parcel|packet|expire|expired|expiry|kharab|broken|damage|damaged|khula|phaata|phata|open aya|taste bad|smell)/i.test(
+        normalized,
+      )
+    ) {
+      return { intent: "damaged_product", language };
     }
 
     if (/(recommend something|what should i buy|suggest snacks|recommend me|show recommendations|kya loon|kya order karun|best snack|best item batao)/i.test(normalized)) {
@@ -1672,7 +1708,10 @@ YouTube: ${youtube}`;
       return { intent: "replacement_request", language };
     }
 
-    if (/(damaged item|damaged product|arrived damaged|product is damaged|damaged$|items? are broken|product broken|product toot gaya|packet phata hua|chips tuti hui|items? tootay hue|item kharab hai|expiry wali cheez bheji|smell aa rahi|taste kharab hai|defective product|packet broken|expired item|parcel open aya|taste bad|taste expired jaisa|item missing|wrong quantity)/i.test(normalized)) {
+    if (
+      this.isDamageOrExpiryComplaint(normalized) ||
+      /(defective product|packet broken|item missing|wrong quantity)/i.test(normalized)
+    ) {
       return { intent: "damaged_product", language };
     }
 
@@ -1911,6 +1950,16 @@ YouTube: ${youtube}`;
       "sath",
       "gussa",
       "nachos",
+      "ka",
+      "mila",
+      "kharab",
+      "parcel",
+      "packet",
+      "phaata",
+      "phata",
+      "khula",
+      "bhejo",
+      "masla",
     ].filter((token) => normalized.includes(token)).length;
     const englishHits = [
       "shipping",
