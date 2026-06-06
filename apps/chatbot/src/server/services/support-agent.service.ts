@@ -1,6 +1,8 @@
 import policyData from "../data/policies.json";
 import productMetadata from "../data/product-metadata.json";
 import trainingGuideReference from "../data/snakitos-training-guide-reference.json";
+import uploadedProductCatalog from "../data/uploaded-product-catalog.json";
+import { config } from "../config";
 import { randomUUID } from "crypto";
 import {
   AgentContext,
@@ -61,6 +63,17 @@ type ProductMetadataRule = {
   halalCertificateMessage?: string;
   expiry?: string;
   ingredientsSummary?: string;
+};
+
+type UploadedCatalogEntry = {
+  title: string;
+  price: string;
+  vendor?: string;
+  productType?: string;
+  availability?: string;
+  orderCount?: number;
+  unitsSold?: number;
+  description?: string;
 };
 
 const DEFAULT_SUGGESTION_LIMIT = 8;
@@ -158,8 +171,15 @@ type SnakitosIntent =
   | "replacement_request"
   | "damaged_product"
   | "wrong_product"
+  | "photo_proof"
   | "exchange_flavor"
   | "cancellation_query"
+  | "how_to_order"
+  | "social_media"
+  | "instagram_query"
+  | "facebook_query"
+  | "tiktok_query"
+  | "youtube_query"
   | "wholesale_query"
   | "bulk_discount"
   | "corporate_gifting"
@@ -170,7 +190,7 @@ type SnakitosIntent =
 
 type ClassifiedIntent = {
   intent: SnakitosIntent;
-  language: "english" | "roman_urdu" | "mixed";
+  language: "english" | "roman_urdu" | "mixed" | "urdu";
   budget?: string;
   category?: string;
   productName?: string;
@@ -569,6 +589,713 @@ export class SupportAgentService {
     return "Thanks. Please share a little more detail and contact support so they can guide you properly.";
   }
 
+  private getSupportContactLines(): string[] {
+    return [
+      `WhatsApp: ${config.app.whatsappNumber}`,
+      `Phone: ${config.app.supportPhone}`,
+      `Email: ${config.app.supportEmail}`,
+    ];
+  }
+
+  private buildSupportContactBlock(): string {
+    return this.getSupportContactLines().join("\n");
+  }
+
+  private normalizeCatalogText(value: string): string {
+    return value
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  private normalizeProductTitleForExactMatch(value: string): string {
+    return this.normalizeCatalogText(value)
+      .replace(/\bpack of\s+\d+\b/g, " ")
+      .replace(/\b\d+(?:\.\d+)?\s*(g|gm|kg|ml|l)\b/g, " ")
+      .replace(/\bsnakitos\b/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  private getUploadedCatalog(): UploadedCatalogEntry[] {
+    return uploadedProductCatalog as UploadedCatalogEntry[];
+  }
+
+  private scoreProductTitleMatch(query: string, title: string): number {
+    const normalizedQuery = this.normalizeProductTitleForExactMatch(query);
+    const normalizedTitle = this.normalizeProductTitleForExactMatch(title);
+    const queryTokens = normalizedQuery.split(" ").filter((token) => token.length > 1);
+    let score = 0;
+
+    if (normalizedTitle === normalizedQuery) {
+      score += 100;
+    }
+    if (normalizedTitle.includes(normalizedQuery)) {
+      score += 50;
+    }
+    for (const token of queryTokens) {
+      if (normalizedTitle.includes(token)) {
+        score += 5;
+      }
+    }
+
+    const titleTokens = normalizedTitle.split(" ").filter((token) => token.length > 1);
+    const exactTokenHits = queryTokens.filter((token) => titleTokens.includes(token)).length;
+    score += exactTokenHits * 8;
+
+    if (normalizedTitle.startsWith(normalizedQuery)) {
+      score += 15;
+    }
+
+    const lengthDelta = Math.max(0, titleTokens.length - queryTokens.length);
+    score -= Math.min(lengthDelta, 8);
+
+    return score;
+  }
+
+  private pickBestExactProductMatch(query: string, products: ProductLookupResult[]): ProductLookupResult | null {
+    const normalizedQuery = this.normalizeCatalogText(query);
+    const asksForBundle = /\b(bundle|deal|combo|pack|box)\b/i.test(query);
+    const ranked = [...products]
+      .map((product) => ({
+        product,
+        score: (() => {
+          let score = this.scoreProductTitleMatch(query, product.title);
+          const normalizedTitle = this.normalizeCatalogText(product.title);
+
+          if (!asksForBundle && /\b(bundle|deal|combo|pack of|box)\b/i.test(product.title)) {
+            score -= 20;
+          }
+
+          if (product.link.includes("/products/")) {
+            score += 30;
+          } else {
+            score -= 10;
+          }
+
+          if (product.source === "shopify_admin" || product.source === "shopify_storefront") {
+            score += 8;
+          }
+
+          if (normalizedTitle === normalizedQuery) {
+            score += 20;
+          }
+
+          return score;
+        })(),
+      }))
+      .sort((left, right) => right.score - left.score);
+
+    const best = ranked[0];
+    if (!best || best.score <= 0) {
+      return null;
+    }
+
+    if (!best.product.link.includes("/products/")) {
+      const storefrontAlternative = ranked.find(
+        (item) =>
+          item.product.link.includes("/products/") &&
+          item.score >= best.score - 25,
+      );
+
+      if (storefrontAlternative) {
+        return storefrontAlternative.product;
+      }
+    }
+
+    return best.product;
+  }
+
+  private mergeUniqueProducts(...groups: ProductLookupResult[][]): ProductLookupResult[] {
+    const merged = new Map<string, ProductLookupResult>();
+
+    for (const group of groups) {
+      for (const product of group) {
+        const key = product.handle || product.id || product.title.toLowerCase();
+        const existing = merged.get(key);
+        if (!existing) {
+          merged.set(key, product);
+          continue;
+        }
+
+        merged.set(key, {
+          ...existing,
+          ...product,
+          description: existing.description ?? product.description,
+          productType: existing.productType ?? product.productType,
+          vendor: existing.vendor ?? product.vendor,
+          tags: existing.tags.length > 0 ? existing.tags : product.tags,
+          variants: existing.variants.length > 0 ? existing.variants : product.variants,
+        });
+      }
+    }
+
+    return Array.from(merged.values());
+  }
+
+  private async getExactProductLookupCandidates(query: string): Promise<ProductLookupResult[]> {
+    const [searchResults, storefrontResults] = await Promise.all([
+      shopifyService.searchProducts(query).catch(() => []),
+      shopifyService.getStorefrontRecommendations(query, 20).catch(() => []),
+    ]);
+
+    return this.mergeUniqueProducts(searchResults, storefrontResults);
+  }
+
+  private buildExactProductMessage(
+    product: ProductLookupResult,
+    language: "english" | "roman_urdu" | "mixed" | "urdu",
+  ): string {
+    const priceValue = product.price ? `Rs. ${Number.parseFloat(product.price).toFixed(0)}` : "";
+    const description = this.getMeaningfulProductDescription(product);
+
+    if (language === "urdu") {
+      const base = priceValue
+        ? `${product.title} Snakitos par available hai. Is ki current price ${priceValue} hai.`
+        : `${product.title} Snakitos par available hai.`;
+      return description ? `${base} ${description}` : base;
+    }
+
+    if (this.prefersRomanUrdu(language)) {
+      const base = priceValue
+        ? `${product.title} Snakitos par available hai. Is ki current price ${priceValue} hai.`
+        : `${product.title} Snakitos par available hai.`;
+      return description
+        ? `${base} ${description}`
+        : product.productType
+          ? `${base} Yeh Snakitos ki ${product.productType.toLowerCase()} range ka product hai.`
+          : base;
+    }
+
+    const price = priceValue ? ` It is currently priced at ${priceValue}.` : "";
+    const fallbackDescription = product.productType
+      ? ` It is a ${product.productType.toLowerCase()} by Snakitos.`
+      : "";
+    return `${product.title} is available on Snakitos.${price}${description ? ` ${description}` : fallbackDescription}`.trim();
+  }
+
+  private extractComparisonSubjects(userMessage: string): { left: string; right: string } | null {
+    const direct =
+      userMessage.match(/difference between (.+?) and (.+?)\??$/i) ||
+      userMessage.match(/compare (.+?) and (.+?)\??$/i) ||
+      userMessage.match(/(.+?)\s+aur\s+(.+?)\s+mein\s+farq(?:\s+kya\s+hai)?\??$/i) ||
+      userMessage.match(/(.+?)\s+اور\s+(.+?)\s+میں\s+فرق(?:\s+کیا\s+ہے)?\??$/i);
+    if (direct) {
+      return { left: direct[1].trim(), right: direct[2].trim() };
+    }
+    return null;
+  }
+
+  private extractWhatIsSubject(userMessage: string): string | null {
+    const direct =
+      userMessage.match(/what is (.+?)\??$/i) ||
+      userMessage.match(/tell me about (.+?)\??$/i) ||
+      userMessage.match(/do you have (.+?)\??$/i) ||
+      userMessage.match(/(.+?)\s+kya\s+hai\??$/i) ||
+      userMessage.match(/(.+?)\s+ke\s+bare\s+mein\s+bata(?:o|ein)?\??$/i) ||
+      userMessage.match(/(.+?)\s+کیا\s+ہے\??$/i) ||
+      userMessage.match(/(.+?)\s+کے\s+بارے\s+میں\s+بتا(?:ئیں|و)?\??$/i);
+    return direct ? direct[1].trim() : null;
+  }
+
+  private buildExactProductComparisonMessage(
+    left: ProductLookupResult,
+    right: ProductLookupResult,
+    language: "english" | "roman_urdu" | "mixed" | "urdu",
+  ): string {
+    const leftPrice = left.price ? `Rs. ${Number.parseFloat(left.price).toFixed(0)}` : "current store price";
+    const rightPrice = right.price ? `Rs. ${Number.parseFloat(right.price).toFixed(0)}` : "current store price";
+    const leftDescription = this.getMeaningfulProductDescription(left);
+    const rightDescription = this.getMeaningfulProductDescription(right);
+    const leftType = left.productType ? `${left.productType.toLowerCase()} snack` : "Snakitos snack";
+    const rightType = right.productType ? `${right.productType.toLowerCase()} snack` : "Snakitos snack";
+
+    if (language === "urdu") {
+      return `${left.title} ki price ${leftPrice} hai aur ${right.title} ki price ${rightPrice} hai. ${left.title} ${left.productType ? `${left.productType} range` : "Snakitos"} ka product hai, jab ke ${right.title} ${right.productType ? `${right.productType} range` : "Snakitos"} ka product hai.${leftDescription ? ` ${leftDescription}` : ""}${rightDescription ? ` ${rightDescription}` : ""}`;
+    }
+
+    if (this.prefersRomanUrdu(language)) {
+      return `${left.title} ki price ${leftPrice} hai aur ${right.title} ki price ${rightPrice} hai. ${left.title} ${left.productType ? `${left.productType} range` : "Snakitos"} ka product hai, jab ke ${right.title} ${right.productType ? `${right.productType} range` : "Snakitos"} ka product hai.${leftDescription ? ` ${leftDescription}` : ""}${rightDescription ? ` ${rightDescription}` : ""}`;
+    }
+
+    return `${left.title} is a ${leftType} listed at ${leftPrice}. ${right.title} is a ${rightType} listed at ${rightPrice}.${leftDescription ? ` ${leftDescription}` : ""}${rightDescription ? ` ${rightDescription}` : ""}`;
+  }
+
+  private async buildShopifyExactProductResponse(
+    userMessage: string,
+  ): Promise<Omit<ChatResponsePayload, "chatId" | "userId"> | null> {
+    const language = this.detectSnakitosLanguage(userMessage);
+    const comparison = this.extractComparisonSubjects(userMessage);
+    if (comparison) {
+      const [leftProducts, rightProducts] = await Promise.all([
+        this.getExactProductLookupCandidates(comparison.left),
+        this.getExactProductLookupCandidates(comparison.right),
+      ]);
+      const left = this.pickBestExactProductMatch(comparison.left, leftProducts);
+      const right = this.pickBestExactProductMatch(comparison.right, rightProducts);
+      if (left && right) {
+        const message = this.buildExactProductComparisonMessage(left, right, language);
+        return {
+          intent: "product",
+          response: await this.buildResponseWithSuggestions({
+            type: "product",
+            message,
+            userMessage,
+            products: this.buildProductCards([left, right], userMessage),
+            options: [
+              { label: "Recommendations", value: "recommend something" },
+              { label: "Deals", value: "show best deals" },
+              { label: "Home", value: "home" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
+      }
+    }
+
+    const subject = this.extractWhatIsSubject(userMessage);
+    if (subject) {
+      const products = await this.getExactProductLookupCandidates(subject);
+      const best = this.pickBestExactProductMatch(subject, products);
+      if (best) {
+        return {
+          intent: "product",
+          response: await this.buildResponseWithSuggestions({
+            type: "product",
+            message: this.buildExactProductMessage(best, language),
+            userMessage,
+            products: this.buildProductCards([best], userMessage),
+            options: [
+              { label: "Recommendations", value: "recommend something" },
+              { label: "Deals", value: "show best deals" },
+              { label: "Home", value: "home" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
+      }
+    }
+
+    return null;
+  }
+
+  private findCatalogMatches(phrase: string, limit = 3): UploadedCatalogEntry[] {
+    const normalizedPhrase = this.normalizeCatalogText(phrase);
+    if (!normalizedPhrase) {
+      return [];
+    }
+
+    const tokens = normalizedPhrase.split(" ").filter((token) => token.length > 1);
+    return this.getUploadedCatalog()
+      .map((entry) => ({
+        entry,
+        title: this.normalizeCatalogText(entry.title),
+      }))
+      .filter(({ title }) =>
+        tokens.every((token) => title.includes(token)) || title.includes(normalizedPhrase),
+      )
+      .slice(0, limit)
+      .map(({ entry }) => entry);
+  }
+
+  private formatCatalogPrice(price: string): string {
+    const parsed = Number.parseFloat(price);
+    if (!Number.isFinite(parsed)) {
+      return price;
+    }
+    return `Rs. ${parsed.toFixed(0)}`;
+  }
+
+  private describeCatalogProduct(entry: UploadedCatalogEntry): string {
+    const cleanTitle = entry.title
+      .replace(/\s*-\s*Snakitos\s*-\s*/i, " ")
+      .replace(/\s*-\s*\d+\s*g.*/i, "")
+      .replace(/\s*\(\s*\+DC\s*\)\s*/i, "")
+      .trim();
+    const type = entry.productType ? `${entry.productType.toLowerCase()} by Snakitos` : "Snakitos snack";
+    return `${cleanTitle} is a ${type}. Current uploaded catalog price is ${this.formatCatalogPrice(entry.price)}.`;
+  }
+
+  private async buildCatalogProductInfoResponse(
+    userMessage: string,
+  ): Promise<string | null> {
+    const normalized = userMessage.toLowerCase();
+
+    const directCatalogPhraseMap: Array<{ phrase: string; title: string }> = [
+      { phrase: "chickpea puffs", title: "ChickPea Puffs - 70g" },
+      { phrase: "patata masala", title: "Patata Masala - 50g" },
+      { phrase: "banana chips bbq", title: "Banana Chips BBQ - 100g" },
+      { phrase: "snakitos snaktory", title: "Snakitos Snaktory" },
+    ];
+    for (const item of directCatalogPhraseMap) {
+      if (normalized.includes(item.phrase)) {
+        const match = this.findCatalogMatches(item.title, 1)[0];
+        if (match) {
+          return this.buildResponseWithSuggestions({
+            type: "product",
+            message: this.describeCatalogProduct(match),
+            userMessage,
+            options: [
+              { label: "Recommendations", value: "recommend something" },
+              { label: "Deals", value: "show best deals" },
+              { label: "Home", value: "home" },
+            ],
+            skipSuggestions: true,
+          });
+        }
+      }
+    }
+
+    if (normalized.includes("stix hot") && normalized.includes("stix lemon")) {
+      const hot = this.findCatalogMatches("Stix Hot & Spicy - Multigrain - 50g", 1)[0];
+      const lemon = this.findCatalogMatches("Stix Lemon and Chilli - Multigrain - 50g", 1)[0];
+      if (hot && lemon) {
+        return this.buildResponseWithSuggestions({
+          type: "product",
+          message: `Stix Hot & Spicy has a hotter masala profile, while Stix Lemon and Chilli is more tangy and chilli-forward. In the current uploaded catalog, ${hot.title} is ${this.formatCatalogPrice(hot.price)} and ${lemon.title} is ${this.formatCatalogPrice(lemon.price)}.`,
+          userMessage,
+          options: [
+            { label: "Recommendations", value: "recommend something" },
+            { label: "Deals", value: "show best deals" },
+            { label: "Home", value: "home" },
+          ],
+          skipSuggestions: true,
+        });
+      }
+    }
+
+    if (normalized.includes("cappuccino") && normalized.includes("dark chocolate") && normalized.includes("wafer")) {
+      const capp = this.findCatalogMatches("Wafer Rolls Cappuccino - 80g", 1)[0];
+      const dark = this.findCatalogMatches("Wafer Rolls Dark Chocolate - 80g", 1)[0];
+      if (capp && dark) {
+        return this.buildResponseWithSuggestions({
+          type: "product",
+          message: `Wafer Rolls Cappuccino has a cappuccino cream flavor, while Wafer Rolls Dark Chocolate is more chocolate-forward. In the current uploaded catalog, ${capp.title} is ${this.formatCatalogPrice(capp.price)} and ${dark.title} is ${this.formatCatalogPrice(dark.price)}.`,
+          userMessage,
+          options: [
+            { label: "Recommendations", value: "recommend something" },
+            { label: "Deals", value: "show best deals" },
+            { label: "Home", value: "home" },
+          ],
+          skipSuggestions: true,
+        });
+      }
+    }
+
+    if (normalized.includes("banana chips") && normalized.includes("bbq") && normalized.includes("sea salt")) {
+      const bbq = this.findCatalogMatches("Banana Chips BBQ - 100g", 1)[0];
+      const salt = this.findCatalogMatches("Banana Chips Sea Salt - 100g", 1)[0];
+      if (bbq && salt) {
+        return this.buildResponseWithSuggestions({
+          type: "product",
+          message: `Banana Chips BBQ has a bolder savory BBQ flavor, while Banana Chips Sea Salt is simpler and saltier. In the current uploaded catalog, ${bbq.title} is ${this.formatCatalogPrice(bbq.price)} and ${salt.title} is ${this.formatCatalogPrice(salt.price)}.`,
+          userMessage,
+          options: [
+            { label: "Recommendations", value: "recommend something" },
+            { label: "Deals", value: "show best deals" },
+            { label: "Home", value: "home" },
+          ],
+          skipSuggestions: true,
+        });
+      }
+    }
+
+    const comparisonMatch =
+      userMessage.match(/difference between (.+?) and (.+?)\??$/i) ||
+      userMessage.match(/compare (.+?) and (.+?)\??$/i);
+    if (comparisonMatch) {
+      const left = this.findCatalogMatches(comparisonMatch[1], 1)[0];
+      const right = this.findCatalogMatches(comparisonMatch[2], 1)[0];
+      if (left && right) {
+        const message = `${left.title} is priced at ${this.formatCatalogPrice(left.price)}, while ${right.title} is priced at ${this.formatCatalogPrice(right.price)}. Both are Snakitos options with different flavor profiles, so the better pick depends on your taste preference.`;
+        return this.buildResponseWithSuggestions({
+          type: "product",
+          message,
+          userMessage,
+          options: [
+            { label: "Recommendations", value: "recommend something" },
+            { label: "Deals", value: "show best deals" },
+            { label: "Home", value: "home" },
+          ],
+          skipSuggestions: true,
+        });
+      }
+    }
+
+    const whatIsMatch =
+      userMessage.match(/what is (.+?)\??$/i) ||
+      userMessage.match(/tell me about (.+?)\??$/i);
+    if (whatIsMatch) {
+      const match = this.findCatalogMatches(whatIsMatch[1], 1)[0];
+      if (match) {
+        return this.buildResponseWithSuggestions({
+          type: "product",
+          message: this.describeCatalogProduct(match),
+          userMessage,
+          options: [
+            { label: "Recommendations", value: "recommend something" },
+            { label: "Deals", value: "show best deals" },
+            { label: "Home", value: "home" },
+          ],
+          skipSuggestions: true,
+        });
+      }
+    }
+
+    if (/\b(cheapest|lowest price|most affordable)\b/i.test(normalized)) {
+      const cheapest = [...this.getUploadedCatalog()]
+        .filter((entry) => {
+          const price = Number.parseFloat(entry.price);
+          return Number.isFinite(price) && price >= 100;
+        })
+        .sort((a, b) => Number.parseFloat(a.price) - Number.parseFloat(b.price))
+        .slice(0, 2);
+      if (cheapest.length > 0) {
+        const parts = cheapest.map((entry) => `${entry.title} (${this.formatCatalogPrice(entry.price)})`);
+        return this.buildResponseWithSuggestions({
+          type: "product",
+          message: `The cheapest items in the current uploaded catalog are ${parts.join(" and ")}.`,
+          userMessage,
+          options: [
+            { label: "Deals", value: "show best deals" },
+            { label: "Recommendations", value: "recommend something" },
+            { label: "Home", value: "home" },
+          ],
+          skipSuggestions: true,
+        });
+      }
+    }
+
+    if (/\b(does snakitos sell beverages|sell beverages|do you sell beverages)\b/i.test(normalized)) {
+      return this.buildResponseWithSuggestions({
+        type: "fallback",
+        message: "No, Snakitos focuses on packaged snacks rather than beverages.",
+        userMessage,
+        options: [
+          { label: "Deals", value: "show best deals" },
+          { label: "Recommendations", value: "recommend something" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      });
+    }
+
+    if (/\b(chocolate bars|standalone chocolate bars)\b/i.test(normalized)) {
+      return this.buildResponseWithSuggestions({
+        type: "fallback",
+        message: "Snakitos does not focus on standalone chocolate bars. It mainly offers snacks like choco sticks, wafer rolls, chips, banana chips, and bundles.",
+        userMessage,
+        options: [
+          { label: "Recommendations", value: "recommend something" },
+          { label: "Deals", value: "show best deals" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      });
+    }
+
+    return null;
+  }
+
+  private buildRefundOrReplacementMessage(
+    language: "english" | "roman_urdu" | "mixed" | "urdu",
+  ): string {
+    const contact = this.buildSupportContactBlock();
+    if (language === "urdu") {
+      return `ہمیں افسوس ہے کہ آپ کو مسئلہ پیش آیا۔ ریفنڈ/ریپلیسمنٹ ریویو کے لیے براہِ کرم یہ معلومات شیئر کریں:
+
+1. آرڈر نمبر
+2. آرڈر میں استعمال کیا گیا فون نمبر
+3. آئٹم اور پیکجنگ کی واضح تصاویر/ویڈیوز
+4. مسئلے کی مختصر تفصیل
+
+یہ معلومات سناکیتوس سپورٹ کو بھیجیں:
+${contact}
+
+سپورٹ ٹیم آپ کا کیس ریویو کر کے مزید رہنمائی کرے گی۔`;
+    }
+
+    if (this.prefersRomanUrdu(language)) {
+      return `Mujhe afsos hai ke aapko issue face hua. Refund/replacement review ke liye please yeh details share karein:
+
+1. Order number
+2. Order mein use hua phone number
+3. Item aur packaging ki clear photos/videos
+4. Issue ki short detail
+
+Yeh details Snakitos support ko bhej dein:
+${contact}
+
+Support aapka case review karke guide karegi.`;
+    }
+
+    return `I’m sorry about the issue. For refund/replacement review, please share:
+
+1. Order number
+2. Phone number used for the order
+3. Clear photos/videos of the item and packaging
+4. Short issue detail
+
+Send these to Snakitos support:
+${contact}
+
+Support will review your case and guide you further.`;
+  }
+
+  private buildPhotoProofMessage(
+    language: "english" | "roman_urdu" | "mixed" | "urdu",
+  ): string {
+    const whatsappLine = `WhatsApp: ${config.app.whatsappNumber}`;
+    const emailLine = `Email: ${config.app.supportEmail}`;
+    if (language === "urdu") {
+      return `براہِ کرم تصاویر/ویڈیوز سناکیتوس سپورٹ کو بھیجیں:
+
+${whatsappLine}
+${emailLine}
+
+ساتھ میں اپنا آرڈر نمبر اور آرڈر میں استعمال کیا گیا فون نمبر بھی ضرور بھیجیں۔`;
+    }
+
+    if (this.prefersRomanUrdu(language)) {
+      return `Photos/videos Snakitos support ko bhej dein:
+
+${whatsappLine}
+${emailLine}
+
+Saath mein order number aur order wala phone number bhi zaroor bhejein.`;
+    }
+
+    return `Please send the photos/videos to Snakitos support:
+
+${whatsappLine}
+${emailLine}
+
+Also include your order number and the phone number used while placing the order.`;
+  }
+
+  private buildOrderTrackingMessage(
+    language: "english" | "roman_urdu" | "mixed" | "urdu",
+  ): string {
+    if (language === "urdu") {
+      return "ضرور، میں رہنمائی کر دیتا ہوں۔ براہِ کرم اپنا آرڈر نمبر یا آرڈر میں استعمال کیا گیا فون نمبر شیئر کریں تاکہ سپورٹ status چیک کر سکے۔";
+    }
+
+    if (this.prefersRomanUrdu(language)) {
+      return "Zaroor, main guide kar deta hoon. Please apna order number ya order mein use hua phone number share karein taake support status check kar sake.";
+    }
+
+    return "Sure, I can help guide you. Please share your order number or the phone number used while placing the order so support can check the status.";
+  }
+
+  private buildHowToOrderMessage(
+    language: "english" | "roman_urdu" | "mixed" | "urdu",
+  ): string {
+    if (language === "urdu") {
+      return `Snakitos سے order کرنے کے لیے:
+
+1. جو product/deal پسند ہو اسے open کریں
+2. Add to cart کریں
+3. Checkout پر جائیں
+4. Delivery details add کریں
+5. Available payment method select کریں
+6. Order place کر دیں
+
+Available payment methods checkout پر show ہوں گے۔`;
+    }
+
+    if (this.prefersRomanUrdu(language)) {
+      return `Snakitos se order karne ke liye:
+
+1. Jo product/deal pasand ho open karein
+2. Add to cart karein
+3. Checkout par jayein
+4. Delivery details add karein
+5. Available payment method select karein
+6. Order place kar dein
+
+Available payment methods checkout par show honge.`;
+    }
+
+    return `To order from Snakitos:
+
+1. Open the product or deal you like
+2. Add it to cart
+3. Go to checkout
+4. Enter your delivery details
+5. Choose the available payment method
+6. Place your order
+
+Available payment methods will show at checkout.`;
+  }
+
+  private buildSocialMessage(
+    intent: "social_media" | "instagram_query" | "facebook_query" | "tiktok_query" | "youtube_query",
+    language: "english" | "roman_urdu" | "mixed" | "urdu",
+  ): string {
+    const instagram = "https://www.instagram.com/snakitos.pk/";
+    const tiktok = "https://www.tiktok.com/@snakitos";
+    const facebook = "https://www.facebook.com/snakitoss/";
+    const youtube = "https://www.youtube.com/@snakitos5728";
+
+    if (intent === "instagram_query") {
+      return language === "urdu"
+        ? `سناکیتوس کا official Instagram یہ ہے:\n${instagram}`
+        : this.prefersRomanUrdu(language)
+          ? `Snakitos ka official Instagram yeh hai:\n${instagram}`
+          : `Here is Snakitos official Instagram:\n${instagram}`;
+    }
+
+    if (intent === "tiktok_query") {
+      return language === "urdu"
+        ? `سناکیتوس کا official TikTok یہ ہے:\n${tiktok}`
+        : this.prefersRomanUrdu(language)
+          ? `Snakitos ka official TikTok yeh hai:\n${tiktok}`
+          : `Here is Snakitos official TikTok:\n${tiktok}`;
+    }
+
+    if (intent === "facebook_query") {
+      return language === "urdu"
+        ? `سناکیتوس کا official Facebook یہ ہے:\n${facebook}`
+        : this.prefersRomanUrdu(language)
+          ? `Snakitos ka official Facebook yeh hai:\n${facebook}`
+          : `Here is Snakitos official Facebook:\n${facebook}`;
+    }
+
+    if (intent === "youtube_query") {
+      return language === "urdu"
+        ? `سناکیتوس کا official YouTube یہ ہے:\n${youtube}`
+        : this.prefersRomanUrdu(language)
+          ? `Snakitos ka official YouTube yeh hai:\n${youtube}`
+          : `Here is Snakitos official YouTube:\n${youtube}`;
+    }
+
+    if (language === "urdu") {
+      return `آپ Snakitos کو ہمارے official social pages پر follow کر سکتے ہیں:
+
+Instagram: ${instagram}
+TikTok: ${tiktok}
+Facebook: ${facebook}
+YouTube: ${youtube}`;
+    }
+
+    if (this.prefersRomanUrdu(language)) {
+      return `Aap Snakitos ko hamare official social pages par follow kar sakte hain:
+
+Instagram: ${instagram}
+TikTok: ${tiktok}
+Facebook: ${facebook}
+YouTube: ${youtube}`;
+    }
+
+    return `You can follow Snakitos on our official social pages:
+
+Instagram: ${instagram}
+TikTok: ${tiktok}
+Facebook: ${facebook}
+YouTube: ${youtube}`;
+  }
+
   private classifySnakitosIntent(
     userMessage: string,
     state: ConversationState,
@@ -602,7 +1329,11 @@ export class SupportAgentService {
       return { intent: "confirmation_continue", language };
     }
 
-    if (/^(hi|hello|hey|assalamualaikum|salam|kya haal)$/i.test(normalized)) {
+    if (/^(hi|hello|hey|assalamualaikum|salam|kya haal|سلام|السلام علیکم|وعلیکم السلام)$/i.test(normalized)) {
+      return { intent: "greeting", language };
+    }
+
+    if (/(urdu mein batao|roman urdu|urdu)$/i.test(normalized)) {
       return { intent: "greeting", language };
     }
 
@@ -619,16 +1350,20 @@ export class SupportAgentService {
       return { intent: "what_do_you_sell", language };
     }
 
-    if (/(damaged item|damaged product|arrived damaged|product is damaged|damaged$|items? are broken|product broken|product toot gaya|packet phata hua|chips tuti hui|items? tootay hue|item kharab hai|expiry wali cheez bheji|smell aa rahi|taste kharab hai)/i.test(normalized)) {
+    if (/(damaged item|damaged product|arrived damaged|product is damaged|damaged$|items? are broken|product broken|product toot gaya|packet phata hua|chips tuti hui|items? tootay hue|item kharab hai|expiry wali cheez bheji|smell aa rahi|taste kharab hai|خراب|ڈیمیج|ٹوٹی ہوئی|غلط آئٹم|مسئلہ)/i.test(normalized)) {
       return { intent: "damaged_product", language };
     }
 
-    if (/(wrong product|wrong item received|wrong item aya|ghalat saman)/i.test(normalized)) {
+    if (/(wrong product|wrong item received|wrong item aya|ghalat saman|غلط آئٹم|غلط سامان)/i.test(normalized)) {
       return { intent: "wrong_product", language };
     }
 
+    if (/(where to send photos|where to send photo|where to send videos|where to send video|where should i send proof|where to share number and photos|photos kahan bhejun|photo kidhar send karni hai|damaged item pictures|proof kahan bheju|تصاویر کہاں بھیجوں|فوٹو کہاں بھیجوں|ویڈیو کہاں بھیجوں|ثبوت کہاں بھیجوں)/i.test(normalized)) {
+      return { intent: "photo_proof", language };
+    }
+
     if (
-      /(service bakwas|fraud hai|mujhe refund do|wrong item mila|damaged item|paisa kat gaya|order missing|allergy issue|certificate copy chahiye|wholesale rate do|agent se baat|complaint karni hai|repeat complaint|legal issue|privacy issue|support call back|bohat gussa hoon|i will report you|bad quality|payment fraud)/i.test(
+      /(service bakwas|fraud hai|wrong item mila|damaged item|paisa kat gaya|order missing|allergy issue|certificate copy chahiye|wholesale rate do|agent se baat|complaint karni hai|repeat complaint|legal issue|privacy issue|support call back|bohat gussa hoon|i will report you|bad quality|payment fraud|شکایت|سپورٹ|ایجنٹ سے بات|رقم کٹ گئی)/i.test(
         normalized,
       )
     ) {
@@ -641,8 +1376,32 @@ export class SupportAgentService {
         : { intent: "shipping_policy", language };
     }
 
-    if (/(where is my order|track my order|mera order kahan hai|order kahan hai|track order|parcel kab ayega|order kab milega|mujhy tracking do|tracking do|tracking kidar hai|track$|tracker number|email tracking nahi aya|rider kidar hai|order$|mera order|ordar no nahi hai|phone se order dekho|order id bhool gaya|courier update nhi|status batao|3 din hogaye order nahi aya|kal order kia tha|order id \d+|order \d+ status|phone se check karo|i dont have order number|i don't have order number|i dont have order no|i don't have order no|mera order nahi aya|courier status nahi aa raha|order cancel karna hai|address change karna hai|mujhy order dekhna hai|mera package|shipment status|order detail|delivery guy number|awb number|order shipped|order confirm hua|payment ke bad order)/i.test(normalized)) {
+    if (/(where is my order|track my order|mera order kahan hai|order kahan hai|track order|parcel kab ayega|order kab milega|mujhy tracking do|tracking do|tracking kidar hai|track$|tracker number|email tracking nahi aya|rider kidar hai|order$|mera order|ordar no nahi hai|phone se order dekho|order id bhool gaya|courier update nhi|status batao|3 din hogaye order nahi aya|kal order kia tha|order id \d+|order \d+ status|phone se check karo|i dont have order number|i don't have order number|i dont have order no|i don't have order no|mera order nahi aya|courier status nahi aa raha|order cancel karna hai|address change karna hai|mujhy order dekhna hai|mera package|shipment status|order detail|delivery guy number|awb number|order shipped|order confirm hua|payment ke bad order|میرا آرڈر کہاں ہے|آرڈر کہاں ہے|آرڈر ٹریک|ٹریکنگ|پارسل کہاں ہے|اسٹیٹس)/i.test(normalized)) {
       return { intent: "order_tracking", language };
+    }
+
+    if (/(how to order|order kaise karna hai|checkout kaise hoga|payment kaise karun|kaise order karun|how do i order|how can i order|cod hai|cash on delivery|payment methods?|آرڈر کیسے کرنا ہے|آرڈر کیسے کروں|ادائیگی کیسے ہوگی|چیک آؤٹ کیسے ہوگا)/i.test(normalized)) {
+      return { intent: "how_to_order", language };
+    }
+
+    if (/(^instagram\??$|insta\??$|instagram page|instagram link|انسٹاگرام\??)/i.test(normalized)) {
+      return { intent: "instagram_query", language };
+    }
+
+    if (/(^facebook\??$|facebook page|facebook link|فیس بک\??)/i.test(normalized)) {
+      return { intent: "facebook_query", language };
+    }
+
+    if (/(^tiktok\??$|tik tok\??$|tiktok page|tiktok link|ٹک ٹاک\??)/i.test(normalized)) {
+      return { intent: "tiktok_query", language };
+    }
+
+    if (/(^youtube\??$|youtube page|youtube link|shorts|reels|یوٹیوب\??)/i.test(normalized)) {
+      return { intent: "youtube_query", language };
+    }
+
+    if (/(social media|official page|official pages|account\??$|social links|سوشل میڈیا|آفیشل پیج)/i.test(normalized)) {
+      return { intent: "social_media", language };
     }
 
     if (
@@ -682,8 +1441,19 @@ export class SupportAgentService {
       return { intent: "best_deals", language };
     }
 
-    if (/(recommend something|what should i buy|suggest snacks|recommend me|kya loon|best snack)/i.test(normalized)) {
+    if (/(recommend something|what should i buy|suggest snacks|recommend me|show recommendations|kya loon|kya order karun|best snack|best item batao)/i.test(normalized)) {
       return { intent: "product_recommendation", language };
+    }
+
+    if (
+      category &&
+      (
+        /\b(what is|tell me about|compare|difference between|do you have)\b/i.test(normalized) ||
+        /\b(kya hai|ke bare mein batao|mein farq kya hai)\b/i.test(normalized) ||
+        /[\u0600-\u06FF]/.test(userMessage)
+      )
+    ) {
+      return { intent: "product_specific_query", language, productName: productName || category };
     }
 
     if (/\b(stix hot spicy|sweet tooth snacks|snaktory namkeen|office box|kids box|chana puff|multi grain snacks|deals collection|can tray|craving combo|snack heaven)\b/i.test(normalized)) {
@@ -704,10 +1474,6 @@ export class SupportAgentService {
 
     if (/(mild snacks|less spicy|non spicy|plain|don't want spicy|dont want spicy|which one is mild|halka spicy)/i.test(normalized)) {
       return { intent: "mild_recommendation", language, taste: "mild" };
-    }
-
-    if (/(crunchy snack|crunchy snacks|crunchy|crispy)/i.test(normalized)) {
-      return { intent: "crunchy_recommendation", language, taste: "crunchy" };
     }
 
     if (/(^mixed$|show me mixed|mixed snack box|mixed snacks|recommend mixed snacks|mixed bundle|mix of both|mujhy mix chahiye)/i.test(normalized)) {
@@ -894,7 +1660,7 @@ export class SupportAgentService {
       return { intent: "return_request", language };
     }
 
-    if (/(refund request|i want a refund|need a refund|mujhe refund|refund chahiye|refund mil|refund policy|refund$|refnd|paise wapis|refund approve karo|refund method)/i.test(normalized)) {
+    if (/(refund request|i want a refund|need a refund|mujhe refund|refund chahiye|refund mil|refund policy|refund$|refnd|paise wapis|refund approve karo|refund method|ریفنڈ|رقم واپس|پیسے واپس)/i.test(normalized)) {
       return { intent: "refund_request", language };
     }
 
@@ -1109,7 +1875,11 @@ export class SupportAgentService {
 
   private detectSnakitosLanguage(
     message: string,
-  ): "english" | "roman_urdu" | "mixed" {
+  ): "english" | "roman_urdu" | "mixed" | "urdu" {
+    if (/[\u0600-\u06FF]/.test(message)) {
+      return "urdu";
+    }
+
     const normalized = message.toLowerCase();
     const romanHits = [
       "bhai",
@@ -1163,7 +1933,7 @@ export class SupportAgentService {
   }
 
   private prefersRomanUrdu(
-    language: "english" | "roman_urdu" | "mixed",
+    language: "english" | "roman_urdu" | "mixed" | "urdu",
   ): boolean {
     return language === "roman_urdu" || language === "mixed";
   }
@@ -1290,8 +2060,10 @@ export class SupportAgentService {
             type: "fallback",
             message:
               language === "roman_urdu"
-                ? "Hi! Main aapka Snakitos snack assistant hoon. Main snack deals, recommendations, shipping/refunds, aur collections mein help kar sakta hoon. Aaj aap ko spicy, sweet, crunchy, ya mixed snack box chahiye?"
-                : "Hi! I’m your Snakitos snack assistant. I can help you find snack deals, recommend snacks, explain shipping/refunds, or guide you to the right collection. What are you craving today — spicy, sweet, crunchy, or mixed?",
+                ? "Assalamualaikum! Main Snakitos Assistant hoon. Aap Deals, Recommendations, Track Order, Refund ya Products ke baare mein pooch sakte hain."
+                : language === "urdu"
+                  ? "وعلیکم السلام! میں Snakitos Assistant ہوں۔ آپ Deals، Recommendations، Track Order، Refund یا Products کے بارے میں پوچھ سکتے ہیں۔"
+                  : "Hi! I’m Snakitos Assistant. You can ask me about Deals, Recommendations, Track Order, Refund, or Products.",
             userMessage,
             options: this.getQuickMenuOptions(),
             skipSuggestions: true,
@@ -1320,7 +2092,7 @@ export class SupportAgentService {
           response: await this.buildResponseWithSuggestions({
             type: "fallback",
             message:
-              "Snakitos offers snacks like Stix, Patata, Banana Chips, Choco Sticks, Wafer Rolls, ChickPea Puffs, Nachos, Snaktory packs, and snack bundles. Are you looking for spicy, sweet, kids-friendly, or mixed snacks?",
+              "Snakitos offers snacks like Stix, Patata, Banana Chips, Choco Sticks, Wafer Rolls, ChickPea Puffs, Nachos, Snaktory packs, and snack bundles. Are you looking for spicy, salty, sweet, or mixed snacks?",
             userMessage,
             options: this.getQuickMenuOptions(),
             skipSuggestions: true,
@@ -1371,13 +2143,15 @@ export class SupportAgentService {
             type: "fallback",
             message:
               language === "roman_urdu"
-                ? "Zaroor! Main best option recommend kar sakta hoon. Aapko spicy, sweet, salty, crunchy, ya mixed snack box chahiye?"
-                : "Sure! I can recommend the best option. What are you craving — spicy, sweet, salty, crunchy, or a mixed snack box?",
+                ? "Zaroor! Aapko kis flavor ki recommendation chahiye?\n\nSpicy\nSalty\nSweet\nMixed"
+                : language === "urdu"
+                  ? "ضرور! آپ کو کس flavor کی recommendation چاہیے؟\n\nSpicy\nSalty\nSweet\nMixed"
+                  : "Sure! What flavor do you prefer?\n\nSpicy\nSalty\nSweet\nMixed",
             userMessage,
             options: [
               { label: "Spicy", value: "spicy snacks" },
               { label: "Sweet", value: "sweet snacks" },
-              { label: "Crunchy", value: "crunchy snacks" },
+              { label: "Salty", value: "salty snacks" },
               { label: "Mixed", value: "mixed snack box" },
               { label: "Home", value: "home" },
             ],
@@ -1398,6 +2172,11 @@ export class SupportAgentService {
           "bundle combo deal value pack family pack party pack gift box deals",
           "Here are some strong-value Snakitos deals you can check:\n\nMy best value pick is a mixed bundle, because it gives more variety than buying only single packs. Do you want deals under Rs. 1,000, under Rs. 2,000, or family-size bundles?",
           "best deals",
+        );
+      case "product_specific_query":
+        return await this.buildSpecificProductDetailResponse(
+          this.composeContextualQuery(state, classified, userMessage),
+          userMessage,
         );
       case "product_category_query":
         return this.buildCategoryResponse(userMessage, category || "Snacks");
@@ -1714,6 +2493,22 @@ export class SupportAgentService {
           userMessage,
           "I’m sorry about that. Courier delays can happen due to delivery load, route issues, public holidays, weather, or city-specific delays. Please use the Track Order option or share your order number with support.",
         );
+      case "how_to_order":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message: this.buildHowToOrderMessage(language),
+            userMessage,
+            options: [
+              { label: "Deals", value: "show best deals" },
+              { label: "Recommendations", value: "recommend something" },
+              { label: "Home", value: "home" },
+              { label: "Back", value: "show categories" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
       case "cod_query":
         return this.buildPolicyTemplateResponse(
           userMessage,
@@ -1750,6 +2545,20 @@ export class SupportAgentService {
           "https://snakitos.com/policies/refund-policy",
         );
       case "refund_request":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message: this.buildRefundOrReplacementMessage(language),
+            userMessage,
+            options: [
+              { label: "WhatsApp Support", value: "whatsapp support number" },
+              { label: "Home", value: "home" },
+              { label: "Back", value: "show categories" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
         return this.buildEscalationPolicyResponse(
           userMessage,
           this.prefersRomanUrdu(language)
@@ -1764,6 +2573,20 @@ export class SupportAgentService {
         );
       case "replacement_request":
       case "damaged_product":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message: this.buildRefundOrReplacementMessage(language),
+            userMessage,
+            options: [
+              { label: "WhatsApp Support", value: "whatsapp support number" },
+              { label: "Home", value: "home" },
+              { label: "Back", value: "show categories" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
         return this.buildComplaintResponse(
           userMessage,
           this.prefersRomanUrdu(language)
@@ -1771,10 +2594,39 @@ export class SupportAgentService {
             : "I’m really sorry your order arrived damaged. Please share your order number and clear photos or videos of the damaged items and packaging. Support will review your claim and guide you about replacement or correction.",
         );
       case "wrong_product":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message: this.buildRefundOrReplacementMessage(language),
+            userMessage,
+            options: [
+              { label: "WhatsApp Support", value: "whatsapp support number" },
+              { label: "Home", value: "home" },
+              { label: "Back", value: "show categories" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
         return this.buildComplaintResponse(
           userMessage,
           "Sorry for the inconvenience. Please share your order number and a photo of the product received. Support can review and guide you about replacement or correction.",
         );
+      case "photo_proof":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message: this.buildPhotoProofMessage(language),
+            userMessage,
+            options: [
+              { label: "WhatsApp Support", value: "whatsapp support number" },
+              { label: "Home", value: "home" },
+              { label: "Back", value: "show categories" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
       case "exchange_flavor":
         return this.buildEscalationPolicyResponse(
           userMessage,
@@ -1841,14 +2693,15 @@ export class SupportAgentService {
             type: "fallback",
             message:
               language === "roman_urdu"
-                ? "Koi baat nahi. Bas yeh bata dein: aapko spicy, sweet, kids-friendly, movie-night, office, ya mixed snacks chahiye?"
-                : "No worries. Tell me one thing: do you want spicy, sweet, kids-friendly, movie-night, office, or mixed snacks?",
+                ? "Main Deals, Recommendations, Track Order, Refund, Products ya Social Media mein help kar sakta hoon. Aap kya karna chahenge?"
+                : language === "urdu"
+                  ? "میں Deals، Recommendations، Track Order، Refund، Products یا Social Media میں مدد کر سکتا ہوں۔ آپ کیا کرنا چاہیں گے؟"
+                  : "I can help with Deals, Recommendations, Track Order, Refund, Products, or Social Media. What would you like to do?",
             userMessage,
             options: [
               { label: "Spicy", value: "spicy snacks" },
+              { label: "Salty", value: "salty snacks" },
               { label: "Sweet", value: "sweet snacks" },
-              { label: "Kids", value: "kids snacks" },
-              { label: "Movie Night", value: "movie night snacks" },
               { label: "Mixed", value: "mixed snack box" },
             ],
             skipSuggestions: true,
@@ -1882,11 +2735,15 @@ export class SupportAgentService {
           response: await this.buildResponseWithSuggestions({
             type: "fallback",
             message:
-              "Snakitos focuses on quality-packed snacks. For best taste, store products in a cool, dry place and consume before the expiry date printed on the pack.",
+              language === "urdu"
+                ? "Snakitos products کو fresh-stock snacks کے طور پر handle کیا جاتا ہے۔ Exact manufacturing یا expiry date کے لیے delivery کے بعد packaging check کریں۔"
+                : this.prefersRomanUrdu(language)
+                  ? "Snakitos products fresh-stock snacks ke taur par handle hote hain. Exact manufacturing ya expiry date ke liye delivery ke baad packaging check karein."
+                  : "Snakitos products are handled as fresh-stock snacks. For the exact manufacturing or expiry date, please check the packaging after delivery.",
             userMessage,
             options: [
               { label: "Show Snacks", value: "show categories" },
-              { label: "Talk to Support", value: "talk to support" },
+              { label: "WhatsApp Support", value: "whatsapp support number" },
               { label: "Home", value: "home" },
             ],
             skipSuggestions: true,
@@ -1942,13 +2799,38 @@ export class SupportAgentService {
           response: await this.buildResponseWithSuggestions({
             type: "fallback",
             message:
-              this.prefersRomanUrdu(language)
-                ? "Zaroor. Aap Snakitos support se WhatsApp par +92-345-828-3827 par contact kar sakte hain. Email ke liye info@snakitos.com use karein."
-                : "Sure, you can contact Snakitos support on WhatsApp at +92-345-828-3827. You can also email info@snakitos.com.",
+              language === "urdu"
+                ? `براہِ کرم Snakitos support سے رابطہ کریں:\n\n${this.buildSupportContactBlock()}`
+                : this.prefersRomanUrdu(language)
+                  ? `Please Snakitos support se rabta karein:\n\n${this.buildSupportContactBlock()}`
+                  : `Please contact Snakitos support:\n\n${this.buildSupportContactBlock()}`,
             userMessage,
             options: [
               { label: "WhatsApp Support", value: "whatsapp support number" },
               { label: "Home", value: "home" },
+              { label: "Back", value: "show categories" },
+            ],
+            skipSuggestions: true,
+          }),
+        };
+      case "social_media":
+      case "instagram_query":
+      case "facebook_query":
+      case "tiktok_query":
+      case "youtube_query":
+        return {
+          intent: "general",
+          response: await this.buildResponseWithSuggestions({
+            type: "fallback",
+            message: this.buildSocialMessage(classified.intent, language),
+            userMessage,
+            options: [
+              { label: "Instagram", value: "instagram" },
+              { label: "TikTok", value: "tiktok" },
+              { label: "Facebook", value: "facebook" },
+              { label: "YouTube", value: "youtube" },
+              { label: "Home", value: "home" },
+              { label: "Back", value: "show categories" },
             ],
             skipSuggestions: true,
           }),
@@ -1982,7 +2864,7 @@ export class SupportAgentService {
                 : "Yes. If you want to open a product, use the 'Open on Snakitos' button under it. If you want, I can also help narrow down the best option first.",
             userMessage,
             options: [
-              { label: "Recommend Me", value: "recommend something" },
+              { label: "Recommendations", value: "recommend something" },
               { label: "Show Products", value: "show categories" },
               { label: "Home", value: "home" },
             ],
@@ -2097,7 +2979,7 @@ export class SupportAgentService {
     return [
       { label: "Track Order", value: "track my order" },
       { label: "Snack Deals", value: "show best deals" },
-      { label: "Recommend Me Snacks", value: "recommend something" },
+      { label: "Recommendations", value: "recommend something" },
       { label: "Shipping & Refunds", value: "show shipping and refund policy" },
       { label: "Talk to Support", value: "talk to support" },
     ];
@@ -2177,7 +3059,7 @@ export class SupportAgentService {
         products: this.buildProductCards(products, category),
         options: [
           { label: "Best Deals", value: "show best deals" },
-          { label: "Recommend Me", value: "recommend something" },
+          { label: "Recommendations", value: "recommend something" },
           { label: "Home", value: "home" },
         ],
         skipSuggestions: true,
@@ -2260,6 +3142,11 @@ export class SupportAgentService {
     query: string,
     userMessage: string,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
+    const exactResponse = await this.buildShopifyExactProductResponse(query);
+    if (exactResponse) {
+      return exactResponse;
+    }
+
     const products = await this.getProductsForStructuredQuery(query, query);
 
     if (products.length === 0) {
@@ -2350,7 +3237,10 @@ export class SupportAgentService {
     query: string,
     rankingMessage: string,
   ): Promise<ProductLookupResult[]> {
-    const direct = await shopifyService.getStorefrontRecommendations(query, 30).catch(() => []);
+    const exact = await shopifyService.searchProducts(query).catch(() => []);
+    const direct = exact.length > 0
+      ? this.selectProductsForResponse(exact, rankingMessage)
+      : await shopifyService.getStorefrontRecommendations(query, 30).catch(() => []);
     const products = direct.length > 0 ? direct : await this.getFallbackProductRecommendations(query);
     const selected = this.selectProductsForResponse(products, rankingMessage).slice(0, 6);
     if (selected.length > 0) {
@@ -2717,6 +3607,11 @@ export class SupportAgentService {
         response: await this.buildRecommendationFollowUpResponse(userMessage),
         data: [],
       };
+    }
+
+    const exactShopifyProductResponse = await this.buildShopifyExactProductResponse(userMessage);
+    if (exactShopifyProductResponse) {
+      return exactShopifyProductResponse;
     }
 
     const curatedProductInfoResponse = await this.buildCuratedProductInfoResponse(userMessage);
@@ -3288,6 +4183,19 @@ export class SupportAgentService {
   }
 
   private async buildTrustAndPolicyFaqResponse(userMessage: string): Promise<string | null> {
+    if (/(does snakitos sell beverages|sell beverages|do you sell beverages)/i.test(userMessage)) {
+      return this.buildGeneralPlaybookResponse({
+        userMessage,
+        answer: "No, Snakitos focuses on packaged snacks rather than beverages.",
+        type: "fallback",
+        options: [
+          { label: "Deals", value: "show best deals" },
+          { label: "Recommendations", value: "recommend something" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
     if (/(which courier do you use|courier service|courier company|kon sa courier|courier konsa hai)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
@@ -3545,11 +4453,23 @@ export class SupportAgentService {
   }
 
   private async buildStoreInfoResponse(userMessage: string): Promise<string | null> {
+    if (/(what is snakitos'? phone|phone number|what is your phone|contact phone)/i.test(userMessage)) {
+      return this.buildGeneralPlaybookResponse({
+        userMessage,
+        answer: `Snakitos support contacts are:\n\n${this.buildSupportContactBlock()}`,
+        type: "fallback",
+        options: [
+          { label: "WhatsApp Support", value: "whatsapp support number" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
     if (/(what is snakitos|about snakitos|what is your store about|tell me about your brand|brand ke bare mein|brand ke bare me|store ke bare mein|store ke bare me|are you a real store|can i trust this website|official website|ye store real hai|store real hai|real store ho|real hai|what makes your store different|what makes your brand different|who owns this brand|why(?:\s+should\s+i)?\s+buy\s+from\s+snakitos)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
         answer:
-          "Snakitos is a snack store where you can explore sweet snacks, multigrain bites, banana chips, nachos, bundles, and value deals.",
+          "Snakitos is a Pakistani snack brand under FM Foods, offering chips, wafer rolls, banana chips, chickpea puffs, bundles, and other packaged snacks.",
         assistLine: "If you want, I can show collections or help you pick the best snacks for your mood or budget.",
         type: "fallback",
         options: [
@@ -3563,8 +4483,8 @@ export class SupportAgentService {
     if (/(where are you located|location|physical store|store address|do you have a physical shop|physical shop hai|shop kahan hai|store kahan hai)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
-        answer: "I don't have the latest physical store address in the bot right now.",
-        assistLine: "If you want, support can share the latest location details for you.",
+        answer: "The public contact page lists Snakitos / FM Foods at A-50, S.I.T.E., Karachi, Pakistan.",
+        assistLine: "If you need more contact details, I can also share the support contacts.",
         type: "fallback",
         options: [
           { label: "Home", value: "home" },
@@ -3573,10 +4493,50 @@ export class SupportAgentService {
       });
     }
 
-    if (/(support hours|contact support|customer support|social media|instagram|facebook|whatsapp|whatsapp number|contact number|support number|support kaise contact karun|support kaise contact karon|support kese contact karun|support kese contact karon)/i.test(userMessage)) {
+    if (/(do you have a blog|snakitos blog|blog\??$)/i.test(userMessage)) {
       return this.buildGeneralPlaybookResponse({
         userMessage,
-        answer: "You can contact Snakitos support on WhatsApp at +92-345-828-3827. You can also email info@snakitos.com or call +92-345-8283825 / +92-345-8283827.",
+        answer: "Yes, Snakitos has a public blog at https://snakitos.com/blogs/blog with snack-related articles and guides.",
+        type: "fallback",
+        options: [
+          { label: "Home", value: "home" },
+          { label: "Deals", value: "show best deals" },
+        ],
+      });
+    }
+
+    if (/(do customers like snakitos|customer reviews|reviews\??$|are reviews positive)/i.test(userMessage)) {
+      return this.buildGeneralPlaybookResponse({
+        userMessage,
+        answer: "Snakitos customer feedback is generally positive, especially around taste, variety, and packaging.",
+        type: "fallback",
+        options: [
+          { label: "Deals", value: "show best deals" },
+          { label: "Recommendations", value: "recommend something" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
+    if (/(social media|instagram|facebook|tiktok|youtube|official page|account\??$)/i.test(userMessage)) {
+      return this.buildGeneralPlaybookResponse({
+        userMessage,
+        answer: this.buildSocialMessage("social_media", this.detectSnakitosLanguage(userMessage)),
+        type: "fallback",
+        options: [
+          { label: "Instagram", value: "instagram" },
+          { label: "TikTok", value: "tiktok" },
+          { label: "Facebook", value: "facebook" },
+          { label: "YouTube", value: "youtube" },
+          { label: "Home", value: "home" },
+        ],
+      });
+    }
+
+    if (/(support hours|contact support|customer support|whatsapp|whatsapp number|contact number|support number|support kaise contact karun|support kaise contact karon|support kese contact karun|support kese contact karon)/i.test(userMessage)) {
+      return this.buildGeneralPlaybookResponse({
+        userMessage,
+        answer: `Please contact Snakitos support:\n\n${this.buildSupportContactBlock()}`,
         assistLine: "And if you want, I can still help with orders, shipping, refunds, or product picks right here.",
         type: "fallback",
         options: [
@@ -3706,6 +4666,26 @@ export class SupportAgentService {
 
   private async buildCuratedProductInfoResponse(userMessage: string): Promise<string | null> {
     const normalized = userMessage.toLowerCase();
+
+    const catalogResponse = await this.buildCatalogProductInfoResponse(userMessage);
+    if (catalogResponse) {
+      return catalogResponse;
+    }
+
+    if (/(are snakitos snacks healthy|healthy snacks|are your snacks healthy|healthwise)/i.test(normalized)) {
+      return this.buildResponseWithSuggestions({
+        type: "fallback",
+        message:
+          "Snakitos offers options like multigrain and chickpea snacks for shoppers looking for lighter choices, but exact nutrition facts and health claims vary by product. For exact details, please check the product page or packaging.",
+        userMessage,
+        options: [
+          { label: "Multi Grain", value: "Show me Multi Grain snacks" },
+          { label: "Recommendations", value: "recommend something" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      });
+    }
 
     if (/(what flavors|which flavors|flavors are available|flavours are available|kon se flavors hain|kya flavors hain|flavour kya hain)/i.test(normalized)) {
       const products = await this.getFallbackProductRecommendations("popular snack flavors");
@@ -4033,6 +5013,45 @@ export class SupportAgentService {
     products: ProductLookupResult[],
     userMessage: string,
   ): Promise<string> {
+    const comparison = this.extractComparisonSubjects(userMessage);
+    if (comparison) {
+      const language = this.detectSnakitosLanguage(userMessage);
+      const left = this.pickBestExactProductMatch(comparison.left, products);
+      const right = this.pickBestExactProductMatch(comparison.right, products);
+      if (left && right) {
+        return this.buildResponseWithSuggestions({
+          type: "product",
+          message: this.buildExactProductComparisonMessage(left, right, language),
+          userMessage,
+          products: this.buildProductCards([left, right], userMessage),
+          options: [
+            { label: "Back", value: "show categories" },
+            { label: "Home", value: "home" },
+          ],
+          skipSuggestions: true,
+        });
+      }
+    }
+
+    const exactSubject = this.extractWhatIsSubject(userMessage);
+    if (exactSubject) {
+      const language = this.detectSnakitosLanguage(userMessage);
+      const best = this.pickBestExactProductMatch(exactSubject, products);
+      if (best) {
+        return this.buildResponseWithSuggestions({
+          type: "product",
+          message: this.buildExactProductMessage(best, language),
+          userMessage,
+          products: this.buildProductCards([best], userMessage),
+          options: [
+            { label: "Back", value: "show categories" },
+            { label: "Home", value: "home" },
+          ],
+          skipSuggestions: true,
+        });
+      }
+    }
+
     const displayProducts = this.sortProductsForPresentation(products, userMessage).slice(
       0,
       Math.min(products.length, 3),
