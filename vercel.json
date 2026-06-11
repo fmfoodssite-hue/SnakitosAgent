@@ -1,37 +1,13 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "version": 2,
-  "builds": [
-    {
-      "src": "apps/admin/package.json",
-      "use": "@vercel/next"
+  "experimentalServices": {
+    "chatbot": {
+      "entrypoint": "apps/chatbot",
+      "routePrefix": "/"
     },
-    {
-      "src": "apps/chatbot/package.json",
-      "use": "@vercel/next"
+    "admin": {
+      "entrypoint": "apps/admin",
+      "routePrefix": "/admin"
     }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type"
-      },
-      "continue": true
-    },
-    {
-      "src": "/admin$",
-      "dest": "apps/admin"
-    },
-    {
-      "src": "/admin/(.*)",
-      "dest": "apps/admin/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "apps/chatbot"
-    }
-  ]
+  }
 }

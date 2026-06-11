@@ -1,10 +1,13 @@
 export const ADMIN_BASE_PATH = process.env.NEXT_PUBLIC_ADMIN_BASE_PATH || "/admin";
 
 export function withAdminPath(path: string) {
-  if (!path) return ADMIN_BASE_PATH;
-  if (path === ADMIN_BASE_PATH || path.startsWith(`${ADMIN_BASE_PATH}/`)) return path;
-  if (path.startsWith("/")) return `${ADMIN_BASE_PATH}${path}`;
-  return `${ADMIN_BASE_PATH}/${path}`;
+  if (!path) return "/";
+  if (path === ADMIN_BASE_PATH) return "/";
+  if (path.startsWith(`${ADMIN_BASE_PATH}/`)) {
+    return path.slice(ADMIN_BASE_PATH.length);
+  }
+  if (path.startsWith("/")) return path;
+  return `/${path}`;
 }
 
 export const KNOWLEDGE_CATEGORIES = [
