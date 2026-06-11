@@ -118,8 +118,9 @@ export function TopNavbar() {
                   },
                   {
                     label: "Logout",
-                    action: () => {
+                    action: async () => {
                       setProfileOpen(false);
+                      await fetch("/api/auth/logout", { method: "POST" }).catch(() => undefined);
                       logout();
                       toast.success("You have been logged out.");
                       router.push(withAdminPath("/login"));

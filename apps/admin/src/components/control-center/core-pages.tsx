@@ -25,7 +25,6 @@ import {
 import { z } from "zod";
 import { RefreshCw, Save, Sparkles } from "lucide-react";
 import {
-  login,
   saveBudgetSettings,
   saveGuardrails,
   saveModelSettings,
@@ -135,7 +134,57 @@ export function LoginPage() {
 
   const onSubmit = form.handleSubmit(async (values) => {
     try {
-      const user = await login(values.email, values.password);
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: values.email,
+          password: values.password,
+        }),
+      });
+
+      const payload = (await response.json().catch(() => ({}))) as {
+        error?: string;
+        admin?: {
+          id: string;
+          email: string;
+          full_name: string;
+          role: "owner" | "admin" | "support_agent" | "content_manager" | "viewer";
+          last_login_at?: string | null;
+        };
+      };
+
+      if (!response.ok || !payload.admin) {
+        throw new Error(payload.error || "Login failed.");
+      }
+
+      const roleLabelMap = {
+        owner: "Owner",
+        admin: "Admin",
+        support_agent: "Support Agent",
+        content_manager: "Content Manager",
+        viewer: "Viewer",
+      } as const;
+
+      const initials = payload.admin.full_name
+        .split(" ")
+        .map((part) => part[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase();
+
+      const user = {
+        id: payload.admin.id,
+        name: payload.admin.full_name,
+        email: payload.admin.email,
+        role: roleLabelMap[payload.admin.role],
+        status: "Active" as const,
+        lastActive: payload.admin.last_login_at ?? "Just now",
+        avatar: initials || "SA",
+      };
+
       setCurrentUser(user);
       toast.success("Welcome back to Snakitos RAG Control Center.");
       router.push(withAdminPath("/dashboard"));
@@ -207,9 +256,9 @@ export function LoginPage() {
           </form>
 
           <div className="mt-8 rounded-3xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
-            <div className="font-medium text-slate-900">Preview access</div>
+            <div className="font-medium text-slate-900">Production access</div>
             <div className="mt-1">
-              This admin is currently running in preview mode. Use `owner@snakitos.com` with password `snakitos1234`.
+              Sign in with a real admin account provisioned in the Snakitos admin database. Demo credentials are no longer used by this screen.
             </div>
           </div>
         </div>

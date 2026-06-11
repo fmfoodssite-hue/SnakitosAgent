@@ -90,7 +90,8 @@ export function AppSidebar() {
           <Button
             variant="outline"
             className={cn("w-full justify-start", sidebarCollapsed && "md:justify-center")}
-            onClick={() => {
+            onClick={async () => {
+              await fetch("/api/auth/logout", { method: "POST" }).catch(() => undefined);
               logout();
               router.push(withAdminPath("/login"));
             }}

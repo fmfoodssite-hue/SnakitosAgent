@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { getSnapshot } from "@/lib/mock-api";
 import type { ControlCenterSnapshot } from "@/types";
 
 export function useControlCenterData() {
@@ -13,8 +12,19 @@ export function useControlCenterData() {
     setLoading(true);
     setError(null);
     try {
-      const snapshot = await getSnapshot();
-      setData(snapshot);
+      const response = await fetch("/api/admin/control-center", {
+        cache: "no-store",
+      });
+      const payload = (await response.json().catch(() => ({}))) as {
+        error?: string;
+        snapshot?: ControlCenterSnapshot;
+      };
+
+      if (!response.ok || !payload.snapshot) {
+        throw new Error(payload.error || "Unable to load control-center data.");
+      }
+
+      setData(payload.snapshot);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to load dashboard data.");
     } finally {
@@ -28,7 +38,19 @@ export function useControlCenterData() {
       setLoading(true);
       setError(null);
       try {
-        const snapshot = await getSnapshot();
+        const response = await fetch("/api/admin/control-center", {
+          cache: "no-store",
+        });
+        const payload = (await response.json().catch(() => ({}))) as {
+          error?: string;
+          snapshot?: ControlCenterSnapshot;
+        };
+
+        if (!response.ok || !payload.snapshot) {
+          throw new Error(payload.error || "Unable to load control-center data.");
+        }
+
+        const snapshot = payload.snapshot;
         if (!active) return;
         setData(snapshot);
       } catch (err) {
