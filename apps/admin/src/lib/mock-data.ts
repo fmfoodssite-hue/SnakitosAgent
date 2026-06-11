@@ -165,7 +165,7 @@ const faqs: FaqItem[] = [
 ];
 
 const users: AdminUser[] = [
-  { id: "usr_001", name: "Asif Malik", email: "owner@snakitos.com", role: "Owner", status: "Active", lastActive: "2026-06-11 10:40", avatar: "AM" },
+  { id: "usr_001", name: "Snakitos Owner", email: "owner@snakitos.com", role: "Owner", status: "Active", lastActive: "2026-06-11 10:40", avatar: "SO" },
   { id: "usr_002", name: "Hina Khan", email: "admin@snakitos.com", role: "Admin", status: "Active", lastActive: "2026-06-11 09:52", avatar: "HK" },
   { id: "usr_003", name: "Bilal Ahmed", email: "support@snakitos.com", role: "Support Agent", status: "Active", lastActive: "2026-06-11 08:14", avatar: "BA" },
   { id: "usr_004", name: "Sana Ali", email: "content@snakitos.com", role: "Content Manager", status: "Invited", lastActive: "Pending invite", avatar: "SA" },
@@ -202,7 +202,7 @@ const knowledgeSources: KnowledgeSource[] = [
     status: "Pending",
     chunks: 12,
     lastUpdated: "2026-06-11 08:55",
-    addedBy: "Asif Malik",
+    addedBy: "Snakitos Owner",
     sampleChunks: ["Weekend combo offers for wafers and chips.", "Campaign notes for Eid gift bundles."],
     relatedConversationIds: ["cnv_005"],
   },
@@ -448,7 +448,7 @@ const tickets: Ticket[] = [
 const auditLogs: AuditLog[] = [
   { id: "aud_001", admin: "Hina Khan", action: "Synced Shopify catalog", module: "Shopify", time: "2026-06-11 10:18", ipAddress: "182.184.14.10", status: "Success" },
   { id: "aud_002", admin: "Sana Ali", action: "Updated FAQ language support", module: "FAQs", time: "2026-06-10 17:12", ipAddress: "182.184.14.77", status: "Success" },
-  { id: "aud_003", admin: "Asif Malik", action: "Saved new prompt version", module: "Prompt Manager", time: "2026-06-10 14:05", ipAddress: "182.184.14.18", status: "Success" },
+  { id: "aud_003", admin: "Snakitos Owner", action: "Saved new prompt version", module: "Prompt Manager", time: "2026-06-10 14:05", ipAddress: "182.184.14.18", status: "Success" },
   { id: "aud_004", admin: "Bilal Ahmed", action: "Resolved support ticket", module: "Tickets", time: "2026-06-09 19:40", ipAddress: "182.184.14.41", status: "Warning" },
   { id: "aud_005", admin: "Hina Khan", action: "Re-indexed failed source", module: "Knowledge Base", time: "2026-06-09 12:47", ipAddress: "182.184.14.10", status: "Error" },
 ];
@@ -460,7 +460,7 @@ const promptVersions: PromptVersion[] = [
     prompt: "You are Snakitos AI assistant. Answer only using approved Snakitos knowledge base. If information is missing, politely say you do not know and suggest contacting support. Always keep answers friendly, clear, and helpful. Support English, Urdu, and Roman Urdu. Do not invent product prices, delivery times, discounts, stock status, or policies unless they exist in the knowledge base.",
     tone: "Friendly",
     languageMode: "Auto-detect",
-    updatedBy: "Asif Malik",
+    updatedBy: "Snakitos Owner",
     date: "2026-06-10 14:05",
   },
   {

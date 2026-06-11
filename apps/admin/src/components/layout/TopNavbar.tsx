@@ -1,18 +1,20 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Bell, ChevronDown, Menu, MoonStar, Search, SunMedium } from "lucide-react";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import { useAdminShell } from "@/hooks/use-admin-shell";
+import { withAdminPath } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 export function TopNavbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { theme, setTheme } = useTheme();
-  const { currentUser, setMobileSidebarOpen } = useAdminShell();
+  const { currentUser, logout, setMobileSidebarOpen } = useAdminShell();
   const [search, setSearch] = useState("");
   const [profileOpen, setProfileOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -99,9 +101,30 @@ export function TopNavbar() {
             {profileOpen ? (
               <div className="absolute right-0 mt-2 w-56 rounded-[24px] border border-slate-200 bg-white p-2 shadow-2xl">
                 {[
-                  { label: "Profile", message: "Profile center coming soon." },
-                  { label: "Settings", message: "Opening Settings" },
-                  { label: "Logout", message: "Use the sidebar logout button to end the session." },
+                  {
+                    label: "Profile",
+                    action: () => {
+                      setProfileOpen(false);
+                      router.push(withAdminPath("/users"));
+                      toast.success("Opened Users & Roles to view the current admin profile.");
+                    },
+                  },
+                  {
+                    label: "Settings",
+                    action: () => {
+                      setProfileOpen(false);
+                      router.push(withAdminPath("/settings"));
+                    },
+                  },
+                  {
+                    label: "Logout",
+                    action: () => {
+                      setProfileOpen(false);
+                      logout();
+                      toast.success("You have been logged out.");
+                      router.push(withAdminPath("/login"));
+                    },
+                  },
                 ].map((item) => (
                   <button
                     key={item.label}
@@ -110,7 +133,7 @@ export function TopNavbar() {
                       "flex w-full rounded-2xl px-3 py-2 text-left text-sm text-slate-700 transition hover:bg-slate-50",
                       item.label === "Logout" && "text-rose-600",
                     )}
-                    onClick={() => toast.info(item.message)}
+                    onClick={item.action}
                   >
                     {item.label}
                   </button>

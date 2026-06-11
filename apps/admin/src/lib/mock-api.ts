@@ -16,6 +16,7 @@ import type {
 } from "@/types";
 
 const db = structuredClone(createMockSnapshot());
+const DEMO_PASSWORD = "snakitos1234";
 
 function delay<T>(result: T, ms = 450): Promise<T> {
   return new Promise((resolve) => setTimeout(() => resolve(structuredClone(result)), ms));
@@ -48,7 +49,7 @@ export async function getSnapshot(): Promise<ControlCenterSnapshot> {
 
 export async function login(email: string, password: string): Promise<AdminUser> {
   const user = db.users.find((item) => item.email.toLowerCase() === email.toLowerCase());
-  if (!user || !password.trim()) {
+  if (!user || password !== DEMO_PASSWORD) {
     throw new Error("Invalid email or password.");
   }
   db.currentUser = user;

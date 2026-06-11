@@ -207,8 +207,10 @@ export function LoginPage() {
           </form>
 
           <div className="mt-8 rounded-3xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
-            <div className="font-medium text-slate-900">Mock access</div>
-            <div className="mt-1">Use `owner@snakitos.com` with any non-empty password to enter the dashboard preview.</div>
+            <div className="font-medium text-slate-900">Preview access</div>
+            <div className="mt-1">
+              This admin is currently running in preview mode. Use `owner@snakitos.com` with password `snakitos1234`.
+            </div>
           </div>
         </div>
       </div>
