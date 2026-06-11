@@ -9,16 +9,15 @@ export function Button({ className, variant = "default", ...props }: ButtonProps
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-medium transition",
-        variant === "default" && "bg-indigo-500 text-white hover:bg-indigo-400",
-        variant === "secondary" && "bg-white/8 text-white hover:bg-white/12",
-        variant === "outline" && "border border-white/10 bg-transparent text-white hover:bg-white/5",
-        variant === "ghost" && "text-zinc-300 hover:bg-white/5",
-        variant === "destructive" && "bg-red-500/90 text-white hover:bg-red-500",
+        "inline-flex items-center justify-center rounded-2xl px-4 py-2.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60",
+        variant === "default" && "bg-indigo-600 text-white hover:bg-indigo-500",
+        variant === "secondary" && "bg-slate-100 text-slate-900 hover:bg-slate-200",
+        variant === "outline" && "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
+        variant === "ghost" && "text-slate-600 hover:bg-slate-100",
+        variant === "destructive" && "bg-rose-600 text-white hover:bg-rose-500",
         className,
       )}
       {...props}
     />
   );
 }
-

@@ -22,8 +22,12 @@
       "continue": true
     },
     {
-      "src": "/admin(?:/(.*))?$",
+      "src": "/admin$",
       "dest": "apps/admin"
+    },
+    {
+      "src": "/admin/(.*)",
+      "dest": "apps/admin/$1"
     },
     {
       "src": "/(.*)",

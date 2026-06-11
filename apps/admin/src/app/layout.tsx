@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import AdminChrome from "@/components/AdminChrome";
+import { AppProviders } from "@/components/providers/AppProviders";
+import { AdminShell } from "@/components/layout/AdminShell";
 
 export const dynamic = "force-dynamic";
 
@@ -16,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard | Snakitos Agent",
-  description: "Manage your AI shopping assistant and store operations.",
+  title: "Snakitos RAG Control Center",
+  description: "Production-style control center for the Snakitos RAG chatbot, knowledge operations, and support workflows.",
 };
 
 export default function RootLayout({
@@ -26,11 +27,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} admin-shell bg-[#09090b] text-zinc-100 antialiased`}
-      >
-        <AdminChrome>{children}</AdminChrome>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className="antialiased">
+        <AppProviders>
+          <AdminShell>{children}</AdminShell>
+        </AppProviders>
       </body>
     </html>
   );

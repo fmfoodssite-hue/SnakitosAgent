@@ -1,11 +1,8 @@
 import type { NextConfig } from "next";
 
-const basePath = "/admin";
-
 const nextConfig: NextConfig = {
-  basePath,
   env: {
-    NEXT_PUBLIC_ADMIN_BASE_PATH: basePath,
+    NEXT_PUBLIC_ADMIN_BASE_PATH: "/admin",
   },
 };
 

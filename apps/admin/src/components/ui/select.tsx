@@ -5,7 +5,7 @@ export function Select({ className, children, ...props }: React.SelectHTMLAttrib
   return (
     <select
       className={cn(
-        "w-full rounded-2xl border border-white/10 bg-[#111114] px-4 py-3 text-sm text-white outline-none focus:border-indigo-400/50",
+        "h-11 w-full rounded-2xl border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition focus:border-indigo-300 focus:ring-4 focus:ring-indigo-100",
         className,
       )}
       {...props}
@@ -14,4 +14,3 @@ export function Select({ className, children, ...props }: React.SelectHTMLAttrib
     </select>
   );
 }
-

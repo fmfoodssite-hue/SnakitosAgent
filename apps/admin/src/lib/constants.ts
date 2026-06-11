@@ -1,5 +1,12 @@
 export const ADMIN_BASE_PATH = process.env.NEXT_PUBLIC_ADMIN_BASE_PATH || "/admin";
 
+export function withAdminPath(path: string) {
+  if (!path) return ADMIN_BASE_PATH;
+  if (path === ADMIN_BASE_PATH || path.startsWith(`${ADMIN_BASE_PATH}/`)) return path;
+  if (path.startsWith("/")) return `${ADMIN_BASE_PATH}${path}`;
+  return `${ADMIN_BASE_PATH}/${path}`;
+}
+
 export const KNOWLEDGE_CATEGORIES = [
   "Products",
   "Deals",
@@ -65,4 +72,3 @@ export const OFFICIAL_SOCIAL_LINKS = {
   youtube: "https://www.youtube.com/@snakitos5728",
   otherPlatformMessage: "Please contact Snakitos support for official platform details.",
 } as const;
-
