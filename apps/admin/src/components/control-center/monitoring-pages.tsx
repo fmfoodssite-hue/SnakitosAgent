@@ -130,7 +130,7 @@ export function PlaygroundPage() {
     <PageState loading={loading} error={error} retry={reload}>
       {data ? (
         <div className="space-y-6">
-          <PageHeader eyebrow="AI Control" title="Chat playground" description="Preview how Snakitos AI answers live-style customer questions before publishing prompt or knowledge changes." />
+          <PageHeader eyebrow="AI Control" title="Chat playground" description="Evaluate how Snakitos AI answers live-style customer questions before publishing prompt, retrieval, or knowledge changes." />
           <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
             <div className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
               <div className="space-y-4">
@@ -229,7 +229,7 @@ export function PlaygroundPage() {
                   Add to FAQ
                 </Button>
                 <Button variant="outline" onClick={() => toast.info("Open Prompt Manager to improve the answer behavior.")}>
-                  Improve Answer
+                  Improve RAG Answer
                 </Button>
                 <Button variant="outline" onClick={() => setTicketOpen(true)}>
                   Create Ticket
@@ -238,7 +238,7 @@ export function PlaygroundPage() {
             </div>
           </div>
 
-          <FormModal open={faqOpen} title="Add playground answer to FAQ" onClose={() => setFaqOpen(false)}>
+          <FormModal open={faqOpen} title="Promote reviewed answer to FAQ" onClose={() => setFaqOpen(false)}>
             <form
               className="space-y-4"
               onSubmit={faqForm.handleSubmit(async (values) => {
@@ -250,7 +250,7 @@ export function PlaygroundPage() {
                   status: "Active",
                   tags: ["playground", "approved"],
                 });
-                toast.success("FAQ created from playground result.");
+                toast.success("Reviewed answer promoted to FAQ knowledge.");
                 setFaqOpen(false);
                 reload();
               })}
@@ -264,13 +264,13 @@ export function PlaygroundPage() {
             </form>
           </FormModal>
 
-          <FormModal open={ticketOpen} title="Create ticket from playground" onClose={() => setTicketOpen(false)}>
+          <FormModal open={ticketOpen} title="Escalate playground result to ticket" onClose={() => setTicketOpen(false)}>
             <form
               className="space-y-4"
               onSubmit={ticketForm.handleSubmit(async () => {
                 const question = chat.filter((item) => item.role === "user").slice(-1)[0]?.content ?? "Manual playground ticket";
                 await addFailedAnswerFromPlayground(question, chat.filter((item) => item.role === "assistant").slice(-1)[0]?.content ?? "No answer");
-                toast.success("Ticket created from playground review.");
+                toast.success("Playground result escalated to support ticket.");
                 setTicketOpen(false);
                 reload();
               })}
@@ -365,7 +365,7 @@ export function PromptManagerPage() {
             </div>
             <div className="flex flex-wrap gap-3">
               <Button type="submit">Save prompt</Button>
-              <Button type="button" variant="outline" onClick={() => toast.success("Prompt test started in the playground context.")}>
+              <Button type="button" variant="outline" onClick={() => toast.success("Prompt evaluation started in the playground context.")}>
                 Test prompt
               </Button>
               <Button
@@ -544,7 +544,7 @@ export function FailedAnswersPage() {
             >
               Create FAQ
             </Button>
-            <Button variant="ghost" onClick={() => toast.success("Ticket flow can be completed in the Tickets page.")}>
+            <Button variant="ghost" onClick={() => toast.success("Escalation can be completed in the Tickets page.")}>
               Create Ticket
             </Button>
             <Button variant="ghost" onClick={async () => { await ignoreFailedAnswer(row.original.id); toast.success("Failed answer ignored."); reload(); }}>

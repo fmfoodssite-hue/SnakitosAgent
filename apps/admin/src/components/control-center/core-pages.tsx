@@ -153,14 +153,14 @@ export function LoginPage() {
           </div>
           <h1 className="mt-6 text-4xl font-semibold tracking-tight">Snakitos RAG Control Center</h1>
           <p className="mt-4 max-w-lg text-sm text-indigo-100">
-            Manage knowledge uploads, Shopify sync, conversations, prompts, analytics, and guardrails for the Snakitos customer support assistant.
+            Manage ingestion, retrieval quality, prompt behavior, answer reviews, and support escalation for the Snakitos customer support RAG assistant.
           </p>
           <div className="mt-8 grid gap-4 md:grid-cols-2">
             {[
-              "Monitor product and delivery questions in real time",
-              "Re-index website, FAQ, and document knowledge from one place",
-              "Catch failed answers before they hurt conversion",
-              "Tune prompts, model settings, and safe-response controls",
+              "Monitor product, policy, and delivery questions in real time",
+              "Train website, FAQ, Shopify, and document knowledge from one place",
+              "Catch failed answers and turn them into approved knowledge",
+              "Tune prompts, retrieval settings, and safety controls",
             ].map((item) => (
               <div key={item} className="rounded-3xl border border-white/20 bg-white/10 p-4 text-sm">
                 {item}
@@ -229,9 +229,9 @@ export function DashboardPage() {
           <PageHeader
             eyebrow="Control Center"
             title="Snakitos RAG performance at a glance"
-            description="Track answer quality, indexed knowledge, product retrieval coverage, and support operations from one production-style admin surface."
+            description="Track answer quality, trained knowledge coverage, retrieval performance, and support operations from one RAG control surface."
             actions={
-              <Button onClick={() => toast.success("Dashboard data refreshed from mock API.")}>
+              <Button onClick={() => toast.success("RAG control center data refreshed.")}>
                 <RefreshCw className="mr-2 h-4 w-4" />
                 Refresh
               </Button>
@@ -1014,7 +1014,7 @@ export function SettingsPage() {
               })}
             >
               <div className="flex items-center justify-between">
-                <div className="text-sm text-slate-500">Keys are masked by default for safer demos.</div>
+                <div className="text-sm text-slate-500">Keys are masked by default for safer staging and operator reviews.</div>
                 <Button variant="outline" type="button" onClick={() => setShowKeys((value) => !value)}>
                   {showKeys ? "Hide keys" : "Show keys"}
                 </Button>

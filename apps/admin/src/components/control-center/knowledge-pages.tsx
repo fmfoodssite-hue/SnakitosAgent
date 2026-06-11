@@ -120,11 +120,11 @@ export function KnowledgePage() {
               variant="ghost"
               onClick={async () => {
                 await reindexKnowledgeSource(row.original.id);
-                toast.success("Source queued and updated to Indexed.");
+                toast.success("Source queued for retraining and refreshed in the RAG index.");
                 reload();
               }}
             >
-              Re-index
+              Train Source
             </Button>
             <Button variant="ghost" onClick={() => setDeleteId(row.original.id)}>
               Delete
@@ -143,7 +143,7 @@ export function KnowledgePage() {
           <PageHeader
             eyebrow="RAG Management"
             title="Knowledge base"
-            description="Manage all approved RAG sources, inspect chunk counts, and trigger indexing workflows before they affect live customer answers."
+            description="Manage all approved RAG sources, inspect chunk counts, and trigger training workflows before they affect live customer answers."
             actions={
               <>
                 <Button variant="outline" onClick={() => toast.success("CSV export started for knowledge sources.")}>
@@ -153,11 +153,11 @@ export function KnowledgePage() {
                   variant="outline"
                   onClick={async () => {
                     await Promise.all(data.knowledgeSources.map((source) => reindexKnowledgeSource(source.id)));
-                    toast.success("All sources re-indexed.");
+                    toast.success("All sources queued for retraining.");
                     reload();
                   }}
                 >
-                  Re-index All
+                  Train All Sources
                 </Button>
                 <Button onClick={() => setOpenModal(true)}>Add Source</Button>
               </>
@@ -191,7 +191,7 @@ export function KnowledgePage() {
           <DataTable
             columns={columns}
             data={filtered}
-            emptyState={<EmptyState title="No sources found" description="Adjust filters or add a new source to start indexing knowledge." />}
+            emptyState={<EmptyState title="No sources found" description="Adjust filters or add a new source to start training retrieval knowledge." />}
           />
 
           <DetailDrawer
@@ -208,7 +208,7 @@ export function KnowledgePage() {
                     <div className="mt-2 text-2xl font-semibold text-slate-950">{selectedSource.chunks}</div>
                   </div>
                   <div className="rounded-3xl bg-slate-50 p-4">
-                    <div className="text-xs uppercase tracking-[0.18em] text-slate-500">Last indexed</div>
+                    <div className="text-xs uppercase tracking-[0.18em] text-slate-500">Last trained</div>
                     <div className="mt-2 text-sm font-medium text-slate-900">{selectedSource.lastUpdated}</div>
                   </div>
                 </div>
@@ -239,7 +239,7 @@ export function KnowledgePage() {
           <ConfirmDialog
             open={Boolean(deleteId)}
             title="Delete source"
-            description="This will remove the source from the mock knowledge base list."
+            description="This will remove the source from the RAG knowledge source list."
             onCancel={() => setDeleteId(null)}
             onConfirm={async () => {
               if (!deleteId) return;
@@ -255,7 +255,7 @@ export function KnowledgePage() {
               className="space-y-4"
               onSubmit={form.handleSubmit(async (values) => {
                 await addKnowledgeSource(values);
-                toast.success("Knowledge source added.");
+                toast.success("Knowledge source added and queued for training.");
                 setOpenModal(false);
                 form.reset();
                 reload();
@@ -324,7 +324,7 @@ export function UploadDocumentsPage() {
           <PageHeader
             eyebrow="RAG Management"
             title="Upload documents"
-            description="Ingest PDFs, DOCX, TXT, CSV, or JSON files, assign metadata, and push them into the Snakitos retrieval pipeline."
+            description="Ingest PDFs, DOCX, TXT, CSV, or JSON files, assign metadata, and push them into the Snakitos retrieval training pipeline."
           />
 
           <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
@@ -352,7 +352,7 @@ export function UploadDocumentsPage() {
                     </div>
                   ))
                 ) : (
-                  <EmptyState title="No files selected" description="Choose one or more approved Snakitos knowledge files to begin indexing." />
+                  <EmptyState title="No files selected" description="Choose one or more approved Snakitos knowledge files to begin training the retrieval layer." />
                 )}
               </div>
             </div>
@@ -375,7 +375,7 @@ export function UploadDocumentsPage() {
                   fileNames: files.map((file) => file.name),
                 });
                 setProgress(100);
-                toast.success("Documents uploaded and indexed.");
+                toast.success("Documents uploaded and queued for training.");
                 setFiles([]);
                 reload();
               })}
@@ -408,7 +408,7 @@ export function UploadDocumentsPage() {
               </Field>
               <label className="flex items-center gap-2 text-sm text-slate-600">
                 <input type="checkbox" className="h-4 w-4" {...form.register("active")} />
-                Active for retrieval after indexing
+                Active for retrieval after training
               </label>
               {progress > 0 ? (
                 <div>
@@ -422,7 +422,7 @@ export function UploadDocumentsPage() {
                 </div>
               ) : null}
               <Button type="submit" className="w-full">
-                Upload and Index
+                Upload and Train
               </Button>
             </form>
           </div>
@@ -465,7 +465,7 @@ export function WebsiteCrawlerPage() {
             <Button variant="outline" onClick={() => setSelectedLogId(row.original.id)}>
               View
             </Button>
-            <Button variant="ghost" onClick={async () => { await recrawlPage(row.original.id); toast.success("Page re-crawled."); reload(); }}>
+            <Button variant="ghost" onClick={async () => { await recrawlPage(row.original.id); toast.success("Page re-crawled and retrained."); reload(); }}>
               Re-crawl
             </Button>
             <Button variant="ghost" onClick={async () => { await deleteCrawlerResult(row.original.id); toast.success("Crawler result removed."); reload(); }}>
@@ -482,7 +482,7 @@ export function WebsiteCrawlerPage() {
     <PageState loading={loading} error={error} retry={reload}>
       {data ? (
         <div className="space-y-6">
-          <PageHeader eyebrow="RAG Management" title="Website crawler" description="Crawl `snakitos.com`, control inclusion rules, and monitor page indexing progress for the retrieval layer." />
+          <PageHeader eyebrow="RAG Management" title="Website crawler" description="Crawl `snakitos.com`, control inclusion rules, and monitor page training progress for the retrieval layer." />
 
           <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
             <form
@@ -560,7 +560,7 @@ export function WebsiteCrawlerPage() {
           <DataTable
             columns={columns}
             data={data.crawlerLogs}
-            emptyState={<EmptyState title="No crawler results" description="Start a crawl to inspect page-level indexing results." />}
+            emptyState={<EmptyState title="No crawler results" description="Start a crawl to inspect page-level training results." />}
           />
 
           <DetailDrawer
@@ -608,7 +608,7 @@ export function ShopifyPage() {
     resolver: zodResolver(shopifySchema),
     defaultValues: {
       storeUrl: "https://snakitos.myshopify.com",
-      apiKey: "shpat_demo_snakitos_key",
+      apiKey: "shpat_preview_training_key",
     },
   });
 
@@ -631,10 +631,10 @@ export function ShopifyPage() {
             <Button variant="outline" onClick={() => toast.info(`${row.original.name}: ${row.original.description}`)}>
               View
             </Button>
-            <Button variant="ghost" onClick={async () => { await resyncProduct(row.original.id); toast.success("Product re-synced."); reload(); }}>
+            <Button variant="ghost" onClick={async () => { await resyncProduct(row.original.id); toast.success("Product synced and retrained."); reload(); }}>
               Re-sync
             </Button>
-            <Button variant="ghost" onClick={async () => { await toggleProductInBot(row.original.id); toast.success("Product bot visibility updated."); reload(); }}>
+            <Button variant="ghost" onClick={async () => { await toggleProductInBot(row.original.id); toast.success("Product retrieval visibility updated."); reload(); }}>
               {row.original.ragStatus === "Excluded" ? "Include in Bot" : "Exclude from Bot"}
             </Button>
           </div>
@@ -657,7 +657,7 @@ export function ShopifyPage() {
                 <Button variant="outline" onClick={() => setOpenConnect(true)}>
                   Connect Shopify
                 </Button>
-                <Button onClick={async () => { await syncShopify(); toast.success("Shopify synced successfully."); reload(); }}>
+                <Button onClick={async () => { await syncShopify(); toast.success("Shopify catalog synced and retrained successfully."); reload(); }}>
                   Sync Now
                 </Button>
                 <Button variant="outline" onClick={() => setShowLogs(true)}>
