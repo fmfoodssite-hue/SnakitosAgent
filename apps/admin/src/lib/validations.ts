@@ -46,9 +46,10 @@ export const handoffSchema = z.object({
   summary: z.string().min(10),
   proof_required: z.boolean().default(false),
   assigned_to: z.string().uuid().optional().nullable(),
-  session_id: z.string().uuid().optional().nullable(),
+  chat_session_id: z.string().uuid().optional().nullable(),
   metadata: z.record(z.string(), z.unknown()).default({}),
 });
+
 
 export const ragTestCaseSchema = z.object({
   test_name: z.string().min(3).max(120),

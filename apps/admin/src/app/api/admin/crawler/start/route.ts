@@ -1,152 +1,88 @@
+import { z } from "zod";
 import { withAdminAccess, safeAudit } from "@/lib/server";
-import { assertServiceClient } from "@/lib/db";
 import { errorResponse, successResponse } from "@/lib/response";
-
-type CrawlerSettingsPayload = {
-  websiteUrl: string;
-  depth: number;
-  includePatterns: string;
-  excludePatterns: string;
-  autoDetectProductPages: boolean;
-  autoDetectFaqPages: boolean;
-  autoDetectPolicyPages: boolean;
-  respectRobots: boolean;
-};
-
-function stripHtml(input: string) {
-  return input
-    .replace(/<script[\s\S]*?<\/script>/gi, " ")
-    .replace(/<style[\s\S]*?<\/style>/gi, " ")
-    .replace(/<[^>]+>/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function chunkText(input: string, size = 900) {
-  const chunks: string[] = [];
-  for (let index = 0; index < input.length; index += size) {
-    const chunk = input.slice(index, index + size).trim();
-    if (chunk) chunks.push(chunk);
-  }
-  return chunks;
-}
-
-function buildCandidateUrls(settings: CrawlerSettingsPayload) {
-  const base = settings.websiteUrl.replace(/\/$/, "");
-  const includePaths = settings.includePatterns
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .slice(0, 8)
-    .map((path) => (path.startsWith("http") ? path : `${base}${path.startsWith("/") ? path : `/${path}`}`));
-
-  return [base, ...includePaths].slice(0, 10);
-}
-
-async function crawlUrl(url: string) {
-  const response = await fetch(url, { cache: "no-store" });
-  const html = await response.text();
-  const text = stripHtml(html);
-  const titleMatch = html.match(/<title>(.*?)<\/title>/i);
-
-  return {
-    url,
-    ok: response.ok,
-    status: response.status,
-    title: titleMatch?.[1]?.trim() || url,
-    text,
-  };
-}
+import { parseSitemap, crawlUrls, listCrawledPages } from "@/lib/services/crawler";
 
 export const dynamic = "force-dynamic";
 
-export async function POST(request: Request) {
-  return withAdminAccess(["owner", "admin", "content_manager"], async ({ admin, ipAddress }) => {
+const crawlSchema = z.object({
+  url: z.string().url().optional(),
+  sitemap_url: z.string().url().optional(),
+  urls: z.array(z.string().url()).max(50).optional(),
+  source_id: z.string().uuid().optional().nullable(),
+});
+
+export async function GET(request: Request) {
+  return withAdminAccess(["owner", "admin", "support_agent", "content_manager", "viewer"], async () => {
     try {
-      const settings = (await request.json().catch(() => null)) as CrawlerSettingsPayload | null;
-      if (!settings?.websiteUrl) {
-        return errorResponse("VALIDATION_FAILED", "Crawler websiteUrl is required.", 400);
-      }
+      const { searchParams } = new URL(request.url);
+      const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10));
+      const limit = Math.min(100, parseInt(searchParams.get("limit") ?? "20", 10));
+      const status = searchParams.get("status") ?? undefined;
 
-      const supabase = assertServiceClient();
-      const urls = buildCandidateUrls(settings);
-      const results = await Promise.allSettled(urls.map((url) => crawlUrl(url)));
-
-      await supabase.from("settings").upsert({
-        key: "crawler_settings",
-        value: settings,
-        description: "Crawler settings",
-        updated_by: admin.id,
-        updated_at: new Date().toISOString(),
-      });
-
-      await supabase.from("settings").upsert({
-        key: "crawler_runtime",
-        value: { running: false, lastStartedAt: new Date().toISOString() },
-        description: "Crawler runtime status",
-        updated_by: admin.id,
-        updated_at: new Date().toISOString(),
-      });
-
-      const created: Array<Record<string, unknown>> = [];
-
-      for (const result of results) {
-        if (result.status !== "fulfilled") continue;
-        const page = result.value;
-        if (!page.ok || !page.text) continue;
-
-        const { data: document, error: documentError } = await supabase
-          .from("knowledge_documents")
-          .insert({
-            title: page.title,
-            category: "General FAQ",
-            content: page.text,
-            source_type: "website",
-            priority: "medium",
-            status: "active",
-            created_by: admin.id,
-            updated_by: admin.id,
-            metadata: {
-              url: page.url,
-              pageType: "Page",
-              httpStatus: page.status,
-              crawledAt: new Date().toISOString(),
-            },
-          })
-          .select("*")
-          .single();
-
-        if (documentError || !document) continue;
-
-        const chunks = chunkText(page.text).map((content, index) => ({
-          document_id: document.id,
-          chunk_index: index,
-          content,
-          token_estimate: Math.ceil(content.length / 4),
-          embedding_status: "pending",
-          metadata: { url: page.url },
-        }));
-
-        if (chunks.length > 0) {
-          await supabase.from("knowledge_chunks").insert(chunks);
-        }
-
-        created.push(document);
-      }
-
-      await safeAudit({
-        adminId: admin.id,
-        action: "crawler.start",
-        entityType: "crawler",
-        details: { urlCount: urls.length, created: created.length },
-        ipAddress,
-      });
-
-      return successResponse({ created });
+      const result = await listCrawledPages({ page, limit, status });
+      return successResponse(result);
     } catch (error) {
-      console.error("Crawler start failed", error);
-      return errorResponse("CRAWLER_START_FAILED", "Unable to start crawler.", 500);
+      console.error("Crawled pages load failed", error);
+      return errorResponse("CRAWLED_PAGES_FAILED", "Unable to load crawled pages.", 500);
     }
   });
 }
 
+export async function POST(request: Request) {
+  return withAdminAccess(["owner", "admin", "content_manager"], async ({ admin, ipAddress }) => {
+    try {
+      const body = await request.json().catch(() => null);
+      const parsed = crawlSchema.safeParse(body);
+      if (!parsed.success) {
+        return errorResponse("VALIDATION_FAILED", "Provide url, sitemap_url, or urls array.", 400, parsed.error.flatten());
+      }
+
+      const { url, sitemap_url, urls, source_id } = parsed.data;
+
+      // Collect all URLs to crawl
+      const allUrls: string[] = [];
+
+      if (url) allUrls.push(url);
+      if (urls) allUrls.push(...urls);
+
+      if (sitemap_url) {
+        const sitemapUrls = await parseSitemap(sitemap_url);
+        allUrls.push(...sitemapUrls);
+      }
+
+      if (allUrls.length === 0) {
+        return errorResponse("VALIDATION_FAILED", "No valid URLs to crawl.", 400);
+      }
+
+      // Deduplicate
+      const uniqueUrls = [...new Set(allUrls)].slice(0, 50);
+
+      // Start crawl
+      const result = await crawlUrls(uniqueUrls, {
+        sourceId: source_id ?? null,
+        adminId: admin.id,
+        maxConcurrent: 3,
+      });
+
+      await safeAudit({
+        adminId: admin.id,
+        action: "crawler.start",
+        entityType: "crawled_pages",
+        details: {
+          total: result.total,
+          saved: result.saved,
+          skipped: result.skipped,
+          errors: result.errors,
+          first_url: uniqueUrls[0],
+        },
+        ipAddress,
+      });
+
+      return successResponse(result, { status: 201 });
+    } catch (error) {
+      console.error("Crawl start failed", error);
+      return errorResponse("CRAWL_START_FAILED", "Unable to start crawl.", 500);
+    }
+  });
+}

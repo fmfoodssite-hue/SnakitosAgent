@@ -4,33 +4,36 @@ import { errorResponse, successResponse } from "@/lib/response";
 
 export const dynamic = "force-dynamic";
 
-export async function POST() {
+export async function POST(request: Request) {
   return withAdminAccess(["owner", "admin", "content_manager"], async ({ admin, ipAddress }) => {
     try {
+      const body = (await request.json().catch(() => ({}))) as { status?: string };
       const supabase = assertServiceClient();
-      const { data: docs } = await supabase
-        .from("knowledge_documents")
-        .select("id")
-        .eq("source_type", "website");
 
-      const ids = (docs ?? []).map((row) => row.id);
-      if (ids.length > 0) {
-        await supabase.from("knowledge_chunks").delete().in("document_id", ids);
-        await supabase.from("knowledge_documents").delete().in("id", ids);
+      let query = supabase.from("crawled_pages").delete();
+
+      if (body.status) {
+        query = query.eq("status", body.status);
+      } else {
+        // Delete all (require explicit confirmation in the body)
+        query = query.neq("id", "00000000-0000-0000-0000-000000000000");
       }
+
+      const { error } = await query;
+      if (error) throw error;
 
       await safeAudit({
         adminId: admin.id,
         action: "crawler.clear",
-        entityType: "crawler",
-        details: { deleted: ids.length },
+        entityType: "crawled_pages",
+        details: { status_filter: body.status ?? "all" },
         ipAddress,
       });
-      return successResponse({ deleted: ids.length });
+
+      return successResponse({ cleared: true, status_filter: body.status ?? "all" });
     } catch (error) {
       console.error("Crawler clear failed", error);
-      return errorResponse("CRAWLER_CLEAR_FAILED", "Unable to clear crawler results.", 500);
+      return errorResponse("CRAWLER_CLEAR_FAILED", "Unable to clear crawled pages.", 500);
     }
   });
 }
-

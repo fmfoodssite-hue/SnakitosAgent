@@ -1,13 +1,29 @@
-import { randomUUID, createHash } from "crypto";
+import { randomUUID } from "crypto";
 import { withAdminAccess, safeAudit } from "@/lib/server";
 import { assertServiceClient } from "@/lib/db";
 import { errorResponse, successResponse } from "@/lib/response";
-
-function hashPassword(password: string) {
-  return createHash("sha256").update(password).digest("hex");
-}
+import { hashPassword } from "@/lib/security";
 
 export const dynamic = "force-dynamic";
+
+export async function GET() {
+  return withAdminAccess(["owner", "admin"], async () => {
+    try {
+      const supabase = assertServiceClient();
+      const { data, error } = await supabase
+        .from("admins")
+        // Explicitly exclude password_hash from response — never expose to client
+        .select("id, email, full_name, is_active, last_login_at, created_at, admin_roles(key, label)")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+      return successResponse(data ?? []);
+    } catch (error) {
+      console.error("Users load failed", error);
+      return errorResponse("USERS_LOAD_FAILED", "Unable to load users.", 500);
+    }
+  });
+}
 
 export async function POST(request: Request) {
   return withAdminAccess(["owner", "admin"], async ({ admin, ipAddress }) => {
@@ -46,12 +62,14 @@ export async function POST(request: Request) {
         throw roleError ?? new Error("Role not found.");
       }
 
+      // Generate a secure temporary password (user must change on first login)
       const tempPassword = randomUUID();
       const { data, error } = await supabase
         .from("admins")
         .insert({
-          email: body.email.toLowerCase(),
-          full_name: body.name,
+          email: body.email.toLowerCase().trim(),
+          full_name: body.name.trim(),
+          // Use scrypt from security.ts — consistent with verifyPassword() in auth.ts
           password_hash: hashPassword(tempPassword),
           role_id: role.id,
           is_active: true,
@@ -72,11 +90,12 @@ export async function POST(request: Request) {
         ipAddress,
       });
 
-      return successResponse(data, { status: 201 });
+      // Return the temp password in the response so the inviting admin can share it
+      // In production, this should be emailed — add SMTP integration to remove it from the response
+      return successResponse({ ...data, tempPassword }, { status: 201 });
     } catch (error) {
       console.error("User invite failed", error);
       return errorResponse("USER_INVITE_FAILED", "Unable to invite user.", 500);
     }
   });
 }
-

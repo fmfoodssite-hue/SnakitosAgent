@@ -202,7 +202,7 @@ export async function GET() {
       queryOr(() => supabase.from("knowledge_chunks").select("*").order("updated_at", { ascending: false }).limit(400), []),
       queryOr(() => supabase.from("shopify_products").select("*").order("last_synced_at", { ascending: false }).limit(200), []),
       queryOr(() => supabase.from("prompt_versions").select("*").order("created_at", { ascending: false }).limit(50), []),
-      queryOr(() => supabase.from("chat_sessions").select("*").order("updated_at", { ascending: false }).limit(200), []),
+      queryOr(() => supabase.from("chat_sessions").select("*").order("started_at", { ascending: false }).limit(200), []),
       queryOr(() => supabase.from("chat_messages").select("*").order("created_at", { ascending: false }).limit(400), []),
       queryOr(() => supabase.from("handoff_tickets").select("*").order("created_at", { ascending: false }).limit(200), []),
       queryOr(() => supabase.from("audit_logs").select("*, admins(full_name, email)").order("created_at", { ascending: false }).limit(100), []),
@@ -349,7 +349,7 @@ export async function GET() {
 
       return {
         id: String(row.id),
-        userId: String(session?.user_identifier ?? session?.session_id ?? row.session_id ?? "unknown-user"),
+        userId: String(session?.user_identifier ?? session?.user_id ?? row.session_id ?? "unknown-user"),
         question: String(row.user_message ?? ""),
         answer: String(row.ai_response ?? ""),
         status:

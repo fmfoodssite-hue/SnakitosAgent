@@ -1,0 +1,596 @@
+{
+  "report": {
+    "summary": {
+      "totalTests": 1000,
+      "timestamp": "2026-06-13T08:56:29.827Z"
+    },
+    "results": {
+      "passed": 1000,
+      "noResults": 0,
+      "errors": 0
+    },
+    "performance": {
+      "averageDuration": "0.017",
+      "minDuration": 0,
+      "maxDuration": 1,
+      "totalTime": "0.02"
+    },
+    "byType": {
+      "product_taste": {
+        "tested": 1000,
+        "total": 2400,
+        "passed": 1000,
+        "noResults": 0,
+        "errors": 0,
+        "coverage": "41.7",
+        "passRate": "100.00",
+        "avgDuration": "0.017"
+      }
+    },
+    "coverage": {}
+  },
+  "testCount": 1000,
+  "sampleResults": [
+    {
+      "id": 1,
+      "query": "show me Nachos for movie night",
+      "type": "product_taste",
+      "status": "passed",
+      "duration": 1,
+      "resultCount": 3,
+      "fieldsValid": true,
+      "results": [
+        {
+          "title": "Nachos Salsa - 50g ( +DC )",
+          "price": "48.88",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 406,
+          "unitsSold": 2452,
+          "tags": [
+            "spicy",
+            "savory",
+            "party"
+          ],
+          "score": 90
+        },
+        {
+          "title": "Nachos Paprika - 50g ( +DC )",
+          "price": "48.88",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 406,
+          "unitsSold": 2452,
+          "tags": [
+            "spicy",
+            "savory"
+          ],
+          "score": 90
+        },
+        {
+          "title": "Nachos Salsa Pack Of 10 - 50g ( +DC )",
+          "price": "500.00",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 272,
+          "unitsSold": 371,
+          "tags": [
+            "bulk",
+            "party",
+            "deal"
+          ],
+          "score": 90
+        }
+      ],
+      "timestamp": "2026-06-13T08:56:29.808Z"
+    },
+    {
+      "id": 2,
+      "query": "best Nachos for movie night",
+      "type": "product_taste",
+      "status": "passed",
+      "duration": 0,
+      "resultCount": 3,
+      "fieldsValid": true,
+      "results": [
+        {
+          "title": "Nachos Salsa - 50g ( +DC )",
+          "price": "48.88",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 406,
+          "unitsSold": 2452,
+          "tags": [
+            "spicy",
+            "savory",
+            "party"
+          ],
+          "score": 90
+        },
+        {
+          "title": "Nachos Paprika - 50g ( +DC )",
+          "price": "48.88",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 406,
+          "unitsSold": 2452,
+          "tags": [
+            "spicy",
+            "savory"
+          ],
+          "score": 90
+        },
+        {
+          "title": "Nachos Salsa Pack Of 10 - 50g ( +DC )",
+          "price": "500.00",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 272,
+          "unitsSold": 371,
+          "tags": [
+            "bulk",
+            "party",
+            "deal"
+          ],
+          "score": 90
+        }
+      ],
+      "timestamp": "2026-06-13T08:56:29.808Z"
+    },
+    {
+      "id": 3,
+      "query": "Nachos recommendations for movie night",
+      "type": "product_taste",
+      "status": "passed",
+      "duration": 0,
+      "resultCount": 3,
+      "fieldsValid": true,
+      "results": [
+        {
+          "title": "Nachos Salsa - 50g ( +DC )",
+          "price": "48.88",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 406,
+          "unitsSold": 2452,
+          "tags": [
+            "spicy",
+            "savory",
+            "party"
+          ],
+          "score": 90
+        },
+        {
+          "title": "Nachos Paprika - 50g ( +DC )",
+          "price": "48.88",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 406,
+          "unitsSold": 2452,
+          "tags": [
+            "spicy",
+            "savory"
+          ],
+          "score": 90
+        },
+        {
+          "title": "Nachos Salsa Pack Of 10 - 50g ( +DC )",
+          "price": "500.00",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 272,
+          "unitsSold": 371,
+          "tags": [
+            "bulk",
+            "party",
+            "deal"
+          ],
+          "score": 90
+        }
+      ],
+      "timestamp": "2026-06-13T08:56:29.808Z"
+    },
+    {
+      "id": 4,
+      "query": "what Nachos do you have for movie night",
+      "type": "product_taste",
+      "status": "passed",
+      "duration": 0,
+      "resultCount": 3,
+      "fieldsValid": true,
+      "results": [
+        {
+          "title": "Nachos Salsa - 50g ( +DC )",
+          "price": "48.88",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 406,
+          "unitsSold": 2452,
+          "tags": [
+            "spicy",
+            "savory",
+            "party"
+          ],
+          "score": 90
+        },
+        {
+          "title": "Nachos Paprika - 50g ( +DC )",
+          "price": "48.88",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 406,
+          "unitsSold": 2452,
+          "tags": [
+            "spicy",
+            "savory"
+          ],
+          "score": 90
+        },
+        {
+          "title": "Nachos Salsa Pack Of 10 - 50g ( +DC )",
+          "price": "500.00",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 272,
+          "unitsSold": 371,
+          "tags": [
+            "bulk",
+            "party",
+            "deal"
+          ],
+          "score": 90
+        }
+      ],
+      "timestamp": "2026-06-13T08:56:29.808Z"
+    },
+    {
+      "id": 5,
+      "query": "movie night Nachos suggestions",
+      "type": "product_taste",
+      "status": "passed",
+      "duration": 0,
+      "resultCount": 3,
+      "fieldsValid": true,
+      "results": [
+        {
+          "title": "Nachos Salsa - 50g ( +DC )",
+          "price": "48.88",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 406,
+          "unitsSold": 2452,
+          "tags": [
+            "spicy",
+            "savory",
+            "party"
+          ],
+          "score": 90
+        },
+        {
+          "title": "Nachos Paprika - 50g ( +DC )",
+          "price": "48.88",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 406,
+          "unitsSold": 2452,
+          "tags": [
+            "spicy",
+            "savory"
+          ],
+          "score": 90
+        },
+        {
+          "title": "Nachos Salsa Pack Of 10 - 50g ( +DC )",
+          "price": "500.00",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 272,
+          "unitsSold": 371,
+          "tags": [
+            "bulk",
+            "party",
+            "deal"
+          ],
+          "score": 90
+        }
+      ],
+      "timestamp": "2026-06-13T08:56:29.808Z"
+    },
+    {
+      "id": 6,
+      "query": "perfect Nachos for movie night",
+      "type": "product_taste",
+      "status": "passed",
+      "duration": 0,
+      "resultCount": 3,
+      "fieldsValid": true,
+      "results": [
+        {
+          "title": "Nachos Salsa - 50g ( +DC )",
+          "price": "48.88",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 406,
+          "unitsSold": 2452,
+          "tags": [
+            "spicy",
+            "savory",
+            "party"
+          ],
+          "score": 90
+        },
+        {
+          "title": "Nachos Paprika - 50g ( +DC )",
+          "price": "48.88",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 406,
+          "unitsSold": 2452,
+          "tags": [
+            "spicy",
+            "savory"
+          ],
+          "score": 90
+        },
+        {
+          "title": "Nachos Salsa Pack Of 10 - 50g ( +DC )",
+          "price": "500.00",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 272,
+          "unitsSold": 371,
+          "tags": [
+            "bulk",
+            "party",
+            "deal"
+          ],
+          "score": 90
+        }
+      ],
+      "timestamp": "2026-06-13T08:56:29.808Z"
+    },
+    {
+      "id": 7,
+      "query": "Nachos deals for movie night",
+      "type": "product_taste",
+      "status": "passed",
+      "duration": 0,
+      "resultCount": 3,
+      "fieldsValid": true,
+      "results": [
+        {
+          "title": "Nachos Salsa - 50g ( +DC )",
+          "price": "48.88",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 406,
+          "unitsSold": 2452,
+          "tags": [
+            "spicy",
+            "savory",
+            "party"
+          ],
+          "score": 90
+        },
+        {
+          "title": "Nachos Paprika - 50g ( +DC )",
+          "price": "48.88",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 406,
+          "unitsSold": 2452,
+          "tags": [
+            "spicy",
+            "savory"
+          ],
+          "score": 90
+        },
+        {
+          "title": "Nachos Salsa Pack Of 10 - 50g ( +DC )",
+          "price": "500.00",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 272,
+          "unitsSold": 371,
+          "tags": [
+            "bulk",
+            "party",
+            "deal"
+          ],
+          "score": 90
+        }
+      ],
+      "timestamp": "2026-06-13T08:56:29.808Z"
+    },
+    {
+      "id": 8,
+      "query": "popular Nachos for movie night",
+      "type": "product_taste",
+      "status": "passed",
+      "duration": 0,
+      "resultCount": 3,
+      "fieldsValid": true,
+      "results": [
+        {
+          "title": "Nachos Salsa - 50g ( +DC )",
+          "price": "48.88",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 406,
+          "unitsSold": 2452,
+          "tags": [
+            "spicy",
+            "savory",
+            "party"
+          ],
+          "score": 90
+        },
+        {
+          "title": "Nachos Paprika - 50g ( +DC )",
+          "price": "48.88",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 406,
+          "unitsSold": 2452,
+          "tags": [
+            "spicy",
+            "savory"
+          ],
+          "score": 90
+        },
+        {
+          "title": "Nachos Salsa Pack Of 10 - 50g ( +DC )",
+          "price": "500.00",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 272,
+          "unitsSold": 371,
+          "tags": [
+            "bulk",
+            "party",
+            "deal"
+          ],
+          "score": 90
+        }
+      ],
+      "timestamp": "2026-06-13T08:56:29.809Z"
+    },
+    {
+      "id": 9,
+      "query": "need movie night for Nachos",
+      "type": "product_taste",
+      "status": "passed",
+      "duration": 0,
+      "resultCount": 3,
+      "fieldsValid": true,
+      "results": [
+        {
+          "title": "Nachos Salsa - 50g ( +DC )",
+          "price": "48.88",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 406,
+          "unitsSold": 2452,
+          "tags": [
+            "spicy",
+            "savory",
+            "party"
+          ],
+          "score": 90
+        },
+        {
+          "title": "Nachos Paprika - 50g ( +DC )",
+          "price": "48.88",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 406,
+          "unitsSold": 2452,
+          "tags": [
+            "spicy",
+            "savory"
+          ],
+          "score": 90
+        },
+        {
+          "title": "Nachos Salsa Pack Of 10 - 50g ( +DC )",
+          "price": "500.00",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 272,
+          "unitsSold": 371,
+          "tags": [
+            "bulk",
+            "party",
+            "deal"
+          ],
+          "score": 90
+        }
+      ],
+      "timestamp": "2026-06-13T08:56:29.809Z"
+    },
+    {
+      "id": 10,
+      "query": "which Nachos is best for movie night",
+      "type": "product_taste",
+      "status": "passed",
+      "duration": 0,
+      "resultCount": 5,
+      "fieldsValid": true,
+      "results": [
+        {
+          "title": "Nachos Salsa - 50g ( +DC )",
+          "price": "48.88",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 406,
+          "unitsSold": 2452,
+          "tags": [
+            "spicy",
+            "savory",
+            "party"
+          ],
+          "score": 90
+        },
+        {
+          "title": "Nachos Paprika - 50g ( +DC )",
+          "price": "48.88",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 406,
+          "unitsSold": 2452,
+          "tags": [
+            "spicy",
+            "savory"
+          ],
+          "score": 90
+        },
+        {
+          "title": "Nachos Salsa Pack Of 10 - 50g ( +DC )",
+          "price": "500.00",
+          "vendor": "snakitos",
+          "productType": "Nachos",
+          "availability": "unknown",
+          "orderCount": 272,
+          "unitsSold": 371,
+          "tags": [
+            "bulk",
+            "party",
+            "deal"
+          ],
+          "score": 90
+        }
+      ],
+      "timestamp": "2026-06-13T08:56:29.809Z"
+    }
+  ],
+  "exportedAt": "2026-06-13T08:56:29.833Z"
+}

@@ -1,4 +1,3 @@
-import { createMockSnapshot } from "@/lib/mock-data";
 import type {
   AdminUser,
   ChatPlaygroundResponse,
@@ -9,14 +8,10 @@ import type {
   ModelSettings,
   Priority,
   PromptSettings,
-  PromptVersion,
   SettingsState,
   Ticket,
   UserRole,
 } from "@/types";
-
-const db = structuredClone(createMockSnapshot());
-const DEMO_PASSWORD = "snakitos1234";
 
 async function requestJson<T>(input: RequestInfo, init?: RequestInit): Promise<T> {
   const response = await fetch(input, {
@@ -39,42 +34,29 @@ async function requestJson<T>(input: RequestInfo, init?: RequestInit): Promise<T
   return (payload.data ?? payload) as T;
 }
 
-function delay<T>(result: T, ms = 450): Promise<T> {
-  return new Promise((resolve) => setTimeout(() => resolve(structuredClone(result)), ms));
-}
-
-function now() {
-  const date = new Date();
-  return date.toISOString().slice(0, 16).replace("T", " ");
-}
-
-function id(prefix: string) {
-  return `${prefix}_${Math.random().toString(36).slice(2, 8)}`;
-}
-
-function addAudit(action: string, module: string, status: "Success" | "Warning" | "Error" = "Success") {
-  db.auditLogs.unshift({
-    id: id("aud"),
-    admin: db.currentUser.name,
-    action,
-    module,
-    time: now(),
-    ipAddress: "182.184.14.18",
-    status,
-  });
+/**
+ * @deprecated Use /api/auth/login directly from the login page.
+ * This stub exists only for type-compatibility with legacy callers.
+ */
+export async function login(..._args: unknown[]): Promise<AdminUser> {
+  throw new Error("Use /api/auth/login — direct mock login is not supported in production.");
 }
 
 export async function getSnapshot(): Promise<ControlCenterSnapshot> {
-  return delay(db, 250);
-}
-
-export async function login(email: string, password: string): Promise<AdminUser> {
-  const user = db.users.find((item) => item.email.toLowerCase() === email.toLowerCase());
-  if (!user || password !== DEMO_PASSWORD) {
-    throw new Error("Invalid email or password.");
+  const response = await fetch("/api/admin/control-center", { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error("Failed to fetch control center snapshot.");
   }
-  db.currentUser = user;
-  return delay(user, 500);
+  const payload = (await response.json().catch(() => ({}))) as {
+    success?: boolean;
+    data?: ControlCenterSnapshot;
+    snapshot?: ControlCenterSnapshot;
+  };
+  const snapshot = payload.snapshot ?? payload.data;
+  if (!snapshot) {
+    throw new Error("Invalid control center snapshot received.");
+  }
+  return snapshot;
 }
 
 export async function addKnowledgeSource(payload: {
@@ -459,9 +441,53 @@ export async function deleteUser(userId: string) {
   return true;
 }
 
-export async function exportAuditLogs() {
-  addAudit("Exported audit logs", "Audit Logs");
-  return delay(true);
+interface AuditLogExportRow {
+  id: string;
+  admin_id?: string;
+  adminId?: string;
+  action: string;
+  entity_type?: string;
+  entityType?: string;
+  ip_address?: string;
+  ipAddress?: string;
+  created_at?: string;
+  timestamp?: string;
+  details?: Record<string, unknown>;
+}
+
+export async function exportAuditLogs(): Promise<boolean> {
+  const data = await requestJson<{ rows: AuditLogExportRow[]; exported_at: string; exported_by: string }>("/api/admin/audit-logs", {
+    method: "POST",
+    body: JSON.stringify({ action: "export" }),
+  });
+
+  if (data && data.rows) {
+    const headers = ["ID", "Admin ID", "Action", "Entity Type", "IP Address", "Created At", "Details"];
+    const csvRows = [headers.join(",")];
+
+    for (const row of data.rows) {
+      const detailsStr = JSON.stringify(row.details || {}).replace(/"/g, '""');
+      const csvRow = [
+        `"${row.id}"`,
+        `"${row.admin_id || row.adminId || ""}"`,
+        `"${row.action}"`,
+        `"${row.entity_type || row.entityType || ""}"`,
+        `"${row.ip_address || row.ipAddress || ""}"`,
+        `"${row.created_at || row.timestamp || ""}"`,
+        `"${detailsStr}"`,
+      ];
+      csvRows.push(csvRow.join(","));
+    }
+
+    const csvContent = "data:text/csv;charset=utf-8," + csvRows.map(e => encodeURIComponent(e)).join("\n");
+    const link = document.createElement("a");
+    link.setAttribute("href", csvContent);
+    link.setAttribute("download", `audit_logs_${new Date().toISOString().split("T")[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+  return true;
 }
 
 export async function saveSettings(settings: SettingsState) {
@@ -490,7 +516,7 @@ export async function createBackup() {
     method: "POST",
     body: JSON.stringify({
       key: "backup_export",
-      value: { lastBackupAt: now() },
+      value: { lastBackupAt: new Date().toISOString() },
       description: "Backup metadata",
     }),
   });

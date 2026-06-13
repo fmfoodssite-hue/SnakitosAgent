@@ -116,9 +116,10 @@ function ToggleField({
 
 const loginSchema = z.object({
   email: z.string().email("Enter a valid email."),
-  password: z.string().min(4, "Password must be at least 4 characters."),
+  password: z.string().min(8, "Password must be at least 8 characters."),
   remember: z.boolean(),
 });
+
 
 export function LoginPage() {
   const router = useRouter();
@@ -126,11 +127,12 @@ export function LoginPage() {
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "owner@snakitos.com",
-      password: "snakitos1234",
+      email: "",
+      password: "",
       remember: true,
     },
   });
+
 
   const onSubmit = form.handleSubmit(async (values) => {
     try {

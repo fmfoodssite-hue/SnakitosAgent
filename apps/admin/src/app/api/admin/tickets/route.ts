@@ -3,6 +3,39 @@ import { withAdminAccess, safeAudit } from "@/lib/server";
 import { assertServiceClient } from "@/lib/db";
 import { errorResponse, successResponse } from "@/lib/response";
 
+export async function GET(request: Request) {
+  return withAdminAccess(["owner", "admin", "support_agent", "content_manager", "viewer"], async () => {
+    try {
+      const { searchParams } = new URL(request.url);
+      const page = Math.max(1, parseInt(searchParams.get("page") ?? "1", 10));
+      const limit = Math.min(100, parseInt(searchParams.get("limit") ?? "20", 10));
+      const offset = (page - 1) * limit;
+      const status = searchParams.get("status");
+
+      const supabase = assertServiceClient();
+      let query = supabase
+        .from("handoff_tickets")
+        .select("*", { count: "exact" })
+        .order("created_at", { ascending: false })
+        .range(offset, offset + limit - 1);
+
+      if (status) {
+        const statusMap: Record<string, string> = {
+          Open: "open", Pending: "in_progress", Resolved: "resolved", Closed: "resolved",
+        };
+        query = query.eq("status", statusMap[status] ?? status.toLowerCase());
+      }
+
+      const { data, error, count } = await query;
+      if (error) throw error;
+      return successResponse({ tickets: data ?? [], total: count ?? 0, page, limit });
+    } catch (error) {
+      console.error("Tickets load failed", error);
+      return errorResponse("TICKETS_LOAD_FAILED", "Unable to load tickets.", 500);
+    }
+  });
+}
+
 const ticketSchema = z.object({
   title: z.string().min(2).optional(),
   customer_question: z.string().min(2),

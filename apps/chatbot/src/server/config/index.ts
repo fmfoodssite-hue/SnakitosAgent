@@ -47,13 +47,15 @@ function resolveShopifyAdminDomain(): string {
 
 export const config = {
   app: {
-    adminSecret: getEnv("ADMIN_SECRET") || getEnv("ADMIN_SECRET_KEY"),
+    // Use ADMIN_SESSION_SECRET (the real signed-cookie secret) — not ADMIN_SECRET_KEY
+    adminSecret: getEnv("ADMIN_SESSION_SECRET"),
     whatsappNumber: getEnv("SUPPORT_WHATSAPP") || "+92-345-828-3827",
     supportPhone: getEnv("SUPPORT_PHONE") || "+92-345-8283825",
     supportEmail: "info@snakitos.com",
     openAiModel: "gpt-4o",
     openAiMaxTokens: getPositiveIntegerEnv("OPENAI_MAX_TOKENS", DEFAULT_OPENAI_MAX_TOKENS),
   },
+
   openai: {
     apiKey: getEnv("OPENAI_API_KEY"),
   },
