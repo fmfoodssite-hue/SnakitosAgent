@@ -17,14 +17,18 @@ export function useControlCenterData() {
       });
       const payload = (await response.json().catch(() => ({}))) as {
         error?: string;
+        success?: boolean;
+        data?: ControlCenterSnapshot;
         snapshot?: ControlCenterSnapshot;
       };
 
-      if (!response.ok || !payload.snapshot) {
+      const snapshot = payload.snapshot ?? payload.data;
+
+      if (!response.ok || !snapshot) {
         throw new Error(payload.error || "Unable to load control-center data.");
       }
 
-      setData(payload.snapshot);
+      setData(snapshot);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to load dashboard data.");
     } finally {
@@ -43,14 +47,17 @@ export function useControlCenterData() {
         });
         const payload = (await response.json().catch(() => ({}))) as {
           error?: string;
+          success?: boolean;
+          data?: ControlCenterSnapshot;
           snapshot?: ControlCenterSnapshot;
         };
 
-        if (!response.ok || !payload.snapshot) {
+        const snapshot = payload.snapshot ?? payload.data;
+
+        if (!response.ok || !snapshot) {
           throw new Error(payload.error || "Unable to load control-center data.");
         }
 
-        const snapshot = payload.snapshot;
         if (!active) return;
         setData(snapshot);
       } catch (err) {

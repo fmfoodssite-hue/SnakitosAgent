@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { withAdminAccess } from "@/lib/server";
 import { assertServiceClient } from "@/lib/db";
 import { env } from "@/lib/env";
+import { errorResponse } from "@/lib/response";
 import type {
   AdminUser,
   AuditLog,
@@ -175,7 +176,8 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   return withAdminAccess(["owner", "admin", "support_agent", "content_manager", "viewer"], async ({ admin }) => {
-    const supabase = assertServiceClient();
+    try {
+      const supabase = assertServiceClient();
 
     const [
       adminRows,
@@ -242,9 +244,18 @@ export async function GET() {
         avatar: initials(admin.full_name),
       } satisfies AdminUser);
 
-    const settingsMap = new Map<string, JsonRecord>(
-      (settingsRows as Array<Record<string, unknown>>).map((row) => [String(row.key), toRecord(row.value)]),
-    );
+      const settingsMap = new Map<string, JsonRecord>(
+        (settingsRows as Array<Record<string, unknown>>).map((row) => [String(row.key), toRecord(row.value)]),
+      );
+      const guardrailsSetting = settingsMap.get("guardrails") ?? {};
+      const generalSettings = settingsMap.get("general") ?? {};
+      const notificationSettings = settingsMap.get("notifications") ?? {};
+      const rateLimitSettings = settingsMap.get("rate_limits") ?? {};
+      const widgetSettings = settingsMap.get("widget") ?? {};
+      const modelSettingsValue = settingsMap.get("model_settings") ?? {};
+      const budgetSettings = settingsMap.get("token_budget") ?? {};
+      const crawlerSettingsValue = settingsMap.get("crawler_settings") ?? {};
+      const crawlerRuntimeValue = settingsMap.get("crawler_runtime") ?? {};
 
     const chunkRowsByDocument = new Map<string, Array<Record<string, unknown>>>();
     for (const row of chunkRows as Array<Record<string, unknown>>) {
@@ -446,6 +457,7 @@ export async function GET() {
             ? "Low Stock"
             : "In Stock";
 
+      const metadata = toRecord(row.metadata);
       return {
         id: String(row.id),
         name: String(row.title ?? "Untitled product"),
@@ -453,7 +465,7 @@ export async function GET() {
         price: Number(row.price ?? variants[0]?.price ?? 0),
         stockStatus,
         tags: toArray<string>(row.tags),
-        ragStatus: row.description ? "Included" : "Pending",
+        ragStatus: metadata.excludeFromBot ? "Excluded" : row.description ? "Included" : "Pending",
         lastSynced: formatDate(String(row.last_synced_at ?? row.updated_at ?? "")),
         description: String(row.description ?? ""),
       };
@@ -461,14 +473,18 @@ export async function GET() {
 
     const websitePages = knowledgeSources
       .filter((source) => source.type === "Website")
-      .map((source) => ({
+      .map((source) => {
+        const document = documentsById.get(source.id);
+        const metadata = toRecord(document?.metadata);
+        return ({
         id: source.id,
-        url: `${env.SHOPIFY_STOREFRONT_BASE_URL.replace(/\/$/, "")}/knowledge/${source.id}`,
+        url: String(metadata.url ?? `${env.SHOPIFY_STOREFRONT_BASE_URL.replace(/\/$/, "")}/knowledge/${source.id}`),
         pageType: "Page" as const,
         status: source.status,
         chunks: source.chunks,
         lastCrawled: source.lastUpdated,
-      }));
+      });
+      });
 
     const crawlerLogs = websitePages.map((page) => ({
       id: page.id,
@@ -531,18 +547,18 @@ export async function GET() {
       4,
     );
 
-    const tokenUsage = conversations
-      .filter((conversation) => conversation.tokensUsed > 0)
-      .map((conversation) => ({
-        id: `tok-${conversation.id}`,
-        conversationId: conversation.id,
-        question: conversation.question,
-        tokensUsed: conversation.tokensUsed,
-        estimatedCost: Number(((conversation.tokensUsed / 1000) * 0.5).toFixed(2)),
-        model: String(modelSettingsValue.chatModel ?? "gpt-4.1-mini"),
-        feature: "Chat",
-        date: conversation.date.slice(0, 10),
-      }));
+      const tokenUsage = conversations
+        .filter((conversation) => conversation.tokensUsed > 0)
+        .map((conversation) => ({
+          id: `tok-${conversation.id}`,
+          conversationId: conversation.id,
+          question: conversation.question,
+          tokensUsed: conversation.tokensUsed,
+          estimatedCost: Number(((conversation.tokensUsed / 1000) * 0.5).toFixed(2)),
+          model: String(modelSettingsValue.chatModel ?? "gpt-4.1-mini"),
+          feature: "Chat",
+          date: conversation.date.slice(0, 10),
+        }));
 
     const tokenCostTrend = buildWeeklySeries(
       tokenUsage.map((item) => ({ created_at: `${item.date}T00:00:00`, value: Math.round(item.estimatedCost) })),
@@ -594,21 +610,13 @@ export async function GET() {
       },
     ];
 
-    const guardrailsSetting = settingsMap.get("guardrails") ?? {};
-    const generalSettings = settingsMap.get("general") ?? {};
-    const notificationSettings = settingsMap.get("notifications") ?? {};
-    const rateLimitSettings = settingsMap.get("rate_limits") ?? {};
-    const widgetSettings = settingsMap.get("widget") ?? {};
-    const modelSettingsValue = settingsMap.get("model_settings") ?? {};
-    const budgetSettings = settingsMap.get("token_budget") ?? {};
+      const totalTokenCost = tokenUsage.reduce((sum, item) => sum + item.estimatedCost, 0);
+      const averageLatency =
+        conversations.length > 0
+          ? conversations.reduce((sum, conversation) => sum + conversation.responseTime, 0) / conversations.length
+          : 0;
 
-    const totalTokenCost = tokenUsage.reduce((sum, item) => sum + item.estimatedCost, 0);
-    const averageLatency =
-      conversations.length > 0
-        ? conversations.reduce((sum, conversation) => sum + conversation.responseTime, 0) / conversations.length
-        : 0;
-
-    const dashboardMetrics = [
+      const dashboardMetrics = [
       {
         title: "Total Queries",
         value: formatCount(conversations.length),
@@ -667,7 +675,7 @@ export async function GET() {
       },
     ];
 
-    const snapshot = {
+      const snapshot = {
       currentUser,
       notifications,
       dashboardMetrics,
@@ -765,14 +773,14 @@ export async function GET() {
         },
       },
       crawlerSettings: {
-        websiteUrl: env.SHOPIFY_STOREFRONT_BASE_URL,
-        depth: 2,
-        includePatterns: "/products\n/pages\n/collections",
-        excludePatterns: "/cart\n/checkout\n/account",
-        autoDetectProductPages: true,
-        autoDetectFaqPages: true,
-        autoDetectPolicyPages: true,
-        respectRobots: true,
+        websiteUrl: String(crawlerSettingsValue.websiteUrl ?? env.SHOPIFY_STOREFRONT_BASE_URL),
+        depth: Number(crawlerSettingsValue.depth ?? 2),
+        includePatterns: String(crawlerSettingsValue.includePatterns ?? "/products\n/pages\n/collections"),
+        excludePatterns: String(crawlerSettingsValue.excludePatterns ?? "/cart\n/checkout\n/account"),
+        autoDetectProductPages: Boolean(crawlerSettingsValue.autoDetectProductPages ?? true),
+        autoDetectFaqPages: Boolean(crawlerSettingsValue.autoDetectFaqPages ?? true),
+        autoDetectPolicyPages: Boolean(crawlerSettingsValue.autoDetectPolicyPages ?? true),
+        respectRobots: Boolean(crawlerSettingsValue.respectRobots ?? true),
       },
       crawlerProgress: {
         totalPagesFound: websitePages.length,
@@ -780,7 +788,7 @@ export async function GET() {
         failedPages: websitePages.filter((page) => page.status === "Failed").length,
         currentUrl: websitePages[0]?.url ?? "",
         progress: websitePages.length > 0 ? Math.round((websitePages.filter((page) => page.status === "Indexed").length / websitePages.length) * 100) : 0,
-        running: false,
+        running: Boolean(crawlerRuntimeValue.running ?? false),
       },
       shopifyConnection: {
         storeUrl: env.SHOPIFY_SHOP_DOMAIN ? `https://${env.SHOPIFY_SHOP_DOMAIN}` : env.SHOPIFY_STOREFRONT_BASE_URL,
@@ -790,6 +798,14 @@ export async function GET() {
       },
     } satisfies ControlCenterSnapshot;
 
-    return NextResponse.json({ snapshot });
+      return NextResponse.json({ success: true, data: snapshot, snapshot });
+    } catch (error) {
+      console.error("Failed to build control-center snapshot", error);
+      return errorResponse(
+        "CONTROL_CENTER_LOAD_FAILED",
+        "Unable to load control-center data.",
+        500,
+      );
+    }
   });
 }

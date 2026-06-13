@@ -18,6 +18,27 @@ import type {
 const db = structuredClone(createMockSnapshot());
 const DEMO_PASSWORD = "snakitos1234";
 
+async function requestJson<T>(input: RequestInfo, init?: RequestInit): Promise<T> {
+  const response = await fetch(input, {
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      ...(init?.headers ?? {}),
+    },
+  });
+  const payload = (await response.json().catch(() => ({}))) as {
+    success?: boolean;
+    data?: T;
+    error?: { message?: string };
+  };
+
+  if (!response.ok) {
+    throw new Error(payload.error?.message || "Request failed.");
+  }
+
+  return (payload.data ?? payload) as T;
+}
+
 function delay<T>(result: T, ms = 450): Promise<T> {
   return new Promise((resolve) => setTimeout(() => resolve(structuredClone(result)), ms));
 }
@@ -63,33 +84,48 @@ export async function addKnowledgeSource(payload: {
   language?: string;
   tags?: string[];
 }) {
-  db.knowledgeSources.unshift({
-    id: id("src"),
-    name: payload.name,
-    type: payload.type as ControlCenterSnapshot["knowledgeSources"][number]["type"],
-    status: "Pending",
-    chunks: 6,
-    lastUpdated: now(),
-    addedBy: db.currentUser.name,
-    sampleChunks: [`${payload.name} staged for indexing.`, `Category: ${payload.category ?? "General"}.`],
-    relatedConversationIds: [],
+  const sourceTypeMap: Record<string, string> = {
+    Website: "website",
+    PDF: "pdf",
+    Shopify: "shopify",
+    FAQ: "faq",
+    Manual: "manual",
+  };
+
+  await requestJson("/api/admin/knowledge", {
+    method: "POST",
+    body: JSON.stringify({
+      title: payload.name,
+      category: payload.category ?? "General FAQ",
+      content: `${payload.name} source created from admin.`,
+      source_type: sourceTypeMap[payload.type] ?? "manual",
+      priority: "medium",
+      status: "draft",
+      metadata: {
+        language: payload.language ?? "English",
+        tags: payload.tags ?? [],
+      },
+    }),
   });
-  addAudit(`Added knowledge source ${payload.name}`, "Knowledge Base");
-  return delay(true);
+  return true;
 }
 
 export async function reindexKnowledgeSource(sourceId: string) {
-  db.knowledgeSources = db.knowledgeSources.map((source) =>
-    source.id === sourceId ? { ...source, status: "Indexed", lastUpdated: now(), chunks: Math.max(source.chunks, 8) } : source,
-  );
-  addAudit("Re-indexed knowledge source", "Knowledge Base");
-  return delay(true, 700);
+  await requestJson("/api/admin/knowledge", {
+    method: "PATCH",
+    body: JSON.stringify({
+      id: sourceId,
+      status: "active",
+    }),
+  });
+  return true;
 }
 
 export async function deleteKnowledgeSource(sourceId: string) {
-  db.knowledgeSources = db.knowledgeSources.filter((source) => source.id !== sourceId);
-  addAudit("Deleted knowledge source", "Knowledge Base", "Warning");
-  return delay(true);
+  await requestJson(`/api/admin/knowledge?id=${encodeURIComponent(sourceId)}`, {
+    method: "DELETE",
+  });
+  return true;
 }
 
 export async function uploadDocument(payload: {
@@ -101,349 +137,326 @@ export async function uploadDocument(payload: {
   active: boolean;
   fileNames: string[];
 }) {
-  db.knowledgeSources.unshift({
-    id: id("src"),
-    name: payload.title,
-    type: "PDF",
-    status: payload.active ? "Pending" : "Failed",
-    chunks: payload.fileNames.length * 4,
-    lastUpdated: now(),
-    addedBy: db.currentUser.name,
-    sampleChunks: [`Uploaded files: ${payload.fileNames.join(", ")}`, `Priority: ${payload.priority}`],
-    relatedConversationIds: [],
+  await requestJson("/api/admin/knowledge", {
+    method: "POST",
+    body: JSON.stringify({
+      title: payload.title,
+      category: payload.category,
+      content: `Uploaded files: ${payload.fileNames.join(", ")}`,
+      source_type: "pdf",
+      priority: payload.priority.toLowerCase(),
+      status: payload.active ? "draft" : "archived",
+      metadata: {
+        language: payload.language,
+        tags: payload.tags,
+        fileNames: payload.fileNames,
+      },
+    }),
   });
-  addAudit(`Uploaded ${payload.fileNames.length} document(s)`, "Upload Documents");
-  return delay(true, 900);
+  return true;
 }
 
 export async function startCrawler(settings: CrawlerSettings) {
-  db.crawlerSettings = settings;
-  db.crawlerProgress = {
-    totalPagesFound: 38,
-    pagesIndexed: 35,
-    failedPages: 1,
-    currentUrl: "https://snakitos.com/pages/snack-club",
-    progress: 94,
-    running: true,
-  };
-  db.crawlerLogs.unshift({
-    id: id("crw"),
-    url: `${settings.websiteUrl}/pages/snack-club`,
-    pageType: "Page",
-    status: "Pending",
-    chunks: 2,
-    lastCrawled: now(),
+  await requestJson("/api/admin/crawler/start", {
+    method: "POST",
+    body: JSON.stringify(settings),
   });
-  addAudit("Started website crawl", "Website Crawler");
-  return delay(true, 800);
+  return true;
 }
 
 export async function stopCrawler() {
-  db.crawlerProgress.running = false;
-  addAudit("Stopped website crawl", "Website Crawler", "Warning");
-  return delay(true);
+  await requestJson("/api/admin/crawler/stop", {
+    method: "POST",
+  });
+  return true;
 }
 
 export async function clearCrawlerResults() {
-  db.crawlerLogs = [];
-  db.websitePages = [];
-  db.crawlerProgress = {
-    totalPagesFound: 0,
-    pagesIndexed: 0,
-    failedPages: 0,
-    currentUrl: "",
-    progress: 0,
-    running: false,
-  };
-  addAudit("Cleared crawler results", "Website Crawler", "Warning");
-  return delay(true);
+  await requestJson("/api/admin/crawler/clear", {
+    method: "POST",
+  });
+  return true;
 }
 
 export async function recrawlPage(logId: string) {
-  db.crawlerLogs = db.crawlerLogs.map((log) =>
-    log.id === logId ? { ...log, status: "Indexed", lastCrawled: now(), chunks: Math.max(log.chunks, 3) } : log,
-  );
-  addAudit("Re-crawled website page", "Website Crawler");
-  return delay(true, 700);
+  await requestJson(`/api/admin/crawler/${logId}`, {
+    method: "POST",
+  });
+  return true;
 }
 
 export async function deleteCrawlerResult(logId: string) {
-  db.crawlerLogs = db.crawlerLogs.filter((log) => log.id !== logId);
-  addAudit("Deleted crawler result", "Website Crawler", "Warning");
-  return delay(true);
+  await requestJson(`/api/admin/crawler/${logId}`, {
+    method: "DELETE",
+  });
+  return true;
 }
 
 export async function connectShopify(storeUrl: string, apiKey: string) {
-  db.shopifyConnection = { storeUrl, apiKey, connected: true, lastSyncTime: db.shopifyConnection.lastSyncTime };
-  addAudit("Connected Shopify store", "Shopify");
-  return delay(true);
+  await requestJson("/api/admin/shopify/connect", {
+    method: "POST",
+    body: JSON.stringify({ storeUrl, apiKey }),
+  });
+  return true;
 }
 
 export async function syncShopify() {
-  db.shopifyConnection.lastSyncTime = now();
-  db.products = db.products.map((product, index) => ({
-    ...product,
-    lastSynced: now(),
-    ragStatus: index === 7 ? "Excluded" : "Included",
-  }));
-  db.shopifySyncLogs.unshift({
-    id: id("syn"),
-    timestamp: now(),
-    status: "Success",
-    summary: "Manual sync completed from dashboard.",
-    productsTouched: db.products.length,
+  await requestJson("/api/admin/shopify/sync", {
+    method: "POST",
+    body: JSON.stringify({}),
   });
-  addAudit("Synced Shopify catalog", "Shopify");
-  return delay(true, 850);
+  return true;
 }
 
 export async function resyncProduct(productId: string) {
-  db.products = db.products.map((product) => (product.id === productId ? { ...product, lastSynced: now(), ragStatus: "Included" } : product));
-  addAudit("Re-synced single product", "Shopify");
-  return delay(true, 650);
+  await requestJson(`/api/admin/shopify/products/${productId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ action: "resync" }),
+  });
+  return true;
 }
 
 export async function toggleProductInBot(productId: string) {
-  db.products = db.products.map((product) =>
-    product.id === productId
-      ? { ...product, ragStatus: product.ragStatus === "Excluded" ? "Included" : "Excluded" }
-      : product,
-  );
-  addAudit("Updated product bot availability", "Shopify");
-  return delay(true);
+  await requestJson(`/api/admin/shopify/products/${productId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ action: "toggle_bot" }),
+  });
+  return true;
 }
 
 export async function saveFaq(payload: Omit<FaqItem, "id" | "lastUpdated"> & { id?: string }) {
-  const faq: FaqItem = {
-    id: payload.id ?? id("faq"),
-    question: payload.question,
-    answer: payload.answer,
-    category: payload.category,
-    language: payload.language,
-    status: payload.status,
-    tags: payload.tags,
-    lastUpdated: now(),
-  };
-  db.faqs = payload.id ? db.faqs.map((item) => (item.id === payload.id ? faq : item)) : [faq, ...db.faqs];
-  addAudit(payload.id ? "Updated FAQ" : "Created FAQ", "FAQs");
-  return delay(true);
+  await requestJson("/api/admin/faqs", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+  return true;
 }
 
 export async function deleteFaq(faqId: string) {
-  db.faqs = db.faqs.filter((faq) => faq.id !== faqId);
-  addAudit("Deleted FAQ", "FAQs", "Warning");
-  return delay(true);
+  await requestJson(`/api/admin/faqs/${faqId}`, {
+    method: "DELETE",
+  });
+  return true;
 }
 
 export async function toggleFaq(faqId: string) {
-  db.faqs = db.faqs.map((faq) =>
-    faq.id === faqId ? { ...faq, status: faq.status === "Active" ? "Disabled" : "Active", lastUpdated: now() } : faq,
-  );
-  addAudit("Toggled FAQ status", "FAQs");
-  return delay(true);
+  await requestJson(`/api/admin/faqs/${faqId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ action: "toggle" }),
+  });
+  return true;
 }
 
 export async function deleteChunk(chunkId: string) {
-  db.knowledgeChunks = db.knowledgeChunks.filter((chunk) => chunk.id !== chunkId);
-  addAudit("Deleted chunk", "Chunks", "Warning");
-  return delay(true);
+  await requestJson(`/api/admin/chunks/${chunkId}`, {
+    method: "DELETE",
+  });
+  return true;
 }
 
 export async function reembedChunk(chunkId: string) {
-  db.knowledgeChunks = db.knowledgeChunks.map((chunk) =>
-    chunk.id === chunkId ? { ...chunk, embeddingStatus: "Indexed", relevanceScore: 0.95, lastUpdated: now() } : chunk,
-  );
-  addAudit("Re-embedded chunk", "Chunks");
-  return delay(true, 700);
+  await requestJson(`/api/admin/chunks/${chunkId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ action: "reembed" }),
+  });
+  return true;
 }
 
 export async function sendPlaygroundMessage(message: string): Promise<ChatPlaygroundResponse> {
-  const normalized = message.toLowerCase();
-  let response = "Snakitos AI can help with products, delivery, policies, offers, and support contact once the answer is supported by approved knowledge.";
-  let sources = ["Support FAQ Master Sheet"];
+  const payload = await requestJson<{
+    generated_answer: string;
+    source_names: string[];
+    confidence_score: number;
+    latency_ms: number;
+    total_tokens: number;
+    model: string;
+    retrieved_chunks: Array<unknown>;
+    language?: string;
+  }>("/api/admin/playground/test", {
+    method: "POST",
+    body: JSON.stringify({
+      query: message,
+      save_trace: true,
+    }),
+  });
 
-  if (normalized.includes("spicy")) {
-    response = "Snakitos currently offers Spicy Chips as a strong spicy recommendation, and they are also available in family-size pack guidance from the product catalog.";
-    sources = ["Snakitos Product Catalog"];
-  } else if (normalized.includes("delivery")) {
-    response = "Delivery timelines vary by city and courier lane. The approved shipping policy is the best source for exact expectations and support escalation when needed.";
-    sources = ["Shipping & Delivery Policies"];
-  } else if (normalized.includes("discount")) {
-    response = "I can only confirm discounts that are currently approved in the offers knowledge source. Right now, live popcorn discounts are not verified.";
-    sources = ["Offer Calendar June 2026"];
-  } else if (normalized.includes("roman urdu")) {
-    response = "Ji haan, Snakitos AI Roman Urdu support karta hai aur products, delivery, aur support related sawalat ka jawab de sakta hai jab relevant knowledge indexed ho.";
-    sources = ["Support FAQ Master Sheet"];
-  }
-
-  return delay(
-    {
-      message: response,
-      confidence: normalized.includes("discount") ? 61 : 94,
-      responseTime: normalized.includes("discount") ? 2 : 1.2,
-      tokenUsage: normalized.includes("discount") ? 840 : 610,
-      model: "gpt-4.1-mini",
-      chunksUsed: sources.length + 1,
-      languageDetected: normalized.includes("roman urdu") ? "Roman Urdu" : "English",
-      retrievalMethod: "semantic + keyword hybrid",
-      retrievedSources: sources,
-    },
-    750,
-  );
+  return {
+    message: payload.generated_answer,
+    confidence: Math.round(payload.confidence_score * 100),
+    responseTime: Number((payload.latency_ms / 1000).toFixed(1)),
+    tokenUsage: payload.total_tokens,
+    model: payload.model,
+    chunksUsed: payload.retrieved_chunks.length,
+    languageDetected:
+      payload.language === "Urdu"
+        ? "Urdu"
+        : payload.language === "Roman Urdu"
+          ? "Roman Urdu"
+          : "English",
+    retrievalMethod: "database + model-grounded",
+    retrievedSources: payload.source_names,
+  };
 }
 
 export async function addFailedAnswerFromPlayground(question: string, answer: string) {
-  db.failedAnswers.unshift({
-    id: id("fal"),
-    question,
-    reason: "Low confidence",
-    confidence: 49,
-    language: "English",
-    date: now(),
-    priority: "Medium",
-    suggestedFix: "Review retrieved chunks and add stronger approved guidance.",
-    status: "Unresolved",
+  await requestJson("/api/admin/tickets", {
+    method: "POST",
+    body: JSON.stringify({
+      title: "Playground review",
+      customer_question: question,
+      bot_answer: answer,
+      priority: "Medium",
+      status: "Open",
+      recommended_reply: "",
+      resolution_notes: "Created from playground review.",
+    }),
   });
-  db.tickets.unshift({
-    id: id("tic"),
-    userQuestion: question,
-    botAnswer: answer,
-    status: "Open",
-    priority: "Medium",
-    assignedTo: db.currentUser.name,
-    createdAt: now(),
-    internalNotes: "Created from playground review.",
-    adminReply: "",
-  });
-  addAudit("Marked playground answer as wrong", "Chat Playground", "Warning");
-  return delay(true);
+  return true;
 }
 
 export async function savePromptSettings(settings: PromptSettings) {
-  db.promptSettings = settings;
-  const latestVersion = `v2.${db.promptVersions.length + 8}`;
-  const version: PromptVersion = {
-    id: id("prm"),
-    version: latestVersion,
-    prompt: settings.prompt,
-    tone: settings.tone,
-    languageMode: settings.languageMode,
-    updatedBy: db.currentUser.name,
-    date: now(),
-  };
-  db.promptVersions.unshift(version);
-  addAudit("Saved prompt version", "Prompt Manager");
-  return delay(true);
+  await requestJson("/api/admin/prompt-manager", {
+    method: "POST",
+    body: JSON.stringify(settings),
+  });
+  return true;
 }
 
 export async function rollbackPrompt(versionId: string) {
-  const target = db.promptVersions.find((item) => item.id === versionId);
-  if (target) {
-    db.promptSettings = {
-      prompt: target.prompt,
-      tone: target.tone,
-      languageMode: target.languageMode,
-    };
-    addAudit(`Rolled back prompt to ${target.version}`, "Prompt Manager", "Warning");
-  }
-  return delay(true);
+  await requestJson("/api/admin/prompts", {
+    method: "PATCH",
+    body: JSON.stringify({ id: versionId, activate: true }),
+  });
+  return true;
 }
 
 export async function duplicatePrompt(versionId: string) {
-  const target = db.promptVersions.find((item) => item.id === versionId);
-  if (target) {
-    db.promptVersions.unshift({ ...target, id: id("prm"), version: `${target.version}-copy`, date: now() });
-    addAudit(`Duplicated prompt ${target.version}`, "Prompt Manager");
-  }
-  return delay(true);
+  return rollbackPrompt(versionId);
 }
 
 export async function markConversationReviewed(conversationId: string) {
-  db.conversations = db.conversations.map((item) => (item.id === conversationId ? { ...item, reviewed: true, status: "Resolved" } : item));
-  addAudit("Marked conversation reviewed", "Conversations");
-  return delay(true);
+  await requestJson("/api/admin/chats", {
+    method: "PATCH",
+    body: JSON.stringify({ messageId: conversationId }),
+  });
+  return true;
 }
 
 export async function addConversationNote(conversationId: string, note: string) {
-  db.conversations = db.conversations.map((item) =>
-    item.id === conversationId ? { ...item, notes: [...(item.notes ?? []), note] } : item,
-  );
-  addAudit("Added conversation note", "Conversations");
-  return delay(true);
+  await requestJson(`/api/admin/chats/${conversationId}/notes`, {
+    method: "POST",
+    body: JSON.stringify({ note }),
+  });
+  return true;
 }
 
 export async function ignoreFailedAnswer(answerId: string) {
-  db.failedAnswers = db.failedAnswers.map((item) => (item.id === answerId ? { ...item, status: "Ignored" } : item));
-  addAudit("Ignored failed answer", "Failed Answers", "Warning");
-  return delay(true);
+  await requestJson(`/api/admin/failed-answers/${answerId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ action: "ignore" }),
+  });
+  return true;
 }
 
 export async function fixFailedAnswer(answerId: string) {
-  db.failedAnswers = db.failedAnswers.map((item) => (item.id === answerId ? { ...item, status: "Fixed" } : item));
-  addAudit("Marked failed answer fixed", "Failed Answers");
-  return delay(true);
+  await requestJson(`/api/admin/failed-answers/${answerId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ action: "fix" }),
+  });
+  return true;
 }
 
 export async function saveBudgetSettings(monthlyBudget: number, alertThreshold: number) {
-  db.tokenBudget = { monthlyBudget, alertThreshold };
-  addAudit("Updated token budget settings", "Token Usage");
-  return delay(true);
+  await requestJson("/api/admin/settings", {
+    method: "POST",
+    body: JSON.stringify({
+      key: "token_budget",
+      value: { monthlyBudget, alertThreshold },
+      description: "Token budget settings",
+    }),
+  });
+  return true;
 }
 
 export async function saveTicket(ticket: Ticket) {
-  db.tickets = db.tickets.map((item) => (item.id === ticket.id ? { ...ticket } : item));
-  addAudit("Updated support ticket", "Tickets");
-  return delay(true);
+  await requestJson("/api/admin/tickets", {
+    method: "PATCH",
+    body: JSON.stringify({
+      id: ticket.id,
+      status: ticket.status,
+      priority: ticket.priority,
+      assignedTo: ticket.assignedTo,
+      adminReply: ticket.adminReply,
+      internalNotes: ticket.internalNotes,
+    }),
+  });
+  return true;
 }
 
 export async function resolveTicket(ticketId: string) {
-  db.tickets = db.tickets.map((item) => (item.id === ticketId ? { ...item, status: "Resolved" } : item));
-  addAudit("Resolved support ticket", "Tickets");
-  return delay(true);
+  await requestJson("/api/admin/tickets", {
+    method: "PATCH",
+    body: JSON.stringify({
+      id: ticketId,
+      status: "Resolved",
+    }),
+  });
+  return true;
 }
 
 export async function saveModelSettings(settings: ModelSettings) {
-  db.modelSettings = settings;
-  addAudit("Updated model settings", "Model Settings");
-  return delay(true);
+  await requestJson("/api/admin/settings", {
+    method: "POST",
+    body: JSON.stringify({
+      key: "model_settings",
+      value: settings,
+      description: "Model settings",
+    }),
+  });
+  return true;
 }
 
 export async function saveGuardrails(guardrails: GuardrailSettings) {
-  db.guardrails = guardrails;
-  addAudit("Updated guardrails", "Guardrails");
-  return delay(true);
+  await requestJson("/api/admin/settings", {
+    method: "POST",
+    body: JSON.stringify({
+      key: "guardrails",
+      value: guardrails,
+      description: "Guardrail settings",
+    }),
+  });
+  return true;
 }
 
 export async function inviteUser(payload: { name: string; email: string; role: UserRole }) {
-  db.users.unshift({
-    id: id("usr"),
-    name: payload.name,
-    email: payload.email,
-    role: payload.role,
-    status: "Invited",
-    lastActive: "Pending invite",
-    avatar: payload.name.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase(),
+  await requestJson("/api/admin/users", {
+    method: "POST",
+    body: JSON.stringify(payload),
   });
-  addAudit(`Invited ${payload.name}`, "Users");
-  return delay(true);
+  return true;
 }
 
 export async function updateUserRole(userId: string, role: UserRole) {
-  db.users = db.users.map((user) => (user.id === userId ? { ...user, role } : user));
-  addAudit("Updated user role", "Users");
-  return delay(true);
+  await requestJson(`/api/admin/users/${userId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ action: "role", role }),
+  });
+  return true;
 }
 
 export async function disableUser(userId: string) {
-  db.users = db.users.map((user) => (user.id === userId ? { ...user, status: "Disabled" } : user));
-  addAudit("Disabled user", "Users", "Warning");
-  return delay(true);
+  await requestJson(`/api/admin/users/${userId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ action: "disable" }),
+  });
+  return true;
 }
 
 export async function deleteUser(userId: string) {
-  db.users = db.users.filter((user) => user.id !== userId);
-  addAudit("Deleted user", "Users", "Warning");
-  return delay(true);
+  await requestJson(`/api/admin/users/${userId}`, {
+    method: "DELETE",
+  });
+  return true;
 }
 
 export async function exportAuditLogs() {
@@ -452,13 +465,34 @@ export async function exportAuditLogs() {
 }
 
 export async function saveSettings(settings: SettingsState) {
-  db.settings = settings;
-  addAudit("Saved app settings", "Settings");
-  return delay(true);
+  const settingEntries = [
+    ["general", settings.general, "General settings"],
+    ["api_keys", settings.apiKeys, "API key placeholders"],
+    ["widget", settings.widgetAppearance, "Widget appearance"],
+    ["rate_limits", settings.rateLimits, "Rate limit settings"],
+    ["notifications", settings.notifications, "Notification settings"],
+    ["backup_export", settings.backupExport, "Backup metadata"],
+  ] as const;
+
+  await Promise.all(
+    settingEntries.map(([key, value, description]) =>
+      requestJson("/api/admin/settings", {
+        method: "POST",
+        body: JSON.stringify({ key, value, description }),
+      }),
+    ),
+  );
+  return true;
 }
 
 export async function createBackup() {
-  db.settings.backupExport.lastBackupAt = now();
-  addAudit("Created backup export", "Settings");
-  return delay(true, 900);
+  await requestJson("/api/admin/settings", {
+    method: "POST",
+    body: JSON.stringify({
+      key: "backup_export",
+      value: { lastBackupAt: now() },
+      description: "Backup metadata",
+    }),
+  });
+  return true;
 }
