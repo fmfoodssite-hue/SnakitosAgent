@@ -8,7 +8,29 @@ const securityHeaders = [
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
 ];
 
+function normalizeAdminAppUrl(value: string | undefined): string {
+  return (value ?? "").trim().replace(/\/+$/, "");
+}
+
+const adminAppUrl = normalizeAdminAppUrl(process.env.ADMIN_APP_URL);
+
 const nextConfig: NextConfig = {
+  async rewrites() {
+    if (!adminAppUrl) {
+      return [];
+    }
+
+    return [
+      {
+        source: "/admin",
+        destination: adminAppUrl,
+      },
+      {
+        source: "/admin/:path*",
+        destination: `${adminAppUrl}/:path*`,
+      },
+    ];
+  },
   async headers() {
     return [
       {
