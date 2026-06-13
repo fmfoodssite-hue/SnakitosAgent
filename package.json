@@ -16,6 +16,7 @@
     "build": "npm run build:admin && npm run build:chatbot",
     "build:chatbot": "npm --prefix apps/chatbot run build",
     "build:admin": "npm --prefix apps/admin run build",
+    "dev": "npm run dev:chatbot",
     "dev:chatbot": "npm --prefix apps/chatbot run dev",
     "dev:admin": "npm --prefix apps/admin run dev",
     "import:snakitos-general-dataset": "node scripts/import-snakitos-general-dataset.mjs",

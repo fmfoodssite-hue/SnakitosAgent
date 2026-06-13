@@ -38,7 +38,7 @@ async function requestJson<T>(input: RequestInfo, init?: RequestInit): Promise<T
  * @deprecated Use /api/auth/login directly from the login page.
  * This stub exists only for type-compatibility with legacy callers.
  */
-export async function login(..._args: unknown[]): Promise<AdminUser> {
+export async function login(): Promise<AdminUser> {
   throw new Error("Use /api/auth/login — direct mock login is not supported in production.");
 }
 

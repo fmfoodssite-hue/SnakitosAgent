@@ -32,10 +32,6 @@ function normalizeLanguage(value: string | null | undefined) {
   return "English";
 }
 
-function stripHtml(input: string | null | undefined) {
-  return (input ?? "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
-}
-
 function scoreChunk(query: string, content: string) {
   const queryTokens = query
     .toLowerCase()
@@ -247,4 +243,3 @@ export async function runPlaygroundQuery(input: PlaygroundInput) {
     language: normalizeLanguage(input.language),
   };
 }
-

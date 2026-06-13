@@ -20,6 +20,8 @@ export function DataTable<TData>({
   data: TData[];
   emptyState?: ReactNode;
 }) {
+  // TanStack Table intentionally returns imperative helpers that React Compiler cannot memoize safely.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,

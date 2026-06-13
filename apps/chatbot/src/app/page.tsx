@@ -16,7 +16,6 @@ import {
   Send,
   ShoppingBag,
   Sparkles,
-  Truck,
   User,
 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
@@ -898,63 +897,6 @@ function renderOrderSummary(order: OrderSummary): React.ReactNode {
     </section>
   );
 }
-function formatCurrency(amount?: string, currencyCode?: string): string {
-  if (!amount) {
-    return "";
-  }
-
-  const numericAmount = Number(amount);
-  if (!Number.isFinite(numericAmount)) {
-    return `${currencyCode ? `${currencyCode} ` : ""}${amount}`.trim();
-  }
-
-  try {
-    return new Intl.NumberFormat("en-PK", {
-      style: "currency",
-      currency: currencyCode || "PKR",
-      maximumFractionDigits: 2,
-    }).format(numericAmount);
-  } catch {
-    return `${currencyCode ? `${currencyCode} ` : ""}${amount}`.trim();
-  }
-}
-
-function formatStatusLabel(value?: string | null): string {
-  if (!value) {
-    return "";
-  }
-
-  return value
-    .toLowerCase()
-    .split(/[_\s-]+/)
-    .filter(Boolean)
-    .map((part) => part[0]?.toUpperCase() + part.slice(1))
-    .join(" ");
-}
-
-function getStatusToneClass(value?: string | null): string {
-  const normalized = value?.toLowerCase() ?? "";
-
-  if (
-    normalized.includes("pending") ||
-    normalized.includes("unfulfilled") ||
-    normalized.includes("partial") ||
-    normalized.includes("in transit")
-  ) {
-    return styles.statusWarning;
-  }
-
-  if (
-    normalized.includes("paid") ||
-    normalized.includes("fulfilled") ||
-    normalized.includes("delivered")
-  ) {
-    return styles.statusSuccess;
-  }
-
-  return styles.statusNeutral;
-}
-
 function renderShortcutIcon(icon: "order" | "deals" | "collections" | "policy") {
   switch (icon) {
     case "order":

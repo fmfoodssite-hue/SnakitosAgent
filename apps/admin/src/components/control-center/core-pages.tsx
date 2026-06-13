@@ -1133,6 +1133,7 @@ export function SettingsPage() {
                   <div className="flex items-center gap-3">
                     <div
                       className="flex h-10 w-10 items-center justify-center rounded-2xl text-sm font-semibold text-white"
+                      // eslint-disable-next-line react-hooks/incompatible-library
                       style={{ backgroundColor: widgetForm.watch("primaryColor") }}
                     >
                       AI
