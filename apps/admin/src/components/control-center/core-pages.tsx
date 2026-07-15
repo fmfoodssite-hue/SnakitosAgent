@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
@@ -23,7 +24,7 @@ import {
   YAxis,
 } from "recharts";
 import { z } from "zod";
-import { RefreshCw, Save, Sparkles } from "lucide-react";
+import { RefreshCw, Save } from "lucide-react";
 import {
   saveBudgetSettings,
   saveGuardrails,
@@ -196,42 +197,43 @@ export function LoginPage() {
   });
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[radial-gradient(circle_at_top_left,rgba(99,102,241,0.18),transparent_30%),linear-gradient(180deg,#eef2ff_0%,#f8fafc_100%)] px-4 py-12">
-      <div className="grid w-full max-w-5xl gap-8 lg:grid-cols-[1.08fr_0.92fr]">
-        <div className="rounded-[36px] bg-gradient-to-br from-indigo-600 via-indigo-500 to-violet-500 p-8 text-white shadow-[0_30px_80px_rgba(79,70,229,0.35)]">
-          <div className="inline-flex rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em]">
-            Snakitos AI
-          </div>
-          <h1 className="mt-6 text-4xl font-semibold tracking-tight">Snakitos RAG Control Center</h1>
-          <p className="mt-4 max-w-lg text-sm text-indigo-100">
-            Manage ingestion, retrieval quality, prompt behavior, answer reviews, and support escalation for the Snakitos customer support RAG assistant.
-          </p>
-          <div className="mt-8 grid gap-4 md:grid-cols-2">
-            {[
-              "Monitor product, policy, and delivery questions in real time",
-              "Train website, FAQ, Shopify, and document knowledge from one place",
-              "Catch failed answers and turn them into approved knowledge",
-              "Tune prompts, retrieval settings, and safety controls",
-            ].map((item) => (
-              <div key={item} className="rounded-3xl border border-white/20 bg-white/10 p-4 text-sm">
-                {item}
-              </div>
-            ))}
+    <div className="flex h-dvh bg-white">
+      <div className="hidden bg-indigo-600 lg:block lg:w-1/3">
+        <div className="flex h-full flex-col items-center justify-center p-12 text-center">
+          <div className="space-y-6">
+            <div className="mx-auto flex items-center justify-center">
+              <Image
+                src="/Snakitos_Logo_white.webp"
+                alt="Snakitos"
+                width={112}
+                height={38}
+                priority
+                className="h-auto w-28 object-contain"
+              />
+            </div>
+            <div className="space-y-2">
+              <h1 className="text-5xl font-light leading-tight text-white">
+                Snakitos RAG Control Center
+              </h1>
+              <p className="text-xl text-white/80">
+                Manage ingestion, retrieval quality, prompt behavior, answer reviews, and support escalation for the Snakitos customer support RAG assistant.
+              </p>
+            </div>
           </div>
         </div>
+      </div>
 
-        <div className="rounded-[36px] border border-slate-200 bg-white p-8 shadow-[0_30px_80px_rgba(15,23,42,0.08)]">
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
-              <Sparkles className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="text-xl font-semibold text-slate-950">Admin Login</div>
-              <div className="text-sm text-slate-500">Role-based access for owners, admins, support, and content teams</div>
+      <div className="flex w-full items-center justify-center bg-slate-50 p-8 lg:w-2/3">
+        <div className="w-full max-w-md space-y-10 py-24 lg:py-32">
+          <div className="space-y-4 text-center">
+            <div className="font-medium tracking-tight text-slate-950">Admin Login</div>
+            <div className="mx-auto max-w-xl text-slate-500">
+              Role-based access for owners, admins, support, and content teams
             </div>
           </div>
 
-          <form className="mt-8 space-y-5" onSubmit={onSubmit}>
+          <div className="space-y-4">
+            <form className="space-y-5" onSubmit={onSubmit}>
             <Field label="Email">
               <Input type="email" placeholder="owner@snakitos.com" {...form.register("email")} />
               {form.formState.errors.email ? <p className="text-sm text-rose-600">{form.formState.errors.email.message}</p> : null}
@@ -255,12 +257,13 @@ export function LoginPage() {
             <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
               {form.formState.isSubmitting ? "Signing in..." : "Login"}
             </Button>
-          </form>
+            </form>
 
-          <div className="mt-8 rounded-3xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
-            <div className="font-medium text-slate-900">Production access</div>
-            <div className="mt-1">
-              Sign in with a real admin account provisioned in the Snakitos admin database. Demo credentials are no longer used by this screen.
+            <div className="rounded-3xl border border-slate-200 bg-white p-4 text-sm text-slate-600">
+              <div className="font-medium text-slate-900">Production access</div>
+              <div className="mt-1">
+                Sign in with a real admin account provisioned in the Snakitos admin database. Demo credentials are no longer used by this screen.
+              </div>
             </div>
           </div>
         </div>
