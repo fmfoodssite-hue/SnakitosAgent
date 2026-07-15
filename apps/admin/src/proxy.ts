@@ -1,23 +1,68 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const adminBasePath = "/admin";
-const sessionCookie = "snakitos_admin_session";
+const accessTokenCookie = "snakitos_admin_access_token";
 
 function isLoginPath(pathname: string) {
-  return pathname === "/login" || pathname === `${adminBasePath}/login`;
+  return pathname === "/login" || pathname.endsWith("/login");
 }
 
 function isAuthApiPath(pathname: string) {
-  return pathname.startsWith("/api/auth") || pathname.startsWith(`${adminBasePath}/api/auth`);
+  return pathname.startsWith("/api/auth") || pathname.includes("/api/auth");
 }
 
-// Next.js 16 uses proxy.ts (renamed from middleware.ts)
-// The export must be named "proxy" in this file
-export function proxy(request: NextRequest) {
+function base64UrlToBytes(value: string) {
+  const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
+  const padded = normalized.padEnd(normalized.length + ((4 - (normalized.length % 4)) % 4), "=");
+  return Uint8Array.from(atob(padded), (char) => char.charCodeAt(0));
+}
+
+function base64UrlDecode(value: string) {
+  return new TextDecoder().decode(base64UrlToBytes(value));
+}
+
+async function isValidAccessToken(token: string | undefined) {
+  if (!token || !process.env.ADMIN_SESSION_SECRET) {
+    return false;
+  }
+
+  const [encodedHeader, encodedPayload, signature] = token.split(".");
+  if (!encodedHeader || !encodedPayload || !signature) {
+    return false;
+  }
+
+  try {
+    const header = JSON.parse(base64UrlDecode(encodedHeader)) as { alg?: string; typ?: string };
+    const payload = JSON.parse(base64UrlDecode(encodedPayload)) as { exp?: number };
+    if (header.alg !== "HS256" || header.typ !== "JWT") {
+      return false;
+    }
+    if (typeof payload.exp !== "number" || payload.exp * 1000 <= Date.now()) {
+      return false;
+    }
+
+    const key = await crypto.subtle.importKey(
+      "raw",
+      new TextEncoder().encode(process.env.ADMIN_SESSION_SECRET),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["verify"],
+    );
+
+    return crypto.subtle.verify(
+      "HMAC",
+      key,
+      base64UrlToBytes(signature),
+      new TextEncoder().encode(`${encodedHeader}.${encodedPayload}`),
+    );
+  } catch {
+    return false;
+  }
+}
+
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow the login page and all API auth routes through without checking session
   if (
     isLoginPath(pathname) ||
     isAuthApiPath(pathname) ||
@@ -27,11 +72,12 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const adminSession = request.cookies.get(sessionCookie);
+  const accessToken = request.cookies.get(accessTokenCookie)?.value;
+  const hasValidAccessToken = await isValidAccessToken(accessToken);
 
-  if (!adminSession) {
+  if (!hasValidAccessToken) {
     const loginUrl = request.nextUrl.clone();
-    loginUrl.pathname = isLoginPath(pathname) ? pathname : `${adminBasePath}/login`;
+    loginUrl.pathname = "/login";
     return NextResponse.redirect(loginUrl);
   }
 

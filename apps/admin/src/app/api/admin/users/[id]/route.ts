@@ -27,6 +27,12 @@ export async function PATCH(
           .single();
         if (error) throw error;
 
+        await supabase
+          .from("admin_refresh_tokens")
+          .update({ revoked_at: new Date().toISOString() })
+          .eq("admin_id", id)
+          .is("revoked_at", null);
+
         await safeAudit({
           adminId: admin.id,
           action: "user.disable",
@@ -109,4 +115,3 @@ export async function DELETE(
     }
   });
 }
-

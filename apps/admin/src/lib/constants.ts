@@ -10,6 +10,14 @@ export function withAdminPath(path: string) {
   return `/${path}`;
 }
 
+export function withAdminApiPath(path: string) {
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  if (!ADMIN_BASE_PATH || normalizedPath.startsWith(`${ADMIN_BASE_PATH}/`)) {
+    return normalizedPath;
+  }
+  return `${ADMIN_BASE_PATH}${normalizedPath}`;
+}
+
 export const KNOWLEDGE_CATEGORIES = [
   "Products",
   "Deals",

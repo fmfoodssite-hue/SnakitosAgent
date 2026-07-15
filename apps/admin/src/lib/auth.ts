@@ -1,13 +1,26 @@
+import { randomUUID } from "node:crypto";
 import { cookies, headers } from "next/headers";
 import { NextResponse } from "next/server";
-import { ADMIN_BASE_PATH, ADMIN_ROLES } from "@/lib/constants";
+import { ADMIN_ROLES } from "@/lib/constants";
 import { assertServiceClient } from "@/lib/db";
 import { env } from "@/lib/env";
-import { hashPassword, signPayload, verifyPassword } from "@/lib/security";
+import {
+  generateRefreshToken,
+  hashPassword,
+  hashToken,
+  signJwt,
+  verifyJwt,
+  verifyPassword,
+} from "@/lib/security";
 import type { AdminRole, AdminSession, AdminUser } from "@/lib/types";
 
-const SESSION_COOKIE = "snakitos_admin_session";
-const SESSION_DURATION_MS = 1000 * 60 * 60 * 12;
+const ACCESS_TOKEN_COOKIE = "snakitos_admin_access_token";
+const REFRESH_TOKEN_COOKIE = "snakitos_admin_refresh_token";
+const COOKIE_PATH = "/";
+
+const ACCESS_TOKEN_TTL_MS = env.ADMIN_ACCESS_TOKEN_TTL_MINUTES * 60 * 1000;
+const ACCESS_TOKEN_TTL_SECONDS = env.ADMIN_ACCESS_TOKEN_TTL_MINUTES * 60;
+const REFRESH_TOKEN_TTL_MS = env.ADMIN_REFRESH_TOKEN_TTL_DAYS * 24 * 60 * 60 * 1000;
 
 type AdminRow = {
   id: string;
@@ -16,32 +29,29 @@ type AdminRow = {
   password_hash: string;
   is_active: boolean;
   last_login_at?: string | null;
-  admin_roles?: Array<{ key: AdminRole }> | null;
-  role_id?: string;
+  admin_roles?: { key: AdminRole } | Array<{ key: AdminRole }> | null;
 };
 
-function serializeSession(session: AdminSession) {
-  const payload = Buffer.from(JSON.stringify(session)).toString("base64url");
-  const signature = signPayload(payload);
-  return `${payload}.${signature}`;
-}
+type RefreshTokenRow = {
+  id: string;
+  admin_id: string;
+  session_id: string;
+  expires_at: string;
+  revoked_at: string | null;
+  admins?: {
+    id: string;
+    email: string;
+    full_name: string;
+    is_active: boolean;
+    admin_roles?: { key: AdminRole } | Array<{ key: AdminRole }> | null;
+  } | null;
+};
 
-function parseSession(token: string | undefined) {
-  if (!token) {
-    return null;
+function getRoleKey(role: AdminRow["admin_roles"]) {
+  if (Array.isArray(role)) {
+    return role[0]?.key ?? "viewer";
   }
-
-  const [payload, signature] = token.split(".");
-  if (!payload || !signature || signPayload(payload) !== signature) {
-    return null;
-  }
-
-  const session = JSON.parse(Buffer.from(payload, "base64url").toString("utf8")) as AdminSession;
-  if (Date.now() > session.expiresAt) {
-    return null;
-  }
-
-  return session;
+  return role?.key ?? "viewer";
 }
 
 async function ensureBootstrapOwner() {
@@ -76,6 +86,8 @@ async function ensureBootstrapOwner() {
     password_hash: hashPassword(env.ADMIN_BOOTSTRAP_PASSWORD),
     role_id: role.id,
     is_active: true,
+    must_change_password: false,
+    password_changed_at: new Date().toISOString(),
   });
 }
 
@@ -99,7 +111,7 @@ export async function authenticateAdmin(email: string, password: string) {
 
   await supabase.from("admins").update({ last_login_at: new Date().toISOString() }).eq("id", admin.id);
 
-  const role = admin.admin_roles?.[0]?.key ?? "viewer";
+  const role = getRoleKey(admin.admin_roles);
   return {
     id: admin.id,
     email: admin.email,
@@ -111,34 +123,104 @@ export async function authenticateAdmin(email: string, password: string) {
 }
 
 export async function createAdminSession(admin: AdminUser) {
-  const cookieStore = await cookies();
+  const sessionId = randomUUID();
+  const refreshToken = generateRefreshToken();
+  const refreshTokenHash = hashToken(refreshToken);
+  const refreshExpiresAt = new Date(Date.now() + REFRESH_TOKEN_TTL_MS).toISOString();
+  const supabase = assertServiceClient();
+
+  const { error } = await supabase.from("admin_refresh_tokens").insert({
+    admin_id: admin.id,
+    token_hash: refreshTokenHash,
+    session_id: sessionId,
+    expires_at: refreshExpiresAt,
+    ip_address: await getRequestIpAddress(),
+    user_agent: await getRequestUserAgent(),
+  });
+
+  if (error) {
+    throw error;
+  }
+
   const session: AdminSession = {
     adminId: admin.id,
+    sessionId,
     role: admin.role,
     email: admin.email,
-    expiresAt: Date.now() + SESSION_DURATION_MS,
+    expiresAt: Date.now() + ACCESS_TOKEN_TTL_MS,
   };
 
-  cookieStore.set(SESSION_COOKIE, serializeSession(session), {
+  const cookieStore = await cookies();
+  cookieStore.set(ACCESS_TOKEN_COOKIE, signJwt(session, ACCESS_TOKEN_TTL_SECONDS), {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
-    maxAge: SESSION_DURATION_MS / 1000,
-    path: ADMIN_BASE_PATH,
+    maxAge: ACCESS_TOKEN_TTL_SECONDS,
+    path: COOKIE_PATH,
   });
+  cookieStore.set(REFRESH_TOKEN_COOKIE, refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: Math.floor(REFRESH_TOKEN_TTL_MS / 1000),
+    path: COOKIE_PATH,
+  });
+
+  return session;
 }
 
 export async function clearAdminSession() {
   const cookieStore = await cookies();
+  const refreshToken = cookieStore.get(REFRESH_TOKEN_COOKIE)?.value;
+
+  if (refreshToken) {
+    const supabase = assertServiceClient();
+    await supabase
+      .from("admin_refresh_tokens")
+      .update({ revoked_at: new Date().toISOString() })
+      .eq("token_hash", hashToken(refreshToken))
+      .is("revoked_at", null);
+  }
+
   cookieStore.delete({
-    name: SESSION_COOKIE,
-    path: ADMIN_BASE_PATH,
+    name: ACCESS_TOKEN_COOKIE,
+    path: COOKIE_PATH,
+  });
+  cookieStore.delete({
+    name: REFRESH_TOKEN_COOKIE,
+    path: COOKIE_PATH,
   });
 }
 
 export async function getAdminSession() {
   const cookieStore = await cookies();
-  return parseSession(cookieStore.get(SESSION_COOKIE)?.value);
+  const accessToken = cookieStore.get(ACCESS_TOKEN_COOKIE)?.value;
+  if (!accessToken) {
+    return null;
+  }
+
+  const payload = verifyJwt(accessToken);
+  if (!payload) {
+    return null;
+  }
+
+  const adminId = typeof payload.adminId === "string" ? payload.adminId : null;
+  const sessionId = typeof payload.sessionId === "string" ? payload.sessionId : null;
+  const role = typeof payload.role === "string" ? (payload.role as AdminRole) : null;
+  const email = typeof payload.email === "string" ? payload.email : null;
+  const expiresAt = typeof payload.exp === "number" ? payload.exp * 1000 : null;
+
+  if (!adminId || !sessionId || !role || !email || !expiresAt) {
+    return null;
+  }
+
+  return {
+    adminId,
+    sessionId,
+    role,
+    email,
+    expiresAt,
+  } satisfies AdminSession;
 }
 
 export async function requireAdminSession(allowedRoles: AdminRole[] = [...ADMIN_ROLES]) {
@@ -163,7 +245,7 @@ export async function requireAdminSession(allowedRoles: AdminRole[] = [...ADMIN_
     email: string;
     full_name: string;
     is_active: boolean;
-    admin_roles?: Array<{ key: AdminRole }> | null;
+    admin_roles?: { key: AdminRole } | Array<{ key: AdminRole }> | null;
   };
 
   if (!admin.is_active) {
@@ -174,14 +256,99 @@ export async function requireAdminSession(allowedRoles: AdminRole[] = [...ADMIN_
     id: admin.id,
     email: admin.email,
     full_name: admin.full_name,
-    role: admin.admin_roles?.[0]?.key ?? "viewer",
+    role: getRoleKey(admin.admin_roles),
     is_active: admin.is_active,
   } satisfies AdminUser;
+}
+
+export async function refreshAdminSession() {
+  const cookieStore = await cookies();
+  const refreshToken = cookieStore.get(REFRESH_TOKEN_COOKIE)?.value;
+  if (!refreshToken) {
+    return null;
+  }
+
+  const supabase = assertServiceClient();
+  const { data, error } = await supabase
+    .from("admin_refresh_tokens")
+    .select("id, admin_id, session_id, expires_at, revoked_at, admins!inner(id, email, full_name, is_active, admin_roles!inner(key))")
+    .eq("token_hash", hashToken(refreshToken))
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  const record = data as unknown as RefreshTokenRow;
+  if (record.revoked_at || new Date(record.expires_at).getTime() <= Date.now() || !record.admins?.is_active) {
+    return null;
+  }
+
+  const nextRefreshToken = generateRefreshToken();
+  const nextRefreshTokenId = randomUUID();
+  const nextRefreshTokenHash = hashToken(nextRefreshToken);
+
+  const { error: insertError } = await supabase.from("admin_refresh_tokens").insert({
+    id: nextRefreshTokenId,
+    admin_id: record.admin_id,
+    token_hash: nextRefreshTokenHash,
+    session_id: record.session_id,
+    expires_at: new Date(Date.now() + REFRESH_TOKEN_TTL_MS).toISOString(),
+    ip_address: await getRequestIpAddress(),
+    user_agent: await getRequestUserAgent(),
+  });
+
+  if (insertError) {
+    throw insertError;
+  }
+
+  const { error: revokeError } = await supabase
+    .from("admin_refresh_tokens")
+    .update({
+      revoked_at: new Date().toISOString(),
+      replaced_by_token_id: nextRefreshTokenId,
+    })
+    .eq("id", record.id)
+    .is("revoked_at", null);
+
+  if (revokeError) {
+    throw revokeError;
+  }
+
+  const nextSession: AdminSession = {
+    adminId: record.admins.id,
+    sessionId: record.session_id,
+    role: getRoleKey(record.admins.admin_roles),
+    email: record.admins.email,
+    expiresAt: Date.now() + ACCESS_TOKEN_TTL_MS,
+  };
+
+  cookieStore.set(ACCESS_TOKEN_COOKIE, signJwt(nextSession, ACCESS_TOKEN_TTL_SECONDS), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: ACCESS_TOKEN_TTL_SECONDS,
+    path: COOKIE_PATH,
+  });
+  cookieStore.set(REFRESH_TOKEN_COOKIE, nextRefreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: Math.floor(REFRESH_TOKEN_TTL_MS / 1000),
+    path: COOKIE_PATH,
+  });
+
+  return nextSession;
 }
 
 export async function getRequestIpAddress() {
   const headerStore = await headers();
   return headerStore.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+}
+
+export async function getRequestUserAgent() {
+  const headerStore = await headers();
+  return headerStore.get("user-agent") ?? "unknown";
 }
 
 export function unauthorizedResponse() {

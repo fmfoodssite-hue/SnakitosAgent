@@ -21,7 +21,7 @@ import {
   X,
   Menu,
 } from "lucide-react";
-import { ADMIN_BASE_PATH } from "@/lib/constants";
+import { withAdminApiPath, withAdminPath } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 const items = [
@@ -54,8 +54,8 @@ export default function Sidebar({ mobileOpen = false, onClose, onOpen }: Sidebar
   }
 
   const handleLogout = async () => {
-    await fetch(`${ADMIN_BASE_PATH}/api/auth/logout`, { method: "POST" });
-    router.push("/login");
+    await fetch(withAdminApiPath("/api/auth/logout"), { method: "POST" });
+    router.push(withAdminPath("/login"));
     router.refresh();
   };
 
@@ -143,4 +143,3 @@ export default function Sidebar({ mobileOpen = false, onClose, onOpen }: Sidebar
     </>
   );
 }
-

@@ -15,7 +15,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
     hydrateUser();
   }, [hydrateUser]);
 
-  if (pathname === "/login") {
+  if (pathname === "/login" || pathname.endsWith("/login")) {
     return <>{children}</>;
   }
 

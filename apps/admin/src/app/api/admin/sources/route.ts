@@ -56,7 +56,13 @@ export async function POST(request: Request) {
       const supabase = assertServiceClient();
       const { data, error } = await supabase
         .from("knowledge_sources")
-        .insert({ ...parsed.data, status: "waiting", created_by: admin.id })
+        .insert({
+          ...parsed.data,
+          title: parsed.data.name,
+          source_url: parsed.data.url ?? null,
+          status: "waiting",
+          created_by: admin.id,
+        })
         .select("*")
         .single();
 

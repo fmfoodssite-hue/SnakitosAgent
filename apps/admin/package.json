@@ -6,7 +6,19 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "supabase:login": "npx supabase login",
+    "supabase:link": "npx supabase link",
+    "supabase:db:reset": "npx supabase db query --linked --file supabase/reset.sql",
+    "supabase:db:migrate": "npx supabase db push --linked --include-all",
+    "supabase:db:seed": "npx supabase db query --linked --file supabase/seed.sql",
+    "supabase:db:setup": "npm run supabase:db:reset && npm run supabase:db:migrate && npm run supabase:db:seed",
+    "supabase:db:pull": "npx supabase db pull --linked",
+    "supabase:db:diff": "npx supabase db diff --linked",
+    "supabase:db:lint": "npx supabase db lint",
+    "supabase:migration:list": "npx supabase migration list --linked",
+    "supabase:migration:new": "npx supabase migration new",
+    "supabase:types": "npx supabase gen types typescript --linked"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
@@ -37,6 +49,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
+    "supabase": "^2.109.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

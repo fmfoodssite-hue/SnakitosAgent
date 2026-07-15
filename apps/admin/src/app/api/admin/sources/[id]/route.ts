@@ -40,7 +40,6 @@ export async function PATCH(
       const supabase = assertServiceClient();
 
       if (action === "reingest") {
-        // Create a new ingestion job for this source
         await supabase.from("ingestion_jobs").insert({
           source_id: id,
           job_type: "re_ingest",
@@ -100,7 +99,7 @@ export async function DELETE(
       const { id } = await params;
       const supabase = assertServiceClient();
 
-      // Cascade delete chunks first
+      await supabase.from("knowledge_chunks").delete().eq("source_id", id);
       await supabase.from("rag_chunks").delete().eq("source_id", id);
 
       const { error } = await supabase.from("knowledge_sources").delete().eq("id", id);

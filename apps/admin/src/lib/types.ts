@@ -39,6 +39,7 @@ export type AdminUser = {
 
 export type AdminSession = {
   adminId: string;
+  sessionId: string;
   role: AdminRole;
   email: string;
   expiresAt: number;

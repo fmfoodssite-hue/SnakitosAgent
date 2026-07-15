@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LogOut, PanelLeftClose, PanelLeftOpen, Sparkles } from "lucide-react";
-import { withAdminPath } from "@/lib/constants";
+import { withAdminApiPath, withAdminPath } from "@/lib/constants";
 import { navSections } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
 import { useAdminShell } from "@/hooks/use-admin-shell";
@@ -91,7 +91,7 @@ export function AppSidebar() {
             variant="outline"
             className={cn("w-full justify-start", sidebarCollapsed && "md:justify-center")}
             onClick={async () => {
-              await fetch("/api/auth/logout", { method: "POST" }).catch(() => undefined);
+              await fetch(withAdminApiPath("/api/auth/logout"), { method: "POST" }).catch(() => undefined);
               logout();
               router.push(withAdminPath("/login"));
             }}

@@ -12,9 +12,10 @@ import type {
   Ticket,
   UserRole,
 } from "@/types";
+import { withAdminApiPath } from "@/lib/constants";
 
 async function requestJson<T>(input: RequestInfo, init?: RequestInit): Promise<T> {
-  const response = await fetch(input, {
+  const response = await fetch(typeof input === "string" ? withAdminApiPath(input) : input, {
     ...init,
     headers: {
       "Content-Type": "application/json",
@@ -43,7 +44,7 @@ export async function login(): Promise<AdminUser> {
 }
 
 export async function getSnapshot(): Promise<ControlCenterSnapshot> {
-  const response = await fetch("/api/admin/control-center", { cache: "no-store" });
+  const response = await fetch(withAdminApiPath("/api/admin/control-center"), { cache: "no-store" });
   if (!response.ok) {
     throw new Error("Failed to fetch control center snapshot.");
   }

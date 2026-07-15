@@ -6,7 +6,7 @@ import { Bell, ChevronDown, Menu, MoonStar, Search, SunMedium } from "lucide-rea
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import { useAdminShell } from "@/hooks/use-admin-shell";
-import { withAdminPath } from "@/lib/constants";
+import { withAdminApiPath, withAdminPath } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -120,7 +120,7 @@ export function TopNavbar() {
                     label: "Logout",
                     action: async () => {
                       setProfileOpen(false);
-                      await fetch("/api/auth/logout", { method: "POST" }).catch(() => undefined);
+                      await fetch(withAdminApiPath("/api/auth/logout"), { method: "POST" }).catch(() => undefined);
                       logout();
                       toast.success("You have been logged out.");
                       router.push(withAdminPath("/login"));

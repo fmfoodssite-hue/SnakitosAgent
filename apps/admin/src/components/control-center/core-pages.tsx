@@ -30,7 +30,7 @@ import {
   saveModelSettings,
   saveSettings,
 } from "@/lib/mock-api";
-import { withAdminPath } from "@/lib/constants";
+import { withAdminApiPath, withAdminPath } from "@/lib/constants";
 import { formatCurrency, formatNumber } from "@/lib/format";
 import { useAdminShell } from "@/hooks/use-admin-shell";
 import { useControlCenterData } from "@/hooks/use-control-center-data";
@@ -136,7 +136,7 @@ export function LoginPage() {
 
   const onSubmit = form.handleSubmit(async (values) => {
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch(withAdminApiPath("/api/auth/login"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
