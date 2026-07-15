@@ -36,7 +36,7 @@ const envSchema = z.object({
   SHOPIFY_ADMIN_API_ACCESS_TOKEN: z.string().optional(),
   SHOPIFY_STOREFRONT_BASE_URL: z.string().url().default("https://snakitos.com"),
   UPLOAD_STORAGE_BUCKET: z.string().default("admin-uploads"),
-  NEXT_PUBLIC_ADMIN_BASE_PATH: z.string().default("/admin"),
+  NEXT_PUBLIC_ADMIN_BASE_PATH: z.string().default(""),
 });
 
 function parseEnv() {

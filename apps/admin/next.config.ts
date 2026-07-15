@@ -14,9 +14,22 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  basePath: "/admin",
   env: {
-    NEXT_PUBLIC_ADMIN_BASE_PATH: "/admin",
+    NEXT_PUBLIC_ADMIN_BASE_PATH: "",
+  },
+  async redirects() {
+    return [
+      {
+        source: "/admin",
+        destination: "/",
+        permanent: false,
+      },
+      {
+        source: "/admin/:path*",
+        destination: "/:path*",
+        permanent: false,
+      },
+    ];
   },
   async headers() {
     return [

@@ -1,4 +1,4 @@
-export const ADMIN_BASE_PATH = process.env.NEXT_PUBLIC_ADMIN_BASE_PATH || "/admin";
+export const ADMIN_BASE_PATH = process.env.NEXT_PUBLIC_ADMIN_BASE_PATH || "";
 
 export function withAdminPath(path: string) {
   if (!path) return "/";
