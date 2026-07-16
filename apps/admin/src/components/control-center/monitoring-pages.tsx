@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { ColumnDef } from "@tanstack/react-table";
+import { Ban, Pencil, Plus, Trash2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -10,20 +11,20 @@ import {
   addConversationNote,
   addFailedAnswerFromPlayground,
   addKnowledgeSource,
+  createUser,
   deleteUser,
   disableUser,
   duplicatePrompt,
   exportAuditLogs,
   fixFailedAnswer,
   ignoreFailedAnswer,
-  inviteUser,
   markConversationReviewed,
   resolveTicket,
   rollbackPrompt,
   saveFaq,
   savePromptSettings,
   saveTicket,
-  updateUserRole,
+  updateUser,
 } from "@/lib/mock-api";
 import { useControlCenterData } from "@/hooks/use-control-center-data";
 import { ChartCard } from "@/components/common/ChartCard";
@@ -88,10 +89,19 @@ const ticketSchema = z.object({
   internalNotes: z.string().min(2),
 });
 
-const inviteSchema = z.object({
+const createUserSchema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+  password: z.string().min(8, "Password must be at least 8 characters."),
+  role: z.enum(["Owner", "Admin", "Support Agent", "Content Manager", "Viewer"]),
+  status: z.enum(["Active", "Disabled"]),
+});
+
+const editUserSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
   role: z.enum(["Owner", "Admin", "Support Agent", "Content Manager", "Viewer"]),
+  status: z.enum(["Active", "Disabled"]),
 });
 
 export function PlaygroundPage() {
@@ -677,36 +687,75 @@ export function TicketsPage() {
 
 export function UsersPage() {
   const { data, loading, error, reload } = useControlCenterData();
-  const [openInvite, setOpenInvite] = useState(false);
-  const form = useForm<z.infer<typeof inviteSchema>>({
-    resolver: zodResolver(inviteSchema),
-    defaultValues: { name: "", email: "", role: "Support Agent" },
+  const [openCreate, setOpenCreate] = useState(false);
+  const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
+  const createForm = useForm<z.infer<typeof createUserSchema>>({
+    resolver: zodResolver(createUserSchema),
+    defaultValues: { name: "", email: "", password: "", role: "Support Agent", status: "Active" },
   });
+  const editForm = useForm<z.infer<typeof editUserSchema>>({
+    resolver: zodResolver(editUserSchema),
+    defaultValues: { name: "", email: "", role: "Support Agent", status: "Active" },
+  });
+
+  function openEditUser(user: AdminUser) {
+    setEditingUser(user);
+    editForm.reset({
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      status: user.status === "Disabled" ? "Disabled" : "Active",
+    });
+  }
 
   const columns = useMemo<ColumnDef<AdminUser>[]>(
     () => [
       { header: "Name", cell: ({ row }) => <div className="font-medium text-slate-900">{row.original.name}</div> },
       { header: "Email", cell: ({ row }) => row.original.email },
-      { header: "Role", cell: ({ row }) => row.original.role },
+      { header: "Role", cell: ({ row }) => <StatusBadge value={row.original.role} /> },
       { header: "Status", cell: ({ row }) => <StatusBadge value={row.original.status} /> },
       { header: "Last Active", cell: ({ row }) => row.original.lastActive },
       {
         header: "Actions",
         cell: ({ row }) => (
-          <div className="flex flex-wrap gap-2">
-            <Select value={row.original.role} onChange={async (event) => { await updateUserRole(row.original.id, event.target.value as AdminUser["role"]); toast.success("Role updated."); reload(); }}>
-              <option>Owner</option>
-              <option>Admin</option>
-              <option>Support Agent</option>
-              <option>Content Manager</option>
-              <option>Viewer</option>
-            </Select>
-            <Button variant="ghost" onClick={async () => { await disableUser(row.original.id); toast.success("User disabled."); reload(); }}>
-              Disable
-            </Button>
-            <Button variant="ghost" onClick={async () => { await deleteUser(row.original.id); toast.success("User deleted."); reload(); }}>
-              Delete
-            </Button>
+          <div className="flex items-center justify-end gap-2">
+            <button
+              type="button"
+              onClick={() => openEditUser(row.original)}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600 transition hover:bg-blue-100"
+              aria-label={`Edit ${row.original.name}`}
+              title="Edit user"
+            >
+              <Pencil className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={async () => {
+                await disableUser(row.original.id);
+                toast.success("User disabled.");
+                reload();
+              }}
+              disabled={row.original.status === "Disabled"}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-600 transition hover:bg-amber-100 disabled:cursor-not-allowed disabled:opacity-45"
+              aria-label={`Disable ${row.original.name}`}
+              title="Disable user"
+            >
+              <Ban className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={async () => {
+                if (!window.confirm(`Delete ${row.original.name}? This action cannot be undone.`)) return;
+                await deleteUser(row.original.id);
+                toast.success("User deleted.");
+                reload();
+              }}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-rose-50 text-rose-600 transition hover:bg-rose-100"
+              aria-label={`Delete ${row.original.name}`}
+              title="Delete user"
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
           </div>
         ),
       },
@@ -718,23 +767,34 @@ export function UsersPage() {
     <PageState loading={loading} error={error} retry={reload}>
       {data ? (
         <div className="space-y-6">
-          <PageHeader eyebrow="Admin" title="Users & roles" description="Invite teammates, assign permissions, and manage Snakitos RAG admin access across support and content workflows." actions={<Button onClick={() => setOpenInvite(true)}>Invite user</Button>} />
+          <PageHeader
+            eyebrow="Admin"
+            title="Users & roles"
+            description="Create teammates, assign permissions, and manage Snakitos RAG admin access across support and content workflows."
+            actions={
+              <Button onClick={() => setOpenCreate(true)}>
+                <Plus className="mr-2 h-4 w-4" />
+                Create user
+              </Button>
+            }
+          />
           <DataTable columns={columns} data={data.users} />
-          <FormModal open={openInvite} title="Invite user" onClose={() => setOpenInvite(false)}>
+          <FormModal open={openCreate} title="Create user" description="Create a dashboard user with a role and login password." onClose={() => setOpenCreate(false)}>
             <form
               className="space-y-4"
-              onSubmit={form.handleSubmit(async (values) => {
-                await inviteUser(values);
-                toast.success("Invite sent.");
-                setOpenInvite(false);
-                form.reset();
+              onSubmit={createForm.handleSubmit(async (values) => {
+                await createUser(values);
+                toast.success("User created.");
+                setOpenCreate(false);
+                createForm.reset();
                 reload();
               })}
             >
-              <Field label="Name"><Input {...form.register("name")} /></Field>
-              <Field label="Email"><Input type="email" {...form.register("email")} /></Field>
+              <Field label="Full name"><Input {...createForm.register("name")} /></Field>
+              <Field label="Email"><Input type="email" {...createForm.register("email")} /></Field>
+              <Field label="Password"><Input type="password" minLength={8} {...createForm.register("password")} /></Field>
               <Field label="Role">
-                <Select {...form.register("role")}>
+                <Select {...createForm.register("role")}>
                   <option>Owner</option>
                   <option>Admin</option>
                   <option>Support Agent</option>
@@ -742,9 +802,53 @@ export function UsersPage() {
                   <option>Viewer</option>
                 </Select>
               </Field>
+              <Field label="Status">
+                <Select {...createForm.register("status")}>
+                  <option>Active</option>
+                  <option>Disabled</option>
+                </Select>
+              </Field>
               <div className="flex justify-end gap-3">
-                <Button variant="outline" type="button" onClick={() => setOpenInvite(false)}>Cancel</Button>
-                <Button type="submit">Send invite</Button>
+                <Button variant="outline" type="button" onClick={() => setOpenCreate(false)}>Cancel</Button>
+                <Button type="submit" disabled={createForm.formState.isSubmitting}>
+                  {createForm.formState.isSubmitting ? "Creating..." : "Create user"}
+                </Button>
+              </div>
+            </form>
+          </FormModal>
+          <FormModal open={Boolean(editingUser)} title="Edit user" description="Update profile details, role, and account status." onClose={() => setEditingUser(null)}>
+            <form
+              className="space-y-4"
+              onSubmit={editForm.handleSubmit(async (values) => {
+                if (!editingUser) return;
+                await updateUser({ id: editingUser.id, ...values });
+                toast.success("User updated.");
+                setEditingUser(null);
+                reload();
+              })}
+            >
+              <Field label="Full name"><Input {...editForm.register("name")} /></Field>
+              <Field label="Email"><Input type="email" {...editForm.register("email")} /></Field>
+              <Field label="Role">
+                <Select {...editForm.register("role")}>
+                  <option>Owner</option>
+                  <option>Admin</option>
+                  <option>Support Agent</option>
+                  <option>Content Manager</option>
+                  <option>Viewer</option>
+                </Select>
+              </Field>
+              <Field label="Status">
+                <Select {...editForm.register("status")}>
+                  <option>Active</option>
+                  <option>Disabled</option>
+                </Select>
+              </Field>
+              <div className="flex justify-end gap-3">
+                <Button variant="outline" type="button" onClick={() => setEditingUser(null)}>Cancel</Button>
+                <Button type="submit" disabled={editForm.formState.isSubmitting}>
+                  {editForm.formState.isSubmitting ? "Saving..." : "Save changes"}
+                </Button>
               </div>
             </form>
           </FormModal>

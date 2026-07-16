@@ -13,11 +13,11 @@ const toneMap: Record<Tone, string> = {
 
 function resolveTone(value: string): Tone {
   const normalized = value.toLowerCase();
-  if (["indexed", "healthy", "active", "resolved", "success", "included"].includes(normalized)) return "success";
-  if (["open"].includes(normalized)) return "info";
+  if (["indexed", "healthy", "active", "resolved", "success", "included", "admin"].includes(normalized)) return "success";
+  if (["open", "owner", "super admin", "manager"].includes(normalized)) return "info";
   if (["pending", "warning", "low stock"].includes(normalized)) return "warning";
   if (["failed", "error", "disabled", "ignored", "out of stock", "excluded", "closed"].includes(normalized)) return "danger";
-  if (["viewer", "manual", "faq"].includes(normalized)) return "neutral";
+  if (["viewer", "manual", "faq", "student"].includes(normalized)) return "neutral";
   return "default";
 }
 

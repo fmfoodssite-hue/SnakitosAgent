@@ -105,8 +105,7 @@ export function TopNavbar() {
                     label: "Profile",
                     action: () => {
                       setProfileOpen(false);
-                      router.push(withAdminPath("/users"));
-                      toast.success("Opened Users & Roles to view the current admin profile.");
+                      router.push(withAdminPath("/profile"));
                     },
                   },
                   {

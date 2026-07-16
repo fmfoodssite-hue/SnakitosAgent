@@ -12,13 +12,20 @@ export async function PATCH(
     try {
       const { id } = await params;
       const body = (await request.json().catch(() => ({}))) as {
-        action?: "role" | "disable";
+        action?: "role" | "disable" | "update";
+        name?: string;
+        email?: string;
         role?: string;
+        status?: string;
       };
 
       const supabase = assertServiceClient();
 
       if (body.action === "disable") {
+        if (id === admin.id) {
+          return errorResponse("VALIDATION_FAILED", "You cannot disable your own account.", 400);
+        }
+
         const { data, error } = await supabase
           .from("admins")
           .update({ is_active: false, updated_at: new Date().toISOString() })
@@ -43,14 +50,15 @@ export async function PATCH(
         return successResponse(data);
       }
 
+      const roleKeyMap: Record<string, string> = {
+        Owner: "owner",
+        Admin: "admin",
+        "Support Agent": "support_agent",
+        "Content Manager": "content_manager",
+        Viewer: "viewer",
+      };
+
       if (body.action === "role" && body.role) {
-        const roleKeyMap: Record<string, string> = {
-          Owner: "owner",
-          Admin: "admin",
-          "Support Agent": "support_agent",
-          "Content Manager": "content_manager",
-          Viewer: "viewer",
-        };
         const roleKey = roleKeyMap[body.role];
         if (!roleKey) {
           return errorResponse("VALIDATION_FAILED", "Invalid role.", 400);
@@ -81,6 +89,64 @@ export async function PATCH(
         return successResponse(data);
       }
 
+      if (body.action === "update") {
+        if (!body.name?.trim() || !body.email?.trim() || !body.role || !body.status) {
+          return errorResponse("VALIDATION_FAILED", "Name, email, role, and status are required.", 400);
+        }
+
+        if (!["Active", "Disabled"].includes(body.status)) {
+          return errorResponse("VALIDATION_FAILED", "Invalid status.", 400);
+        }
+
+        if (id === admin.id && body.status === "Disabled") {
+          return errorResponse("VALIDATION_FAILED", "You cannot disable your own account.", 400);
+        }
+
+        const roleKey = roleKeyMap[body.role];
+        if (!roleKey) {
+          return errorResponse("VALIDATION_FAILED", "Invalid role.", 400);
+        }
+
+        const { data: role, error: roleError } = await supabase
+          .from("admin_roles")
+          .select("id")
+          .eq("key", roleKey)
+          .single();
+        if (roleError || !role) throw roleError ?? new Error("Role not found.");
+
+        const { data, error } = await supabase
+          .from("admins")
+          .update({
+            email: body.email.toLowerCase().trim(),
+            full_name: body.name.trim(),
+            role_id: role.id,
+            is_active: body.status === "Active",
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", id)
+          .select("id")
+          .single();
+        if (error) throw error;
+
+        if (body.status === "Disabled") {
+          await supabase
+            .from("admin_refresh_tokens")
+            .update({ revoked_at: new Date().toISOString() })
+            .eq("admin_id", id)
+            .is("revoked_at", null);
+        }
+
+        await safeAudit({
+          adminId: admin.id,
+          action: "user.update",
+          entityType: "admin",
+          entityId: id,
+          details: { email: body.email.toLowerCase().trim(), role: roleKey, status: body.status },
+          ipAddress,
+        });
+        return successResponse(data);
+      }
+
       return errorResponse("VALIDATION_FAILED", "Unsupported user action.", 400);
     } catch (error) {
       console.error("User update failed", error);
@@ -96,6 +162,10 @@ export async function DELETE(
   return withAdminAccess(["owner", "admin"], async ({ admin, ipAddress }) => {
     try {
       const { id } = await params;
+      if (id === admin.id) {
+        return errorResponse("VALIDATION_FAILED", "You cannot delete your own account.", 400);
+      }
+
       const supabase = assertServiceClient();
       const { error } = await supabase.from("admins").delete().eq("id", id);
       if (error) throw error;

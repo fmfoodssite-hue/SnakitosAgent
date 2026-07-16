@@ -411,10 +411,30 @@ export async function saveGuardrails(guardrails: GuardrailSettings) {
   return true;
 }
 
-export async function inviteUser(payload: { name: string; email: string; role: UserRole }) {
+export async function createUser(payload: {
+  name: string;
+  email: string;
+  password: string;
+  role: UserRole;
+  status: "Active" | "Disabled";
+}) {
   await requestJson("/api/admin/users", {
     method: "POST",
     body: JSON.stringify(payload),
+  });
+  return true;
+}
+
+export async function updateUser(payload: {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  status: "Active" | "Disabled";
+}) {
+  await requestJson(`/api/admin/users/${payload.id}`, {
+    method: "PATCH",
+    body: JSON.stringify({ action: "update", ...payload }),
   });
   return true;
 }

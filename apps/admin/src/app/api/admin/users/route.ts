@@ -1,4 +1,3 @@
-import { randomUUID } from "crypto";
 import { withAdminAccess, safeAudit } from "@/lib/server";
 import { assertServiceClient } from "@/lib/db";
 import { errorResponse, successResponse } from "@/lib/response";
@@ -30,11 +29,21 @@ export async function POST(request: Request) {
       const body = (await request.json().catch(() => ({}))) as {
         name?: string;
         email?: string;
+        password?: string;
         role?: string;
+        status?: string;
       };
 
-      if (!body.name || !body.email || !body.role) {
-        return errorResponse("VALIDATION_FAILED", "Name, email, and role are required.", 400);
+      if (!body.name?.trim() || !body.email?.trim() || !body.password || !body.role || !body.status) {
+        return errorResponse("VALIDATION_FAILED", "Name, email, password, role, and status are required.", 400);
+      }
+
+      if (body.password.length < 8) {
+        return errorResponse("VALIDATION_FAILED", "Password must be at least 8 characters.", 400);
+      }
+
+      if (!["Active", "Disabled"].includes(body.status)) {
+        return errorResponse("VALIDATION_FAILED", "Invalid status.", 400);
       }
 
       const supabase = assertServiceClient();
@@ -61,16 +70,16 @@ export async function POST(request: Request) {
         throw roleError ?? new Error("Role not found.");
       }
 
-      const tempPassword = randomUUID();
       const { data, error } = await supabase
         .from("admins")
         .insert({
           email: body.email.toLowerCase().trim(),
           full_name: body.name.trim(),
-          password_hash: hashPassword(tempPassword),
+          password_hash: hashPassword(body.password),
           role_id: role.id,
-          is_active: true,
-          must_change_password: true,
+          is_active: body.status === "Active",
+          must_change_password: false,
+          password_changed_at: new Date().toISOString(),
         })
         .select("id, email, full_name, is_active")
         .single();
@@ -81,17 +90,17 @@ export async function POST(request: Request) {
 
       await safeAudit({
         adminId: admin.id,
-        action: "user.invite",
+        action: "user.create",
         entityType: "admin",
         entityId: data.id,
-        details: { email: data.email, role: roleKey },
+        details: { email: data.email, role: roleKey, status: body.status },
         ipAddress,
       });
 
-      return successResponse({ ...data, tempPassword }, { status: 201 });
+      return successResponse(data, { status: 201 });
     } catch (error) {
-      console.error("User invite failed", error);
-      return errorResponse("USER_INVITE_FAILED", "Unable to invite user.", 500);
+      console.error("User create failed", error);
+      return errorResponse("USER_CREATE_FAILED", "Unable to create user.", 500);
     }
   });
 }

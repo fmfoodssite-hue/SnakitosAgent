@@ -40,6 +40,7 @@ import { ErrorState } from "@/components/common/ErrorState";
 import { LoadingState } from "@/components/common/LoadingState";
 import { MetricCard } from "@/components/common/MetricCard";
 import { PageHeader } from "@/components/common/PageHeader";
+import { PasswordInput } from "@/components/common/PasswordInput";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -240,7 +241,7 @@ export function LoginPage() {
             </Field>
 
             <Field label="Password">
-              <Input type="password" placeholder="Enter your password" {...form.register("password")} />
+              <PasswordInput placeholder="Enter your password" autoComplete="current-password" {...form.register("password")} />
               {form.formState.errors.password ? <p className="text-sm text-rose-600">{form.formState.errors.password.message}</p> : null}
             </Field>
 

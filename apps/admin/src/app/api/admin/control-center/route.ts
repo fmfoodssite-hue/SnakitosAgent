@@ -30,6 +30,15 @@ function toArray<T>(value: unknown): T[] {
   return Array.isArray(value) ? (value as T[]) : [];
 }
 
+function getJoinedRoleKey(value: unknown) {
+  if (Array.isArray(value)) {
+    return typeof value[0]?.key === "string" ? value[0].key : "viewer";
+  }
+
+  const record = toRecord(value);
+  return typeof record.key === "string" ? record.key : "viewer";
+}
+
 function formatDate(value?: string | null) {
   if (!value) return "Never";
   const date = new Date(value);
@@ -211,7 +220,7 @@ export async function GET() {
 
     const adminsById = new Map<string, { name: string; email: string; role: string; lastActive: string; status: string }>();
     const users: AdminUser[] = (adminRows as Array<Record<string, unknown>>).map((row) => {
-      const role = toArray<{ key?: string }>(row.admin_roles)[0]?.key ?? "viewer";
+      const role = getJoinedRoleKey(row.admin_roles);
       const user = {
         id: String(row.id),
         name: String(row.full_name ?? row.email ?? "Snakitos Admin"),
