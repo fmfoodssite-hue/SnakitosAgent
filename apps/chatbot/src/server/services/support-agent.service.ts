@@ -3842,7 +3842,9 @@ YouTube: ${youtube}`;
   }
 
   private runInBackground(task: Promise<unknown>): void {
-    void task.catch(() => undefined);
+    void task.catch((error) => {
+      console.error("Chatbot background persistence failed", error);
+    });
   }
 
   private buildChatAuditMetadata(input: {
