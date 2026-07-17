@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Bell, ChevronDown, Menu, MoonStar, Search, SunMedium } from "lucide-react";
+import { Bell, ChevronDown, Menu, MoonStar, SunMedium } from "lucide-react";
 import { useTheme } from "next-themes";
 import { toast } from "sonner";
 import { useAdminShell } from "@/hooks/use-admin-shell";
@@ -15,7 +15,6 @@ export function TopNavbar() {
   const router = useRouter();
   const { resolvedTheme, setTheme } = useTheme();
   const { currentUser, logout, setMobileSidebarOpen } = useAdminShell();
-  const [search, setSearch] = useState("");
   const [profileOpen, setProfileOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -29,8 +28,8 @@ export function TopNavbar() {
   if (pathname === "/login") return null;
 
   return (
-    <header className="sticky top-0 z-30 border-b border-[#E6DFC9] bg-white/95 backdrop-blur dark:border-[#E3BE2F]/25 dark:bg-[#373635]/90">
-      <div className="flex items-center gap-3 px-4 py-4 md:px-6">
+    <header className="sticky top-0 z-30 h-[104px] shrink-0 border-b border-[#E6DFC9] bg-white/95 backdrop-blur dark:border-[#E3BE2F]/25 dark:bg-[#373635]/90">
+      <div className="flex h-full items-center gap-3 px-4 md:px-6">
         <button
           type="button"
           onClick={() => setMobileSidebarOpen(true)}
@@ -39,21 +38,6 @@ export function TopNavbar() {
         >
           <Menu className="h-5 w-5" />
         </button>
-
-        <div className="relative hidden max-w-xl flex-1 md:block">
-          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#C4862D]" />
-          <input
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                toast.success(`Searched for "${search || "all items"}" across knowledge, conversations, and products.`);
-              }
-            }}
-            placeholder="Search knowledge, conversations, products..."
-            className="h-11 w-full rounded-2xl border border-[#D8D4C8] bg-white pl-11 pr-4 text-sm font-medium text-[#2D3138] outline-none transition placeholder:text-[#8A8A84] focus:border-[#C4862D] focus:bg-white focus:ring-4 focus:ring-[#E3BE2F]/20 dark:bg-[#2D3138] dark:text-[#FFF7DF]"
-          />
-        </div>
 
         <div className="ml-auto flex items-center gap-2">
           <div className="relative">

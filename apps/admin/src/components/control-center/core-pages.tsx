@@ -130,7 +130,6 @@ const loginSchema = z.object({
   remember: z.boolean(),
 });
 
-
 export function LoginPage() {
   const router = useRouter();
   const { setCurrentUser } = useAdminShell();
@@ -142,7 +141,6 @@ export function LoginPage() {
       remember: true,
     },
   });
-
 
   const onSubmit = form.handleSubmit(async (values) => {
     try {
@@ -237,7 +235,16 @@ export function LoginPage() {
       <div className="flex w-full items-center justify-center bg-white p-8 lg:w-2/3">
         <div className="w-full max-w-md space-y-10 py-24 lg:py-32">
           <div className="space-y-4 text-center">
-            <div className="font-medium tracking-tight text-[#2D3138]">Admin Login</div>
+            <div className="flex justify-center">
+              <Image
+                src="/Snakitos_Logo_black.png"
+                alt="Snakitos"
+                width={190}
+                height={64}
+                priority
+                className="h-auto w-44 object-contain"
+              />
+            </div>
             <div className="mx-auto max-w-xl text-[#6F6658]">
               Role-based access for owners, admins, support, and content teams
             </div>

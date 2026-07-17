@@ -25,6 +25,12 @@ const themeBootstrapScript = `
 try {
   var storageKey = "snakitos-admin-theme";
   var legacyKey = "theme";
+  var isLoginPath = window.location.pathname === "/login" || window.location.pathname.endsWith("/login");
+  if (isLoginPath) {
+    document.documentElement.classList.remove("dark");
+    document.documentElement.classList.add("light");
+    document.documentElement.style.colorScheme = "light";
+  } else {
   var savedTheme = localStorage.getItem(storageKey) || localStorage.getItem(legacyKey);
   if (savedTheme !== "dark" && savedTheme !== "light") {
     savedTheme = "light";
@@ -33,6 +39,7 @@ try {
   document.documentElement.classList.remove(savedTheme === "dark" ? "light" : "dark");
   document.documentElement.classList.add(savedTheme);
   document.documentElement.style.colorScheme = savedTheme;
+  }
 } catch (_) {
   document.documentElement.classList.add("light");
   document.documentElement.style.colorScheme = "light";

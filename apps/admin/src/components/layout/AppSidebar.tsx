@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { LogOut, PanelLeftClose, PanelLeftOpen, Sparkles } from "lucide-react";
+import { LogOut, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { withAdminApiPath, withAdminPath } from "@/lib/constants";
 import { navSections } from "@/lib/navigation";
 import { cn } from "@/lib/utils";
@@ -27,34 +28,43 @@ export function AppSidebar() {
       />
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-[290px] flex-col border-r border-[#E6DFC9] bg-white transition-transform duration-300 dark:border-[#E3BE2F]/25 dark:bg-[#373635] md:static md:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 flex h-dvh w-[290px] flex-col overflow-hidden border-r border-[#E6DFC9] bg-white transition-transform duration-300 dark:border-[#E3BE2F]/25 dark:bg-[#373635] md:static md:translate-x-0",
           sidebarCollapsed ? "md:w-[88px]" : "md:w-[290px]",
           mobileSidebarOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
-        <div className="flex items-center justify-between border-b border-[#EACD7D]/70 px-5 py-5 dark:border-[#E3BE2F]/25">
-          <div className={cn("flex items-center gap-3", sidebarCollapsed && "md:justify-center")}>
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#E3BE2F] to-[#C4862D] text-[#2D3138] shadow-sm shadow-[#C4862D]/25">
-              <Sparkles className="h-5 w-5" />
+        <div className="h-[104px] shrink-0 border-b border-[#EACD7D]/70 px-5 dark:border-[#E3BE2F]/25">
+          <div className="flex h-full items-center justify-between">
+            <div className={cn("flex min-w-0 items-center", sidebarCollapsed && "md:flex-1 md:justify-center")}>
+              <Image
+                src="/Snakitos_Logo_black.png"
+                alt="Snakitos"
+                width={174}
+                height={58}
+                priority
+                className={cn("h-auto object-contain dark:hidden", sidebarCollapsed ? "w-12 md:w-12" : "w-40")}
+              />
+              <Image
+                src="/Snakitos_Logo_white.webp"
+                alt="Snakitos"
+                width={174}
+                height={58}
+                priority
+                className={cn("hidden h-auto object-contain dark:block", sidebarCollapsed ? "w-12 md:w-12" : "w-40")}
+              />
             </div>
-            {!sidebarCollapsed ? (
-              <div>
-                <div className="text-base font-semibold text-[#2D3138] dark:text-[#FFF7DF]">Snakitos AI</div>
-                <div className="text-xs text-[#6F6658] dark:text-[#EACD7D]">RAG Control Center</div>
-              </div>
-            ) : null}
+            <button
+              type="button"
+              onClick={toggleSidebar}
+              className="hidden rounded-2xl border border-[#EACD7D] p-2 text-[#6F6658] transition hover:bg-[#F1C36D]/20 dark:text-[#EACD7D] md:inline-flex"
+              aria-label="Toggle sidebar"
+            >
+              {sidebarCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={toggleSidebar}
-            className="hidden rounded-2xl border border-[#EACD7D] p-2 text-[#6F6658] transition hover:bg-[#F1C36D]/20 dark:text-[#EACD7D] md:inline-flex"
-            aria-label="Toggle sidebar"
-          >
-            {sidebarCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
-          </button>
         </div>
 
-        <div className="flex-1 space-y-6 overflow-y-auto px-4 py-5">
+        <div className="min-h-0 flex-1 space-y-6 overflow-y-auto overscroll-contain px-4 py-5">
           {navSections.map((section) => (
             <div key={section.title}>
               {!sidebarCollapsed ? (
@@ -88,7 +98,7 @@ export function AppSidebar() {
           ))}
         </div>
 
-        <div className="border-t border-[#EACD7D]/70 p-4 dark:border-[#E3BE2F]/25">
+        <div className="shrink-0 border-t border-[#EACD7D]/70 bg-white p-4 dark:border-[#E3BE2F]/25 dark:bg-[#373635]">
           <Button
             variant="outline"
             className={cn("w-full justify-start", sidebarCollapsed && "md:justify-center")}
@@ -98,7 +108,7 @@ export function AppSidebar() {
               router.push(withAdminPath("/login"));
             }}
           >
-            <LogOut className="mr-2 h-4 w-4" />
+            <LogOut className={cn("h-4 w-4", !sidebarCollapsed && "mr-2")} />
             {!sidebarCollapsed ? "Logout" : null}
           </Button>
         </div>

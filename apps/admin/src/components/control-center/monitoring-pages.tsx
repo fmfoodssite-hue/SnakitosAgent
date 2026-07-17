@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { ColumnDef } from "@tanstack/react-table";
-import { Ban, Pencil, Plus, Trash2 } from "lucide-react";
+import { Ban, Copy, Pencil, Plus, Trash2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -103,6 +103,58 @@ const editUserSchema = z.object({
   role: z.enum(["Owner", "Admin", "Support Agent", "Content Manager", "Viewer"]),
   status: z.enum(["Active", "Disabled"]),
 });
+
+function formatConversationUserDisplayId(value: string) {
+  const normalized = value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+  if (!normalized) return "USR-UNKNOWN";
+  return `USR-${normalized.slice(-4).padStart(4, "0")}`;
+}
+
+function getStringValue(value: unknown): string | null {
+  return typeof value === "string" && value.trim() ? value.trim() : null;
+}
+
+function extractReadableAnswer(value: unknown): string | null {
+  const directValue = getStringValue(value);
+  if (directValue) return directValue;
+
+  if (!value || typeof value !== "object") return null;
+  const record = value as Record<string, unknown>;
+
+  const directKeys = ["message", "answer", "response", "text", "content", "output", "reply"];
+  for (const key of directKeys) {
+    const found = getStringValue(record[key]);
+    if (found) return found;
+  }
+
+  const dataAnswer = extractReadableAnswer(record.data);
+  if (dataAnswer) return dataAnswer;
+
+  const assistantMessage = extractReadableAnswer(record.message);
+  if (assistantMessage) return assistantMessage;
+
+  const choices = Array.isArray(record.choices) ? record.choices : null;
+  if (choices?.length) {
+    for (const choice of choices) {
+      const choiceAnswer = extractReadableAnswer(choice);
+      if (choiceAnswer) return choiceAnswer;
+    }
+  }
+
+  return null;
+}
+
+function formatBotAnswer(answer: string) {
+  const trimmed = answer.trim();
+  if (!trimmed) return "No bot answer captured.";
+
+  try {
+    const parsed = JSON.parse(trimmed) as unknown;
+    return extractReadableAnswer(parsed) ?? trimmed;
+  } catch {
+    return trimmed;
+  }
+}
 
 export function PlaygroundPage() {
   const { data, loading, error, reload } = useControlCenterData();
@@ -420,7 +472,17 @@ export function ConversationsPage() {
 
   const columns = useMemo<ColumnDef<Conversation>[]>(
     () => [
-      { header: "User ID", cell: ({ row }) => row.original.userId },
+      {
+        header: "User ID",
+        cell: ({ row }) => (
+          <span
+            className="inline-flex rounded-full bg-[#FFF8DF] px-3 py-1 font-mono text-xs font-semibold text-[#6F4E12]"
+            title={row.original.userId}
+          >
+            {formatConversationUserDisplayId(row.original.userId)}
+          </span>
+        ),
+      },
       { header: "Question", cell: ({ row }) => <div className="max-w-[240px] font-medium text-slate-900">{row.original.question}</div> },
       { header: "Answer Status", cell: ({ row }) => <StatusBadge value={row.original.status} /> },
       { header: "Language", cell: ({ row }) => row.original.language },
@@ -474,11 +536,36 @@ export function ConversationsPage() {
             }
           />
           <DataTable columns={columns} data={filtered} />
-          <DetailDrawer open={Boolean(selected)} title="Conversation detail" subtitle={selected?.userId} onClose={() => setSelected(null)}>
+          <DetailDrawer
+            open={Boolean(selected)}
+            title="Conversation detail"
+            subtitle={undefined}
+            onClose={() => setSelected(null)}
+          >
             {selected ? (
               <div className="space-y-4">
+                <div className="flex flex-col gap-3 rounded-3xl border border-[#E6DFC9] bg-white p-4 text-sm sm:flex-row sm:items-center sm:justify-between">
+                  <div className="min-w-0">
+                    <div className="text-xs font-semibold uppercase tracking-[0.18em] text-[#C4862D]">User ID</div>
+                    <div className="mt-2 break-all font-mono text-sm font-semibold text-slate-900">{selected.userId}</div>
+                  </div>
+                  <Button
+                    variant="outline"
+                    className="shrink-0"
+                    onClick={async () => {
+                      await navigator.clipboard.writeText(selected.userId);
+                      toast.success("User ID copied!");
+                    }}
+                  >
+                    <Copy className="mr-2 h-4 w-4" />
+                    Copy
+                  </Button>
+                </div>
                 <div className="rounded-3xl bg-slate-50 p-4 text-sm text-slate-700"><span className="font-semibold text-slate-900">Question:</span> {selected.question}</div>
-                <div className="rounded-3xl bg-slate-50 p-4 text-sm text-slate-700"><span className="font-semibold text-slate-900">Bot answer:</span> {selected.answer}</div>
+                <div className="rounded-3xl bg-slate-50 p-4 text-sm text-slate-700">
+                  <span className="font-semibold text-slate-900">Bot answer:</span>
+                  <div className="mt-2 whitespace-pre-line leading-6">{formatBotAnswer(selected.answer)}</div>
+                </div>
                 <div className="grid gap-3 md:grid-cols-2">
                   <div className="rounded-3xl border border-slate-200 p-4 text-sm">Confidence: <strong>{selected.confidence}%</strong></div>
                   <div className="rounded-3xl border border-slate-200 p-4 text-sm">Token usage: <strong>{selected.tokensUsed}</strong></div>
