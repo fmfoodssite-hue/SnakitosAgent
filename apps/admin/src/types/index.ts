@@ -28,6 +28,7 @@ export type AdminUser = {
   status: UserStatus;
   lastActive: string;
   avatar: string;
+  avatarUrl?: string | null;
 };
 
 export type Product = {

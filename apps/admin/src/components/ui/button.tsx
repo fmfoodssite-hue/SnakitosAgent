@@ -10,10 +10,10 @@ export function Button({ className, variant = "default", ...props }: ButtonProps
     <button
       className={cn(
         "inline-flex items-center justify-center rounded-2xl px-4 py-2.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60",
-        variant === "default" && "bg-indigo-600 text-white hover:bg-indigo-500",
-        variant === "secondary" && "bg-slate-100 text-slate-900 hover:bg-slate-200",
-        variant === "outline" && "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
-        variant === "ghost" && "text-slate-600 hover:bg-slate-100",
+        variant === "default" && "bg-[#E3BE2F] text-[#2D3138] shadow-sm shadow-[#C4862D]/20 hover:bg-[#EEB645]",
+        variant === "secondary" && "bg-[#373635] text-[#F1C36D] hover:bg-[#2D3138]",
+        variant === "outline" && "border border-[#D8D4C8] bg-white text-[#373635] hover:bg-[#FAF7EF] dark:bg-[#373635] dark:text-[#FFF7DF] dark:hover:bg-[#2D3138]",
+        variant === "ghost" && "text-[#373635] hover:bg-[#F1C36D]/25 dark:text-[#FFF7DF] dark:hover:bg-[#E3BE2F]/15",
         variant === "destructive" && "bg-rose-600 text-white hover:bg-rose-500",
         className,
       )}

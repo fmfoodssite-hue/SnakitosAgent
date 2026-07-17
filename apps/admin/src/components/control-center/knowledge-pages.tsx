@@ -226,7 +226,7 @@ export function KnowledgePage() {
                   <div className="text-sm font-semibold text-slate-900">Related conversations</div>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {selectedSource.relatedConversationIds.map((conversationId) => (
-                      <span key={conversationId} className="rounded-full bg-indigo-50 px-3 py-1 text-sm text-indigo-700">
+                      <span key={conversationId} className="rounded-full bg-[#E3BE2F]/18 px-3 py-1 text-sm text-[#8A5A18]">
                         {conversationId}
                       </span>
                     ))}
@@ -328,9 +328,9 @@ export function UploadDocumentsPage() {
           />
 
           <div className="grid gap-6 xl:grid-cols-[1fr_1fr]">
-            <div className="rounded-[32px] border border-dashed border-indigo-200 bg-white p-6 shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
+            <div className="rounded-[32px] border border-dashed border-[#EACD7D] bg-[#FFFDF7] p-6 shadow-[0_12px_40px_rgba(55,54,53,0.08)]">
               <label className="flex min-h-[240px] cursor-pointer flex-col items-center justify-center rounded-[28px] border border-dashed border-slate-300 bg-slate-50 px-6 text-center">
-                <UploadCloud className="h-10 w-10 text-indigo-500" />
+                <UploadCloud className="h-10 w-10 text-[#C4862D]" />
                 <div className="mt-4 text-lg font-semibold text-slate-900">Drag and drop upload area</div>
                 <div className="mt-2 text-sm text-slate-500">Accepts PDF, DOCX, TXT, CSV, and JSON files.</div>
                 <input type="file" multiple className="hidden" accept=".pdf,.docx,.txt,.csv,.json,.jsonl" onChange={onFileChange} />
@@ -417,7 +417,7 @@ export function UploadDocumentsPage() {
                     <span>{progress}%</span>
                   </div>
                   <div className="h-3 rounded-full bg-slate-100">
-                    <div className="h-3 rounded-full bg-gradient-to-r from-indigo-600 to-violet-500" style={{ width: `${progress}%` }} />
+                    <div className="h-3 rounded-full bg-gradient-to-r from-[#E3BE2F] to-[#C4862D]" style={{ width: `${progress}%` }} />
                   </div>
                 </div>
               ) : null}
@@ -551,7 +551,7 @@ export function WebsiteCrawlerPage() {
                   <span>{data.crawlerProgress.progress}%</span>
                 </div>
                 <div className="h-3 rounded-full bg-slate-100">
-                  <div className="h-3 rounded-full bg-gradient-to-r from-indigo-600 to-violet-500" style={{ width: `${data.crawlerProgress.progress}%` }} />
+                  <div className="h-3 rounded-full bg-gradient-to-r from-[#E3BE2F] to-[#C4862D]" style={{ width: `${data.crawlerProgress.progress}%` }} />
                 </div>
               </div>
             </ChartCard>

@@ -147,7 +147,7 @@ export function PlaygroundPage() {
                 <div className="max-h-[420px] space-y-4 overflow-y-auto pr-1">
                   {chat.map((message, index) => (
                     <div key={`${message.role}-${index}`} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
-                      <div className={`max-w-[80%] rounded-[24px] px-4 py-3 text-sm ${message.role === "user" ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-700"}`}>
+                      <div className={`max-w-[80%] rounded-[24px] px-4 py-3 text-sm ${message.role === "user" ? "bg-[#E3BE2F] text-[#2D3138]" : "bg-[#F7EFD8] text-[#373635]"}`}>
                         {message.content}
                       </div>
                     </div>

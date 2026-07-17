@@ -3,12 +3,12 @@ import { cn } from "@/lib/utils";
 type Tone = "default" | "success" | "warning" | "danger" | "info" | "neutral";
 
 const toneMap: Record<Tone, string> = {
-  default: "bg-indigo-50 text-indigo-700 ring-indigo-100",
+  default: "bg-[#E3BE2F]/18 text-[#8A5A18] ring-[#E3BE2F]/35 dark:text-[#F1C36D]",
   success: "bg-emerald-50 text-emerald-700 ring-emerald-100",
-  warning: "bg-amber-50 text-amber-700 ring-amber-100",
+  warning: "bg-[#F1C36D]/24 text-[#8A5A18] ring-[#E9C07C]/60 dark:text-[#F1C36D]",
   danger: "bg-rose-50 text-rose-700 ring-rose-100",
-  info: "bg-sky-50 text-sky-700 ring-sky-100",
-  neutral: "bg-slate-100 text-slate-700 ring-slate-200",
+  info: "bg-[#EACD7D]/25 text-[#C4862D] ring-[#EACD7D]/70 dark:text-[#F1C36D]",
+  neutral: "bg-[#373635]/8 text-[#373635] ring-[#373635]/12 dark:bg-[#FFF7DF]/10 dark:text-[#FFF7DF]",
 };
 
 function resolveTone(value: string): Tone {

@@ -25,8 +25,7 @@ export function StatCard({
           Live
         </Badge>
       </CardHeader>
-      {helper ? <CardContent><p className="text-sm text-zinc-500">{helper}</p></CardContent> : null}
+      {helper ? <CardContent><p className="text-sm text-[#5F5A51] dark:text-[#FFF7DF]/70">{helper}</p></CardContent> : null}
     </Card>
   );
 }
-

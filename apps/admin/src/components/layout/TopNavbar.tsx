@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Bell, ChevronDown, Menu, MoonStar, Search, SunMedium } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -13,29 +13,35 @@ import { Button } from "@/components/ui/button";
 export function TopNavbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const { currentUser, logout, setMobileSidebarOpen } = useAdminShell();
   const [search, setSearch] = useState("");
   const [profileOpen, setProfileOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const unreadCount = useMemo(() => 2, []);
+  const activeTheme = mounted ? resolvedTheme ?? "light" : "light";
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   if (pathname === "/login") return null;
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
+    <header className="sticky top-0 z-30 border-b border-[#E6DFC9] bg-white/95 backdrop-blur dark:border-[#E3BE2F]/25 dark:bg-[#373635]/90">
       <div className="flex items-center gap-3 px-4 py-4 md:px-6">
         <button
           type="button"
           onClick={() => setMobileSidebarOpen(true)}
-          className="inline-flex rounded-2xl border border-slate-200 p-2 text-slate-600 md:hidden"
+          className="inline-flex rounded-2xl border border-[#EACD7D] p-2 text-[#6F6658] md:hidden"
           aria-label="Open menu"
         >
           <Menu className="h-5 w-5" />
         </button>
 
         <div className="relative hidden max-w-xl flex-1 md:block">
-          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#C4862D]" />
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
@@ -45,7 +51,7 @@ export function TopNavbar() {
               }
             }}
             placeholder="Search knowledge, conversations, products..."
-            className="h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-11 pr-4 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-indigo-300 focus:bg-white"
+            className="h-11 w-full rounded-2xl border border-[#D8D4C8] bg-white pl-11 pr-4 text-sm font-medium text-[#2D3138] outline-none transition placeholder:text-[#8A8A84] focus:border-[#C4862D] focus:bg-white focus:ring-4 focus:ring-[#E3BE2F]/20 dark:bg-[#2D3138] dark:text-[#FFF7DF]"
           />
         </div>
 
@@ -60,8 +66,8 @@ export function TopNavbar() {
               ) : null}
             </Button>
             {notificationsOpen ? (
-              <div className="absolute right-0 mt-2 w-80 rounded-[24px] border border-slate-200 bg-white p-4 shadow-2xl">
-                <div className="mb-3 text-sm font-semibold text-slate-950">Notifications</div>
+              <div className="absolute right-0 mt-2 w-80 rounded-[24px] border border-[#E6DFC9] bg-white p-4 shadow-2xl dark:bg-[#373635]">
+                <div className="mb-3 text-sm font-semibold text-[#2D3138] dark:text-[#FFF7DF]">Notifications</div>
                 <div className="space-y-3">
                   <div className="rounded-2xl bg-rose-50 p-3 text-sm text-rose-800">Refund policy crawl failed and needs a retry.</div>
                   <div className="rounded-2xl bg-amber-50 p-3 text-sm text-amber-800">Offer PDF is pending embedding refresh.</div>
@@ -76,30 +82,36 @@ export function TopNavbar() {
           <Button
             variant="outline"
             onClick={() => {
-              setTheme(theme === "dark" ? "light" : "dark");
-              toast.success(`Switched to ${theme === "dark" ? "light" : "dark"} mode.`);
+              const nextTheme = activeTheme === "dark" ? "light" : "dark";
+              setTheme(nextTheme);
+              toast.success(`Switched to ${nextTheme} mode.`);
             }}
+            aria-label={`Switch to ${activeTheme === "dark" ? "light" : "dark"} mode`}
           >
-            {theme === "dark" ? <SunMedium className="h-4 w-4" /> : <MoonStar className="h-4 w-4" />}
+            {activeTheme === "dark" ? <SunMedium className="h-4 w-4" /> : <MoonStar className="h-4 w-4" />}
           </Button>
 
           <div className="relative">
             <button
               type="button"
               onClick={() => setProfileOpen((value) => !value)}
-              className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm"
+              className="flex items-center gap-3 rounded-2xl border border-[#E6DFC9] bg-white px-3 py-2 shadow-sm dark:bg-[#373635]"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-500 text-sm font-semibold text-white">
-                {currentUser?.avatar ?? "AI"}
+              <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-[#E3BE2F] to-[#C4862D] text-sm font-semibold text-[#2D3138]">
+                {currentUser?.avatarUrl ? (
+                  <img src={currentUser.avatarUrl} alt={`${currentUser.name} profile`} className="h-full w-full object-cover" />
+                ) : (
+                  currentUser?.avatar ?? "AI"
+                )}
               </div>
               <div className="hidden text-left md:block">
-                <div className="text-sm font-semibold text-slate-950">{currentUser?.name ?? "Snakitos Admin"}</div>
-                <div className="text-xs text-slate-500">{currentUser?.role ?? "Owner"}</div>
+                <div className="text-sm font-semibold text-[#2D3138] dark:text-[#FFF7DF]">{currentUser?.name ?? "Snakitos Admin"}</div>
+                <div className="text-xs text-[#6F6658] dark:text-[#EACD7D]">{currentUser?.role ?? "Owner"}</div>
               </div>
-              <ChevronDown className="h-4 w-4 text-slate-400" />
+              <ChevronDown className="h-4 w-4 text-[#C4862D]" />
             </button>
             {profileOpen ? (
-              <div className="absolute right-0 mt-2 w-56 rounded-[24px] border border-slate-200 bg-white p-2 shadow-2xl">
+              <div className="absolute right-0 mt-2 w-56 rounded-[24px] border border-[#E6DFC9] bg-white p-2 shadow-2xl dark:bg-[#373635]">
                 {[
                   {
                     label: "Profile",
@@ -130,7 +142,7 @@ export function TopNavbar() {
                     key={item.label}
                     type="button"
                     className={cn(
-                      "flex w-full rounded-2xl px-3 py-2 text-left text-sm text-slate-700 transition hover:bg-slate-50",
+                      "flex w-full rounded-2xl px-3 py-2 text-left text-sm text-[#373635] transition hover:bg-[#F1C36D]/20 dark:text-[#FFF7DF] dark:hover:bg-[#E3BE2F]/15",
                       item.label === "Logout" && "text-rose-600",
                     )}
                     onClick={item.action}

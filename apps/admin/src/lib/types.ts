@@ -35,6 +35,7 @@ export type AdminUser = {
   role: AdminRole;
   is_active: boolean;
   last_login_at?: string | null;
+  avatar_url?: string | null;
 };
 
 export type AdminSession = {

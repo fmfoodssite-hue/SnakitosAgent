@@ -204,7 +204,7 @@ export async function GET() {
         () =>
           supabase
             .from("admins")
-            .select("id, email, full_name, is_active, last_login_at, admin_roles!inner(key)"),
+            .select("id, email, full_name, is_active, last_login_at, avatar_url, admin_roles!inner(key)"),
         [],
       ),
       queryOr(() => supabase.from("knowledge_documents").select("*").order("updated_at", { ascending: false }), []),
@@ -229,6 +229,7 @@ export async function GET() {
         status: row.is_active === false ? "Disabled" : "Active",
         lastActive: formatDate((row.last_login_at as string | null | undefined) ?? (row.updated_at as string | null | undefined)),
         avatar: initials(String(row.full_name ?? row.email ?? "SA")),
+        avatarUrl: typeof row.avatar_url === "string" && row.avatar_url ? row.avatar_url : null,
       } satisfies AdminUser;
 
       adminsById.set(user.id, {
@@ -251,6 +252,7 @@ export async function GET() {
         status: "Active",
         lastActive: "Just now",
         avatar: initials(admin.full_name),
+        avatarUrl: admin.avatar_url ?? null,
       } satisfies AdminUser);
 
       const settingsMap = new Map<string, JsonRecord>(
@@ -761,7 +763,7 @@ export async function GET() {
         widgetAppearance: {
           chatbotName: String(widgetSettings.chatbotName ?? "Snakitos AI"),
           welcomeMessage: String(widgetSettings.welcomeMessage ?? "Assalam o Alaikum! Ask me about products, delivery, and support."),
-          primaryColor: String(widgetSettings.primaryColor ?? "#4F46E5"),
+          primaryColor: String(widgetSettings.primaryColor ?? "#E3BE2F"),
           position: widgetSettings.position === "bottom-left" ? "bottom-left" : "bottom-right",
           enableLogo: Boolean(widgetSettings.enableLogo ?? true),
         },

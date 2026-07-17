@@ -21,6 +21,24 @@ export const metadata: Metadata = {
   description: "Production-style control center for the Snakitos RAG chatbot, knowledge operations, and support workflows.",
 };
 
+const themeBootstrapScript = `
+try {
+  var storageKey = "snakitos-admin-theme";
+  var legacyKey = "theme";
+  var savedTheme = localStorage.getItem(storageKey) || localStorage.getItem(legacyKey);
+  if (savedTheme !== "dark" && savedTheme !== "light") {
+    savedTheme = "light";
+  }
+  localStorage.setItem(storageKey, savedTheme);
+  document.documentElement.classList.remove(savedTheme === "dark" ? "light" : "dark");
+  document.documentElement.classList.add(savedTheme);
+  document.documentElement.style.colorScheme = savedTheme;
+} catch (_) {
+  document.documentElement.classList.add("light");
+  document.documentElement.style.colorScheme = "light";
+}
+`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,6 +46,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
+      </head>
       <body className="antialiased">
         <AppProviders>
           <AdminShell>{children}</AdminShell>

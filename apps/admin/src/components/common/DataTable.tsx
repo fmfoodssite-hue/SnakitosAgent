@@ -37,7 +37,7 @@ export function DataTable<TData>({
   if (!data.length && emptyState) return <>{emptyState}</>;
 
   return (
-    <div className="rounded-[28px] border border-slate-200 bg-white shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
+    <div className="rounded-[28px] border border-[#E6DFC9] bg-white shadow-[0_12px_40px_rgba(45,49,56,0.06)] dark:border-[#E3BE2F]/25 dark:bg-[#373635]">
       <div className="overflow-x-auto">
         <table className="min-w-full border-separate border-spacing-0">
           <thead>
@@ -46,7 +46,7 @@ export function DataTable<TData>({
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="border-b border-slate-200 px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-slate-500"
+                    className="border-b border-[#EEE8D8] px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-[#6B6252] dark:border-[#E3BE2F]/25 dark:text-[#EACD7D]"
                   >
                     {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                   </th>
@@ -56,9 +56,9 @@ export function DataTable<TData>({
           </thead>
           <tbody>
             {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="transition hover:bg-slate-50">
+              <tr key={row.id} className="transition hover:bg-[#FAF7EF] dark:hover:bg-[#E3BE2F]/10">
                 {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id} className="border-b border-slate-100 px-4 py-4 align-top text-sm text-slate-700">
+                  <td key={cell.id} className="border-b border-[#F2EDE0] px-4 py-4 align-top text-sm font-medium text-[#2D3138] dark:border-[#E3BE2F]/15 dark:text-[#FFF7DF]/85">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}
@@ -68,7 +68,7 @@ export function DataTable<TData>({
         </table>
       </div>
       <div className="flex items-center justify-between gap-3 px-4 py-3">
-        <p className="text-sm text-slate-500">
+        <p className="text-sm font-medium text-[#5F5F5D] dark:text-[#EACD7D]">
           Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount() || 1}
         </p>
         <div className="flex items-center gap-2">

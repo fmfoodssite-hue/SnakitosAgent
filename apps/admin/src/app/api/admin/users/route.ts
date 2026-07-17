@@ -11,7 +11,7 @@ export async function GET() {
       const supabase = assertServiceClient();
       const { data, error } = await supabase
         .from("admins")
-        .select("id, email, full_name, is_active, last_login_at, created_at, admin_roles(key, label)")
+        .select("id, email, full_name, is_active, last_login_at, created_at, avatar_url, admin_roles(key, label)")
         .order("created_at", { ascending: false });
 
       if (error) throw error;

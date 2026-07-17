@@ -6,7 +6,13 @@ import { Toaster } from "sonner";
 
 export function AppProviders({ children }: { children: ReactNode }) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="light"
+      enableSystem={false}
+      storageKey="snakitos-admin-theme"
+      disableTransitionOnChange
+    >
       {children}
       <Toaster
         richColors

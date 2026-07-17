@@ -52,7 +52,7 @@ export default async function Page() {
   const supabase = assertServiceClient();
   const { data } = await supabase
     .from("admins")
-    .select("id, email, full_name, is_active, last_login_at, created_at, password_changed_at, admin_roles!inner(key)")
+    .select("id, email, full_name, is_active, last_login_at, created_at, password_changed_at, avatar_url, avatar_path, admin_roles!inner(key)")
     .eq("id", session.id)
     .single();
 
@@ -73,6 +73,7 @@ export default async function Page() {
         role: roleLabel(role),
         status: data.is_active ? "Active" : "Disabled",
         avatar: initials(name),
+        avatarUrl: data.avatar_url,
         lastLogin: formatDate(data.last_login_at),
         createdAt: formatDate(data.created_at),
         passwordChangedAt: formatDate(data.password_changed_at),

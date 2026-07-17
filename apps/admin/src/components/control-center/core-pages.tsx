@@ -48,6 +48,14 @@ import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import type { SettingsState } from "@/types";
 
+const CHART_PRIMARY = "#E3BE2F";
+const CHART_SECONDARY = "#C4862D";
+const CHART_ACCENT = "#EEB645";
+const CHART_WARM = "#EFB249";
+const CHART_GRID = "#EACD7D";
+const CHART_AXIS = "#8A6B2E";
+const CHART_PALETTE = ["#E3BE2F", "#C4862D", "#EEB645", "#EFB249", "#EAB861", "#F1C36D", "#E9C07C"];
+
 function PageState({
   loading,
   error,
@@ -76,8 +84,8 @@ function Field({
   return (
     <label className="block space-y-2">
       <div>
-        <div className="text-sm font-medium text-slate-800">{label}</div>
-        {hint ? <div className="text-xs text-slate-500">{hint}</div> : null}
+        <div className="text-sm font-semibold text-[#373635] dark:text-[#FFF7DF]">{label}</div>
+        {hint ? <div className="text-xs text-[#6B6B68] dark:text-[#EACD7D]">{hint}</div> : null}
       </div>
       {children}
     </label>
@@ -106,7 +114,7 @@ function ToggleField({
         role="switch"
         aria-checked={checked}
         onClick={() => onChange(!checked)}
-        className={`relative mt-1 inline-flex h-7 w-12 rounded-full transition ${checked ? "bg-indigo-600" : "bg-slate-300"}`}
+        className={`relative mt-1 inline-flex h-7 w-12 rounded-full transition ${checked ? "bg-[#E3BE2F]" : "bg-[#EACD7D]"}`}
       >
         <span
           className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow transition ${checked ? "left-6" : "left-1"}`}
@@ -157,6 +165,7 @@ export function LoginPage() {
           full_name: string;
           role: "owner" | "admin" | "support_agent" | "content_manager" | "viewer";
           last_login_at?: string | null;
+          avatar_url?: string | null;
         };
       };
 
@@ -187,6 +196,7 @@ export function LoginPage() {
         status: "Active" as const,
         lastActive: payload.admin.last_login_at ?? "Just now",
         avatar: initials || "SA",
+        avatarUrl: payload.admin.avatar_url,
       };
 
       setCurrentUser(user);
@@ -199,9 +209,9 @@ export function LoginPage() {
 
   return (
     <div className="flex h-dvh bg-white">
-      <div className="hidden bg-indigo-600 lg:block lg:w-1/3">
+      <div className="hidden bg-[#2D3138] lg:block lg:w-1/3">
         <div className="flex h-full flex-col items-center justify-center p-12 text-center">
-          <div className="space-y-6">
+          <div className="space-y-6 rounded-[36px] border border-[#E3BE2F]/20 bg-[radial-gradient(circle_at_top,rgba(227,190,47,0.18),transparent_58%)] p-10">
             <div className="mx-auto flex items-center justify-center">
               <Image
                 src="/Snakitos_Logo_white.webp"
@@ -209,7 +219,7 @@ export function LoginPage() {
                 width={112}
                 height={38}
                 priority
-                className="h-auto w-28 object-contain"
+                className="h-auto w-28 object-contain drop-shadow-[0_10px_30px_rgba(227,190,47,0.22)]"
               />
             </div>
             <div className="space-y-2">
@@ -224,11 +234,11 @@ export function LoginPage() {
         </div>
       </div>
 
-      <div className="flex w-full items-center justify-center bg-slate-50 p-8 lg:w-2/3">
+      <div className="flex w-full items-center justify-center bg-white p-8 lg:w-2/3">
         <div className="w-full max-w-md space-y-10 py-24 lg:py-32">
           <div className="space-y-4 text-center">
-            <div className="font-medium tracking-tight text-slate-950">Admin Login</div>
-            <div className="mx-auto max-w-xl text-slate-500">
+            <div className="font-medium tracking-tight text-[#2D3138]">Admin Login</div>
+            <div className="mx-auto max-w-xl text-[#6F6658]">
               Role-based access for owners, admins, support, and content teams
             </div>
           </div>
@@ -246,11 +256,11 @@ export function LoginPage() {
             </Field>
 
             <div className="flex items-center justify-between">
-              <label className="flex items-center gap-2 text-sm text-slate-600">
-                <input type="checkbox" className="h-4 w-4 rounded border-slate-300" {...form.register("remember")} />
+              <label className="flex items-center gap-2 text-sm font-medium text-[#4B4B49]">
+                <input type="checkbox" className="h-4 w-4 rounded border-[#D8D4C8] accent-[#C4862D]" {...form.register("remember")} />
                 Remember me
               </label>
-              <button type="button" className="text-sm font-medium text-indigo-600 transition hover:text-indigo-500" onClick={() => toast.info("Password reset flow can be connected to your auth provider later.")}>
+              <button type="button" className="text-sm font-medium text-[#C4862D] transition hover:text-[#8A5A18]" onClick={() => toast.info("Password reset flow can be connected to your auth provider later.")}>
                 Forgot password?
               </button>
             </div>
@@ -260,8 +270,8 @@ export function LoginPage() {
             </Button>
             </form>
 
-            <div className="rounded-3xl border border-slate-200 bg-white p-4 text-sm text-slate-600">
-              <div className="font-medium text-slate-900">Production access</div>
+            <div className="rounded-3xl border border-[#E6DFC9] bg-white p-4 text-sm text-[#4B4B49] shadow-sm">
+              <div className="font-medium text-[#2D3138]">Production access</div>
               <div className="mt-1">
                 Sign in with a real admin account provisioned in the Snakitos admin database. Demo credentials are no longer used by this screen.
               </div>
@@ -306,15 +316,15 @@ export function DashboardPage() {
                   <AreaChart data={data.queriesLast7Days}>
                     <defs>
                       <linearGradient id="queryFill" x1="0" x2="0" y1="0" y2="1">
-                        <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.35} />
-                        <stop offset="95%" stopColor="#4f46e5" stopOpacity={0} />
+                        <stop offset="5%" stopColor={CHART_PRIMARY} stopOpacity={0.38} />
+                        <stop offset="95%" stopColor={CHART_PRIMARY} stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <XAxis dataKey="label" stroke="#94a3b8" />
-                    <YAxis stroke="#94a3b8" />
+                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} />
+                    <XAxis dataKey="label" stroke={CHART_AXIS} />
+                    <YAxis stroke={CHART_AXIS} />
                     <Tooltip />
-                    <Area type="monotone" dataKey="value" stroke="#4f46e5" fill="url(#queryFill)" strokeWidth={3} />
+                    <Area type="monotone" dataKey="value" stroke={CHART_PRIMARY} fill="url(#queryFill)" strokeWidth={3} />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -340,11 +350,11 @@ export function DashboardPage() {
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={data.topProductQuestions}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <XAxis dataKey="label" stroke="#94a3b8" />
-                    <YAxis stroke="#94a3b8" />
+                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} />
+                    <XAxis dataKey="label" stroke={CHART_AXIS} />
+                    <YAxis stroke={CHART_AXIS} />
                     <Tooltip />
-                    <Bar dataKey="value" radius={[12, 12, 0, 0]} fill="#4f46e5" />
+                    <Bar dataKey="value" radius={[12, 12, 0, 0]} fill={CHART_PRIMARY} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -356,7 +366,7 @@ export function DashboardPage() {
                   <PieChart>
                     <Pie data={data.languageDistribution} dataKey="value" nameKey="label" innerRadius={60} outerRadius={100}>
                       {data.languageDistribution.map((entry, index) => (
-                        <Cell key={entry.label} fill={["#4f46e5", "#7c3aed", "#38bdf8"][index % 3]} />
+                        <Cell key={entry.label} fill={CHART_PALETTE[index % CHART_PALETTE.length]} />
                       ))}
                     </Pie>
                     <Tooltip />
@@ -375,7 +385,7 @@ export function DashboardPage() {
                       <span className="text-slate-500">{point.value}%</span>
                     </div>
                     <div className="h-3 rounded-full bg-slate-100">
-                      <div className="h-3 rounded-full bg-gradient-to-r from-indigo-600 to-violet-500" style={{ width: `${point.value}%` }} />
+                      <div className="h-3 rounded-full bg-gradient-to-r from-[#E3BE2F] to-[#C4862D]" style={{ width: `${point.value}%` }} />
                     </div>
                   </div>
                 ))}
@@ -481,11 +491,11 @@ export function AnalyticsPage() {
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={data.queryVolume}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <XAxis dataKey="label" stroke="#94a3b8" />
-                    <YAxis stroke="#94a3b8" />
+                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} />
+                    <XAxis dataKey="label" stroke={CHART_AXIS} />
+                    <YAxis stroke={CHART_AXIS} />
                     <Tooltip />
-                    <Line type="monotone" dataKey="value" stroke="#4f46e5" strokeWidth={3} dot={{ fill: "#4f46e5" }} />
+                    <Line type="monotone" dataKey="value" stroke={CHART_PRIMARY} strokeWidth={3} dot={{ fill: CHART_PRIMARY }} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -509,9 +519,9 @@ export function AnalyticsPage() {
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={data.failedAnswerTrend}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <XAxis dataKey="label" stroke="#94a3b8" />
-                    <YAxis stroke="#94a3b8" />
+                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} />
+                    <XAxis dataKey="label" stroke={CHART_AXIS} />
+                    <YAxis stroke={CHART_AXIS} />
                     <Tooltip />
                     <Bar dataKey="value" radius={[12, 12, 0, 0]} fill="#ef4444" />
                   </BarChart>
@@ -525,7 +535,7 @@ export function AnalyticsPage() {
                   <PieChart>
                     <Pie data={data.languageDistribution} dataKey="value" nameKey="label" outerRadius={100}>
                       {data.languageDistribution.map((entry, index) => (
-                        <Cell key={entry.label} fill={["#4f46e5", "#7c3aed", "#38bdf8"][index % 3]} />
+                        <Cell key={entry.label} fill={CHART_PALETTE[index % CHART_PALETTE.length]} />
                       ))}
                     </Pie>
                     <Tooltip />
@@ -539,11 +549,11 @@ export function AnalyticsPage() {
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={data.satisfactionTrend}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <XAxis dataKey="label" stroke="#94a3b8" />
-                    <YAxis stroke="#94a3b8" />
+                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} />
+                    <XAxis dataKey="label" stroke={CHART_AXIS} />
+                    <YAxis stroke={CHART_AXIS} />
                     <Tooltip />
-                    <Area type="monotone" dataKey="value" stroke="#16a34a" fill="#dcfce7" strokeWidth={3} />
+                    <Area type="monotone" dataKey="value" stroke={CHART_ACCENT} fill="#F7EFD8" strokeWidth={3} />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -553,11 +563,11 @@ export function AnalyticsPage() {
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={data.tokenCostTrend}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <XAxis dataKey="label" stroke="#94a3b8" />
-                    <YAxis stroke="#94a3b8" />
+                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} />
+                    <XAxis dataKey="label" stroke={CHART_AXIS} />
+                    <YAxis stroke={CHART_AXIS} />
                     <Tooltip />
-                    <Line type="monotone" dataKey="value" stroke="#7c3aed" strokeWidth={3} dot={{ fill: "#7c3aed" }} />
+                    <Line type="monotone" dataKey="value" stroke={CHART_SECONDARY} strokeWidth={3} dot={{ fill: CHART_SECONDARY }} />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -569,11 +579,11 @@ export function AnalyticsPage() {
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={data.topProductQuestions}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <XAxis dataKey="label" stroke="#94a3b8" />
-                    <YAxis stroke="#94a3b8" />
+                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} />
+                    <XAxis dataKey="label" stroke={CHART_AXIS} />
+                    <YAxis stroke={CHART_AXIS} />
                     <Tooltip />
-                    <Bar dataKey="value" radius={[12, 12, 0, 0]} fill="#0ea5e9" />
+                    <Bar dataKey="value" radius={[12, 12, 0, 0]} fill={CHART_WARM} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -587,7 +597,7 @@ export function AnalyticsPage() {
                       {data.intentDistribution.map((entry, index) => (
                         <Cell
                           key={entry.label}
-                          fill={["#4f46e5", "#7c3aed", "#0ea5e9", "#ef4444", "#f59e0b", "#16a34a", "#94a3b8"][index % 7]}
+                          fill={CHART_PALETTE[index % CHART_PALETTE.length]}
                         />
                       ))}
                     </Pie>
@@ -651,11 +661,11 @@ export function TokenUsagePage() {
               <div className="h-72">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={data.tokenCostTrend}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <XAxis dataKey="label" stroke="#94a3b8" />
-                    <YAxis stroke="#94a3b8" />
+                    <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} />
+                    <XAxis dataKey="label" stroke={CHART_AXIS} />
+                    <YAxis stroke={CHART_AXIS} />
                     <Tooltip />
-                    <Bar dataKey="value" radius={[12, 12, 0, 0]} fill="#4f46e5" />
+                    <Bar dataKey="value" radius={[12, 12, 0, 0]} fill={CHART_PRIMARY} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -673,7 +683,7 @@ export function TokenUsagePage() {
                         <span className="text-slate-500">{formatCurrency(total, "USD")}</span>
                       </div>
                       <div className="h-3 rounded-full bg-slate-100">
-                        <div className="h-3 rounded-full bg-gradient-to-r from-indigo-600 to-violet-500" style={{ width: `${width}%` }} />
+                        <div className="h-3 rounded-full bg-gradient-to-r from-[#E3BE2F] to-[#C4862D]" style={{ width: `${width}%` }} />
                       </div>
                     </div>
                   );

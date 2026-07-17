@@ -29,6 +29,7 @@ type AdminRow = {
   password_hash: string;
   is_active: boolean;
   last_login_at?: string | null;
+  avatar_url?: string | null;
   admin_roles?: { key: AdminRole } | Array<{ key: AdminRole }> | null;
 };
 
@@ -43,6 +44,7 @@ type RefreshTokenRow = {
     email: string;
     full_name: string;
     is_active: boolean;
+    avatar_url?: string | null;
     admin_roles?: { key: AdminRole } | Array<{ key: AdminRole }> | null;
   } | null;
 };
@@ -96,7 +98,7 @@ export async function authenticateAdmin(email: string, password: string) {
   const supabase = assertServiceClient();
   const { data, error } = await supabase
     .from("admins")
-    .select("id, email, full_name, password_hash, is_active, last_login_at, admin_roles!inner(key)")
+    .select("id, email, full_name, password_hash, is_active, last_login_at, avatar_url, admin_roles!inner(key)")
     .eq("email", email.toLowerCase())
     .maybeSingle();
 
@@ -119,6 +121,7 @@ export async function authenticateAdmin(email: string, password: string) {
     role,
     is_active: admin.is_active,
     last_login_at: admin.last_login_at,
+    avatar_url: admin.avatar_url,
   } satisfies AdminUser;
 }
 
@@ -232,7 +235,7 @@ export async function requireAdminSession(allowedRoles: AdminRole[] = [...ADMIN_
   const supabase = assertServiceClient();
   const { data } = await supabase
     .from("admins")
-    .select("id, email, full_name, is_active, admin_roles!inner(key)")
+    .select("id, email, full_name, is_active, avatar_url, admin_roles!inner(key)")
     .eq("id", session.adminId)
     .maybeSingle();
 
@@ -245,6 +248,7 @@ export async function requireAdminSession(allowedRoles: AdminRole[] = [...ADMIN_
     email: string;
     full_name: string;
     is_active: boolean;
+    avatar_url?: string | null;
     admin_roles?: { key: AdminRole } | Array<{ key: AdminRole }> | null;
   };
 
@@ -258,6 +262,7 @@ export async function requireAdminSession(allowedRoles: AdminRole[] = [...ADMIN_
     full_name: admin.full_name,
     role: getRoleKey(admin.admin_roles),
     is_active: admin.is_active,
+    avatar_url: admin.avatar_url,
   } satisfies AdminUser;
 }
 
@@ -271,7 +276,7 @@ export async function refreshAdminSession() {
   const supabase = assertServiceClient();
   const { data, error } = await supabase
     .from("admin_refresh_tokens")
-    .select("id, admin_id, session_id, expires_at, revoked_at, admins!inner(id, email, full_name, is_active, admin_roles!inner(key))")
+    .select("id, admin_id, session_id, expires_at, revoked_at, admins!inner(id, email, full_name, is_active, avatar_url, admin_roles!inner(key))")
     .eq("token_hash", hashToken(refreshToken))
     .maybeSingle();
 

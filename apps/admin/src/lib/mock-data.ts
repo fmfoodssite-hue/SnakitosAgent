@@ -702,7 +702,7 @@ export function createMockSnapshot(): ControlCenterSnapshot {
       widgetAppearance: {
         chatbotName: "Snakitos AI",
         welcomeMessage: "Assalam o Alaikum! Ask me about snacks, offers, policies, or delivery.",
-        primaryColor: "#4F46E5",
+        primaryColor: "#E3BE2F",
         position: "bottom-right",
         enableLogo: true,
       },
