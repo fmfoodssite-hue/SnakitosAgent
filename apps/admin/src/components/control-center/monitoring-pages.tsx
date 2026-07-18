@@ -35,13 +35,14 @@ import { ErrorState } from "@/components/common/ErrorState";
 import { FormModal } from "@/components/common/FormModal";
 import { LoadingState } from "@/components/common/LoadingState";
 import { PageHeader } from "@/components/common/PageHeader";
+import { PasswordInput } from "@/components/common/PasswordInput";
 import { SearchAndFilterBar } from "@/components/common/SearchAndFilterBar";
 import { StatusBadge } from "@/components/common/StatusBadge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import type { AdminUser, AuditLog, ChatPlaygroundResponse, Conversation, FailedAnswer, PromptVersion, Ticket } from "@/types";
+import type { AdminUser, AuditLog, ChatPlaygroundResponse, Conversation, FailedAnswer, ModulePermission, PromptVersion, Ticket, UserRole } from "@/types";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -95,6 +96,7 @@ const createUserSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters."),
   role: z.enum(["Owner", "Admin", "Support Agent", "Content Manager", "Viewer"]),
   status: z.enum(["Active", "Disabled"]),
+  permissions: z.array(z.string()),
 });
 
 const editUserSchema = z.object({
@@ -102,7 +104,16 @@ const editUserSchema = z.object({
   email: z.string().email(),
   role: z.enum(["Owner", "Admin", "Support Agent", "Content Manager", "Viewer"]),
   status: z.enum(["Active", "Disabled"]),
+  permissions: z.array(z.string()),
 });
+
+const ROLE_LABEL_TO_KEY: Record<UserRole, string> = {
+  Owner: "owner",
+  Admin: "admin",
+  "Support Agent": "support_agent",
+  "Content Manager": "content_manager",
+  Viewer: "viewer",
+};
 
 function formatConversationUserDisplayId(value: string) {
   const normalized = value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
@@ -154,6 +165,64 @@ function formatBotAnswer(answer: string) {
   } catch {
     return trimmed;
   }
+}
+
+function PermissionChecklist({
+  permissions,
+  selectedPermissions,
+  onChange,
+}: {
+  permissions: ModulePermission[];
+  selectedPermissions: string[];
+  onChange: (permissions: string[]) => void;
+}) {
+  const selectedSet = new Set(selectedPermissions);
+  const grouped = permissions.reduce<Record<string, ModulePermission[]>>((groups, permission) => {
+    groups[permission.category] = [...(groups[permission.category] ?? []), permission];
+    return groups;
+  }, {});
+
+  function togglePermission(permissionKey: string, checked: boolean) {
+    const next = new Set(selectedPermissions);
+    if (checked) {
+      next.add(permissionKey);
+    } else {
+      next.delete(permissionKey);
+    }
+    onChange([...next]);
+  }
+
+  return (
+    <section className="space-y-4 rounded-[28px] border border-[#E6DFC9] bg-white p-4">
+      <div>
+        <div className="text-sm font-semibold text-slate-950">Permissions</div>
+        <p className="mt-1 text-xs text-slate-500">Choose which dashboard modules this user can see and access.</p>
+      </div>
+      <div className="grid gap-4 lg:grid-cols-2">
+        {Object.entries(grouped).map(([category, categoryPermissions]) => (
+          <div key={category} className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
+            <div className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#C4862D]">{category}</div>
+            <div className="space-y-3">
+              {categoryPermissions.map((permission) => (
+                <label key={permission.key} className="flex cursor-pointer items-start gap-3 rounded-2xl bg-white p-3 transition hover:bg-[#FFF8DF]">
+                  <input
+                    type="checkbox"
+                    checked={selectedSet.has(permission.key)}
+                    onChange={(event) => togglePermission(permission.key, event.target.checked)}
+                    className="mt-1 h-4 w-4 rounded border-[#D8D4C8] accent-[#C4862D]"
+                  />
+                  <span>
+                    <span className="block text-sm font-semibold text-slate-900">{permission.label}</span>
+                    <span className="mt-1 block text-xs leading-5 text-slate-500">{permission.description}</span>
+                  </span>
+                </label>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
 }
 
 export function PlaygroundPage() {
@@ -778,12 +847,33 @@ export function UsersPage() {
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
   const createForm = useForm<z.infer<typeof createUserSchema>>({
     resolver: zodResolver(createUserSchema),
-    defaultValues: { name: "", email: "", password: "", role: "Support Agent", status: "Active" },
+    defaultValues: { name: "", email: "", password: "", role: "Support Agent", status: "Active", permissions: [] },
   });
   const editForm = useForm<z.infer<typeof editUserSchema>>({
     resolver: zodResolver(editUserSchema),
-    defaultValues: { name: "", email: "", role: "Support Agent", status: "Active" },
+    defaultValues: { name: "", email: "", role: "Support Agent", status: "Active", permissions: [] },
   });
+  const createRole = createForm.watch("role");
+  const editRole = editForm.watch("role");
+  const createPermissions = createForm.watch("permissions") ?? [];
+  const editPermissions = editForm.watch("permissions") ?? [];
+
+  function roleDefaultPermissions(role: UserRole) {
+    return data?.rolePermissionDefaults[ROLE_LABEL_TO_KEY[role]] ?? [];
+  }
+
+  function openCreateUser() {
+    const role: UserRole = "Support Agent";
+    createForm.reset({
+      name: "",
+      email: "",
+      password: "",
+      role,
+      status: "Active",
+      permissions: roleDefaultPermissions(role),
+    });
+    setOpenCreate(true);
+  }
 
   function openEditUser(user: AdminUser) {
     setEditingUser(user);
@@ -792,6 +882,7 @@ export function UsersPage() {
       email: user.email,
       role: user.role,
       status: user.status === "Disabled" ? "Disabled" : "Active",
+      permissions: user.permissions.length > 0 ? user.permissions : roleDefaultPermissions(user.role),
     });
   }
 
@@ -859,7 +950,7 @@ export function UsersPage() {
             title="Users & roles"
             description="Create teammates, assign permissions, and manage Snakitos RAG admin access across support and content workflows."
             actions={
-              <Button onClick={() => setOpenCreate(true)}>
+              <Button onClick={openCreateUser}>
                 <Plus className="mr-2 h-4 w-4" />
                 Create user
               </Button>
@@ -879,9 +970,16 @@ export function UsersPage() {
             >
               <Field label="Full name"><Input {...createForm.register("name")} /></Field>
               <Field label="Email"><Input type="email" {...createForm.register("email")} /></Field>
-              <Field label="Password"><Input type="password" minLength={8} {...createForm.register("password")} /></Field>
+              <Field label="Password"><PasswordInput minLength={8} {...createForm.register("password")} /></Field>
               <Field label="Role">
-                <Select {...createForm.register("role")}>
+                <Select
+                  value={createRole}
+                  onChange={(event) => {
+                    const role = event.target.value as UserRole;
+                    createForm.setValue("role", role);
+                    createForm.setValue("permissions", roleDefaultPermissions(role));
+                  }}
+                >
                   <option>Owner</option>
                   <option>Admin</option>
                   <option>Support Agent</option>
@@ -895,6 +993,11 @@ export function UsersPage() {
                   <option>Disabled</option>
                 </Select>
               </Field>
+              <PermissionChecklist
+                permissions={data.availablePermissions}
+                selectedPermissions={createPermissions}
+                onChange={(permissions) => createForm.setValue("permissions", permissions, { shouldDirty: true })}
+              />
               <div className="flex justify-end gap-3">
                 <Button variant="outline" type="button" onClick={() => setOpenCreate(false)}>Cancel</Button>
                 <Button type="submit" disabled={createForm.formState.isSubmitting}>
@@ -917,7 +1020,14 @@ export function UsersPage() {
               <Field label="Full name"><Input {...editForm.register("name")} /></Field>
               <Field label="Email"><Input type="email" {...editForm.register("email")} /></Field>
               <Field label="Role">
-                <Select {...editForm.register("role")}>
+                <Select
+                  value={editRole}
+                  onChange={(event) => {
+                    const role = event.target.value as UserRole;
+                    editForm.setValue("role", role);
+                    editForm.setValue("permissions", roleDefaultPermissions(role));
+                  }}
+                >
                   <option>Owner</option>
                   <option>Admin</option>
                   <option>Support Agent</option>
@@ -931,6 +1041,11 @@ export function UsersPage() {
                   <option>Disabled</option>
                 </Select>
               </Field>
+              <PermissionChecklist
+                permissions={data.availablePermissions}
+                selectedPermissions={editPermissions}
+                onChange={(permissions) => editForm.setValue("permissions", permissions, { shouldDirty: true })}
+              />
               <div className="flex justify-end gap-3">
                 <Button variant="outline" type="button" onClick={() => setEditingUser(null)}>Cancel</Button>
                 <Button type="submit" disabled={editForm.formState.isSubmitting}>

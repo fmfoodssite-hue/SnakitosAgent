@@ -1,6 +1,7 @@
 import { withAdminAccess, safeAudit } from "@/lib/server";
 import { assertServiceClient } from "@/lib/db";
 import { errorResponse, successResponse } from "@/lib/response";
+import { loadRolePermissionDefaults, replaceAdminPermissions } from "@/lib/admin-permissions";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +18,7 @@ export async function PATCH(
         email?: string;
         role?: string;
         status?: string;
+        permissions?: string[];
       };
 
       const supabase = assertServiceClient();
@@ -78,15 +80,24 @@ export async function PATCH(
           .single();
         if (error) throw error;
 
+        const roleDefaults = await loadRolePermissionDefaults(supabase);
+        const savedPermissions = await replaceAdminPermissions(supabase, id, roleDefaults[roleKey] ?? []);
+
+        await supabase
+          .from("admin_refresh_tokens")
+          .update({ revoked_at: new Date().toISOString() })
+          .eq("admin_id", id)
+          .is("revoked_at", null);
+
         await safeAudit({
           adminId: admin.id,
           action: "user.role_change",
           entityType: "admin",
           entityId: id,
-          details: { role: roleKey },
+          details: { role: roleKey, permissions: savedPermissions },
           ipAddress,
         });
-        return successResponse(data);
+        return successResponse({ ...data, permissions: savedPermissions });
       }
 
       if (body.action === "update") {
@@ -128,6 +139,13 @@ export async function PATCH(
           .single();
         if (error) throw error;
 
+        const roleDefaults = await loadRolePermissionDefaults(supabase);
+        const savedPermissions = await replaceAdminPermissions(
+          supabase,
+          id,
+          Array.isArray(body.permissions) ? body.permissions : roleDefaults[roleKey] ?? [],
+        );
+
         if (body.status === "Disabled") {
           await supabase
             .from("admin_refresh_tokens")
@@ -136,15 +154,21 @@ export async function PATCH(
             .is("revoked_at", null);
         }
 
+        await supabase
+          .from("admin_refresh_tokens")
+          .update({ revoked_at: new Date().toISOString() })
+          .eq("admin_id", id)
+          .is("revoked_at", null);
+
         await safeAudit({
           adminId: admin.id,
           action: "user.update",
           entityType: "admin",
           entityId: id,
-          details: { email: body.email.toLowerCase().trim(), role: roleKey, status: body.status },
+          details: { email: body.email.toLowerCase().trim(), role: roleKey, status: body.status, permissions: savedPermissions },
           ipAddress,
         });
-        return successResponse(data);
+        return successResponse({ ...data, permissions: savedPermissions });
       }
 
       return errorResponse("VALIDATION_FAILED", "Unsupported user action.", 400);
@@ -152,7 +176,7 @@ export async function PATCH(
       console.error("User update failed", error);
       return errorResponse("USER_UPDATE_FAILED", "Unable to update user.", 500);
     }
-  });
+  }, ["users.manage"]);
 }
 
 export async function DELETE(
@@ -183,5 +207,5 @@ export async function DELETE(
       console.error("User delete failed", error);
       return errorResponse("USER_DELETE_FAILED", "Unable to delete user.", 500);
     }
-  });
+  }, ["users.manage"]);
 }

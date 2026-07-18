@@ -2,6 +2,12 @@ import { withAdminAccess, safeAudit } from "@/lib/server";
 import { assertServiceClient } from "@/lib/db";
 import { errorResponse, successResponse } from "@/lib/response";
 import { hashPassword } from "@/lib/security";
+import {
+  loadAdminPermissionsMap,
+  loadRolePermissionDefaults,
+  replaceAdminPermissions,
+} from "@/lib/admin-permissions";
+import type { AdminRole } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -15,12 +21,27 @@ export async function GET() {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return successResponse(data ?? []);
+      const rows = (data ?? []) as Array<Record<string, unknown>>;
+      const rolesByAdminId = new Map<string, AdminRole>(
+        rows.map((row) => {
+          const roleRows = Array.isArray(row.admin_roles) ? row.admin_roles : [row.admin_roles];
+          const role = roleRows[0] && typeof roleRows[0] === "object" && "key" in roleRows[0]
+            ? String((roleRows[0] as { key?: unknown }).key)
+            : "viewer";
+          return [String(row.id), role as AdminRole];
+        }),
+      );
+      const permissionsByAdminId = await loadAdminPermissionsMap(
+        supabase,
+        rows.map((row) => String(row.id)),
+        rolesByAdminId,
+      );
+      return successResponse(rows.map((row) => ({ ...row, permissions: permissionsByAdminId.get(String(row.id)) ?? [] })));
     } catch (error) {
       console.error("Users load failed", error);
       return errorResponse("USERS_LOAD_FAILED", "Unable to load users.", 500);
     }
-  });
+  }, ["users.manage"]);
 }
 
 export async function POST(request: Request) {
@@ -32,6 +53,7 @@ export async function POST(request: Request) {
         password?: string;
         role?: string;
         status?: string;
+        permissions?: string[];
       };
 
       if (!body.name?.trim() || !body.email?.trim() || !body.password || !body.role || !body.status) {
@@ -70,6 +92,9 @@ export async function POST(request: Request) {
         throw roleError ?? new Error("Role not found.");
       }
 
+      const roleDefaults = await loadRolePermissionDefaults(supabase);
+      const permissions = Array.isArray(body.permissions) ? body.permissions : roleDefaults[roleKey] ?? [];
+
       const { data, error } = await supabase
         .from("admins")
         .insert({
@@ -88,19 +113,21 @@ export async function POST(request: Request) {
         throw error;
       }
 
+      const savedPermissions = await replaceAdminPermissions(supabase, data.id, permissions);
+
       await safeAudit({
         adminId: admin.id,
         action: "user.create",
         entityType: "admin",
         entityId: data.id,
-        details: { email: data.email, role: roleKey, status: body.status },
+        details: { email: data.email, role: roleKey, status: body.status, permissions: savedPermissions },
         ipAddress,
       });
 
-      return successResponse(data, { status: 201 });
+      return successResponse({ ...data, permissions: savedPermissions }, { status: 201 });
     } catch (error) {
       console.error("User create failed", error);
       return errorResponse("USER_CREATE_FAILED", "Unable to create user.", 500);
     }
-  });
+  }, ["users.manage"]);
 }

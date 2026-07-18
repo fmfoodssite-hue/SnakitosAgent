@@ -18,6 +18,7 @@ import type {
   TokenUsageRecord,
   WebsitePage,
 } from "@/types";
+import { MODULE_PERMISSIONS, ROLE_DEFAULT_PERMISSIONS } from "@/lib/rbac";
 
 const dashboardMetrics: DashboardMetric[] = [
   { title: "Total Queries", value: "12,480", description: "All chatbot requests in the last 30 days", trend: 12.4, icon: "MessagesSquare" },
@@ -165,11 +166,11 @@ const faqs: FaqItem[] = [
 ];
 
 const users: AdminUser[] = [
-  { id: "usr_001", name: "Snakitos Owner", email: "owner@snakitos.com", role: "Owner", status: "Active", lastActive: "2026-06-11 10:40", avatar: "SO" },
-  { id: "usr_002", name: "Hina Khan", email: "admin@snakitos.com", role: "Admin", status: "Active", lastActive: "2026-06-11 09:52", avatar: "HK" },
-  { id: "usr_003", name: "Bilal Ahmed", email: "support@snakitos.com", role: "Support Agent", status: "Active", lastActive: "2026-06-11 08:14", avatar: "BA" },
-  { id: "usr_004", name: "Sana Ali", email: "content@snakitos.com", role: "Content Manager", status: "Invited", lastActive: "Pending invite", avatar: "SA" },
-  { id: "usr_005", name: "Raza Noor", email: "viewer@snakitos.com", role: "Viewer", status: "Disabled", lastActive: "2026-06-04 16:00", avatar: "RN" },
+  { id: "usr_001", name: "Snakitos Owner", email: "owner@snakitos.com", role: "Owner", status: "Active", lastActive: "2026-06-11 10:40", avatar: "SO", permissions: [...ROLE_DEFAULT_PERMISSIONS.owner] },
+  { id: "usr_002", name: "Hina Khan", email: "admin@snakitos.com", role: "Admin", status: "Active", lastActive: "2026-06-11 09:52", avatar: "HK", permissions: [...ROLE_DEFAULT_PERMISSIONS.admin] },
+  { id: "usr_003", name: "Bilal Ahmed", email: "support@snakitos.com", role: "Support Agent", status: "Active", lastActive: "2026-06-11 08:14", avatar: "BA", permissions: [...ROLE_DEFAULT_PERMISSIONS.support_agent] },
+  { id: "usr_004", name: "Sana Ali", email: "content@snakitos.com", role: "Content Manager", status: "Invited", lastActive: "Pending invite", avatar: "SA", permissions: [...ROLE_DEFAULT_PERMISSIONS.content_manager] },
+  { id: "usr_005", name: "Raza Noor", email: "viewer@snakitos.com", role: "Viewer", status: "Disabled", lastActive: "2026-06-04 16:00", avatar: "RN", permissions: [...ROLE_DEFAULT_PERMISSIONS.viewer] },
 ];
 
 const knowledgeSources: KnowledgeSource[] = [
@@ -572,6 +573,8 @@ const sourceHealth: SourceHealth[] = [
 export function createMockSnapshot(): ControlCenterSnapshot {
   return {
     currentUser: users[0],
+    availablePermissions: MODULE_PERMISSIONS.map((permission) => ({ ...permission })),
+    rolePermissionDefaults: ROLE_DEFAULT_PERMISSIONS,
     notifications,
     dashboardMetrics,
     products,

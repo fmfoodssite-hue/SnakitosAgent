@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import {
+  getDefaultPermissionsForRole,
+  getPermissionForPathname,
+  normalizePermissionKeys,
+} from "@/lib/rbac";
+import type { AdminRole } from "@/lib/types";
 
 const accessTokenCookie = "snakitos_admin_access_token";
 
@@ -33,7 +39,7 @@ async function isValidAccessToken(token: string | undefined) {
 
   try {
     const header = JSON.parse(base64UrlDecode(encodedHeader)) as { alg?: string; typ?: string };
-    const payload = JSON.parse(base64UrlDecode(encodedPayload)) as { exp?: number };
+    const payload = JSON.parse(base64UrlDecode(encodedPayload)) as { exp?: number; role?: string; permissions?: unknown };
     if (header.alg !== "HS256" || header.typ !== "JWT") {
       return false;
     }
@@ -49,12 +55,19 @@ async function isValidAccessToken(token: string | undefined) {
       ["verify"],
     );
 
-    return crypto.subtle.verify(
+    const verified = await crypto.subtle.verify(
       "HMAC",
       key,
       base64UrlToBytes(signature),
       new TextEncoder().encode(`${encodedHeader}.${encodedPayload}`),
     );
+    if (!verified) return false;
+
+    const role = typeof payload.role === "string" ? (payload.role as AdminRole) : "viewer";
+    const permissions = normalizePermissionKeys(payload.permissions);
+    return {
+      permissions: permissions.length > 0 ? permissions : getDefaultPermissionsForRole(role),
+    };
   } catch {
     return false;
   }
@@ -73,12 +86,23 @@ export async function proxy(request: NextRequest) {
   }
 
   const accessToken = request.cookies.get(accessTokenCookie)?.value;
-  const hasValidAccessToken = await isValidAccessToken(accessToken);
+  const session = await isValidAccessToken(accessToken);
 
-  if (!hasValidAccessToken) {
+  if (!session) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/login";
     return NextResponse.redirect(loginUrl);
+  }
+
+  const requiredPermission = getPermissionForPathname(pathname);
+  if (requiredPermission && !session.permissions.includes(requiredPermission)) {
+    const fallbackUrl = request.nextUrl.clone();
+    fallbackUrl.pathname = session.permissions.includes("dashboard.view")
+      ? "/dashboard"
+      : session.permissions.includes("profile.view")
+        ? "/profile"
+        : "/login";
+    return NextResponse.redirect(fallbackUrl);
   }
 
   return NextResponse.next();

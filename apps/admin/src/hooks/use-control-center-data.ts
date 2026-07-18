@@ -2,8 +2,10 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { ControlCenterSnapshot } from "@/types";
+import { useAdminShell } from "@/hooks/use-admin-shell";
 
 export function useControlCenterData() {
+  const { setCurrentUser } = useAdminShell();
   const [data, setData] = useState<ControlCenterSnapshot | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,12 +31,13 @@ export function useControlCenterData() {
       }
 
       setData(snapshot);
+      setCurrentUser(snapshot.currentUser);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to load dashboard data.");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [setCurrentUser]);
 
   useEffect(() => {
     let active = true;
@@ -60,6 +63,7 @@ export function useControlCenterData() {
 
         if (!active) return;
         setData(snapshot);
+        setCurrentUser(snapshot.currentUser);
       } catch (err) {
         if (!active) return;
         setError(err instanceof Error ? err.message : "Unable to load dashboard data.");
@@ -73,7 +77,7 @@ export function useControlCenterData() {
     return () => {
       active = false;
     };
-  }, [reload]);
+  }, [reload, setCurrentUser]);
 
   return { data, loading, error, reload };
 }

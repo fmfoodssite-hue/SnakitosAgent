@@ -36,6 +36,7 @@ export type AdminUser = {
   is_active: boolean;
   last_login_at?: string | null;
   avatar_url?: string | null;
+  permissions: string[];
 };
 
 export type AdminSession = {
@@ -44,6 +45,7 @@ export type AdminSession = {
   role: AdminRole;
   email: string;
   expiresAt: number;
+  permissions: string[];
 };
 
 export type KnowledgeDocument = {

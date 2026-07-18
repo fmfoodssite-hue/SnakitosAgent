@@ -20,6 +20,7 @@ export function TopNavbar() {
   const [mounted, setMounted] = useState(false);
   const unreadCount = useMemo(() => 2, []);
   const activeTheme = mounted ? resolvedTheme ?? "light" : "light";
+  const canViewSettings = Boolean(currentUser?.permissions?.includes("settings.view"));
 
   useEffect(() => {
     setMounted(true);
@@ -104,13 +105,15 @@ export function TopNavbar() {
                       router.push(withAdminPath("/profile"));
                     },
                   },
-                  {
-                    label: "Settings",
-                    action: () => {
-                      setProfileOpen(false);
-                      router.push(withAdminPath("/settings"));
-                    },
-                  },
+                  ...(canViewSettings
+                    ? [{
+                        label: "Settings",
+                        action: () => {
+                          setProfileOpen(false);
+                          router.push(withAdminPath("/settings"));
+                        },
+                      }]
+                    : []),
                   {
                     label: "Logout",
                     action: async () => {

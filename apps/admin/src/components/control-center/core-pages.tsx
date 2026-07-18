@@ -164,6 +164,7 @@ export function LoginPage() {
           role: "owner" | "admin" | "support_agent" | "content_manager" | "viewer";
           last_login_at?: string | null;
           avatar_url?: string | null;
+          permissions?: string[];
         };
       };
 
@@ -195,6 +196,7 @@ export function LoginPage() {
         lastActive: payload.admin.last_login_at ?? "Just now",
         avatar: initials || "SA",
         avatarUrl: payload.admin.avatar_url,
+        permissions: payload.admin.permissions ?? [],
       };
 
       setCurrentUser(user);

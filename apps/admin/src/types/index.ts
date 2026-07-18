@@ -29,6 +29,15 @@ export type AdminUser = {
   lastActive: string;
   avatar: string;
   avatarUrl?: string | null;
+  permissions: string[];
+};
+
+export type ModulePermission = {
+  key: string;
+  label: string;
+  category: string;
+  description: string;
+  sortOrder: number;
 };
 
 export type Product = {
@@ -308,6 +317,8 @@ export type CrawlerProgress = {
 
 export type ControlCenterSnapshot = {
   currentUser: AdminUser;
+  availablePermissions: ModulePermission[];
+  rolePermissionDefaults: Record<string, string[]>;
   notifications: NotificationItem[];
   dashboardMetrics: DashboardMetric[];
   products: Product[];

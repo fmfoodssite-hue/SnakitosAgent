@@ -417,6 +417,7 @@ export async function createUser(payload: {
   password: string;
   role: UserRole;
   status: "Active" | "Disabled";
+  permissions: string[];
 }) {
   await requestJson("/api/admin/users", {
     method: "POST",
@@ -431,6 +432,7 @@ export async function updateUser(payload: {
   email: string;
   role: UserRole;
   status: "Active" | "Disabled";
+  permissions: string[];
 }) {
   await requestJson(`/api/admin/users/${payload.id}`, {
     method: "PATCH",

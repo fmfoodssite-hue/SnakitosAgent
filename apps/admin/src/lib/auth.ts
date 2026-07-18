@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { ADMIN_ROLES } from "@/lib/constants";
 import { assertServiceClient } from "@/lib/db";
 import { env } from "@/lib/env";
+import { getDefaultPermissionsForRole, normalizePermissionKeys } from "@/lib/rbac";
 import {
   generateRefreshToken,
   hashPassword,
@@ -54,6 +55,25 @@ function getRoleKey(role: AdminRow["admin_roles"]) {
     return role[0]?.key ?? "viewer";
   }
   return role?.key ?? "viewer";
+}
+
+async function getAdminPermissionKeys(adminId: string, role: AdminRole) {
+  try {
+    const supabase = assertServiceClient();
+    const { data, error } = await supabase
+      .from("admin_permission_assignments")
+      .select("permission_key")
+      .eq("admin_id", adminId);
+
+    if (error) {
+      return getDefaultPermissionsForRole(role);
+    }
+
+    const permissions = normalizePermissionKeys((data ?? []).map((row) => row.permission_key));
+    return permissions.length > 0 ? permissions : getDefaultPermissionsForRole(role);
+  } catch {
+    return getDefaultPermissionsForRole(role);
+  }
 }
 
 async function ensureBootstrapOwner() {
@@ -114,6 +134,7 @@ export async function authenticateAdmin(email: string, password: string) {
   await supabase.from("admins").update({ last_login_at: new Date().toISOString() }).eq("id", admin.id);
 
   const role = getRoleKey(admin.admin_roles);
+  const permissions = await getAdminPermissionKeys(admin.id, role);
   return {
     id: admin.id,
     email: admin.email,
@@ -122,6 +143,7 @@ export async function authenticateAdmin(email: string, password: string) {
     is_active: admin.is_active,
     last_login_at: admin.last_login_at,
     avatar_url: admin.avatar_url,
+    permissions,
   } satisfies AdminUser;
 }
 
@@ -151,6 +173,7 @@ export async function createAdminSession(admin: AdminUser) {
     role: admin.role,
     email: admin.email,
     expiresAt: Date.now() + ACCESS_TOKEN_TTL_MS,
+    permissions: admin.permissions,
   };
 
   const cookieStore = await cookies();
@@ -212,6 +235,7 @@ export async function getAdminSession() {
   const role = typeof payload.role === "string" ? (payload.role as AdminRole) : null;
   const email = typeof payload.email === "string" ? payload.email : null;
   const expiresAt = typeof payload.exp === "number" ? payload.exp * 1000 : null;
+  const permissions = normalizePermissionKeys(payload.permissions);
 
   if (!adminId || !sessionId || !role || !email || !expiresAt) {
     return null;
@@ -223,6 +247,7 @@ export async function getAdminSession() {
     role,
     email,
     expiresAt,
+    permissions: permissions.length > 0 ? permissions : getDefaultPermissionsForRole(role),
   } satisfies AdminSession;
 }
 
@@ -256,13 +281,17 @@ export async function requireAdminSession(allowedRoles: AdminRole[] = [...ADMIN_
     return null;
   }
 
+  const role = getRoleKey(admin.admin_roles);
+  const permissions = await getAdminPermissionKeys(admin.id, role);
+
   return {
     id: admin.id,
     email: admin.email,
     full_name: admin.full_name,
-    role: getRoleKey(admin.admin_roles),
+    role,
     is_active: admin.is_active,
     avatar_url: admin.avatar_url,
+    permissions,
   } satisfies AdminUser;
 }
 
@@ -320,12 +349,15 @@ export async function refreshAdminSession() {
     throw revokeError;
   }
 
+  const role = getRoleKey(record.admins.admin_roles);
+  const permissions = await getAdminPermissionKeys(record.admins.id, role);
   const nextSession: AdminSession = {
     adminId: record.admins.id,
     sessionId: record.session_id,
-    role: getRoleKey(record.admins.admin_roles),
+    role,
     email: record.admins.email,
     expiresAt: Date.now() + ACCESS_TOKEN_TTL_MS,
+    permissions,
   };
 
   cookieStore.set(ACCESS_TOKEN_COOKIE, signJwt(nextSession, ACCESS_TOKEN_TTL_SECONDS), {

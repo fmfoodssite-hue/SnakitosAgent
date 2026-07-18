@@ -76,6 +76,7 @@ export function ProfilePage({ user }: { user: ProfileUser }) {
           status: user.status as NonNullable<typeof currentUser>["status"],
           lastActive: user.lastLogin,
           avatar: user.avatar,
+          permissions: [],
         }),
         id: user.id,
         name: user.name,

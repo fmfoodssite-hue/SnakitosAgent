@@ -13,7 +13,14 @@ import { Button } from "@/components/ui/button";
 export function AppSidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { sidebarCollapsed, mobileSidebarOpen, setMobileSidebarOpen, toggleSidebar, logout } = useAdminShell();
+  const { currentUser, sidebarCollapsed, mobileSidebarOpen, setMobileSidebarOpen, toggleSidebar, logout } = useAdminShell();
+  const currentPermissions = currentUser?.permissions ?? [];
+  const visibleSections = navSections
+    .map((section) => ({
+      ...section,
+      items: section.items.filter((item) => currentPermissions.includes(item.permission)),
+    }))
+    .filter((section) => section.items.length > 0);
 
   if (pathname === "/login") return null;
 
@@ -65,7 +72,7 @@ export function AppSidebar() {
         </div>
 
         <div className="min-h-0 flex-1 space-y-6 overflow-y-auto overscroll-contain px-4 py-5">
-          {navSections.map((section) => (
+          {visibleSections.map((section) => (
             <div key={section.title}>
               {!sidebarCollapsed ? (
                 <div className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#C4862D] dark:text-[#EACD7D]">

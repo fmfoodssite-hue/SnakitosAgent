@@ -2,7 +2,13 @@ import { NextResponse } from "next/server";
 import { withAdminAccess } from "@/lib/server";
 import { assertServiceClient } from "@/lib/db";
 import { env } from "@/lib/env";
+import {
+  loadAdminPermissionsMap,
+  loadPermissionCatalog,
+  loadRolePermissionDefaults,
+} from "@/lib/admin-permissions";
 import { errorResponse } from "@/lib/response";
+import type { AdminRole } from "@/lib/types";
 import type {
   AdminUser,
   AuditLog,
@@ -187,6 +193,7 @@ export async function GET() {
   return withAdminAccess(["owner", "admin", "support_agent", "content_manager", "viewer"], async ({ admin }) => {
     try {
       const supabase = assertServiceClient();
+      const permissionClient = supabase as never;
 
     const [
       adminRows,
@@ -199,6 +206,8 @@ export async function GET() {
       handoffRows,
       auditRows,
       settingsRows,
+      permissionRows,
+      rolePermissionDefaults,
     ] = await Promise.all([
       queryOr(
         () =>
@@ -216,13 +225,27 @@ export async function GET() {
       queryOr(() => supabase.from("handoff_tickets").select("*").order("created_at", { ascending: false }).limit(200), []),
       queryOr(() => supabase.from("audit_logs").select("*, admins(full_name, email)").order("created_at", { ascending: false }).limit(100), []),
       queryOr(() => supabase.from("settings").select("*").order("key"), []),
+      loadPermissionCatalog(permissionClient),
+      loadRolePermissionDefaults(permissionClient),
     ]);
+
+    const rolesByAdminId = new Map<string, AdminRole>();
+    for (const row of adminRows as Array<Record<string, unknown>>) {
+      rolesByAdminId.set(String(row.id), getJoinedRoleKey(row.admin_roles) as AdminRole);
+    }
+
+    const permissionsByAdminId = await loadAdminPermissionsMap(
+      permissionClient,
+      (adminRows as Array<Record<string, unknown>>).map((row) => String(row.id)),
+      rolesByAdminId,
+    );
 
     const adminsById = new Map<string, { name: string; email: string; role: string; lastActive: string; status: string }>();
     const users: AdminUser[] = (adminRows as Array<Record<string, unknown>>).map((row) => {
       const role = getJoinedRoleKey(row.admin_roles);
+      const id = String(row.id);
       const user = {
-        id: String(row.id),
+        id,
         name: String(row.full_name ?? row.email ?? "Snakitos Admin"),
         email: String(row.email ?? ""),
         role: mapRoleLabel(role),
@@ -230,6 +253,7 @@ export async function GET() {
         lastActive: formatDate((row.last_login_at as string | null | undefined) ?? (row.updated_at as string | null | undefined)),
         avatar: initials(String(row.full_name ?? row.email ?? "SA")),
         avatarUrl: typeof row.avatar_url === "string" && row.avatar_url ? row.avatar_url : null,
+        permissions: permissionsByAdminId.get(id) ?? [],
       } satisfies AdminUser;
 
       adminsById.set(user.id, {
@@ -253,6 +277,7 @@ export async function GET() {
         lastActive: "Just now",
         avatar: initials(admin.full_name),
         avatarUrl: admin.avatar_url ?? null,
+        permissions: admin.permissions,
       } satisfies AdminUser);
 
       const settingsMap = new Map<string, JsonRecord>(
@@ -688,23 +713,25 @@ export async function GET() {
 
       const snapshot = {
       currentUser,
+      availablePermissions: permissionRows,
+      rolePermissionDefaults,
       notifications,
       dashboardMetrics,
-      products,
-      websitePages,
-      faqs,
-      knowledgeSources,
-      knowledgeChunks,
-      conversations,
-      failedAnswers,
-      tickets,
-      users,
-      auditLogs,
-      tokenUsage,
-      promptVersions,
-      crawlerLogs,
-      shopifySyncLogs,
-      sourceHealth,
+      products: admin.permissions.includes("shopify.view") ? products : [],
+      websitePages: admin.permissions.includes("crawler.view") ? websitePages : [],
+      faqs: admin.permissions.includes("faqs.view") ? faqs : [],
+      knowledgeSources: admin.permissions.includes("knowledge.view") ? knowledgeSources : [],
+      knowledgeChunks: admin.permissions.includes("chunks.view") ? knowledgeChunks : [],
+      conversations: admin.permissions.includes("conversations.view") ? conversations : [],
+      failedAnswers: admin.permissions.includes("failed_answers.view") ? failedAnswers : [],
+      tickets: admin.permissions.includes("tickets.view") ? tickets : [],
+      users: admin.permissions.includes("users.manage") ? users : [],
+      auditLogs: admin.permissions.includes("audit.view") ? auditLogs : [],
+      tokenUsage: admin.permissions.includes("token_usage.view") ? tokenUsage : [],
+      promptVersions: admin.permissions.includes("prompts.view") ? promptVersions : [],
+      crawlerLogs: admin.permissions.includes("crawler.view") ? crawlerLogs : [],
+      shopifySyncLogs: admin.permissions.includes("shopify.view") ? shopifySyncLogs : [],
+      sourceHealth: admin.permissions.includes("dashboard.view") ? sourceHealth : [],
       queriesLast7Days,
       topProductQuestions,
       languageDistribution,
