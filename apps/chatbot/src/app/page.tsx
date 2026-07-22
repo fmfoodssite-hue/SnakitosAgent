@@ -124,7 +124,7 @@ let cachedChatSessionSnapshot: ChatSessionSnapshot = EMPTY_CHAT_SESSION;
 
 const WELCOME_MESSAGE_TEXT = [
   "Hi! I can help with orders, deals, recommendations, delivery, payments, and refunds.",
-  "سلام! میں orders، deals، recommendations، delivery، payments اور refunds میں آپ کی مدد کر سکتا ہوں۔",
+  "السلام علیکم! 😊\n\nمیں آپ کی آرڈرز، ڈیلز، پروڈکٹ ریکمینڈیشنز، ڈیلیوری، ادائیگیوں، اور ریفنڈز سے متعلق ہر قسم کی مدد کر سکتا ہوں۔",
 ].join("\n");
 
 function buildWelcomeMessageContent(): string {
