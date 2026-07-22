@@ -52,7 +52,7 @@ expectEqual(
 
 expectEqual(
   getEntry("store-support-contact")?.text,
-  "Customers can contact Snakitos at info@snakitos.com. Public contact numbers shown on the website include +92-345-8283825 and +92-345-8283827. The listed address is A-50, S.I.T.E., Karachi, Pakistan.",
+  "Customers can contact Snakitos at info@snakitos.com. Public contact numbers shown on the website include +92-345-8283825 and +92-343-6366369. The listed address is A-50, S.I.T.E., Karachi, Pakistan.",
   "contact fact",
 );
 

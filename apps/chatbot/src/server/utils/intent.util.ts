@@ -238,8 +238,12 @@ export function detectIntent(message: string, phone?: string): {
   phone: string;
 } {
   const normalizedMessage = normalizeIntentTypos(message);
+  const trimmedMessage = message.trim();
   const orderId = extractOrderReference(message);
   const normalizedPhone = normalizePhone(phone) || extractPhoneNumber(message);
+  const isStandaloneOrderLookupInput =
+    Boolean(orderId || normalizedPhone) &&
+    /^(?:check\s+)?(?:#?[a-z0-9-]{3,}|(?:\+?\d[\d\s\-()]{8,}\d))$/i.test(trimmedMessage);
 
   const hasOrderKeywords = ORDER_KEYWORDS.some((keyword) => normalizedMessage.includes(keyword));
   const hasGeneralKeywords = GENERAL_KEYWORDS.some((keyword) => normalizedMessage.includes(keyword));
@@ -251,6 +255,14 @@ export function detectIntent(message: string, phone?: string): {
 
   // If user explicitly mentions order tracking keywords, it's an order intent.
   if (hasOrderKeywords) {
+    return {
+      intent: "order",
+      orderId,
+      phone: normalizedPhone,
+    };
+  }
+
+  if (isStandaloneOrderLookupInput) {
     return {
       intent: "order",
       orderId,

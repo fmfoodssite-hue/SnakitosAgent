@@ -22,7 +22,7 @@ async function getMessage(message) {
 const steps = [
   {
     message: "Show me talk to support.",
-    mustInclude: "WhatsApp at +92-345-828-3827",
+    mustInclude: "WhatsApp at +92-343-6366369",
   },
   {
     message: "Are your snacks spicy?",

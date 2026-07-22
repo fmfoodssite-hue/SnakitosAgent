@@ -16,7 +16,7 @@ function resolveShopifyAdminDomain() {
 export const config = {
     app: {
         adminSecret: getEnv("ADMIN_SECRET") || getEnv("ADMIN_SECRET_KEY"),
-        whatsappNumber: "+92-345-828-3827",
+        whatsappNumber: "+92-343-6366369",
         openAiModel: "gpt-4o",
     },
     openai: {

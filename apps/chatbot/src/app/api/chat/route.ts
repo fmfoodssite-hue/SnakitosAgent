@@ -79,7 +79,7 @@ export async function POST(request: Request) {
       {
         error: "Failed to process chat",
         response:
-          "We are having trouble processing your request right now. Please contact support on WhatsApp: +92-345-828-3827",
+          "We are having trouble processing your request right now. Please contact support on WhatsApp: +92-343-6366369",
       },
       { status: 500 },
     );

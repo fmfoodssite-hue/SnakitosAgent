@@ -43,10 +43,16 @@ type StorefrontProductsResponse = {
     title: string;
     handle: string;
     status?: string;
-    tags?: string;
+    tags?: string | string[];
     vendor?: string;
     product_type?: string;
     body_html?: string;
+    image?: {
+      src?: string | null;
+    } | null;
+    images?: Array<{
+      src?: string | null;
+    }>;
     variants?: Array<{
       id: number;
       title: string;
@@ -98,6 +104,11 @@ type SnakitosProductRecord = {
 const cache = new Map<string, CacheEntry<unknown>>();
 const DEFAULT_TTL_MS = 60_000;
 const STOREFRONT_BASE_URL = "https://snakitos.com";
+const GENERIC_STOREFRONT_LINKS = new Set([
+  STOREFRONT_BASE_URL,
+  `${STOREFRONT_BASE_URL}/`,
+  `${STOREFRONT_BASE_URL}/collections/all`,
+]);
 const SEARCH_ALIAS_GROUPS: Record<string, string[]> = {
   "sweet tooth": ["sweet snacks", "wafer rolls", "choco stick", "chocolate snacks"],
   "multi grain": ["multigrain", "stix", "chickpea puffs", "healthy snacks", "healthwise snacks"],
@@ -144,10 +155,47 @@ function uniqueStrings(values: string[]): string[] {
   return Array.from(new Set(values.map((value) => value.trim()).filter(Boolean)));
 }
 
+function isDirectProductLink(value: string | null | undefined): boolean {
+  const normalized = (value ?? "").trim().toLowerCase();
+  return normalized.includes("/products/");
+}
+
+function isGenericStorefrontLink(value: string | null | undefined): boolean {
+  const normalized = (value ?? "").trim().replace(/\/+$/g, "");
+  return !normalized || GENERIC_STOREFRONT_LINKS.has(normalized);
+}
+
+function canonicalizeProductLink(value: string | null | undefined): string {
+  const normalized = (value ?? "").trim();
+  if (!normalized) {
+    return "";
+  }
+
+  const productMatch = normalized.match(/\/products\/([^/?#]+)/i);
+  if (!productMatch) {
+    return normalized;
+  }
+
+  return `${STOREFRONT_BASE_URL}/products/${productMatch[1]}`;
+}
+
 function normalizeProductRecordTitle(value: string): string {
   return value
     .toLowerCase()
     .replace(/&/g, " and ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function normalizeComparableProductTitle(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/snakitos|fm foods|free shipping|all over pakistan|deal/gi, " ")
+    .replace(/\bpack of\s+\d+\b/gi, " ")
+    .replace(/\b\d+\s*x\s*\d+\s*g\b/gi, " ")
+    .replace(/\b\d+(?:\.\d+)?\s*(g|gm|kg|ml|l)\b/gi, " ")
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -226,10 +274,16 @@ export class ShopifyService {
       normalized.startsWith("#")
         ? `confirmation_number:${JSON.stringify(normalized.replace(/^#/, ""))}`
         : "",
+      extractNumericOrderId(normalized),
     ].filter(Boolean);
 
     for (const query of candidates) {
-      const result = await this.searchOrders(query);
+      let result: OrderLookupResult[] = [];
+      try {
+        result = await this.searchOrders(query);
+      } catch {
+        continue;
+      }
       const exact = result.find((order) => compareOrderReference(order, normalized));
       if (exact) {
         return exact;
@@ -269,6 +323,9 @@ export class ShopifyService {
                   title
                   handle
                   status
+                  featuredImage {
+                    url
+                  }
                   totalInventory
                   variants(first: 5) {
                     edges {
@@ -296,6 +353,7 @@ export class ShopifyService {
         title: node.title,
         handle: node.handle,
         link: `${STOREFRONT_BASE_URL}/products/${node.handle}`,
+        imageUrl: node.featuredImage?.url?.trim() || null,
         cartLink: `${STOREFRONT_BASE_URL}/products/${node.handle}`,
         status: node.status,
         source: "shopify_admin",
@@ -547,6 +605,50 @@ export class ShopifyService {
     return (highValueDeals.length > 0 ? highValueDeals : scoredProducts)
       .slice(0, limit)
       .map((item) => item.product);
+  }
+
+  async resolvePublishedProducts(
+    products: ProductLookupResult[],
+  ): Promise<ProductLookupResult[]> {
+    if (products.length === 0) {
+      return [];
+    }
+
+    const storefrontProducts = await this.getStorefrontCatalog();
+    const byHandle = new Map(storefrontProducts.map((product) => [product.handle, product]));
+    const byTitle = new Map(
+      storefrontProducts.map((product) => [this.normalizeSearchText(product.title), product]),
+    );
+    const resolved = new Map<string, ProductLookupResult>();
+
+    for (const product of products) {
+      const handleFromLink = this.extractProductHandle(product.link);
+      const handleFromCartLink = this.extractProductHandle(product.cartLink);
+      const storefrontProduct =
+        byHandle.get(product.handle) ??
+        (handleFromLink ? byHandle.get(handleFromLink) : undefined) ??
+        (handleFromCartLink ? byHandle.get(handleFromCartLink) : undefined) ??
+        byTitle.get(this.normalizeSearchText(product.title)) ??
+        this.findBestStorefrontProductMatch(product, storefrontProducts);
+
+      if (!storefrontProduct) {
+        continue;
+      }
+
+      resolved.set(storefrontProduct.handle, {
+        ...product,
+        ...storefrontProduct,
+        description:
+          sanitizeCustomerFacingDescription(storefrontProduct.description) ??
+          sanitizeCustomerFacingDescription(product.description) ??
+          null,
+        tags: storefrontProduct.tags.length > 0 ? storefrontProduct.tags : product.tags,
+        orderCount: product.orderCount ?? storefrontProduct.orderCount ?? null,
+        unitsSold: product.unitsSold ?? storefrontProduct.unitsSold ?? null,
+      });
+    }
+
+    return Array.from(resolved.values());
   }
 
   async getQuickRecommendations(query: string, limit = 12): Promise<ProductLookupResult[]> {
@@ -1040,6 +1142,7 @@ export class ShopifyService {
         title: product.title,
         handle: product.handle,
         link: `${STOREFRONT_BASE_URL}/products/${product.handle}`,
+        imageUrl: product.image?.src?.trim() || product.images?.[0]?.src?.trim() || null,
         cartLink: toCartLink(variants[0]?.id ?? null, `${STOREFRONT_BASE_URL}/products/${product.handle}`),
         status: (product.status ?? "active").toUpperCase(),
         source: "shopify_storefront",
@@ -1047,9 +1150,11 @@ export class ShopifyService {
         description: product.body_html ? this.stripHtml(product.body_html) : null,
         vendor: product.vendor ?? null,
         productType: product.product_type ?? null,
-        tags: product.tags
-          ? product.tags.split(",").map((tag) => tag.trim()).filter(Boolean)
-          : [],
+        tags: Array.isArray(product.tags)
+          ? product.tags.map((tag) => tag.trim()).filter(Boolean)
+          : product.tags
+            ? product.tags.split(",").map((tag) => tag.trim()).filter(Boolean)
+            : [],
         availability:
           variantAvailability.length === 0
             ? "unknown"
@@ -1163,13 +1268,21 @@ export class ShopifyService {
         const handle = canonical
           ? canonical.link.split("/").filter(Boolean).pop() ?? this.slugify(product.title)
           : this.slugify(product.title);
+        const directLink = this.resolveProductLink({
+          preferredLink: canonical?.link,
+          fallbackLink: ragRecord?.product_url ?? canonical?.fallbackLink,
+        });
 
         return {
           id: canonical?.id ?? `uploaded-${index + 1}`,
           title: canonical?.title ?? product.title,
           handle,
-          link: canonical?.link ?? `${STOREFRONT_BASE_URL}/collections/all`,
-          cartLink: canonical?.link ?? `${STOREFRONT_BASE_URL}/collections/all`,
+          link: directLink,
+          imageUrl:
+            ragRecord?.image_url && /^https?:\/\//i.test(ragRecord.image_url)
+              ? ragRecord.image_url
+              : null,
+          cartLink: directLink,
           status: "ACTIVE",
           source: "uploaded_catalog" as const,
           price: product.price ?? ragRecord?.price ?? null,
@@ -1206,6 +1319,7 @@ export class ShopifyService {
         title: product.title,
         handle: product.link.split("/").filter(Boolean).pop() ?? this.slugify(product.title),
         link: product.link,
+        imageUrl: null,
         cartLink: product.link,
         status: "ACTIVE",
         source: "uploaded_catalog" as const,
@@ -1229,17 +1343,19 @@ export class ShopifyService {
           ),
       )
       .map((product, index) => ({
+        handle: this.slugify(product.product_name),
+        link: this.resolveProductLink({
+          preferredLink: product.product_url,
+        }),
         id: `rag-${index + 1}`,
         title: product.product_name,
-        handle: this.slugify(product.product_name),
-        link:
-          product.product_url && /^https?:\/\//i.test(product.product_url)
-            ? product.product_url
-            : `${STOREFRONT_BASE_URL}/collections/all`,
-        cartLink:
-          product.product_url && /^https?:\/\//i.test(product.product_url)
-            ? product.product_url
-            : `${STOREFRONT_BASE_URL}/collections/all`,
+        imageUrl:
+          product.image_url && /^https?:\/\//i.test(product.image_url)
+            ? product.image_url
+            : null,
+        cartLink: this.resolveProductLink({
+          preferredLink: product.product_url,
+        }),
         status: "ACTIVE",
         source: "uploaded_catalog" as const,
         price: product.price || null,
@@ -1316,19 +1432,33 @@ export class ShopifyService {
 
     for (const product of storefrontProducts) {
       const key = this.normalizeSearchText(product.title);
-      const uploaded = merged.get(key);
+      const fuzzyUploadedMatch = this.findEquivalentUploadedProduct(key, product.title, merged);
+      const uploaded = merged.get(key) ?? fuzzyUploadedMatch?.product;
 
       if (!uploaded) {
         merged.set(key, product);
         continue;
       }
 
+      if (fuzzyUploadedMatch && fuzzyUploadedMatch.key !== key) {
+        merged.delete(fuzzyUploadedMatch.key);
+      }
+
       merged.set(key, {
         ...product,
-        cartLink: product.cartLink ?? uploaded.cartLink ?? product.link,
+        title: fuzzyUploadedMatch?.product.title ?? product.title,
+        link: this.resolveProductLink({
+          preferredLink: product.link,
+          fallbackLink: uploaded.link,
+        }),
+        cartLink: this.resolveProductLink({
+          preferredLink: product.cartLink ?? product.link,
+          fallbackLink: uploaded.cartLink ?? uploaded.link,
+        }),
         source: product.source ?? uploaded.source,
         orderCount: null,
         unitsSold: null,
+        imageUrl: product.imageUrl ?? uploaded.imageUrl ?? null,
         description:
           sanitizeCustomerFacingDescription(product.description) ??
           sanitizeCustomerFacingDescription(uploaded.description) ??
@@ -1380,6 +1510,133 @@ export class ShopifyService {
 
   private slugify(value: string): string {
     return this.normalizeSearchText(value).replace(/\s+/g, "-");
+  }
+
+  private findEquivalentUploadedProduct(
+    normalizedStorefrontTitle: string,
+    storefrontTitle: string,
+    uploadedProducts: Map<string, ProductLookupResult>,
+  ): { key: string; product: ProductLookupResult } | null {
+    const comparableStorefrontTitle = normalizeComparableProductTitle(storefrontTitle);
+    if (!comparableStorefrontTitle) {
+      return null;
+    }
+
+    let bestMatch: { key: string; product: ProductLookupResult; score: number } | null = null;
+
+    for (const [key, product] of uploadedProducts.entries()) {
+      const comparableUploadedTitle = normalizeComparableProductTitle(product.title);
+      if (!comparableUploadedTitle) {
+        continue;
+      }
+
+      let score = 0;
+      if (comparableUploadedTitle === comparableStorefrontTitle) {
+        score += 100;
+      } else if (
+        comparableStorefrontTitle.includes(comparableUploadedTitle) ||
+        comparableUploadedTitle.includes(comparableStorefrontTitle)
+      ) {
+        score += 70;
+      }
+
+      const storefrontTokens = new Set(comparableStorefrontTitle.split(" ").filter(Boolean));
+      const uploadedTokens = comparableUploadedTitle.split(" ").filter(Boolean);
+      const sharedTokenCount = uploadedTokens.filter((token) => storefrontTokens.has(token)).length;
+      score += sharedTokenCount * 10;
+
+      if (normalizedStorefrontTitle === key) {
+        score += 25;
+      }
+
+      if (!bestMatch || score > bestMatch.score) {
+        bestMatch = { key, product, score };
+      }
+    }
+
+    return bestMatch && bestMatch.score >= 70
+      ? { key: bestMatch.key, product: bestMatch.product }
+      : null;
+  }
+
+  private findBestStorefrontProductMatch(
+    product: ProductLookupResult,
+    storefrontProducts: ProductLookupResult[],
+  ): ProductLookupResult | null {
+    const comparableProductTitle = normalizeComparableProductTitle(product.title);
+    if (!comparableProductTitle) {
+      return null;
+    }
+
+    let bestMatch: { product: ProductLookupResult; score: number } | null = null;
+
+    for (const storefrontProduct of storefrontProducts) {
+      const comparableStorefrontTitle = normalizeComparableProductTitle(storefrontProduct.title);
+      if (!comparableStorefrontTitle) {
+        continue;
+      }
+
+      let score = 0;
+      if (comparableStorefrontTitle === comparableProductTitle) {
+        score += 100;
+      } else if (
+        comparableStorefrontTitle.includes(comparableProductTitle) ||
+        comparableProductTitle.includes(comparableStorefrontTitle)
+      ) {
+        score += 70;
+      }
+
+      const storefrontTokens = new Set(comparableStorefrontTitle.split(" ").filter(Boolean));
+      const productTokens = comparableProductTitle.split(" ").filter(Boolean);
+      const sharedTokenCount = productTokens.filter((token) => storefrontTokens.has(token)).length;
+      score += sharedTokenCount * 10;
+
+      const handleFromLink = this.extractProductHandle(product.link);
+      if (handleFromLink && handleFromLink === storefrontProduct.handle) {
+        score += 100;
+      }
+
+      if (product.handle === storefrontProduct.handle) {
+        score += 100;
+      }
+
+      if (!bestMatch || score > bestMatch.score) {
+        bestMatch = { product: storefrontProduct, score };
+      }
+    }
+
+    return bestMatch && bestMatch.score >= 70 ? bestMatch.product : null;
+  }
+
+  private extractProductHandle(value: string | null | undefined): string {
+    const normalized = (value ?? "").trim();
+    const productMatch = normalized.match(/\/products\/([^/?#]+)/i);
+    return productMatch?.[1] ?? "";
+  }
+
+  private resolveProductLink(input: {
+    preferredLink?: string | null;
+    fallbackLink?: string | null;
+  }): string {
+    const normalizedPreferred = canonicalizeProductLink(input.preferredLink);
+    if (isDirectProductLink(normalizedPreferred)) {
+      return normalizedPreferred;
+    }
+
+    const normalizedFallback = canonicalizeProductLink(input.fallbackLink);
+    if (isDirectProductLink(normalizedFallback)) {
+      return normalizedFallback;
+    }
+
+    if (!isGenericStorefrontLink(normalizedPreferred)) {
+      return normalizedPreferred;
+    }
+
+    if (!isGenericStorefrontLink(normalizedFallback)) {
+      return normalizedFallback;
+    }
+
+    return `${STOREFRONT_BASE_URL}/collections/all`;
   }
 
   private stripHtml(value: string): string {

@@ -46,6 +46,7 @@ type ProductResponseCard = {
   description: string;
   price: string;
   link: string;
+  image?: string;
   cart_link: string;
   savings?: string;
 };
@@ -87,6 +88,8 @@ type ChatSessionState = {
 
 type ConversationState = {
   last_intent: string;
+  last_language: "english" | "roman_urdu" | "mixed" | "urdu";
+  language_locked: boolean;
   last_topic: string;
   pending_action: string;
   last_category: string;
@@ -99,6 +102,8 @@ type ConversationState = {
   active_product_name: string;
   active_detail_intent: string;
   awaiting_input: string;
+  last_order_reference: string;
+  last_order_phone: string;
 };
 
 type SnakitosIntent =
@@ -200,6 +205,8 @@ type ClassifiedIntent = {
 
 const DEFAULT_CONVERSATION_STATE: ConversationState = {
   last_intent: "",
+  last_language: "english",
+  language_locked: false,
   last_topic: "",
   pending_action: "",
   last_category: "",
@@ -212,6 +219,8 @@ const DEFAULT_CONVERSATION_STATE: ConversationState = {
   active_product_name: "",
   active_detail_intent: "",
   awaiting_input: "",
+  last_order_reference: "",
+  last_order_phone: "",
 };
 
 const conversationStateStore = new Map<string, ConversationState>();
@@ -255,16 +264,18 @@ export class SupportAgentService {
       const initialIntent = detectIntent(input.message, input.phone);
       const intentResult =
         initialIntent.intent === "order" &&
-        session.canUseStoredContext &&
         (!initialIntent.orderId || !initialIntent.phone)
           ? this.resolveIntentWithConversationContext(
               input.message,
               input.phone,
-              await this.withTimeout(
-                this.getOrderContextMessages(chatId, userId),
-                250,
-                [] as Array<{ role: "user" | "bot"; content: string }>,
-              ),
+              session.canUseStoredContext
+                ? await this.withTimeout(
+                    this.getOrderContextMessages(chatId, userId),
+                    250,
+                    [] as Array<{ role: "user" | "bot"; content: string }>,
+                  )
+                : [],
+              conversationState,
             )
           : initialIntent;
 
@@ -282,6 +293,7 @@ export class SupportAgentService {
           intentResult,
           input.message,
           chatId,
+          userId,
           input.clientKey,
         ));
       const safeResponse = aiService.sanitizeCustomerResponse(response.response);
@@ -356,7 +368,7 @@ export class SupportAgentService {
 
     return {
       canUseStoredContext,
-      chatId: canUseStoredContext ? requestedChatId : randomUUID(),
+      chatId: requestedChatId,
       userId,
     };
   }
@@ -366,6 +378,7 @@ export class SupportAgentService {
     intentResult: ReturnType<typeof detectIntent>,
     userMessage: string,
     chatId: string,
+    userId: string,
     clientKey?: string,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
     if (this.isGreetingOrSmallTalk(userMessage)) {
@@ -385,7 +398,7 @@ export class SupportAgentService {
     }
 
     if (intent === "order") {
-      return this.handleOrderIntent(intentResult, userMessage, clientKey);
+      return this.handleOrderIntent(intentResult, userMessage, chatId, userId, clientKey);
     }
 
     if (intent === "product") {
@@ -426,11 +439,15 @@ export class SupportAgentService {
   }
 
   private getConversationStateKey(chatId: string, userId: string): string {
-    if (userId) {
-      return `user::${userId}`;
+    if (userId && chatId) {
+      return `user::${userId}::chat::${chatId}`;
     }
 
-    return `chat::${chatId || "guest"}`;
+    if (chatId) {
+      return `chat::${chatId}`;
+    }
+
+    return `user::${userId || "guest"}`;
   }
 
   private async routeStructuredIntent(
@@ -467,9 +484,17 @@ export class SupportAgentService {
         orderIntentResult.intent === "order"
           ? orderIntentResult
           : detectIntent(userMessage, "");
-      const response = await this.handleOrderIntent(orderResult, userMessage, clientKey);
+      const response = await this.handleOrderIntent(
+        orderResult,
+        userMessage,
+        chatId,
+        userId,
+        clientKey,
+      );
       this.saveConversationState(chatId, userId, {
         last_intent: classified.intent,
+        last_language: classified.language === "mixed" ? state.last_language : classified.language,
+        language_locked: true,
         last_topic: "order_tracking",
         pending_action: "",
       });
@@ -736,6 +761,21 @@ export class SupportAgentService {
 
   private mergeUniqueProducts(...groups: ProductLookupResult[][]): ProductLookupResult[] {
     const merged = new Map<string, ProductLookupResult>();
+    const getSourcePriority = (source: ProductLookupResult["source"]): number => {
+      if (source === "shopify_admin") {
+        return 3;
+      }
+
+      if (source === "shopify_storefront") {
+        return 2;
+      }
+
+      if (source === "uploaded_catalog") {
+        return 1;
+      }
+
+      return 0;
+    };
 
     for (const group of groups) {
       for (const product of group) {
@@ -746,14 +786,39 @@ export class SupportAgentService {
           continue;
         }
 
+        const existingPriority = getSourcePriority(existing.source);
+        const productPriority = getSourcePriority(product.source);
+        const preferred = productPriority > existingPriority ? product : existing;
+        const secondary = preferred === product ? existing : product;
+        const preferredPrice =
+          preferred.price && this.parseDisplayPrice(preferred.price) > 0 ? preferred.price : null;
+        const secondaryPrice =
+          secondary.price && this.parseDisplayPrice(secondary.price) > 0 ? secondary.price : null;
+
         merged.set(key, {
-          ...existing,
-          ...product,
-          description: existing.description ?? product.description,
-          productType: existing.productType ?? product.productType,
-          vendor: existing.vendor ?? product.vendor,
-          tags: existing.tags.length > 0 ? existing.tags : product.tags,
-          variants: existing.variants.length > 0 ? existing.variants : product.variants,
+          ...secondary,
+          ...preferred,
+          link:
+            /^https?:\/\/[^/]+\/products\//i.test(existing.link) &&
+            !/^https?:\/\/[^/]+\/products\//i.test(product.link)
+              ? existing.link
+              : /^https?:\/\/[^/]+\/products\//i.test(product.link)
+                ? product.link
+                : preferred.link,
+          cartLink:
+            existing.cartLink?.includes("/products/") &&
+            !(product.cartLink ?? "").includes("/products/")
+              ? existing.cartLink
+              : product.cartLink?.includes("/products/")
+                ? product.cartLink
+                : preferred.cartLink ?? existing.cartLink ?? product.link,
+          imageUrl: preferred.imageUrl ?? secondary.imageUrl ?? null,
+          price: preferredPrice ?? secondaryPrice ?? preferred.price ?? secondary.price ?? null,
+          description: preferred.description ?? secondary.description,
+          productType: preferred.productType ?? secondary.productType,
+          vendor: preferred.vendor ?? secondary.vendor,
+          tags: preferred.tags.length > 0 ? preferred.tags : secondary.tags,
+          variants: preferred.variants.length > 0 ? preferred.variants : secondary.variants,
         });
       }
     }
@@ -775,7 +840,7 @@ export class SupportAgentService {
     language: "english" | "roman_urdu" | "mixed" | "urdu",
   ): string {
     const priceValue = product.price ? `Rs. ${Number.parseFloat(product.price).toFixed(0)}` : "";
-    const description = this.getMeaningfulProductDescription(product);
+    const description = this.getCompactMeaningfulProductDescription(product);
 
     if (language === "urdu") {
       const base = priceValue
@@ -833,8 +898,8 @@ export class SupportAgentService {
   ): string {
     const leftPrice = left.price ? `Rs. ${Number.parseFloat(left.price).toFixed(0)}` : "current store price";
     const rightPrice = right.price ? `Rs. ${Number.parseFloat(right.price).toFixed(0)}` : "current store price";
-    const leftDescription = this.getMeaningfulProductDescription(left);
-    const rightDescription = this.getMeaningfulProductDescription(right);
+    const leftDescription = this.getCompactMeaningfulProductDescription(left);
+    const rightDescription = this.getCompactMeaningfulProductDescription(right);
     const leftType = left.productType ? `${left.productType.toLowerCase()} snack` : "Snakitos snack";
     const rightType = right.productType ? `${right.productType.toLowerCase()} snack` : "Snakitos snack";
 
@@ -1328,7 +1393,11 @@ YouTube: ${youtube}`;
     state: ConversationState,
   ): ClassifiedIntent {
     const normalized = this.normalizeSnakitosMessage(userMessage);
-    const language = this.detectSnakitosLanguage(userMessage);
+    const language = this.resolveConversationLanguage(
+      userMessage,
+      state.last_language,
+      state.language_locked,
+    );
     const budgetMatch =
       userMessage.match(/(?:under|below|andar|rs\.?|pkr)\s*(\d{3,5})/i) ??
       userMessage.match(/\b(\d{3,5})\s*(?:ke\s+andar|mein|me|under)\b/i);
@@ -1448,6 +1517,22 @@ YouTube: ${youtube}`;
       return { intent: "wholesale_query", language };
     }
 
+    if (/(contain nuts|gluten free|milk|soy|allergen|allergy|peanut allergy|processed near nuts|dairy|nuts|الرجی|نٹس|مونگ پھلی|دودھ|سویا|الرجي|الرژی|حساسیت)/i.test(normalized)) {
+      return {
+        intent: "allergen_query",
+        language,
+        productName,
+      };
+    }
+
+    if (/(ingredients|gelatin|msg|made of|oil use|oil konsa use hota|vegetable oil|preservatives|natural or artificial|chicken extract|beef extract|imported ingredients|اجزاء|جلیٹن|تیل|مصنوعی|قدرتی|جزا|مسالو|مواد)/i.test(normalized)) {
+      return {
+        intent: "ingredient_query",
+        language,
+        productName,
+      };
+    }
+
     if (/(shipping and refund policy|shipping refund policy|shipping & refund)/i.test(normalized)) {
       return { intent: "shipping_refund_policy", language };
     }
@@ -1477,8 +1562,8 @@ YouTube: ${youtube}`;
       return { intent: "damaged_product", language };
     }
 
-    if (/(recommend something|what should i buy|suggest snacks|recommend me|show recommendations|kya loon|kya order karun|best snack|best item batao)/i.test(normalized)) {
-      return { intent: "product_recommendation", language };
+    if (this.isSweetCategoryRequest(userMessage)) {
+      return { intent: "sweet_recommendation", language, taste: "sweet" };
     }
 
     if (
@@ -1486,6 +1571,7 @@ YouTube: ${youtube}`;
       (
         /\b(what is|tell me about|compare|difference between|do you have)\b/i.test(normalized) ||
         /\b(kya hai|ke bare mein batao|mein farq kya hai)\b/i.test(normalized) ||
+        /\b(show|show me|dikhao|dekhao|recommend|suggest)\b/i.test(normalized) ||
         /[\u0600-\u06FF]/.test(userMessage)
       )
     ) {
@@ -1494,6 +1580,19 @@ YouTube: ${youtube}`;
 
     if (/\b(stix hot spicy|sweet tooth snacks|snaktory namkeen|office box|kids box|chana puff|multi grain snacks|deals collection|can tray|craving combo|snack heaven)\b/i.test(normalized)) {
       return { intent: "product_specific_query", language, productName: productName || normalized };
+    }
+
+    const multilingualTasteIntent = this.resolveMultilingualTasteIntent(userMessage);
+    if (multilingualTasteIntent) {
+      return {
+        intent: multilingualTasteIntent,
+        language,
+        taste: multilingualTasteIntent.replace("_recommendation", ""),
+      };
+    }
+
+    if (/(recommend something|what should i buy|suggest snacks|recommend me|show recommendations|kya loon|kya order karun|best snack|best item batao)/i.test(normalized) || this.hasMultilingualRecommendationIntent(userMessage)) {
+      return { intent: "product_recommendation", language };
     }
 
     if (/(are your snacks spicy|spicy snacks|spicy snack|bhai spicy snacks batao|teekha|teekay|spicy combo|bohat teekha|spcy snacks)/i.test(normalized) && !/\bstix hot spicy\b/i.test(normalized)) {
@@ -1517,7 +1616,7 @@ YouTube: ${youtube}`;
     }
 
     if (/(kids ke liye|snacks for children|kids snacks|bachon ke liye|best for children|safe for kid|safe for kids|school lunch|what should i order for kids|bachy kha sakty)/i.test(normalized)) {
-      return { intent: "kids_recommendation", language, occasion: "kids" };
+      return { intent: "kids_recommendation", language, occasion: "kids", budget };
     }
 
     if (/(office snacks|office ke liye|office ke liye snacks|team snacks|work snacks|office mein rakhna|office box)/i.test(normalized)) {
@@ -1914,13 +2013,29 @@ YouTube: ${youtube}`;
 
   private detectSnakitosLanguage(
     message: string,
+    fallbackLanguage?: "english" | "roman_urdu" | "mixed" | "urdu",
   ): "english" | "roman_urdu" | "mixed" | "urdu" {
     if (/[\u0600-\u06FF]/.test(message)) {
       return "urdu";
     }
 
-    const normalized = message.toLowerCase();
+    const normalized = this.normalizeSnakitosMessage(message).toLowerCase();
+    const tokens = normalized.split(/[^a-z0-9]+/).filter(Boolean);
     const romanHits = [
+      "is",
+      "me",
+      "se",
+      "apki",
+      "apko",
+      "kia",
+      "kya",
+      "jo",
+      "zyada",
+      "hoti",
+      "hota",
+      "wala",
+      "wali",
+      "best",
       "bhai",
       "batao",
       "kuch",
@@ -1941,8 +2056,10 @@ YouTube: ${youtube}`;
       "theek",
       "chahiye",
       "karo",
+      "kar",
       "meetha",
       "teekha",
+      "teekhay",
       "kitny",
       "kitna",
       "din",
@@ -1960,7 +2077,68 @@ YouTube: ${youtube}`;
       "khula",
       "bhejo",
       "masla",
-    ].filter((token) => normalized.includes(token)).length;
+      "karna",
+      "krna",
+      "jaldi",
+      "sahi",
+      "ap",
+      "aap",
+      "dein",
+      "dena",
+      "dikhao",
+      "dekhao",
+      "dikha",
+      "pasand",
+      "samjhao",
+      "wapis",
+      "kyun",
+      "kis",
+      "kon",
+      "mujhy",
+      "apka",
+      "hamara",
+      "hoga",
+    ].filter((token) => tokens.includes(token)).length;
+    const strongRomanHits = [
+      "apki",
+      "apko",
+      "kia",
+      "kya",
+      "hoti",
+      "hota",
+      "wala",
+      "wali",
+      "bhai",
+      "batao",
+      "kuch",
+      "acha",
+      "andar",
+      "mera",
+      "mujhe",
+      "kahan",
+      "liye",
+      "nahi",
+      "hai",
+      "hain",
+      "chahiye",
+      "karo",
+      "kar",
+      "dikhao",
+      "dekhao",
+      "pasand",
+      "meetha",
+      "teekha",
+      "teekhay",
+      "kitny",
+      "kitna",
+      "sath",
+      "kyun",
+      "kis",
+      "kon",
+      "mujhy",
+      "apka",
+      "hoga",
+    ].filter((token) => tokens.includes(token)).length;
     const englishHits = [
       "shipping",
       "refund",
@@ -1972,19 +2150,148 @@ YouTube: ${youtube}`;
       "movie",
       "office",
       "snack",
-    ].filter((token) => normalized.includes(token)).length;
+      "please",
+      "show",
+      "find",
+      "looking",
+      "need",
+      "want",
+      "where",
+      "which",
+      "what",
+      "help",
+    ].filter((token) => tokens.includes(token)).length;
+
+    if (englishHits > 0 && strongRomanHits === 0) {
+      return "english";
+    }
+
+    if (strongRomanHits > 0 && romanHits >= englishHits) {
+      return "roman_urdu";
+    }
+
+    if (englishHits > romanHits) {
+      return "english";
+    }
 
     if (romanHits > 0 && englishHits > 0) {
       return "mixed";
     }
 
-    return romanHits > 0 ? "roman_urdu" : "english";
+    if (romanHits > 0) {
+      return "roman_urdu";
+    }
+
+    if (englishHits > 0) {
+      return "english";
+    }
+
+    return fallbackLanguage ?? "english";
   }
 
   private prefersRomanUrdu(
     language: "english" | "roman_urdu" | "mixed" | "urdu",
   ): boolean {
     return language === "roman_urdu" || language === "mixed";
+  }
+
+  private resolveConversationLanguage(
+    message: string,
+    previousLanguage?: "english" | "roman_urdu" | "mixed" | "urdu",
+    languageLocked = false,
+  ): "english" | "roman_urdu" | "mixed" | "urdu" {
+    const detected = this.detectSnakitosLanguage(message, previousLanguage);
+    const explicitLanguage = this.detectExplicitLanguageSwitch(message);
+    if (explicitLanguage) {
+      return explicitLanguage;
+    }
+
+    if (detected === "mixed") {
+      if (
+        previousLanguage === "english" ||
+        previousLanguage === "roman_urdu" ||
+        previousLanguage === "urdu"
+      ) {
+        return previousLanguage;
+      }
+
+      return "roman_urdu";
+    }
+
+    if (languageLocked && previousLanguage) {
+      if (this.isLanguageNeutralMessage(message)) {
+        return previousLanguage;
+      }
+
+      if (detected !== previousLanguage && !this.isClearLanguageSwitch(message, detected)) {
+        return previousLanguage;
+      }
+    }
+
+    return detected;
+  }
+
+  private detectExplicitLanguageSwitch(
+    message: string,
+  ): "english" | "roman_urdu" | "urdu" | null {
+    const normalized = this.normalizeSnakitosMessage(message);
+    if (/(reply|respond|answer|speak|talk|baat|jawab).{0,24}\b(english|angrezi)\b/i.test(normalized)) {
+      return "english";
+    }
+
+    if (/(roman urdu|roman-urdu|urdu roman|hinglish|reply in roman|jawab roman)/i.test(normalized)) {
+      return "roman_urdu";
+    }
+
+    if (/(urdu script|urdu mein|urdu me|اردو|جواب اردو|اردو میں)/i.test(message)) {
+      return "urdu";
+    }
+
+    return null;
+  }
+
+  private isLanguageNeutralMessage(message: string): boolean {
+    const normalized = this.normalizeSnakitosMessage(message);
+    if (/^(home|back|ok|okay|yes|no|thanks|thank you|show categories|show best deals|track my order|recommend something|spicy snacks|sweet snacks|salty snacks|kids snacks|office snacks|gift bundles|movie night snacks)$/i.test(normalized)) {
+      return true;
+    }
+
+    if (/^(?:check\s+)?#?\d{3,6}$/i.test(normalized)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  private isClearLanguageSwitch(
+    message: string,
+    detectedLanguage: "english" | "roman_urdu" | "mixed" | "urdu",
+  ): boolean {
+    if (detectedLanguage === "urdu") {
+      return /[\u0600-\u06FF]/.test(message);
+    }
+
+    const normalized = this.normalizeSnakitosMessage(message);
+    const tokens = normalized.split(/[^a-z0-9]+/).filter(Boolean);
+    if (tokens.length < 4) {
+      return false;
+    }
+
+    if (detectedLanguage === "english") {
+      const englishSignals = tokens.filter((token) =>
+        ["please", "want", "need", "where", "which", "what", "how", "show", "recommend", "delivery", "refund", "order", "product"].includes(token),
+      ).length;
+      return englishSignals >= 2;
+    }
+
+    if (detectedLanguage === "roman_urdu") {
+      const romanSignals = tokens.filter((token) =>
+        ["mujhe", "mujhy", "apko", "apki", "aap", "kya", "kia", "hai", "hain", "chahiye", "batao", "dein", "kitna", "kahan"].includes(token),
+      ).length;
+      return romanSignals >= 2;
+    }
+
+    return false;
   }
 
   private normalizeSnakitosMessage(message: string): string {
@@ -2004,6 +2311,11 @@ YouTube: ${youtube}`;
       .replace(/\bkitny\b/g, "kitne")
       .replace(/\bkidr\b/g, "kidar")
       .replace(/\bbnana\b/g, "banana")
+      .replace(/\b(?:kela|kele|kelay)\b/g, "banana")
+      .replace(/کیلے\s+کے\s+چپس/g, "banana chips")
+      .replace(/کیلا\s+چپس/g, "banana chips")
+      .replace(/کیلے\s+چپس/g, "banana chips")
+      .replace(/بنانا\s+چپس/g, "banana chips")
       .replace(/\bstiks\b/g, "stix")
       .replace(/\bwaffer\b/g, "wafer")
       .replace(/\bspcy\b/g, "spicy")
@@ -2016,15 +2328,105 @@ YouTube: ${youtube}`;
       .trim();
   }
 
+  private hasMultilingualRecommendationIntent(message: string): boolean {
+    return this.getMultilingualProductSignals(message).recommendation;
+  }
+
+  private isSweetCategoryRequest(message: string): boolean {
+    const normalized = this.normalizeSnakitosMessage(message);
+    const hasSweetWord =
+      /(sweet|meetha|meethay|mitha|mithay|choco|chocolate|wafer|سویٹ|میٹھا|میٹھی|میٹھے|مٹھا|مٹھی|مٹھے|مٹھاس|چاکلیٹ|چاکلیٹی|ویفر|مٺو|مٺا|خواږه|خوږ)/i.test(
+        normalized,
+      );
+    const hasProductOrActionWord =
+      /(snack|snacks|item|items|product|products|dikhao|dekhao|show|recommend|suggest|chahiye|آئٹم|آئٹمز|سنیکس|سناک|چیز|چیزیں|دکھائیں|دکھاؤ|دکھاو|شو|تجویز|سفارش|چاہیے|بتائیں)/i.test(
+        normalized,
+      );
+
+    return hasSweetWord && hasProductOrActionWord;
+  }
+
+  private resolveMultilingualTasteIntent(message: string): Extract<
+    SnakitosIntent,
+    | "spicy_recommendation"
+    | "sweet_recommendation"
+    | "salty_recommendation"
+    | "kids_recommendation"
+    | "crunchy_recommendation"
+  > | null {
+    const signals = this.getMultilingualProductSignals(message);
+
+    if (signals.kids) {
+      return "kids_recommendation";
+    }
+
+    if (signals.spicy) {
+      return "spicy_recommendation";
+    }
+
+    if (signals.sweet) {
+      return "sweet_recommendation";
+    }
+
+    if (signals.salty) {
+      return "salty_recommendation";
+    }
+
+    if (signals.crunchy) {
+      return "crunchy_recommendation";
+    }
+
+    return null;
+  }
+
+  private getMultilingualProductSignals(message: string): {
+    recommendation: boolean;
+    spicy: boolean;
+    sweet: boolean;
+    salty: boolean;
+    kids: boolean;
+    crunchy: boolean;
+  } {
+    const normalized = this.normalizeSnakitosMessage(message);
+    const hasProductWord =
+      /(snack|snacks|chips|chip|crisps|nachos|stix|wafer|choco|banana|patata|puffs?|سنیکس|سناک|چپس|چپ|ناچوز|ویفر|چاکلیٹ|چوکو|کیلا|پف|سٹکس|اسٹکس|سنيڪس|چپس|ناچوز|ويفر|چاڪليٽ|ڪيلا|پف|سنیکس|چپس|ویفر|چاکلیٹ|ਕੇلا|سناکس|چپس|ناچوز|ویفر|چاکلېټ|کېله)/i.test(
+        normalized,
+      );
+    const recommendation =
+      hasProductWord &&
+      /(recommend|suggest|best|top|show|buy|order|chahiye|chaiye|batao|dikhao|kya loon|کیا لوں|کیا خریدوں|تجویز|سفارش|بہترین|اچھا|اچھی|دکھائیں|دکھاؤ|چاہیے|خرید|آرڈر|صلاح|سٺ|بھترين|وٺو|سفارش|چنگا|ودھیا|دسو|چاہیدا|سپارښتنه|غوره|راوښایاست|اخیستل)/i.test(
+        normalized,
+      );
+
+    return {
+      recommendation,
+      spicy: /(spicy|teekha|teekhay|hot|masala|peri|paprika|salsa|مصالحہ|مسالہ|تیکھا|تیز|چٹ پٹا|مرچ|اسپائسی|مصالحيدار|کارو|مرچن|مرچاں|مساله|مرچکی|توند|مساله دار)/i.test(
+        normalized,
+      ),
+      sweet: /(sweet|meetha|meethay|chocolate|choco|wafer|hazelnut|strawberry|میٹھا|میٹھی|مٹھاس|چاکلیٹ|ویفر|مٺو|مٺا|مٹھا|مٹھی|خواږه|خوږ|چاکلېټ)/i.test(
+        normalized,
+      ),
+      salty: /(salty|namkeen|salt|sea salt|نمکین|نمک|نَمکین|لوڻيا|نمڪين|نਮکین|مالګين|مالګه)/i.test(
+        normalized,
+      ),
+      kids: /(kids?|children|bachon|bachy|school lunch|بچوں|بچے|بچوں کے لیے|بچوں کیلئے|ٻارن|ٻار|بچیاں|بچےاں|ماشومانو|ماشومان)/i.test(
+        normalized,
+      ),
+      crunchy: /(crunchy|crispy|کرنچی|کرسپی|خستہ|ڪرنچي|خستا|کرنچی|کرسپی|کرنچ)/i.test(
+        normalized,
+      ),
+    };
+  }
+
   private extractKnownCategory(message: string): string {
     const normalized = this.normalizeSnakitosMessage(message);
     const categoryAliases: Array<{ category: string; pattern: RegExp }> = [
-      { category: "Nachos", pattern: /\b(nachos|tortilla chips)\b/i },
+      { category: "Nachos", pattern: /\b(nachos|tortilla chips)\b|ناچوز|نچوز/i },
       { category: "Stix", pattern: /\b(stix|sticks|hot spicy|peri peri|lemon chilli|masala stix|salty stix|multi grain snacks)\b/i },
-      { category: "Patata", pattern: /\b(patata|potato slim|potato slims)\b/i },
-      { category: "Banana Chips", pattern: /\b(banana|banana chips|achari banana|banana bbq|banana sea salt|cheese banana)\b/i },
-      { category: "Choco Sticks", pattern: /\b(choco stick|chocolate stick|spread wali stick|strawberry choco)\b/i },
-      { category: "Wafer Rolls", pattern: /\b(wafer|wafer rolls|hazelnut wafer|strawberry wafer|cappuccino wafer|dark chocolate wafer)\b/i },
+      { category: "Patata", pattern: /\b(patata|potato slim|potato slims)\b|آلو چپس|آلو والی چپس|پوٹیٹو|پٽاٽو|کچالو/i },
+      { category: "Banana Chips", pattern: /\b(banana|banana chips|achari banana|banana bbq|banana sea salt|cheese banana)\b|کیلا چپس|کیلے چپس|کیلے کے چپس|بنانا چپس|ڪيلا چپس|کېله چپس/i },
+      { category: "Choco Sticks", pattern: /\b(choco stick|chocolate stick|spread wali stick|strawberry choco)\b|چاکلیٹ اسٹک|چوکو اسٹک|چاڪليٽ|چاکلېټ/i },
+      { category: "Wafer Rolls", pattern: /\b(wafer|wafer rolls|hazelnut wafer|strawberry wafer|cappuccino wafer|dark chocolate wafer)\b|ویفر|ويفر/i },
       { category: "ChickPea Puffs", pattern: /\b(chickpea|chickpea puffs|chana puff|chana chips)\b/i },
       { category: "Snaktory", pattern: /\b(snaktory|can tray|snack heaven)\b/i },
       { category: "Office Snack Box", pattern: /\b(office box|office snack box)\b/i },
@@ -2100,6 +2502,7 @@ YouTube: ${youtube}`;
     const language = classified.language;
     const category = classified.category || "";
     const budget = classified.budget || "";
+    const productName = classified.productName || "";
 
     switch (classified.intent) {
       case "greeting":
@@ -2213,22 +2616,35 @@ YouTube: ${youtube}`;
           "best sellers bundle popular snacks",
           "These are the Snakitos picks customers usually go for first. I've lined up a few strongest sellers below, including everyday favorites and bundle-style value picks.",
           "best selling snack deals",
+          language,
         );
       case "best_deals":
       case "bundle_deals":
         return this.buildCuratedRecommendationResponse(
           userMessage,
           "bundle combo deal value pack family pack party pack gift box deals",
-          "Here are some strong-value Snakitos deals you can check:\n\nMy best value pick is a mixed bundle, because it gives more variety than buying only single packs. Do you want deals under Rs. 1,000, under Rs. 2,000, or family-size bundles?",
+          language === "urdu"
+            ? "یہ کچھ اچھی ویلیو والی Snakitos deals ہیں۔ Mixed bundle بہتر pick ہوتا ہے کیونکہ اس میں زیادہ variety مل جاتی ہے۔"
+            : this.prefersRomanUrdu(language)
+              ? "Yahan kuch strong-value Snakitos deals hain. Best value ke liye mixed bundle acha pick hota hai, kyun ke is mein zyada variety mil jati hai."
+              : "Here are some strong-value Snakitos deals you can check. My best value pick is a mixed bundle because it gives more variety than buying only single packs.",
           "best deals",
+          language,
         );
       case "product_specific_query":
+        if (this.isProductFamilyCategory(productName || category || userMessage)) {
+          return this.buildCategoryResponse(
+            userMessage,
+            productName || category || this.extractKnownCategory(userMessage),
+            language,
+          );
+        }
         return await this.buildSpecificProductDetailResponse(
           this.composeContextualQuery(state, classified, userMessage),
           userMessage,
         );
       case "product_category_query":
-        return this.buildCategoryResponse(userMessage, category || "Snacks");
+        return this.buildCategoryResponse(userMessage, category || "Snacks", language);
       case "spicy_recommendation":
         return this.buildCuratedRecommendationResponse(
           userMessage,
@@ -2237,6 +2653,7 @@ YouTube: ${youtube}`;
             ? "Zaroor! Agar aapko spicy snacks pasand hain to Stix Hot & Spicy, Stix Peri Peri, Stix Lemon & Chilli, Nachos Salsa, Nachos Paprika aur Banana Chips Achari Masti try karein. Better value ke liye aap spicy bundle bhi choose kar sakte hain.\n\nAapka budget kya hai - Rs. 500, Rs. 1,000, Rs. 2,000 ya above?"
             : "If you enjoy spicy snacks, I’d recommend Stix Hot & Spicy, Stix Peri Peri, Stix Lemon & Chilli, Nachos Salsa, Nachos Paprika, and Banana Chips Achari Masti. For better value, you can also go for a spicy bundle. Want me to suggest a spicy combo under your budget?",
           "spicy",
+          language,
         );
       case "sweet_recommendation":
         return this.buildCuratedRecommendationResponse(
@@ -2246,6 +2663,7 @@ YouTube: ${youtube}`;
             ? "Sweet craving ke liye Choco Stick Chocolate, Choco Stick Strawberry, Wafer Rolls Hazelnut, aur Coco Choco Can best options hain. Aap chocolate-only snacks lena chahenge ya sweet + crunchy mix?"
             : "For sweet cravings, I’d recommend Choco Stick Chocolate, Choco Stick Strawberry, Coco Choco Can, Wafer Rolls Hazelnut, Wafer Rolls Strawberry, and a Choco Lovers Bundle. Would you like chocolate-only snacks or a sweet + crunchy mix?",
           "sweet",
+          language,
         );
       case "mixed_recommendation":
         return this.buildCuratedRecommendationResponse(
@@ -2255,6 +2673,7 @@ YouTube: ${youtube}`;
             ? "Mixed snacks ke liye best value picks All Time Favorites, Snack Sampler Deal, Office Snack Box, aur Ultimate Mega Snack Box hain. In mein sweet aur savory dono variety mil jati hai. Kya aap budget-friendly mixed box chahte hain ya family-size bundle?"
             : "For mixed snacks, I'd start with All Time Favorites, Snack Sampler Deal, Office Snack Box, and Ultimate Mega Snack Box. These give you sweet + savory variety instead of just one flavor. Do you want a budget-friendly mixed box or a family-size bundle?",
           "mixed snacks",
+          language,
         );
       case "daily_snacks_recommendation":
         return this.buildCuratedRecommendationResponse(
@@ -2264,6 +2683,7 @@ YouTube: ${youtube}`;
             ? "Rozana snacking ke liye Office Snack Box, All Time Favorites, Snaktory Snack Pack, Banana Chips, Wafer Rolls, aur Patata achay options hain. Kya aap light daily snacks chahte hain ya mixed variety box?"
             : "For daily snacking, I’d suggest Office Snack Box, All Time Favorites, Snaktory Snack Pack, Banana Chips, Wafer Rolls, and Patata. Do you want lighter daily snacks or a mixed variety box?",
           "daily snacks",
+          language,
         );
       case "salty_recommendation":
         case "mild_recommendation":
@@ -2272,6 +2692,7 @@ YouTube: ${youtube}`;
           "mild salty patata banana chips chickpea puffs stix salty",
           "For something mild and salty, I’d suggest Patata Salty, Banana Chips Sea Salt, ChickPea Puffs, and Stix Salty. You can also add a sweet item like Choco Stick or Wafer Rolls for balance.",
           "salty",
+          language,
         );
       case "crunchy_recommendation":
         return this.buildCuratedRecommendationResponse(
@@ -2279,15 +2700,19 @@ YouTube: ${youtube}`;
           "crunchy patata stix nachos banana chips chickpea puffs",
           "For crunchy snacks, I’d recommend Patata, Stix, Nachos, Banana Chips, and ChickPea Puffs. Do you want crunchy and spicy, or crunchy and mild?",
           "crunchy",
+          language,
         );
       case "kids_recommendation":
         return this.buildCuratedRecommendationResponse(
           userMessage,
-          "kids snacks choco sticks wafer rolls patata salty kids fun box",
+          classified.budget
+            ? `kids snacks under ${classified.budget} choco sticks wafer rolls patata salty coco choco can`
+            : "choco sticks coco choco wafer rolls strawberry hazelnut patata salty",
           language === "roman_urdu"
             ? "Kids ke liye Choco Stick, Coco Choco Can, Wafer Rolls Strawberry, aur Patata Salty achay options hain. Agar ready mix chahiye to Kids Fun Box best rahega. Aapka budget kya hai?"
             : "For kids, I’d suggest Choco Stick Chocolate, Choco Stick Strawberry, Coco Choco Can, Wafer Rolls Strawberry, Wafer Rolls Hazelnut, Patata Salty, and a Kids Fun Box. The Kids Fun Box is a good ready-made mix. What’s your budget?",
           "kids",
+          language,
         );
       case "movie_night_recommendation":
         return this.buildCuratedRecommendationResponse(
@@ -2297,6 +2722,7 @@ YouTube: ${youtube}`;
             ? "Movie night ke liye crunchy aur shareable snacks best rehte hain, jaise Movie Night Nachos Bundle, Snakitos Stix Party, Patata Crunch Deal, Nachos Salsa, aur Ultimate Snack Deal. Kitne logon ke liye order karna hai?"
             : "Great! For movie night, I recommend crunchy and shareable snacks like a Movie Night Nachos Bundle, Snakitos Stix Party, Patata Crunch Deal, Nachos Salsa, and Ultimate Snack Deal. How many people are you ordering for?",
           "movie night",
+          language,
         );
       case "gaming_netflix_recommendation":
         return this.buildCuratedRecommendationResponse(
@@ -2304,6 +2730,7 @@ YouTube: ${youtube}`;
           "gaming netflix crunchy nachos stix patata banana chips",
           "For Netflix or gaming, go for crunchy snacks like Nachos Salsa, Patata Masala, Stix Peri Peri, Banana Chips, and a Movie Night Nachos Bundle. Want a sweet item added too? Choco Stick or Wafer Rolls pair nicely.",
           "gaming",
+          language,
         );
       case "office_recommendation":
         return this.buildCuratedRecommendationResponse(
@@ -2313,6 +2740,7 @@ YouTube: ${youtube}`;
             ? "Office snacking ke liye Office Snack Box, All Time Favorites, Banana Chips Sea Salt, Wafer Rolls, Patata Salty, aur ChickPea Puffs achay options hain. Ye share karna easy hota hai aur sweet + savory mix bhi mil jata hai. Team mein kitne log hain?"
             : "For office snacking, I’d recommend Office Snack Box, All Time Favorites, Banana Chips Sea Salt, Wafer Rolls, Patata Salty, and ChickPea Puffs. These are easy to share and give a good sweet + savory mix. How many people are in your team?",
           "office",
+          language,
         );
       case "gifting_recommendation":
         return this.buildCuratedRecommendationResponse(
@@ -2322,6 +2750,7 @@ YouTube: ${youtube}`;
             ? "Gift ke liye Ultimate Mega Snack Box, All Time Favorites, Choco Lovers Bundle, ya Snakitos Flavor Fiesta Bundle achay options hain. Individual packs ke muqable mein in mein zyada variety milti hai. Ye gift kids, family, office, ya kisi dost ke liye hai?"
             : "Nice idea! For gifting, I’d recommend an Ultimate Mega Snack Box, All Time Favorites, a Choco Lovers Bundle, or a Snakitos Flavor Fiesta Bundle. These feel better than individual packs because they give more variety. Is this gift for kids, family, office, or a friend?",
           "gifting",
+          language,
         );
       case "party_recommendation":
         return this.buildCuratedRecommendationResponse(
@@ -2329,6 +2758,7 @@ YouTube: ${youtube}`;
           "party pleaser bundle mega snack box fiesta bundle nachos stix party",
           "For parties, I’d recommend a Party Pleaser Bundle, Ultimate Mega Snack Box, Snakitos Flavor Fiesta Bundle, Nachos packs, and Stix Party. These are shareable and give good variety. How many guests are you expecting?",
           "party",
+          language,
         );
       case "tea_time_recommendation":
         return this.buildCuratedRecommendationResponse(
@@ -2336,6 +2766,7 @@ YouTube: ${youtube}`;
           "tea time wafer rolls choco sticks patata puffs banana chips",
           "For tea time, I’d suggest Wafer Rolls, Choco Sticks, Patata Salty, ChickPea Puffs, and Banana Chips Sea Salt. If you want variety, All Time Favorites is a good option.",
           "tea time",
+          language,
         );
       case "budget_recommendation":
         return this.buildBudgetResponse(userMessage, budget, language);
@@ -2484,7 +2915,7 @@ YouTube: ${youtube}`;
             message:
               "Here’s the quick policy overview:\n\nShipping: orders are processed within 1-2 business days after payment confirmation. Delivery usually takes 2-5 business days after order fulfillment depending on the destination city. Shipping rates are calculated at checkout, and tracking number is sent by email after shipment.\n\nReturns and refunds: eligible returns are allowed within 14 calendar days if the item is unused and in original packaging. Food products are non-refundable unless they arrive damaged or defective. Exchanges are only for defective or damaged items.",
             userMessage,
-            policyLink: "https://snakitos.com/policies/",
+            policyLink: "https://snakitos.com/policies/privacy-policy",
             options: [
               { label: "Track Order", value: "track my order" },
               { label: "Talk to Support", value: "talk to support" },
@@ -2546,16 +2977,16 @@ YouTube: ${youtube}`;
         return {
           intent: "general",
           response: await this.buildResponseWithSuggestions({
-            type: "fallback",
+            type: "product",
             message: this.buildHowToOrderMessage(language),
             userMessage,
+            suggestionSeed: "popular snacks best sellers",
             options: [
               { label: "Deals", value: "show best deals" },
               { label: "Recommendations", value: "recommend something" },
               { label: "Home", value: "home" },
               { label: "Back", value: "show categories" },
             ],
-            skipSuggestions: true,
           }),
         };
       case "cod_query":
@@ -2597,7 +3028,7 @@ YouTube: ${youtube}`;
         return {
           intent: "general",
           response: await this.buildResponseWithSuggestions({
-            type: "fallback",
+            type: "product",
             message: this.buildRefundOrReplacementMessage(language),
             userMessage,
             options: [
@@ -2605,7 +3036,7 @@ YouTube: ${youtube}`;
               { label: "Home", value: "home" },
               { label: "Back", value: "show categories" },
             ],
-            skipSuggestions: true,
+            suggestionSeed: "popular snacks best sellers",
           }),
         };
         return this.buildEscalationPolicyResponse(
@@ -2931,6 +3362,8 @@ YouTube: ${youtube}`;
   ): Partial<ConversationState> {
     const next: Partial<ConversationState> = {
       last_intent: classified.intent,
+      last_language: classified.language === "mixed" ? "roman_urdu" : classified.language,
+      language_locked: true,
       last_topic: classified.category || classified.taste || classified.occasion || classified.intent,
       active_product_name: classified.productName || classified.category || "",
     };
@@ -3060,10 +3493,17 @@ YouTube: ${youtube}`;
     query: string,
     message: string,
     rankingMessage: string,
+    language?: ClassifiedIntent["language"],
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
     return {
       intent: "product",
-      response: await this.buildCuratedRecommendationResponseText(userMessage, query, message, rankingMessage),
+      response: await this.buildCuratedRecommendationResponseText(
+        userMessage,
+        query,
+        message,
+        rankingMessage,
+        language,
+      ),
     };
   }
 
@@ -3072,20 +3512,29 @@ YouTube: ${youtube}`;
     query: string,
     message: string,
     rankingMessage?: string,
+    resolvedLanguage?: ClassifiedIntent["language"],
   ): Promise<string> {
-    let finalMessage = message;
+    const language = resolvedLanguage ?? this.detectSnakitosLanguage(userMessage);
+    let finalMessage =
+      this.localizeRegionalRecommendationIntro(userMessage, rankingMessage) ??
+      this.localizeRecommendationIntro(message, rankingMessage, language);
     if (rankingMessage === "kids") {
-      finalMessage = this.prefersRomanUrdu(this.detectSnakitosLanguage(userMessage))
+      finalMessage = language === "urdu"
+        ? "Kids-friendly options میں Choco Stick, Coco Choco Can, Wafer Rolls اور Patata Salty mild picks ہیں۔"
+        : this.prefersRomanUrdu(language)
         ? "Kids-friendly options mein Choco Stick, Coco Choco Can, Wafer Rolls Strawberry, Patata Salty, aur Kids Fun Box achay choices hain. Ye taste mein mild hote hain aur sharing ke liye bhi theek rehte hain."
         : "Kids-friendly options include Choco Stick Chocolate, Choco Stick Strawberry, Coco Choco Can, Wafer Rolls Strawberry, Patata Salty, and the Kids Fun Box. These are milder picks and work well for sharing.";
     }
-    const products = await this.getProductsForStructuredQuery(query, rankingMessage || userMessage);
+    const products = await this.getProductsForStructuredQuery(
+      query,
+      rankingMessage ?? userMessage,
+    );
     const freeShippingHint = this.buildFreeShippingHint(products);
     return this.buildResponseWithSuggestions({
       type: "product",
       message: [finalMessage, freeShippingHint].filter(Boolean).join("\n\n"),
       userMessage,
-      products: this.buildProductCards(products, rankingMessage || userMessage),
+      products: this.buildProductCards(products, userMessage),
       options: [
         { label: "Back", value: "show categories" },
         { label: "Home", value: "home" },
@@ -3094,16 +3543,158 @@ YouTube: ${youtube}`;
     });
   }
 
+  private localizeRecommendationIntro(
+    fallbackMessage: string,
+    rankingMessage: string | undefined,
+    language: ClassifiedIntent["language"],
+  ): string {
+    const normalized = (rankingMessage ?? "").toLowerCase();
+    if (language === "urdu" && /sweet/.test(normalized)) {
+      return "میٹھے snacks کے لیے یہ Snakitos options اچھے رہیں گے۔";
+    }
+
+    if (language === "urdu") {
+      if (/spicy/.test(normalized)) {
+        return "اگر آپ کو spicy snacks پسند ہیں تو یہ Snakitos کے strong picks ہیں۔";
+      }
+      if (/sweet/.test(normalized)) {
+        return "Sweet craving کے لیے یہ Snakitos options اچھے رہیں گے۔";
+      }
+      if (/salty|mild/.test(normalized)) {
+        return "Mild اور salty snacks کے لیے یہ بہترین options ہیں۔";
+      }
+      if (/mixed/.test(normalized)) {
+        return "Mixed snacks کے لیے یہ options variety اور value دونوں دیتے ہیں۔";
+      }
+      if (/best deals?/.test(normalized)) {
+        return "یہ کچھ اچھی ویلیو والی Snakitos deals ہیں۔";
+      }
+    }
+
+    if (this.prefersRomanUrdu(language)) {
+      if (/spicy/.test(normalized)) {
+        return "Agar aapko spicy snacks pasand hain to yeh Snakitos ke strong picks hain.";
+      }
+      if (/sweet/.test(normalized)) {
+        return "Sweet craving ke liye yeh Snakitos options achay rahenge.";
+      }
+      if (/salty|mild/.test(normalized)) {
+        return "Mild aur salty snacks ke liye yeh best options hain.";
+      }
+      if (/mixed/.test(normalized)) {
+        return "Mixed snacks ke liye yeh options variety aur value dono dete hain.";
+      }
+      if (/best deals?/.test(normalized)) {
+        return "Yahan kuch strong-value Snakitos deals hain.";
+      }
+    }
+
+    return fallbackMessage;
+  }
+
+  private localizeRegionalRecommendationIntro(
+    userMessage: string,
+    rankingMessage: string | undefined,
+  ): string | null {
+    const normalizedMessage = this.normalizeSnakitosMessage(userMessage);
+    const normalizedRanking = (rankingMessage ?? "").toLowerCase();
+    const isSindhi = /[ٻڄڃڊڙڳڻ۾]|مٺ|ڏيکار|سٺ|ٻارن|مصالحيدار|سنئڪس|سنيڪس/i.test(
+      normalizedMessage,
+    );
+    const isPashto = /[ښږڅځ]|وښایاست|غوره|خواږ|ماشوم|مالګ|توند|مساله دار/i.test(
+      normalizedMessage,
+    );
+    const isPunjabi = /(ودھیا|چنگا|دسو|چاہیدا|مرچاں|مٹھا|بچیاں|بچیاں)/i.test(
+      normalizedMessage,
+    );
+
+    if (!isSindhi && !isPashto && !isPunjabi) {
+      return null;
+    }
+
+    const topic = /kids/.test(normalizedRanking)
+      ? "kids"
+      : /spicy/.test(normalizedRanking)
+        ? "spicy"
+        : /sweet/.test(normalizedRanking)
+          ? "sweet"
+          : /salty|mild/.test(normalizedRanking)
+            ? "salty"
+            : "general";
+
+    if (isSindhi) {
+      const messages: Record<string, string> = {
+        spicy: "هي Snakitos جا مصالحيدار snacks آهن، جيڪي توهان کي پسند اچي سگهن ٿا.",
+        sweet: "هي مٺا Snakitos snacks آهن، جيڪي توهان کي پسند اچي سگهن ٿا.",
+        salty: "هي هلڪا ۽ نمڪين Snakitos options آهن.",
+        kids: "ٻارن لاءِ هي هلڪا ۽ مزيدار Snakitos options آهن.",
+        general: "هي Snakitos جا ڪجهه سٺا options آهن.",
+      };
+      return messages[topic];
+    }
+
+    if (isPashto) {
+      const messages: Record<string, string> = {
+        spicy: "دا د Snakitos مساله دار snacks دي چې تاسو یې خوښولای شئ.",
+        sweet: "دا د Snakitos خواږه snacks دي چې تاسو یې خوښولای شئ.",
+        salty: "دا د Snakitos نرم او مالګین options دي.",
+        kids: "د ماشومانو لپاره دا نرم او ښه Snakitos options دي.",
+        general: "دا د Snakitos څو ښه options دي.",
+      };
+      return messages[topic];
+    }
+
+    const messages: Record<string, string> = {
+      spicy: "ایہ Snakitos دے ودھیا spicy options نیں.",
+      sweet: "ایہ Snakitos دے ودھیا میٹھے options نیں.",
+      salty: "ایہ Snakitos دے ہلکے تے نمکین options نیں.",
+      kids: "بچیاں لئی ایہ Snakitos دے ہلکے تے مزے دار options نیں.",
+      general: "ایہ Snakitos دے کچھ ودھیا options نیں.",
+    };
+    return messages[topic];
+  }
+
   private async buildCategoryResponse(
     userMessage: string,
     category: string,
+    language: ClassifiedIntent["language"],
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
     const products = await this.getProductsForStructuredQuery(category, category);
+    if (this.isSpicyBananaChipsRequest(userMessage, category)) {
+      const message =
+        language === "urdu"
+          ? "Spicy Banana Chips کے نام سے الگ product ابھی واضح طور پر available نہیں ہے۔ یہ available Banana Chips flavours ہیں۔"
+          : this.prefersRomanUrdu(language)
+            ? "Spicy Banana Chips ke naam se separate product abhi available nahin lag raha. Yeh available Banana Chips flavours hain."
+            : "I could not find a separate product named Spicy Banana Chips right now. Here are the available Banana Chips flavours.";
+
+      return {
+        intent: "product",
+        response: await this.buildResponseWithSuggestions({
+          type: "product",
+          message,
+          userMessage,
+          products: this.buildProductCards(products, category),
+          options: [
+            { label: "Best Deals", value: "show best deals" },
+            { label: "Recommendations", value: "recommend something" },
+            { label: "Home", value: "home" },
+          ],
+          skipSuggestions: true,
+        }),
+      };
+    }
+    const message =
+      language === "urdu"
+        ? `${category} کے لیے یہ بہترین matching Snakitos options ہیں۔ Details اور latest price کے لیے product page کھول سکتے ہیں۔`
+        : this.prefersRomanUrdu(language)
+          ? `${category} ke liye yeh best matching Snakitos options hain. Product page open kar ke details aur latest price check kar sakte hain.`
+          : `Here are the best ${category} options I found. Open a product page to check details and the latest price.`;
     return {
       intent: "product",
       response: await this.buildResponseWithSuggestions({
         type: "product",
-        message: `Sure! Here are the ${category} options I found:\n\n${category} pairs nicely with a related snack or a bundle if you want more variety. Do you want spicy, mild, or a combo option?`,
+        message,
         userMessage,
         products: this.buildProductCards(products, category),
         options: [
@@ -3114,6 +3705,21 @@ YouTube: ${youtube}`;
         skipSuggestions: true,
       }),
     };
+  }
+
+  private isProductFamilyCategory(value: string): boolean {
+    return /^(banana chips|nachos|stix|patata|choco sticks|wafer rolls|chickpea puffs)$/i.test(
+      value.trim(),
+    );
+  }
+
+  private isSpicyBananaChipsRequest(userMessage: string, category: string): boolean {
+    return (
+      /^banana chips$/i.test(category.trim()) &&
+      /(spicy|teekha|teekhay|masala|masalay|مصالحہ|مسالہ|تیکھا|مرچ|اسپائسی)/i.test(
+        this.normalizeSnakitosMessage(userMessage),
+      )
+    );
   }
 
   private async buildBudgetResponse(
@@ -3286,22 +3892,54 @@ YouTube: ${youtube}`;
     query: string,
     rankingMessage: string,
   ): Promise<ProductLookupResult[]> {
-    const exact = await shopifyService.searchProducts(query).catch(() => []);
-    const direct = exact.length > 0
-      ? this.selectProductsForResponse(exact, rankingMessage)
-      : await shopifyService.getStorefrontRecommendations(query, 30).catch(() => []);
+    const [exact, storefront] = await Promise.all([
+      shopifyService.searchProducts(query).catch(() => []),
+      shopifyService.getStorefrontRecommendations(query, 30).catch(() => []),
+    ]);
+    const direct = this.selectProductsForResponse(
+      this.mergeUniqueProducts(storefront, exact),
+      rankingMessage,
+    );
     const products = direct.length > 0 ? direct : await this.getFallbackProductRecommendations(query);
-    const selected = this.selectProductsForResponse(products, rankingMessage).slice(0, 6);
+    const selected = this.selectProductsForResponse(products, rankingMessage).slice(0, 12);
+    const fallbackNames = this.resolveFallbackStructuredProductNames(`${query} ${rankingMessage}`);
+    const shouldAnchorToNamedFallback =
+      fallbackNames.length > 0 && Boolean(this.resolveFocusedCategoryMatcher(rankingMessage));
+
     if (selected.length > 0) {
-      return selected;
+      const hydrated = await this.hydrateProductsForDisplay(selected, rankingMessage);
+      if (
+        !shouldAnchorToNamedFallback &&
+        (hydrated.length >= 3 || this.isHighTicketIntent(rankingMessage))
+      ) {
+        return hydrated;
+      }
+
+      if (fallbackNames.length === 0) {
+        return hydrated;
+      }
+
+      const rawFallbackProducts = await this.getProductsByNames(fallbackNames);
+      const fallbackProducts = shouldAnchorToNamedFallback
+        ? await shopifyService
+            .resolvePublishedProducts(rawFallbackProducts)
+            .catch(() => rawFallbackProducts)
+        : await this.hydrateProductsForDisplay(rawFallbackProducts, rankingMessage);
+      if (shouldAnchorToNamedFallback && fallbackProducts.length > 0) {
+        return fallbackProducts.slice(0, 6);
+      }
+
+      return this.selectProductsForResponse(
+        this.mergeUniqueProducts(hydrated, fallbackProducts),
+        rankingMessage,
+      ).slice(0, 6);
     }
 
-    const fallbackNames = this.resolveFallbackStructuredProductNames(`${query} ${rankingMessage}`);
     if (fallbackNames.length === 0) {
       return [];
     }
 
-    return this.getProductsByNames(fallbackNames);
+    return this.hydrateProductsForDisplay(await this.getProductsByNames(fallbackNames), rankingMessage);
   }
 
   private buildFreeShippingHint(products: ProductLookupResult[]): string {
@@ -3355,31 +3993,61 @@ YouTube: ${youtube}`;
   private async getProductsByNames(names: string[]): Promise<ProductLookupResult[]> {
     const matches = await Promise.all(
       names.map(async (name) => {
-        const results = await shopifyService.searchProducts(name).catch(() => []);
-        return results[0] ?? null;
+        const [exactResults, recommendationResults] = await Promise.all([
+          shopifyService.searchProducts(name).catch(() => []),
+          shopifyService.getStorefrontRecommendations(name, 12).catch(() => []),
+        ]);
+        const merged = this.mergeUniqueProducts(exactResults, recommendationResults);
+        const selected = this.selectProductsForResponse(merged, name);
+        const directSelected = selected.find((product) =>
+          /^https?:\/\/[^/]+\/products\//i.test(product.link),
+        );
+        return directSelected ?? selected[0] ?? exactResults[0] ?? null;
       }),
     );
 
-    return matches.filter((item): item is ProductLookupResult => Boolean(item)).slice(0, 6);
+    const namedProducts = matches.filter((item): item is ProductLookupResult => Boolean(item));
+    const titleCandidates = names.map((name, index): ProductLookupResult => ({
+      id: `fallback-title-${index + 1}`,
+      title: name,
+      handle: "",
+      link: "",
+      cartLink: "",
+      status: "ACTIVE",
+      source: "uploaded_catalog",
+      price: null,
+      description: null,
+      vendor: null,
+      productType: null,
+      tags: [],
+      availability: "unknown",
+      totalInventory: null,
+      variants: [],
+    }));
+
+    return shopifyService
+      .resolvePublishedProducts([...namedProducts, ...titleCandidates])
+      .catch(() => namedProducts);
+  }
+
+  private async hydrateProductsForDisplay(
+    products: ProductLookupResult[],
+    rankingMessage: string,
+  ): Promise<ProductLookupResult[]> {
+    if (products.length === 0) {
+      return [];
+    }
+
+    const liveProducts = await this.getProductsByNames(
+      products.map((product) => product.title).filter(Boolean),
+    );
+    const merged = this.mergeUniqueProducts(liveProducts, products);
+    const published = await shopifyService.resolvePublishedProducts(merged).catch(() => merged);
+    return this.selectProductsForResponse(published, rankingMessage).slice(0, 6);
   }
 
   private resolveFallbackStructuredProductNames(seed: string): string[] {
     const normalized = seed.toLowerCase();
-
-    if (/(deal|bundle|combo|value|family|party|gift)/i.test(normalized)) {
-      return [
-        "All Time Favorites",
-        "Office Snack Box",
-        "Movie Night Nachos Bundle",
-        "Flavor Fiesta Bundle",
-        "Party Pleaser Bundle",
-        "Choco Lovers Bundle",
-      ];
-    }
-
-    if (/nachos/i.test(normalized)) {
-      return ["Nachos Salsa", "Nachos Paprika", "Movie Night Nachos Bundle", "Nachos Pack Of 10"];
-    }
 
     if (/spicy/i.test(normalized)) {
       return [
@@ -3392,6 +4060,26 @@ YouTube: ${youtube}`;
       ];
     }
 
+    if (/banana/i.test(normalized)) {
+      return [
+        "Banana Chips Achari Masti",
+        "Banana Chips BBQ",
+        "Banana Chips Sea Salt",
+        "Banana Chips Cheese",
+      ];
+    }
+
+    if (/kids/i.test(normalized)) {
+      return [
+        "Choco Stick with Chocolate Spread",
+        "Choco Stick with Strawberry Spread",
+        "Wafer Rolls Dark Chocolate",
+        "Wafer Rolls Cappuccino",
+        "Patata Salty",
+        "Coco Choco Can",
+      ];
+    }
+
     if (/sweet|choco|wafer/i.test(normalized)) {
       return [
         "Choco Stick Chocolate",
@@ -3400,17 +4088,6 @@ YouTube: ${youtube}`;
         "Wafer Rolls Strawberry",
         "Coco Choco Can",
         "Choco Lovers Bundle",
-      ];
-    }
-
-    if (/kids/i.test(normalized)) {
-      return [
-        "Choco Stick Chocolate",
-        "Choco Stick Strawberry",
-        "Wafer Rolls Strawberry",
-        "Patata Salty",
-        "Coco Choco Can",
-        "Kids Fun Box",
       ];
     }
 
@@ -3436,6 +4113,21 @@ YouTube: ${youtube}`;
       ];
     }
 
+    if (/nachos/i.test(normalized)) {
+      return ["Nachos Salsa", "Nachos Paprika", "Movie Night Nachos Bundle", "Nachos Pack Of 10"];
+    }
+
+    if (/(deal|bundle|combo|value|family|party|gift)/i.test(normalized)) {
+      return [
+        "All Time Favorites",
+        "Office Snack Box",
+        "Movie Night Nachos Bundle",
+        "Flavor Fiesta Bundle",
+        "Party Pleaser Bundle",
+        "Choco Lovers Bundle",
+      ];
+    }
+
     return ["All Time Favorites", "Nachos Salsa", "Stix Peri Peri", "Choco Stick Chocolate"];
   }
 
@@ -3458,14 +4150,24 @@ YouTube: ${youtube}`;
     message: string,
     phone: string | undefined,
     recentMessages: Array<{ role: "user" | "bot"; content: string }>,
+    state: ConversationState,
   ): ReturnType<typeof detectIntent> {
     const current = detectIntent(message, phone);
     if (current.intent !== "order") {
       return current;
     }
 
-    if (current.orderId && current.phone) {
-      return current;
+    const phoneInMessage = extractPhoneNumber(message);
+    const currentPhone =
+      phoneInMessage ||
+      (!current.orderId && state.awaiting_input === "order_reference" ? current.phone : "");
+
+    if (current.orderId && currentPhone) {
+      return {
+        intent: "order",
+        orderId: current.orderId,
+        phone: currentPhone,
+      };
     }
 
     const recentUserMessages = recentMessages
@@ -3494,33 +4196,99 @@ YouTube: ${youtube}`;
 
     return {
       intent: "order",
-      orderId: current.orderId || previousOrderContext.orderId,
-      phone: current.phone || previousOrderContext.phone,
+      orderId:
+        current.orderId ||
+        (currentPhone && state.awaiting_input === "order_phone"
+          ? state.last_order_reference || previousOrderContext.orderId
+          : ""),
+      phone:
+        currentPhone ||
+        (current.orderId && state.awaiting_input === "order_reference"
+          ? state.last_order_phone || previousOrderContext.phone
+          : ""),
     };
   }
 
   private async handleOrderIntent(
     intentResult: ReturnType<typeof detectIntent>,
     userMessage: string,
+    chatId: string,
+    userId: string,
     clientKey?: string,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
-    const language = this.detectSnakitosLanguage(userMessage);
-    if (!intentResult.orderId || !intentResult.phone) {
+    const state = this.getConversationState(chatId, userId);
+    const language = this.resolveConversationLanguage(
+      userMessage,
+      state.last_language,
+      state.language_locked,
+    );
+    const phoneInMessage = extractPhoneNumber(userMessage);
+    const currentPhone =
+      phoneInMessage ||
+      (!intentResult.orderId && state.awaiting_input === "order_reference"
+        ? intentResult.phone
+        : "");
+    const resolvedOrderId =
+      intentResult.orderId ||
+      (currentPhone && state.awaiting_input === "order_phone"
+        ? state.last_order_reference
+        : "");
+    const resolvedPhone =
+      currentPhone ||
+      (intentResult.orderId && state.awaiting_input === "order_reference"
+        ? state.last_order_phone
+        : "");
+
+    this.saveConversationState(chatId, userId, {
+      last_language: language === "mixed" ? state.last_language : language,
+      language_locked: true,
+      last_topic: "order_tracking",
+      last_order_reference: resolvedOrderId,
+      last_order_phone: resolvedPhone,
+      awaiting_input:
+        resolvedOrderId && !resolvedPhone
+          ? "order_phone"
+          : resolvedPhone && !resolvedOrderId
+            ? "order_reference"
+            : !resolvedOrderId && !resolvedPhone
+              ? "order_details"
+              : "",
+    });
+
+    if (!resolvedOrderId || !resolvedPhone) {
       const noOrderNumber =
         /(i don't have order no|i dont have order no|i don't have order number|i dont have order number|don't have order number|do not have order number|don't have order no|dont have order no|no order number|no order no|order number nahi hai|order no nahi hai|ordar no nahi hai|order id bhool gaya)/i.test(
           this.normalizeSnakitosMessage(userMessage),
         );
+      const hasOrderIdOnly = Boolean(resolvedOrderId) && !resolvedPhone;
+      const hasPhoneOnly = Boolean(resolvedPhone) && !resolvedOrderId;
       return {
         intent: "order",
         response: await this.buildResponseWithSuggestions({
           type: "fallback",
-          message: noOrderNumber
-            ? this.prefersRomanUrdu(language)
-              ? "No problem. Please woh phone number share kar dein jo aapne checkout ke time use kiya tha. Support us number se aapka order locate kar sakta hai."
-              : "No problem. Please share the phone number you used at checkout so support can locate your order."
-            : this.prefersRomanUrdu(language)
-              ? "Zaroor, main help karta hoon. Please apna order number ya checkout wala phone number share kar dein taake support aapka order status check kar sake."
-              : "Sure, I can help track it. Please share your order number or the phone number used when placing the order so support can check the status.",
+          message: hasOrderIdOnly
+            ? language === "urdu"
+              ? `Order number ${resolvedOrderId} مل گیا۔ اب براہ کرم checkout پر استعمال کیا گیا phone number share کریں تاکہ میں order verify کر سکوں۔`
+              : this.prefersRomanUrdu(language)
+                ? `Order number ${resolvedOrderId} mil gaya. Ab please woh phone number share kar dein jo aapne order place karte waqt use kiya tha taake main order verify karke status dikha sakoon.`
+                : `I have your order number ${resolvedOrderId}. Please also share the phone number used at checkout so I can verify the order and show its status.`
+            : hasPhoneOnly
+              ? language === "urdu"
+                ? "Phone number مل گیا۔ اب براہ کرم order number بھی share کریں تاکہ میں صحیح order verify کر سکوں۔"
+                : this.prefersRomanUrdu(language)
+                  ? "Phone number mil gaya. Ab please apna order number bhi share kar dein taake main sahi order ka live status verify kar sakoon."
+                  : "I have the phone number now. Please also share your order number so I can verify the correct order and check its live status."
+              : noOrderNumber
+                ? language === "urdu"
+                  ? "کوئی مسئلہ نہیں۔ براہ کرم checkout والا phone number share کریں تاکہ support آپ کا order locate کر سکے۔"
+                  : this.prefersRomanUrdu(language)
+                    ? "No problem. Please woh phone number share kar dein jo aapne checkout ke time use kiya tha. Support us number se aapka order locate kar sakta hai."
+                    : "No problem. Please share the phone number you used at checkout so support can locate your order."
+                : language === "urdu"
+                  ? "ضرور، میں help کرتا ہوں۔ براہ کرم order number یا checkout والا phone number share کریں تاکہ status check ہو سکے۔"
+                  : this.prefersRomanUrdu(language)
+                    ? "Zaroor, main help karta hoon. Please apna order number ya checkout wala phone number share kar dein taake support aapka order status check kar sake."
+                    : "Sure, I can help track it. Please share your order number or the phone number used when placing the order so support can check the status.",
           userMessage,
           options: [
             { label: "Back", value: "show categories" },
@@ -3550,19 +4318,31 @@ YouTube: ${youtube}`;
 
     let order;
     try {
-      order = await shopifyService.getVerifiedOrder(intentResult.orderId, intentResult.phone);
+      order = await shopifyService.getVerifiedOrder(resolvedOrderId, resolvedPhone);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Order lookup failed";
       this.runInBackground(
         this.logEvent("order_lookup_error", {
-          orderId: intentResult.orderId,
+          orderId: resolvedOrderId,
           error: errorMessage,
         }),
       );
 
       return {
         intent: "order",
-        response: formatWhatsAppFallback("I could not access the order system right now."),
+        response: await this.buildResponseWithSuggestions({
+          type: "fallback",
+          message: this.prefersRomanUrdu(language)
+            ? "Main order system se abhi live status nahi nikal saka. Please aik martaba dobara try karein. Agar masla rahe to WhatsApp support turant help kar dega."
+            : "I couldn't fetch the live order status just now. Please try once again. If the issue continues, WhatsApp support can help right away.",
+          userMessage,
+          options: [
+            { label: "Track Order", value: resolvedOrderId },
+            { label: "Talk to Support", value: "How can I contact support?" },
+            { label: "Home", value: "home" },
+          ],
+          skipSuggestions: true,
+        }),
       };
     }
 
@@ -3570,7 +4350,7 @@ YouTube: ${youtube}`;
       const failureState = recordOrderVerificationFailure(clientKey ?? "");
       this.runInBackground(
         this.logEvent("order_verification_failed", {
-          orderId: intentResult.orderId,
+          orderId: resolvedOrderId,
           remainingAttempts: failureState.remainingAttempts,
           blocked: failureState.blocked,
         }),
@@ -3597,6 +4377,14 @@ YouTube: ${youtube}`;
     }
 
     clearOrderVerificationFailures(clientKey ?? "");
+    this.saveConversationState(chatId, userId, {
+      last_order_reference: "",
+      last_order_phone: "",
+      last_language: language === "mixed" ? state.last_language : language,
+      language_locked: true,
+      last_topic: "order_tracking",
+      awaiting_input: "",
+    });
 
     const context: AgentContext = {
       order: {
@@ -3618,7 +4406,7 @@ YouTube: ${youtube}`;
 
     return {
       intent: "order",
-      response: await this.buildOrderResponse(context.order ?? order, userMessage),
+      response: await this.buildOrderResponse(context.order ?? order, userMessage, language),
       data: order,
     };
   }
@@ -3727,7 +4515,10 @@ YouTube: ${youtube}`;
         referencedProduct || productQuery || userMessage,
       );
       if (fallbackProducts.length > 0) {
-        const curatedProducts = this.selectProductsForResponse(fallbackProducts, userMessage);
+        const curatedProducts = await this.hydrateProductsForDisplay(
+          this.selectProductsForResponse(fallbackProducts, userMessage),
+          userMessage,
+        );
         return {
           intent: "product",
           response: await this.buildProductResponse(curatedProducts, userMessage),
@@ -3746,7 +4537,10 @@ YouTube: ${youtube}`;
         referencedProduct || productQuery || userMessage,
       );
       if (fallbackProducts.length > 0) {
-        const curatedProducts = this.selectProductsForResponse(fallbackProducts, userMessage);
+        const curatedProducts = await this.hydrateProductsForDisplay(
+          this.selectProductsForResponse(fallbackProducts, userMessage),
+          userMessage,
+        );
         return {
           intent: "product",
           response: await this.buildProductResponse(curatedProducts, userMessage),
@@ -3771,7 +4565,10 @@ YouTube: ${youtube}`;
       };
     }
 
-    const curatedProducts = this.selectProductsForResponse(products, userMessage);
+    const curatedProducts = await this.hydrateProductsForDisplay(
+      this.selectProductsForResponse(products, userMessage),
+      userMessage,
+    );
     const shouldAnswerDirectly = this.shouldAnswerProductQuestionDirectly(
       userMessage,
       referencedProduct || productQuery,
@@ -3963,9 +4760,30 @@ YouTube: ${youtube}`;
 
   private async getFallbackProductRecommendations(query: string): Promise<ProductLookupResult[]> {
     try {
-      return await shopifyService.getStorefrontRecommendations(query, 50);
+      const recommendations = await shopifyService.getStorefrontRecommendations(query, 50);
+      const publishedRecommendations = await shopifyService
+        .resolvePublishedProducts(recommendations)
+        .catch(() => recommendations);
+      const directRecommendations = recommendations.filter((product) =>
+        product.link.includes("/products/"),
+      );
+      if (publishedRecommendations.length > 0) {
+        return publishedRecommendations;
+      }
+
+      if (directRecommendations.length > 0) {
+        return directRecommendations;
+      }
+
+      const fallbackNames = this.resolveFallbackStructuredProductNames(query);
+      if (fallbackNames.length === 0) {
+        return recommendations;
+      }
+
+      return this.getProductsByNames(fallbackNames);
     } catch {
-      return [];
+      const fallbackNames = this.resolveFallbackStructuredProductNames(query);
+      return fallbackNames.length > 0 ? this.getProductsByNames(fallbackNames) : [];
     }
   }
 
@@ -4684,7 +5502,7 @@ YouTube: ${youtube}`;
         normalized,
       );
     const alreadySpecific =
-      /\b(spicy|sweet|mixed|salty|kids|adults|budget|under\s*\d+|rs\.?\s*\d+|imported|banana|nachos|wafer|multigrain|multi grain|family|sharing)\b/i.test(
+      /\b(spicy|sweet|mixed|salty|kids|adults|budget|under\s*\d+|rs\.?\s*\d+|imported|banana|nachos|wafer|multigrain|multi grain|family|sharing|chips|best chips|stix|patata|chocolate|choco|healthy|deal|bundle|office|party|gift)\b/i.test(
         normalized,
       );
 
@@ -4698,11 +5516,11 @@ YouTube: ${youtube}`;
       );
 
     const message = isOccasion
-      ? "Happy to help. Before I recommend the best picks, how many people will be sharing, and do you prefer spicy, sweet, or mixed snacks?"
-      : "Sure. To recommend the best snacks, tell me your taste preference and budget. For example: spicy under 3000, sweet for gifting, or mixed snacks for 4 people.";
+      ? "Happy to help. I picked a few strong options below. If you want, I can narrow them further for sharing size, occasion, or flavor."
+      : "Sure. I picked a few strong Snakitos options below. If you want, I can narrow them by taste, budget, or occasion next.";
 
     return this.buildResponseWithSuggestions({
-      type: "fallback",
+      type: "product",
       message,
       userMessage,
       options: [
@@ -4711,7 +5529,7 @@ YouTube: ${youtube}`;
         { label: "Mixed", value: "Recommend mixed snacks" },
         { label: "Home", value: "home" },
       ],
-      skipSuggestions: true,
+      suggestionSeed: "popular snacks best sellers",
     });
   }
 
@@ -4740,7 +5558,7 @@ YouTube: ${youtube}`;
 
     if (/(what flavors|which flavors|flavors are available|flavours are available|kon se flavors hain|kya flavors hain|flavour kya hain)/i.test(normalized)) {
       const products = await this.getFallbackProductRecommendations("popular snack flavors");
-      const curated = this.selectProductsForResponse(products, "spicy sweet salty cheesy snacks");
+      const curated = this.selectProductsForResponse(products, userMessage);
       return this.buildResponseWithSuggestions({
         type: "product",
         message:
@@ -4758,7 +5576,7 @@ YouTube: ${youtube}`;
 
     if (/(which snacks are spicy|spicy snacks|spicy chips|hot snacks|teekhay snacks|teekha snacks|spicy chips chahiye)/i.test(normalized)) {
       const products = await this.getFallbackProductRecommendations("spicy snack best sellers");
-      const curated = this.selectProductsForResponse(products, "spicy snacks");
+      const curated = this.selectProductsForResponse(products, userMessage);
       return this.buildResponseWithSuggestions({
         type: "product",
         message: "If you love spicy snacks, these are strong picks to start with.",
@@ -4774,7 +5592,7 @@ YouTube: ${youtube}`;
 
     if (/(sweet snacks|which snacks are sweet|sweet snack|meethay snacks|meetha snack|sweet chahiye)/i.test(normalized)) {
       const products = await this.getFallbackProductRecommendations("sweet tooth snack deals");
-      const curated = this.selectProductsForResponse(products, "sweet snacks");
+      const curated = this.selectProductsForResponse(products, userMessage);
       return this.buildResponseWithSuggestions({
         type: "product",
         message: "If you're in the mood for sweet snacks, these are a great place to start.",
@@ -4790,7 +5608,7 @@ YouTube: ${youtube}`;
 
     if (/(best sellers|best seller|trending|popular products|best seller dikhao|popular snacks|trending snacks)/i.test(normalized)) {
       const products = await this.getFallbackProductRecommendations("best selling snack deals");
-      const curated = this.selectProductsForResponse(products, "best selling snack deals");
+      const curated = this.selectProductsForResponse(products, userMessage);
       return this.buildResponseWithSuggestions({
         type: "product",
         message: "These are some of the strongest Snakitos picks shoppers usually go for.",
@@ -4806,7 +5624,7 @@ YouTube: ${youtube}`;
 
     if (/(suitable for kids|for kids|kids snacks|bachon ke liye snacks|kids ke liye snacks)/i.test(normalized)) {
       const products = await this.getFallbackProductRecommendations("sweet mild snacks for kids");
-      const curated = this.selectProductsForResponse(products, "sweet mild snacks");
+      const curated = this.selectProductsForResponse(products, userMessage);
       return this.buildResponseWithSuggestions({
         type: "product",
         message:
@@ -5109,25 +5927,20 @@ YouTube: ${youtube}`;
     );
     const productPayload = this.buildProductCards(displayProducts, userMessage);
     const bestMatch = displayProducts[0];
-    const names = displayProducts.map((product) => product.title);
     const category = this.extractKnownCategory(userMessage);
     const isDiscoveryStyleQuery = this.looksLikeProductDiscovery(userMessage);
-    let message =
-      category || isDiscoveryStyleQuery
-        ? category
-          ? `Here are the best ${category} options to start with:`
-          : "Here are the best matching options to start with:"
-        : "Here are the best details to start with:";
+    const language = this.detectSnakitosLanguage(userMessage);
+    let message = this.buildConciseProductRecommendationIntro({
+      category,
+      isDiscoveryStyleQuery,
+      language,
+    });
 
-    if (bestMatch) {
-      const crispDescription = this.extractDirectProductDescription(bestMatch, userMessage);
-      const productListLine =
-        names.length > 1
-          ? category
-            ? `Recommended picks: ${names.join(", ")}.`
-            : `Top picks: ${names.join(", ")}.`
-          : `${names[0]}.`;
-      message = `${message}\n\n${productListLine}\n\n${crispDescription}`;
+    if (bestMatch && !category && !isDiscoveryStyleQuery) {
+      const crispDescription = this.shortenProductAnswerContent(
+        this.extractDirectProductDescription(bestMatch, userMessage),
+      );
+      message = `${message}\n\n${crispDescription}`;
     }
 
     return this.buildResponseWithSuggestions({
@@ -5143,11 +5956,46 @@ YouTube: ${youtube}`;
     });
   }
 
+  private buildConciseProductRecommendationIntro(input: {
+    category: string | null;
+    isDiscoveryStyleQuery: boolean;
+    language: "english" | "roman_urdu" | "mixed" | "urdu";
+  }): string {
+    const categoryLabel = input.category ?? "";
+
+    if (input.language === "urdu") {
+      if (categoryLabel) {
+        return `یہ ${categoryLabel} کے چند اچھے آپشنز ہیں۔`;
+      }
+      return input.isDiscoveryStyleQuery
+        ? "یہ چند بہترین آپشنز ہیں جو آپ کو پسند آ سکتے ہیں۔"
+        : "یہ شروع کرنے کے لیے بہترین تفصیل ہے۔";
+    }
+
+    if (this.prefersRomanUrdu(input.language)) {
+      if (categoryLabel) {
+        return `Yeh ${categoryLabel} ke kuch achay options hain.`;
+      }
+      return input.isDiscoveryStyleQuery
+        ? "Yeh kuch behtareen options hain jo aap ko pasand aa sakte hain."
+        : "Yeh start karne ke liye best detail hai.";
+    }
+
+    if (categoryLabel) {
+      return `Here are a few great ${categoryLabel} options you might like.`;
+    }
+
+    return input.isDiscoveryStyleQuery
+      ? "Here are a few products that match what you're looking for."
+      : "Here are the best details to start with.";
+  }
+
   private selectProductsForResponse(
     products: ProductLookupResult[],
     userMessage: string,
   ): ProductLookupResult[] {
     const rankedProducts = this.rankProductsForDisplay(products, userMessage);
+    const budgetCap = this.extractBudgetCap(userMessage);
     const isDealsRequest = this.isHighTicketIntent(userMessage);
     const rankedOrOriginal = rankedProducts.length > 0 ? rankedProducts : products;
     const highValueDeals = isDealsRequest
@@ -5163,10 +6011,129 @@ YouTube: ${youtube}`;
           ]
         : rankedOrOriginal;
 
-    return this.sortProductsForPresentation(
+    const sorted = this.sortProductsForPresentation(
       orderedProducts,
       userMessage,
+    );
+    const budgetFiltered =
+      budgetCap && budgetCap > 0
+        ? sorted.filter((product) => {
+            const price = this.parseDisplayPrice(product.price);
+            return price > 0 && price <= budgetCap;
+          })
+        : [];
+    const budgetAware = budgetFiltered.length > 0 ? budgetFiltered : sorted;
+    const focusedMatches = this.getFocusedCategoryMatches(budgetAware, userMessage);
+    const categoryAware = focusedMatches.length > 0 ? focusedMatches : budgetAware;
+    const canonicalDirect = budgetAware.filter((product) =>
+      /^https?:\/\/[^/]+\/products\//i.test(product.link),
+    );
+    const categoryCanonicalDirect = categoryAware.filter((product) =>
+      /^https?:\/\/[^/]+\/products\//i.test(product.link),
+    );
+    const directLinked = categoryAware.filter((product) => product.link.includes("/products/"));
+
+    return (
+      categoryCanonicalDirect.length > 0
+        ? categoryCanonicalDirect
+        : canonicalDirect.length > 0
+          ? canonicalDirect
+        : directLinked.length > 0
+          ? directLinked
+          : categoryAware
     ).slice(0, DEFAULT_SUGGESTION_LIMIT);
+  }
+
+  private getFocusedCategoryMatches(
+    products: ProductLookupResult[],
+    userMessage: string,
+  ): ProductLookupResult[] {
+    if (this.isHighTicketIntent(userMessage) || this.isPopularIntent(userMessage)) {
+      return [];
+    }
+
+    const normalized = userMessage.toLowerCase();
+    const matcher = this.resolveFocusedCategoryMatcher(normalized);
+    if (!matcher) {
+      return [];
+    }
+
+    const matches = products.filter((product) => {
+      const title = product.title.toLowerCase();
+      const searchText = [
+        product.title,
+        product.handle,
+        product.productType,
+        product.tags.join(" "),
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      if (!matcher(searchText)) {
+        return false;
+      }
+
+      return !/(deal|bundle|combo|box|fiesta|party|mega|ultimate)/i.test(title);
+    });
+
+    return matches.length > 0 ? matches : products.filter((product) => matcher(
+      [
+        product.title,
+        product.handle,
+        product.productType,
+        product.tags.join(" "),
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase(),
+    ));
+  }
+
+  private resolveFocusedCategoryMatcher(
+    normalizedMessage: string,
+  ): ((value: string) => boolean) | null {
+    if (/\b(nachos|tortilla chips)\b/i.test(normalizedMessage)) {
+      return (value) => /\bnachos?\b/i.test(value);
+    }
+
+    if (/\b(banana|banana chips)\b/i.test(normalizedMessage)) {
+      return (value) => /banana/i.test(value);
+    }
+
+    if (/\b(chips|chip|crisps)\b/i.test(normalizedMessage)) {
+      return (value) => /(chips?|patata|potato|banana)/i.test(value);
+    }
+
+    if (/\b(spicy|teekha|teekhay|peri|masala|paprika|salsa|hot)\b/i.test(normalizedMessage)) {
+      return (value) => /(spicy|peri|masala|paprika|salsa|hot|achari|lemon.*chilli|chilli)/i.test(value);
+    }
+
+    if (/\b(sweet|meetha|meethay|mitha|mithay|choco|chocolate|wafer|strawberry|hazelnut)\b|سویٹ|میٹھا|میٹھی|میٹھے|مٹھا|مٹھی|مٹھے|مٹھاس|چاکلیٹ|ویفر/i.test(normalizedMessage)) {
+      return (value) => /(choco|chocolate|coco|wafer|strawberry|hazelnut|cappuccino)/i.test(value);
+    }
+
+    if (/\b(salty|namkeen|mild)\b/i.test(normalizedMessage)) {
+      return (value) => /(salty|sea salt|namkeen|chickpea|puffs?|stix salty|patata salty)/i.test(value);
+    }
+
+    if (/\b(kids?|children|bachon|bachy|school lunch)\b/i.test(normalizedMessage)) {
+      return (value) => /(choco|coco|wafer|strawberry|hazelnut|patata salty|salty)/i.test(value);
+    }
+
+    return null;
+  }
+
+  private extractBudgetCap(message: string): number | null {
+    const match =
+      message.match(/\b(?:under|below|max|upto|up to)\s*(?:rs\.?|pkr)?\s*(\d{2,6})\b/i) ??
+      message.match(/\b(?:rs\.?|pkr)\s*(\d{2,6})\b/i);
+    if (!match) {
+      return null;
+    }
+
+    const amount = Number.parseInt(match[1], 10);
+    return Number.isFinite(amount) && amount > 0 ? amount : null;
   }
 
   private buildPolicyKnowledge(
@@ -5234,11 +6201,7 @@ YouTube: ${youtube}`;
       );
     }
 
-    const intro = policyLink
-      ? "Here is the quick policy update from Snakitos."
-      : "Here is what I found for you.";
-
-    const message = [intro, ...snippets].join("\n\n");
+    const message = snippets.join("\n\n");
     const options = this.isPolicyQuestion(userMessage)
       ? [
           { label: "Shipping Policy", value: "show shipping and refund policy" },
@@ -5251,31 +6214,101 @@ YouTube: ${youtube}`;
           { label: "Home", value: "home" },
         ];
 
-    return this.buildResponseWithSuggestions({
-      type,
-      message,
-      userMessage,
-      policyLink,
+    return this.buildAiKnowledgeResponse({
+      fallbackMessage: message,
+      knowledge: topKnowledge,
       options,
-      skipSuggestions: type === "policy",
+      policyLink,
+      type,
+      userMessage,
+    });
+  }
+
+  private async buildAiKnowledgeResponse(input: {
+    fallbackMessage: string;
+    knowledge: Array<{
+      id: string;
+      name: string;
+      text: string;
+      link: string;
+      type: string;
+      category: string;
+      source: string;
+    }>;
+    options: Array<{ label: string; value: string }>;
+    policyLink: string;
+    type: "policy" | "mixed";
+    userMessage: string;
+  }): Promise<string> {
+    try {
+      const aiResponse = await aiService.generateResponse({
+        intent: "general",
+        userMessage: input.userMessage,
+        context: {
+          knowledge: input.knowledge,
+        },
+      });
+
+      const parsed = JSON.parse(aiResponse) as {
+        type?: "policy" | "mixed" | "fallback" | "product";
+        message?: string;
+      };
+
+      if (typeof parsed.message === "string" && parsed.message.trim()) {
+        return this.buildResponseWithSuggestions({
+          type:
+            parsed.type === "policy" || parsed.type === "mixed"
+              ? parsed.type
+              : input.type,
+          message: parsed.message.trim(),
+          userMessage: input.userMessage,
+          policyLink: input.policyLink,
+          options: input.options,
+          skipSuggestions: input.type === "policy",
+        });
+      }
+    } catch {
+      // Fall back to the deterministic response below.
+    }
+
+    return this.buildResponseWithSuggestions({
+      type: input.type,
+      message: input.fallbackMessage,
+      userMessage: input.userMessage,
+      policyLink: input.policyLink,
+      options: input.options,
+      skipSuggestions: input.type === "policy",
     });
   }
 
   private async buildOrderResponse(
     order: Partial<NonNullable<AgentContext["order"]>> | undefined,
     userMessage: string,
+    resolvedLanguage?: "english" | "roman_urdu" | "mixed" | "urdu",
   ): Promise<string> {
     const safeOrder = order ?? {};
+    const language = resolvedLanguage ?? this.detectSnakitosLanguage(userMessage);
     const tracking =
       Array.isArray(safeOrder.tracking) && safeOrder.tracking.length > 0
         ? safeOrder.tracking.filter(
             (entry) => entry && (entry.number || entry.company || entry.url || entry.status),
           )
         : [];
+    const statusMessage = this.prefersRomanUrdu(language)
+      ? tracking.length > 0
+        ? "Yahan aap ke order ki verified details aur tracking information hai."
+        : "Yahan aap ke order ki verified details hain. Tracking details dispatch ke baad update ho sakti hain."
+      : language === "urdu"
+        ? tracking.length > 0
+          ? "یہ آپ کے order کی verified details اور tracking information ہیں۔"
+          : "یہ آپ کے order کی verified details ہیں۔ Tracking details dispatch کے بعد update ہو سکتی ہیں۔"
+      : tracking.length > 0
+        ? "Here are your verified order details and tracking information."
+        : "Here are your verified order details. Tracking information may appear after dispatch.";
 
     return this.buildResponseWithSuggestions({
       type: "fallback",
-      message: "",
+      message: statusMessage,
       userMessage,
       order: {
         orderName: safeOrder.orderName,
@@ -5309,14 +6342,18 @@ YouTube: ${youtube}`;
     suggestionSeed?: string;
     skipSuggestions?: boolean;
   }): Promise<string> {
-    const baseProducts = input.products ?? [];
+    const baseProducts = this.filterRenderableProductCards(input.products ?? []);
     const suggestionStrategy = this.shouldAttachSuggestions(input)
       ? this.buildSuggestionStrategy(input)
       : null;
+    const shouldFetchFallbackSuggestions =
+      input.type === "product" &&
+      baseProducts.length === 0 &&
+      Boolean(suggestionStrategy);
     const suggestions =
       baseProducts.length > 0
         ? baseProducts
-        : input.skipSuggestions
+        : input.skipSuggestions && !shouldFetchFallbackSuggestions
           ? []
           : suggestionStrategy
             ? await this.getSuggestedProductCards(
@@ -5326,11 +6363,13 @@ YouTube: ${youtube}`;
               )
             : [];
 
+    const safeSuggestions = this.filterRenderableProductCards(suggestions);
+
     return JSON.stringify({
       type: input.type,
       message: input.message,
       ...(input.order ? { order: input.order } : {}),
-      products: suggestions,
+      products: safeSuggestions,
       policy_link: input.policyLink ?? "",
       options: input.options,
     });
@@ -5362,6 +6401,10 @@ YouTube: ${youtube}`;
     suggestionSeed?: string;
     order?: Record<string, unknown>;
   }): boolean {
+    if (this.isSupportOrPolicyMessage(input.userMessage)) {
+      return false;
+    }
+
     if (input.type === "product") {
       return true;
     }
@@ -5392,10 +6435,87 @@ YouTube: ${youtube}`;
         0,
         DEFAULT_SUGGESTION_LIMIT,
       );
-      return this.buildProductCards(selected, rankingMessage);
+      const enrichedSelection = await this.getProductsByNames(
+        selected.map((product) => product.title).filter(Boolean),
+      );
+      const displaySelection =
+        enrichedSelection.length > 0
+          ? this.selectProductsForResponse(enrichedSelection, rankingMessage).slice(
+              0,
+              DEFAULT_SUGGESTION_LIMIT,
+            )
+          : selected;
+      const productCards = this.filterRenderableProductCards(
+        this.buildProductCards(displaySelection, rankingMessage),
+      );
+
+      if (productCards.length >= 3) {
+        return productCards;
+      }
+
+      const fallbackCards = await this.getNamedFallbackProductCards(query, rankingMessage);
+      const combinedCards = this.filterRenderableProductCards([
+        ...productCards,
+        ...fallbackCards,
+      ]);
+
+      if (combinedCards.length > 0) {
+        return combinedCards.slice(0, DEFAULT_SUGGESTION_LIMIT);
+      }
+
+      const broadRecommendations = await shopifyService
+        .getStorefrontRecommendations("popular snacks best sellers", DEFAULT_SUGGESTION_LIMIT * 3)
+        .catch(() => []);
+      const broadSelected = this.selectProductsForResponse(
+        broadRecommendations,
+        "popular snacks best sellers",
+      ).slice(0, DEFAULT_SUGGESTION_LIMIT);
+      const enrichedBroadSelection = await this.getProductsByNames(
+        broadSelected.map((product) => product.title).filter(Boolean),
+      );
+      const displayBroadSelection =
+        enrichedBroadSelection.length > 0
+          ? this.selectProductsForResponse(
+              enrichedBroadSelection,
+              "popular snacks best sellers",
+            ).slice(0, DEFAULT_SUGGESTION_LIMIT)
+          : broadSelected;
+
+      const broadCards = this.filterRenderableProductCards(
+        this.buildProductCards(displayBroadSelection, "popular snacks best sellers"),
+      );
+      const namedFallbackCards = await this.getNamedFallbackProductCards(
+        "popular snacks best sellers",
+        "popular snacks best sellers",
+      );
+
+      return this.filterRenderableProductCards([
+        ...broadCards,
+        ...namedFallbackCards,
+      ]).slice(0, DEFAULT_SUGGESTION_LIMIT);
     } catch {
       return [];
     }
+  }
+
+  private async getNamedFallbackProductCards(
+    query: string,
+    rankingMessage: string,
+  ): Promise<ProductResponseCard[]> {
+    const fallbackNames = this.resolveFallbackStructuredProductNames(query);
+    if (fallbackNames.length === 0) {
+      return [];
+    }
+
+    const fallbackProducts = await this.getProductsByNames(fallbackNames);
+    const selectedFallbacks = this.selectProductsForResponse(
+      fallbackProducts,
+      rankingMessage,
+    ).slice(0, DEFAULT_SUGGESTION_LIMIT);
+
+    return this.filterRenderableProductCards(
+      this.buildProductCards(selectedFallbacks, rankingMessage),
+    );
   }
 
   private buildSuggestionStrategy(input: {
@@ -5505,9 +6625,39 @@ YouTube: ${youtube}`;
   }
 
   private looksLikeProductDiscovery(message: string): boolean {
+    if (this.isSupportOrPolicyMessage(message)) {
+      return false;
+    }
+
     return /(best|top|recommend|suggest|deal|bundle|combo|snack|snacks|sweet|spicy|salty|crispy|crunchy|healthy|banana|nachos|wafer|gift|family|movie night|tea time)/i.test(
       message,
     );
+  }
+
+  private isSupportOrPolicyMessage(message: string): boolean {
+    return /\b(track|tracking|order status|where is my order|refund|return|replacement|replace|damaged|complaint|policy|policies|shipping|delivery|charges|cancel|cancellation|payment|checkout|whatsapp|instagram|facebook|tiktok|youtube|social media|support|contact|email|phone|address|human|agent)\b/i.test(
+      message,
+    );
+  }
+
+  private filterRenderableProductCards(products: ProductResponseCard[]): ProductResponseCard[] {
+    const seen = new Set<string>();
+
+    return products.filter((product) => {
+      const name = product.name.trim().toLowerCase();
+      const link = product.link.trim();
+      if (!name || !link.includes("/products/")) {
+        return false;
+      }
+
+      const key = `${name}::${link}`;
+      if (seen.has(key)) {
+        return false;
+      }
+
+      seen.add(key);
+      return true;
+    });
   }
 
   private shouldAnswerProductQuestionDirectly(
@@ -5696,6 +6846,30 @@ YouTube: ${youtube}`;
     return /[.!?]$/.test(description) ? description : `${description}.`;
   }
 
+  private getCompactMeaningfulProductDescription(product: ProductLookupResult): string | null {
+    const description = this.getMeaningfulProductDescription(product);
+    return description ? this.shortenProductAnswerContent(description, 170) : null;
+  }
+
+  private shortenProductAnswerContent(content: string, maxLength = 210): string {
+    const normalized = content
+      .replace(/<[^>]+>/g, " ")
+      .replace(/#[\w-]+/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    if (!normalized) {
+      return "";
+    }
+
+    const firstSentence = normalized.match(/^(.+?[.!?])(?:\s|$)/)?.[1] ?? normalized;
+    if (firstSentence.length <= maxLength) {
+      return firstSentence;
+    }
+
+    return `${firstSentence.slice(0, Math.max(0, maxLength - 3)).trim()}...`;
+  }
+
   private buildGeneralProductDetailAnswer(normalizedMessage: string): string {
     if (/\b(certificate|certification|halal certificate|certificate chahiye|certificate chaiye|certificate do)\b/i.test(normalizedMessage)) {
       return "FM Foods publicly lists Halal certification as part of its quality standards. If you need certificate copies, please contact support for the latest confirmation.";
@@ -5757,9 +6931,12 @@ YouTube: ${youtube}`;
       const priceLabel = this.resolveProductPriceLabel(product);
       return {
         name: product.title,
-        description: this.buildCustomerProductDescription(product, savings, userMessage),
+        description: this.buildCompactProductCardDescription(
+          this.buildCustomerProductDescription(product, savings, userMessage),
+        ),
         price: priceLabel,
         link: product.link,
+        ...(product.imageUrl ? { image: product.imageUrl } : {}),
         cart_link: product.cartLink ?? product.link,
         ...(savings ? { savings: savings.toFixed(0) } : {}),
       };
@@ -5787,7 +6964,15 @@ YouTube: ${youtube}`;
     totalCount: number,
     totalSavings: number,
   ): string {
+    const language = this.detectSnakitosLanguage(userMessage);
+
     if (this.isPopularIntent(userMessage)) {
+      if (this.prefersRomanUrdu(language)) {
+        return totalCount > 1
+          ? "Yeh Snakitos ke best sellers hain jo customers abhi sab se zyada pick kar rahe hain. Main ne neeche strong options add kar diye hain."
+          : "Yeh Snakitos ke best sellers mein se ek strong pick hai jo customers abhi zyada le rahe hain.";
+      }
+
       return totalCount > 1
         ? "These are the Snakitos best sellers customers are picking most right now. I added the strongest options below."
         : "This is one of the Snakitos best sellers customers are picking most right now.";
@@ -5798,9 +6983,24 @@ YouTube: ${youtube}`;
         totalSavings > 0
           ? ` Estimated savings across these value picks: PKR ${totalSavings.toFixed(0)}.`
           : "";
+      if (this.prefersRomanUrdu(language)) {
+        const romanSavingsLine =
+          totalSavings > 0
+            ? ` In value picks mein takreeban PKR ${totalSavings.toFixed(0)} ki savings ban sakti hai.`
+            : "";
+        return totalCount > 1
+          ? `Best value pick ${bestMatch.name} hai. Main ne neeche aur bhi strong-value options add kiye hain.${romanSavingsLine}`
+          : `Best value pick ${bestMatch.name} hai.${romanSavingsLine}`;
+      }
       return totalCount > 1
         ? `Best value pick: ${bestMatch.name}. I also added more strong-value options below.${savingsLine}`
         : `Best value pick: ${bestMatch.name}.${savingsLine}`;
+    }
+
+    if (this.prefersRomanUrdu(language)) {
+      return totalCount > 1
+        ? `${bestMatch.name} is request ke liye strong pick hai. Main ne saath mein kuch aur achay options bhi add kiye hain.`
+        : `${bestMatch.name} is request ke liye strong pick hai.`;
     }
 
     return totalCount > 1
@@ -6136,6 +7336,24 @@ YouTube: ${youtube}`;
     }
 
     return description;
+  }
+
+  private buildCompactProductCardDescription(description: string): string {
+    const normalized = description
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    if (!normalized) {
+      return "Snakitos snack, ready to view on the product page.";
+    }
+
+    const firstSentence = normalized.match(/^(.+?[.!?])(?:\s|$)/)?.[1] ?? normalized;
+    if (firstSentence.length <= 88) {
+      return firstSentence;
+    }
+
+    return `${firstSentence.slice(0, 85).trim()}...`;
   }
 
   private parseDisplayPrice(price: string | null | undefined): number {

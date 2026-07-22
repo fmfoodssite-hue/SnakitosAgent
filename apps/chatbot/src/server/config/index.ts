@@ -49,7 +49,7 @@ export const config = {
   app: {
     // Use ADMIN_SESSION_SECRET (the real signed-cookie secret) — not ADMIN_SECRET_KEY
     adminSecret: getEnv("ADMIN_SESSION_SECRET"),
-    whatsappNumber: getEnv("SUPPORT_WHATSAPP") || "+92-345-828-3827",
+    whatsappNumber: getEnv("SUPPORT_WHATSAPP") || "+92-343-6366369",
     supportPhone: getEnv("SUPPORT_PHONE") || "+92-345-8283825",
     supportEmail: "info@snakitos.com",
     openAiModel: "gpt-4o",

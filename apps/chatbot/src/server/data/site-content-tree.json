@@ -115,13 +115,13 @@
               {
                 "id": "prod:wafer-hazelnut",
                 "title": "Wafer Rolls Hazelnut - 80g",
-                "url": "https://snakitos.com/products/wafer-roll-hazelnut",
+                "url": "https://snakitos.com/collections/sweet-tooth/products/hazelnut-snakitos-wafer-sticks-rolls",
                 "type": "product_page",
                 "metadata_seed": {
                   "name": "Wafer Rolls Hazelnut - 80g",
                   "description": "Crispy wafer rolls with rich hazelnut filling.",
                   "tags": ["product", "sweet-tooth", "wafer-roll", "hazelnut"],
-                  "link": "https://snakitos.com/products/wafer-roll-hazelnut",
+                  "link": "https://snakitos.com/collections/sweet-tooth/products/hazelnut-snakitos-wafer-sticks-rolls",
                   "fallback_link": "https://snakitos.com/collections/sweet-tooth",
                   "discoverability_status": "resolved"
                 }
@@ -170,14 +170,14 @@
               },
               {
                 "id": "prod:snaktory-box",
-                "title": "Snakitos Snaktory",
-                "url": "https://snakitos.com/collections/sweet-tooth/products/snakitos-snaktory",
+                "title": "Snakitos Snaktory Indulgence",
+                "url": "https://snakitos.com/collections/sweet-tooth/products/snakitos-snaktory-spicy-stix-collection-copy",
                 "type": "product_page",
                 "metadata_seed": {
-                  "name": "Snakitos Snaktory",
+                  "name": "Snakitos Snaktory Indulgence",
                   "description": "Gift-style wafer and Coco Choco bundle.",
                   "tags": ["product", "sweet-tooth", "bundle", "snaktory"],
-                  "link": "https://snakitos.com/collections/sweet-tooth/products/snakitos-snaktory",
+                  "link": "https://snakitos.com/collections/sweet-tooth/products/snakitos-snaktory-spicy-stix-collection-copy",
                   "fallback_link": "https://snakitos.com/collections/sweet-tooth",
                   "discoverability_status": "resolved"
                 }
@@ -185,13 +185,13 @@
               {
                 "id": "prod:wafer-hazelnut-pack-6",
                 "title": "Wafer Roll Hazelnut - Pack of 6",
-                "url": "https://snakitos.com/collections/sweet-tooth/products/wafer-roll-hazelnut-pack-of-6",
+                "url": "https://snakitos.com/products/hazelnut-snakitos-wafer-sticks-rolls",
                 "type": "product_page",
                 "metadata_seed": {
                   "name": "Wafer Roll Hazelnut - Pack of 6",
                   "description": "Hazelnut wafer rolls multipack.",
                   "tags": ["product", "sweet-tooth", "multipack", "hazelnut"],
-                  "link": "https://snakitos.com/collections/sweet-tooth/products/wafer-roll-hazelnut-pack-of-6",
+                  "link": "https://snakitos.com/products/hazelnut-snakitos-wafer-sticks-rolls",
                   "fallback_link": "https://snakitos.com/collections/sweet-tooth",
                   "discoverability_status": "resolved"
                 }
@@ -509,13 +509,13 @@
                   {
                     "id": "prod:wafer-wonder-bundle",
                     "title": "Wafer Wonder Bundle - Hazelnut Snakitos Wafer Sticks / Rolls | Free Shipping",
-                    "url": "https://snakitos.com/collections/bundle/products/wafer-wonder-bundle-hazelnut-snakitos-wafer-sticks-rolls-free-shipping-1",
+                    "url": "https://snakitos.com/collections/bundle/products/fm-foods-mega-snack-deal-1",
                     "type": "product_page",
                     "metadata_seed": {
                       "name": "Wafer Wonder Bundle - Hazelnut Snakitos Wafer Sticks / Rolls | Free Shipping",
                       "description": "Hazelnut wafer-roll bundle with free shipping.",
                       "tags": ["product", "bundle", "wafer-roll", "hazelnut", "free-shipping"],
-                      "link": "https://snakitos.com/collections/bundle/products/wafer-wonder-bundle-hazelnut-snakitos-wafer-sticks-rolls-free-shipping-1",
+                      "link": "https://snakitos.com/collections/bundle/products/fm-foods-mega-snack-deal-1",
                       "fallback_link": "https://snakitos.com/collections/bundle",
                       "discoverability_status": "resolved"
                     }
@@ -600,21 +600,6 @@
                 ]
               }
             ]
-          },
-          {
-            "id": "col:organic-natural",
-            "title": "Organic - Natural",
-            "url": "https://snakitos.com/collections/organic-natural",
-            "type": "collection_page",
-            "item_count_observed": 0,
-            "metadata_seed": {
-              "name": "Organic - Natural",
-              "description": "Empty placeholder collection during crawl.",
-              "tags": ["product", "collection", "organic", "empty-placeholder"],
-              "link": "https://snakitos.com/collections/organic-natural",
-              "fallback_link": "https://snakitos.com/collections/all",
-              "discoverability_status": "resolved"
-            }
           }
         ]
       },

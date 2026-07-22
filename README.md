@@ -52,7 +52,7 @@ flowchart LR
 - Conversation context using recent messages and in-memory session state.
 - Supabase persistence for users, chats, messages, logs, mirrored admin chat sessions, answer traces, failed answers, token usage, and guardrail events.
 - Safety guardrails for prompt injection, sensitive credential requests, OTP/password/card data, and unsupported input.
-- WhatsApp/support fallback messaging.
+- WhatsApp/support fallback messaging with a direct customer chat link.
 
 ### Admin Dashboard
 
@@ -280,7 +280,7 @@ npm --prefix apps/admin run start
 | `SHOPIFY_CLIENT_SECRET` | Optional | Shopify client credential flow. |
 | `SHOPIFY_API_VERSION` | Optional | Shopify API version, default `2025-01` in chatbot. |
 | `SHOPIFY_STOREFRONT_BASE_URL` | Optional | Admin storefront link base, default `https://snakitos.com`. |
-| `SUPPORT_WHATSAPP` | Optional | WhatsApp fallback number. |
+| `SUPPORT_WHATSAPP` | Optional | WhatsApp fallback number, currently `+92-343-6366369`. The chatbot UI opens this as `https://wa.me/923436366369` for the WhatsApp Support button. |
 | `SUPPORT_PHONE` | Optional | Phone fallback number. |
 
 ## Database Architecture
@@ -625,7 +625,7 @@ This keeps build settings, environment variables, domains, and logs cleanly sepa
 ### Chatbot Deployment
 
 1. Create a Vercel project with root directory `apps/chatbot`.
-2. Add chatbot env vars: Supabase, OpenAI, Shopify, optional Pinecone, support contact values.
+2. Add chatbot env vars: Supabase, OpenAI, Shopify, optional Pinecone, support contact values. If `SUPPORT_WHATSAPP` is set in Vercel, keep it synced with the official support number: `+92-343-6366369`.
 3. Build command: `npm run build`.
 4. Output is handled by Next.js.
 

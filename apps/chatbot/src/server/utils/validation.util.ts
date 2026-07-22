@@ -50,13 +50,24 @@ export function extractNumericOrderId(value: string): string {
   return match?.[0] ?? "";
 }
 
+function looksLikeOrderReferenceToken(value: string): boolean {
+  const normalized = value.trim().replace(/^#/, "");
+  if (!normalized || normalized.length < 3) {
+    return false;
+  }
+
+  return /\d/.test(normalized);
+}
+
 export function extractOrderReference(message: string): string {
   const original = message;
   const withoutPhones = message.replace(/(?:\+?\d[\d\s\-()]{8,}\d)/g, " ");
 
   const explicitHash = original.match(/#\s*([A-Z0-9-]{3,})/i);
   if (explicitHash) {
-    return normalizeOrderReference(`#${explicitHash[1]}`);
+    return looksLikeOrderReferenceToken(explicitHash[1])
+      ? normalizeOrderReference(`#${explicitHash[1]}`)
+      : "";
   }
 
   const orderPhrase = original.match(
@@ -64,6 +75,9 @@ export function extractOrderReference(message: string): string {
   );
   if (orderPhrase) {
     const raw = orderPhrase[1];
+    if (!looksLikeOrderReferenceToken(raw)) {
+      return "";
+    }
     if (/^\d+$/.test(raw)) {
       return `#${raw}`;
     }
@@ -75,6 +89,9 @@ export function extractOrderReference(message: string): string {
   );
   if (reverseOrderPhrase) {
     const raw = reverseOrderPhrase[1];
+    if (!looksLikeOrderReferenceToken(raw)) {
+      return "";
+    }
     return /^\d+$/.test(raw) ? `#${raw}` : normalizeOrderReference(raw.startsWith("#") ? raw : `#${raw}`);
   }
 

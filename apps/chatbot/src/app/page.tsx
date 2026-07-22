@@ -31,6 +31,7 @@ interface Product {
   price?: string;
   description: string;
   link?: string;
+  image?: string;
   savings?: string;
 }
 
@@ -104,8 +105,9 @@ type SendRequest = {
   silent?: boolean;
 };
 
-const STORE_PRODUCTS_URL = "https://snakitos.com/collections/all";
 const CHAT_SESSION_EVENT = "chat-session-change";
+const SNAKITOS_POLICY_URL = "https://snakitos.com/policies/privacy-policy";
+const SNAKITOS_WHATSAPP_URL = "https://wa.me/923436366369";
 
 type ChatSessionSnapshot = {
   chatId: string;
@@ -119,6 +121,26 @@ const EMPTY_CHAT_SESSION: ChatSessionSnapshot = Object.freeze({
   userId: "",
 });
 let cachedChatSessionSnapshot: ChatSessionSnapshot = EMPTY_CHAT_SESSION;
+
+const WELCOME_MESSAGE_TEXT = [
+  "Hi! I can help with orders, deals, recommendations, delivery, payments, and refunds.",
+  "سلام! میں orders، deals، recommendations، delivery، payments اور refunds میں آپ کی مدد کر سکتا ہوں۔",
+].join("\n");
+
+function buildWelcomeMessageContent(): string {
+  if (WELCOME_MESSAGE_TEXT) {
+    return JSON.stringify({
+      type: "mixed",
+      message: WELCOME_MESSAGE_TEXT,
+    });
+  }
+
+  return JSON.stringify({
+    type: "mixed",
+    message:
+      "Hi! I’m the Snakitos AI Assistant. I can help you track orders, find snack deals, recommend snacks by taste or budget, and answer questions about delivery, payments, and refunds.\n\nAap mujh se kisi bhi language mein baat kar sakte hain. Main aapko usi language mein jawab dunga jismein aap baat karenge.\n\nWhat are you craving today - spicy, sweet, crunchy, or a mixed snack box?",
+  });
+}
 
 const HOME_SHORTCUTS: Array<{
   label: string;
@@ -324,7 +346,7 @@ export default function PublicChatbot() {
       writeChatSession({ userId: effectiveUserId });
     }
 
-    const detectedPhone = extractPhoneNumber(messageToSend) || chatSession.phone;
+    const detectedPhone = extractPhoneNumber(messageToSend);
     if (detectedPhone) {
       writeChatSession({ phone: detectedPhone });
     }
@@ -374,24 +396,52 @@ export default function PublicChatbot() {
 
   const renderOptions = (options: Option[]) => (
     <div className={styles.optionRow}>
-      {ensureNavigationOptions(options).map((option) => (
-        <button
-          key={`${option.label}-${option.value}`}
-          onClick={() => handlePreset(option.value, option.label)}
-          className={styles.optionChip}
-        >
-          {option.label === "Back" ? <CornerDownLeft size={12} /> : null}
-          {option.label === "Home" ? <House size={12} /> : null}
-          {option.label}
-        </button>
-      ))}
+      {ensureNavigationOptions(options).map((option) => {
+        const isWhatsAppSupport =
+          option.label.toLowerCase() === "whatsapp support" ||
+          option.value.toLowerCase().includes("whatsapp support");
+
+        if (isWhatsAppSupport) {
+          return (
+            <a
+              key={`${option.label}-${option.value}`}
+              href={SNAKITOS_WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.optionChip}
+            >
+              {option.label}
+            </a>
+          );
+        }
+
+        return (
+          <button
+            key={`${option.label}-${option.value}`}
+            onClick={() => handlePreset(option.value, option.label)}
+            className={styles.optionChip}
+          >
+            {option.label === "Back" ? <CornerDownLeft size={12} /> : null}
+            {option.label === "Home" ? <House size={12} /> : null}
+            {option.label}
+          </button>
+        );
+      })}
     </div>
   );
 
   const renderAssistantMessage = (content: string, showActions: boolean) => {
     try {
-      if (content.trim().startsWith("{")) {
-        const parsed = JSON.parse(content) as StructuredContent;
+      if (content.includes("Snakitos AI Assistant")) {
+        content = buildWelcomeMessageContent();
+      }
+
+      const normalizedContent = content.includes("Hi! Iâ€™m the Snakitos AI Assistant")
+        ? buildWelcomeMessageContent()
+        : content;
+
+      if (normalizedContent.trim().startsWith("{")) {
+        const parsed = JSON.parse(normalizedContent) as StructuredContent;
         return (
           <div className={styles.assistantContent}>
             {parsed.order ? renderOrderSummary(parsed.order) : renderParagraphText(parsed.message)}
@@ -400,9 +450,21 @@ export default function PublicChatbot() {
               <div className={styles.productList}>
                 {parsed.products.map((product, index) => (
                   <div key={`${product.name}-${index}`} className={styles.productCard}>
-                    <div className={styles.productIcon}>
-                      <ShoppingBag size={18} />
-                    </div>
+                    {product.image ? (
+                      <div className={styles.productImageWrap}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className={styles.productImage}
+                          loading="lazy"
+                        />
+                      </div>
+                    ) : (
+                      <div className={styles.productIcon}>
+                        <ShoppingBag size={18} />
+                      </div>
+                    )}
                     <div className={styles.productMeta}>
                       <div className={styles.productTopRow}>
                         <h4>{product.name}</h4>
@@ -414,15 +476,17 @@ export default function PublicChatbot() {
                         </div>
                       ) : null}
                       <p>{product.description}</p>
-                      <a
-                        href={product.link || STORE_PRODUCTS_URL}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.productLink}
-                      >
-                        Open on Snakitos
-                        <ExternalLink size={12} />
-                      </a>
+                      {resolveProductLink(product.link) ? (
+                        <a
+                          href={resolveProductLink(product.link) ?? undefined}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.productLink}
+                        >
+                          Open product page
+                          <ExternalLink size={12} />
+                        </a>
+                      ) : null}
                     </div>
                   </div>
                 ))}
@@ -431,7 +495,7 @@ export default function PublicChatbot() {
 
             {parsed.policy_link ? (
               <a
-                href={parsed.policy_link}
+                href={resolvePolicyLink(parsed.policy_link)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.policyLink}
@@ -830,6 +894,24 @@ function formatProductPrice(price?: string): string {
   }
 
   return /^\d/.test(trimmed) ? `PKR ${trimmed}` : trimmed;
+}
+
+function resolveProductLink(link?: string): string | null {
+  const normalized = link?.trim() || "";
+  if (!normalized.includes("/products/")) {
+    return null;
+  }
+
+  return normalized;
+}
+
+function resolvePolicyLink(link?: string): string {
+  const normalized = link?.trim() || "";
+  if (!normalized || /\/policies\/?$/i.test(normalized) || normalized.includes("/policies/")) {
+    return SNAKITOS_POLICY_URL;
+  }
+
+  return SNAKITOS_POLICY_URL;
 }
 
 function formatOrderHeading(order: OrderSummary): string {

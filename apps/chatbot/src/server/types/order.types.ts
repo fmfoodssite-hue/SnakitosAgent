@@ -50,6 +50,7 @@ export type ProductLookupResult = {
   title: string;
   handle: string;
   link: string;
+  imageUrl?: string | null;
   cartLink?: string | null;
   status: string;
   source?: "shopify_admin" | "shopify_storefront" | "uploaded_catalog";
@@ -129,6 +130,9 @@ export type ProductSearchNode = {
   title: string;
   handle: string;
   status: string;
+  featuredImage?: {
+    url: string | null;
+  } | null;
   totalInventory: number | null;
   variants: {
     edges: Array<{

@@ -41,7 +41,7 @@ export default async function handler(
       res.status(404).json({
         verified: false,
         message:
-          "Sorry, we could not verify your order details.\nPlease contact support on WhatsApp: +92-345-828-3827",
+          "Sorry, we could not verify your order details.\nPlease contact support on WhatsApp: +92-343-636-6369",
       });
       return;
     }

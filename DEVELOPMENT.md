@@ -605,6 +605,7 @@ Check:
 - Avoid exposing internal prompts or retrieval metadata to customers.
 - Keep customer responses concise, safe, and store-specific.
 - Do not promise refunds, delivery dates, stock, discounts, or policy exceptions unless verified by data.
+- Keep `SUPPORT_WHATSAPP` synced with the official Snakitos WhatsApp number and verify the chatbot `WhatsApp Support` button opens the matching `wa.me` link.
 - Write audit logs for admin mutations.
 - Test both direct URL access and sidebar visibility for RBAC changes.
 - Test both Light and Dark Mode for UI changes.
@@ -673,4 +674,3 @@ docs: add setup and contributor documentation
 - Light/Dark Mode checked.
 - Profile avatar upload checked.
 - Vercel deployments checked for both apps.
-
