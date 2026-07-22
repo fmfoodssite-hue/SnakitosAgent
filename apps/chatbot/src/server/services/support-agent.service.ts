@@ -295,6 +295,7 @@ export class SupportAgentService {
           chatId,
           userId,
           input.clientKey,
+          this.getConversationState(chatId, userId),
         ));
       const safeResponse = aiService.sanitizeCustomerResponse(response.response);
 
@@ -380,11 +381,18 @@ export class SupportAgentService {
     chatId: string,
     userId: string,
     clientKey?: string,
+    state?: ConversationState,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
+    const language = this.resolveConversationLanguage(
+      userMessage,
+      state?.last_language,
+      state?.language_locked,
+    );
+
     if (this.isGreetingOrSmallTalk(userMessage)) {
       return {
         intent: "general",
-        response: await this.buildGreetingResponse(userMessage),
+        response: await this.buildGreetingResponse(userMessage, language),
       };
     }
 
@@ -406,10 +414,10 @@ export class SupportAgentService {
     }
 
     if (this.isPolicyQuestion(userMessage)) {
-      return this.handlePolicyIntent(userMessage);
+      return this.handlePolicyIntent(userMessage, language);
     }
 
-    return this.handleGeneralIntent(userMessage);
+    return this.handleGeneralIntent(userMessage, language);
   }
 
   private getConversationState(chatId: string, userId: string): ConversationState {
@@ -476,6 +484,10 @@ export class SupportAgentService {
     }
 
     if (classified.intent === "fallback_unknown") {
+      this.saveConversationState(chatId, userId, {
+        last_language: classified.language === "mixed" ? state.last_language : classified.language,
+        language_locked: true,
+      });
       return null;
     }
 
@@ -1419,7 +1431,7 @@ YouTube: ${youtube}`;
     }
 
     if (
-      /^(sure|yes|ok|okay|continue|show me|han|haan|acha|theek|yes please)$/i.test(normalized) &&
+      /^(sure|yes|ok|okay|continue|show me|han|haan|acha|theek|yes please|اوکے|ٹھیک|ہاں|جی)$/i.test(normalized) &&
       state.pending_action
     ) {
       return { intent: "confirmation_continue", language };
@@ -2027,6 +2039,7 @@ YouTube: ${youtube}`;
       "se",
       "apki",
       "apko",
+      "apke",
       "kia",
       "kya",
       "jo",
@@ -2055,8 +2068,12 @@ YouTube: ${youtube}`;
       "han",
       "theek",
       "chahiye",
+      "chahye",
+      "chaiye",
       "karo",
       "kar",
+      "kr",
+      "krlu",
       "meetha",
       "teekha",
       "teekhay",
@@ -2094,14 +2111,18 @@ YouTube: ${youtube}`;
       "kyun",
       "kis",
       "kon",
+      "konsa",
+      "konsi",
       "mujhy",
       "apka",
+      "pass",
       "hamara",
       "hoga",
     ].filter((token) => tokens.includes(token)).length;
     const strongRomanHits = [
       "apki",
       "apko",
+      "apke",
       "kia",
       "kya",
       "hoti",
@@ -2121,8 +2142,11 @@ YouTube: ${youtube}`;
       "hai",
       "hain",
       "chahiye",
+      "chahye",
+      "chaiye",
       "karo",
       "kar",
+      "kr",
       "dikhao",
       "dekhao",
       "pasand",
@@ -2135,8 +2159,11 @@ YouTube: ${youtube}`;
       "kyun",
       "kis",
       "kon",
+      "konsa",
+      "konsi",
       "mujhy",
       "apka",
+      "pass",
       "hoga",
     ].filter((token) => tokens.includes(token)).length;
     const englishHits = [
@@ -2195,6 +2222,24 @@ YouTube: ${youtube}`;
     return language === "roman_urdu" || language === "mixed";
   }
 
+  private toResponseLanguageInstruction(
+    language?: "english" | "roman_urdu" | "mixed" | "urdu",
+  ): string | undefined {
+    if (!language) {
+      return undefined;
+    }
+
+    if (language === "urdu") {
+      return "Urdu";
+    }
+
+    if (this.prefersRomanUrdu(language)) {
+      return "Roman Urdu";
+    }
+
+    return "English";
+  }
+
   private resolveConversationLanguage(
     message: string,
     previousLanguage?: "english" | "roman_urdu" | "mixed" | "urdu",
@@ -2220,6 +2265,13 @@ YouTube: ${youtube}`;
 
     if (languageLocked && previousLanguage) {
       if (this.isLanguageNeutralMessage(message)) {
+        return previousLanguage;
+      }
+
+      if (
+        previousLanguage === "roman_urdu" &&
+        detected === "english"
+      ) {
         return previousLanguage;
       }
 
@@ -2252,7 +2304,7 @@ YouTube: ${youtube}`;
 
   private isLanguageNeutralMessage(message: string): boolean {
     const normalized = this.normalizeSnakitosMessage(message);
-    if (/^(home|back|ok|okay|yes|no|thanks|thank you|show categories|show best deals|track my order|recommend something|spicy snacks|sweet snacks|salty snacks|kids snacks|office snacks|gift bundles|movie night snacks)$/i.test(normalized)) {
+    if (/^(home|back|ok|okay|yes|no|thanks|thank you|show categories|show best deals|track my order|recommend something|spicy snacks|sweet snacks|salty snacks|kids snacks|office snacks|gift bundles|movie night snacks|اوکے|ٹھیک|ہاں|جی|شکریہ)$/i.test(normalized)) {
       return true;
     }
 
@@ -2528,7 +2580,9 @@ YouTube: ${youtube}`;
           response: await this.buildResponseWithSuggestions({
             type: "fallback",
             message:
-              language === "roman_urdu"
+              language === "urdu"
+                ? "یہ Snakitos کی اہم snack categories ہیں:"
+                : language === "roman_urdu"
                 ? "Snakitos ki main snack categories yeh hain:"
                 : "Browse the main Snakitos snack collections below:",
             userMessage,
@@ -3450,7 +3504,9 @@ YouTube: ${youtube}`;
       response: await this.buildCuratedRecommendationResponseText(
         userMessage,
         "bundle combo deal more options family pack party pack",
-        language === "roman_urdu"
+        language === "urdu"
+          ? "Perfect! یہ مزید snack deals اور bundles ہیں جو آپ explore کر سکتے ہیں:"
+          : language === "roman_urdu"
           ? "Perfect! Yahan aur snack deals aur bundles hain jo aap explore kar sakte hain:"
           : "Perfect! Here are more snack deals and bundles you can explore:",
       ),
@@ -4819,6 +4875,7 @@ YouTube: ${youtube}`;
 
   private async handlePolicyIntent(
     userMessage: string,
+    resolvedLanguage?: "english" | "roman_urdu" | "mixed" | "urdu",
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
     const deliveryLocationResponse = await this.buildDeliveryLocationResponse(userMessage);
     if (deliveryLocationResponse) {
@@ -4853,7 +4910,7 @@ YouTube: ${youtube}`;
 
     return {
       intent: "general",
-      response: await this.buildKnowledgeResponse(knowledge, userMessage),
+      response: await this.buildKnowledgeResponse(knowledge, userMessage, resolvedLanguage),
       data: policyDocument,
     };
   }
@@ -4891,6 +4948,7 @@ YouTube: ${youtube}`;
 
   private async handleGeneralIntent(
     userMessage: string,
+    resolvedLanguage?: "english" | "roman_urdu" | "mixed" | "urdu",
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
     if (this.shouldAskForOrderIdentifier(userMessage)) {
       return {
@@ -4947,7 +5005,11 @@ YouTube: ${youtube}`;
 
     return {
       intent: "general",
-      response: await this.buildKnowledgeResponse(relevantKnowledge, userMessage),
+      response: await this.buildKnowledgeResponse(
+        relevantKnowledge,
+        userMessage,
+        resolvedLanguage,
+      ),
       data: relevantKnowledge,
     };
   }
@@ -5458,11 +5520,16 @@ YouTube: ${youtube}`;
       .join(" ");
   }
 
-  private async buildGreetingResponse(userMessage: string): Promise<string> {
+  private async buildGreetingResponse(
+    userMessage: string,
+    resolvedLanguage: "english" | "roman_urdu" | "mixed" | "urdu" = "english",
+  ): Promise<string> {
     if (/^(show categories|collections|menu)$/i.test(userMessage.trim())) {
       return this.buildResponseWithSuggestions({
         type: "fallback",
-        message: "Browse the main snack collections below.",
+        message: this.prefersRomanUrdu(resolvedLanguage)
+          ? "Neeche main Snakitos snack collections browse kar sakte hain."
+          : "Browse the main snack collections below.",
         userMessage,
         options: [
           { label: "Sweet Tooth", value: "Show me Sweet Tooth snacks" },
@@ -5480,7 +5547,9 @@ YouTube: ${youtube}`;
     return this.buildResponseWithSuggestions({
       type: "fallback",
       message:
-        "I'm here to help with snacks, bundles, order tracking, and delivery details. You can chat in English, Urdu, or Roman Urdu.",
+        this.prefersRomanUrdu(resolvedLanguage)
+          ? "Main snacks, bundles, order tracking, aur delivery details mein help kar sakta hoon. Aap Roman Urdu mein baat kar sakte hain."
+          : "I'm here to help with snacks, bundles, order tracking, and delivery details. You can chat in English, Urdu, or Roman Urdu.",
       userMessage,
       suggestionSeed: "best snack deals",
       options: [
@@ -6172,6 +6241,7 @@ YouTube: ${youtube}`;
       source: string;
     }>,
     userMessage: string,
+    resolvedLanguage?: "english" | "roman_urdu" | "mixed" | "urdu",
   ): Promise<string> {
     const topKnowledge = knowledge.slice(0, 3);
     const policyLink =
@@ -6219,6 +6289,7 @@ YouTube: ${youtube}`;
       knowledge: topKnowledge,
       options,
       policyLink,
+      responseLanguage: this.toResponseLanguageInstruction(resolvedLanguage),
       type,
       userMessage,
     });
@@ -6237,6 +6308,7 @@ YouTube: ${youtube}`;
     }>;
     options: Array<{ label: string; value: string }>;
     policyLink: string;
+    responseLanguage?: string;
     type: "policy" | "mixed";
     userMessage: string;
   }): Promise<string> {
@@ -6246,6 +6318,7 @@ YouTube: ${youtube}`;
         userMessage: input.userMessage,
         context: {
           knowledge: input.knowledge,
+          responseLanguage: input.responseLanguage,
         },
       });
 

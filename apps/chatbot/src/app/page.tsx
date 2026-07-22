@@ -11,12 +11,14 @@ import {
   House,
   Loader2,
   MessageCircle,
+  Minus,
   Package,
   ScrollText,
   Send,
   ShoppingBag,
   Sparkles,
   User,
+  X,
 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import styles from "./page.module.css";
@@ -125,7 +127,7 @@ let cachedChatSessionSnapshot: ChatSessionSnapshot = EMPTY_CHAT_SESSION;
 const WELCOME_MESSAGE_TEXT = [
   "Hi! I can help with orders, deals, recommendations, delivery, payments, and refunds.",
   "السلام علیکم! 😊\n\nمیں آپ کی آرڈرز، ڈیلز، پروڈکٹ ریکمینڈیشنز، ڈیلیوری، ادائیگیوں، اور ریفنڈز سے متعلق ہر قسم کی مدد کر سکتا ہوں۔",
-].join("\n");
+].join("\n\n");
 
 function buildWelcomeMessageContent(): string {
   if (WELCOME_MESSAGE_TEXT) {
@@ -280,6 +282,7 @@ export default function PublicChatbot() {
     getEmptyChatSession,
   );
   const [activeView, setActiveView] = useState<ViewMode>("home");
+  const [isWidgetOpen, setIsWidgetOpen] = useState(false);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -532,9 +535,36 @@ export default function PublicChatbot() {
     );
   };
 
-  return (
-    <main className={`${styles.page} ${isEmbedded ? styles.pageEmbedded : ""}`}>
-      <div className={`${styles.shellWrap} ${isEmbedded ? styles.shellWrapEmbedded : ""}`}>
+  const chatShell = (
+    <div
+      className={`${styles.shellWrap} ${isEmbedded ? styles.shellWrapEmbedded : styles.widgetPanel}`}
+    >
+      {!isEmbedded ? (
+        <div className={styles.widgetTopbar}>
+          <div className={styles.widgetTopbarText}>
+            <span>Customer Support</span>
+            <small>Usually replies instantly</small>
+          </div>
+          <div className={styles.widgetControls}>
+            <button
+              type="button"
+              onClick={() => setIsWidgetOpen(false)}
+              className={styles.widgetControlButton}
+              aria-label="Minimize chat"
+            >
+              <Minus size={16} />
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsWidgetOpen(false)}
+              className={styles.widgetControlButton}
+              aria-label="Close chat"
+            >
+              <X size={16} />
+            </button>
+          </div>
+        </div>
+      ) : null}
         <section className={`${styles.chatShell} ${isEmbedded ? styles.chatShellEmbedded : ""}`}>
           <header className={styles.chatHeader}>
             <div className={styles.chatIdentity}>
@@ -673,7 +703,29 @@ export default function PublicChatbot() {
             </button>
           </nav>
         </section>
-      </div>
+    </div>
+  );
+
+  return (
+    <main className={`${styles.page} ${isEmbedded ? styles.pageEmbedded : ""}`}>
+      {isEmbedded || isWidgetOpen ? chatShell : null}
+      {!isEmbedded && !isWidgetOpen ? (
+        <button
+          type="button"
+          onClick={() => setIsWidgetOpen(true)}
+          className={styles.chatLauncher}
+          aria-label="Open customer support chat"
+          aria-expanded={isWidgetOpen}
+        >
+          <span className={styles.launcherIcon}>
+            <MessageCircle size={22} />
+          </span>
+          <span className={styles.launcherCopy}>
+            <strong>Customer Support</strong>
+            <small>Chat with Snakitos</small>
+          </span>
+        </button>
+      ) : null}
     </main>
   );
 }
@@ -841,11 +893,23 @@ function renderParagraphText(content: string): React.ReactNode {
     .map((block) => block.trim())
     .filter(Boolean);
 
-  return blocks.map((block, index) => (
-    <p key={`${block}-${index}`} className={styles.assistantText}>
-      {renderTextWithLinks(block)}
-    </p>
-  ));
+  return blocks.map((block, index) => {
+    const isRtl = containsRtlText(block);
+
+    return (
+      <p
+        key={`${block}-${index}`}
+        className={`${styles.assistantText} ${isRtl ? styles.assistantTextRtl : ""}`}
+        dir={isRtl ? "rtl" : "ltr"}
+      >
+        {renderTextWithLinks(block)}
+      </p>
+    );
+  });
+}
+
+function containsRtlText(value: string): boolean {
+  return /[\u0600-\u06ff]/.test(value);
 }
 
 function renderUserMessage(content: string): React.ReactNode {
