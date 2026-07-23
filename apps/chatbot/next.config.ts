@@ -39,7 +39,7 @@ const nextConfig: NextConfig = {
           {
             key: "Content-Security-Policy",
             value:
-              "frame-ancestors 'self' https://snakitos-agent.vercel.app/ https://*.myshopify.com https://*.shopify.com https://snakitos.com https://www.snakitos.com;",
+              "frame-ancestors 'self' http://127.0.0.1:5500/index.html https://*.myshopify.com https://*.shopify.com https://snakitos.com https://www.snakitos.com;",
           },
         ],
       },
