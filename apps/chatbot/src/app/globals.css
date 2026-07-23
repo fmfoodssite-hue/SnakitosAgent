@@ -7,16 +7,17 @@
   --color-foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
-  @theme {
-    --color-background: #0a0a0a;
-    --color-foreground: #ededed;
-  }
+:root {
+  color-scheme: light;
+  background: transparent;
+  color: var(--color-foreground);
 }
 
-:root {
-  background: var(--color-background);
-  color: var(--color-foreground);
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+  background: transparent;
 }
 
 body {

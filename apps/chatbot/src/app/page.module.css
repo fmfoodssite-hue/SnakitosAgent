@@ -21,6 +21,7 @@
   padding: 0;
   background: transparent;
   pointer-events: auto;
+  overflow: hidden;
 }
 
 .shellWrap {
