@@ -12,7 +12,26 @@ function normalizeAdminAppUrl(value: string | undefined): string {
   return (value ?? "").trim().replace(/\/+$/, "");
 }
 
+function getFrameAncestors(): string {
+  const defaults = [
+    "'self'",
+    "http://127.0.0.1:5500",
+    "http://localhost:5500",
+    "https://*.myshopify.com",
+    "https://*.shopify.com",
+    "https://snakitos.com",
+    "https://www.snakitos.com",
+  ];
+  const configured = (process.env.CHATBOT_FRAME_ANCESTORS ?? "")
+    .split(/[,\s]+/)
+    .map((origin) => origin.trim().replace(/\/+$/, ""))
+    .filter(Boolean);
+
+  return Array.from(new Set([...defaults, ...configured])).join(" ");
+}
+
 const adminAppUrl = normalizeAdminAppUrl(process.env.ADMIN_APP_URL);
+const frameAncestors = getFrameAncestors();
 
 const nextConfig: NextConfig = {
   async rewrites() {
@@ -38,8 +57,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: "Content-Security-Policy",
-            value:
-              "frame-ancestors 'self' http://127.0.0.1:5500/index.html https://*.myshopify.com https://*.shopify.com https://snakitos.com https://www.snakitos.com;",
+            value: `frame-ancestors ${frameAncestors};`,
           },
         ],
       },
