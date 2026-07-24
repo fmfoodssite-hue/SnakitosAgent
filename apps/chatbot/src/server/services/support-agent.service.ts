@@ -410,14 +410,14 @@ export class SupportAgentService {
     }
 
     if (intent === "product") {
-      return this.handleProductIntent(userMessage, chatId);
+      return this.handleProductIntent(userMessage, chatId, language);
     }
 
     if (this.isPolicyQuestion(userMessage)) {
       return this.handlePolicyIntent(userMessage, language);
     }
 
-    return this.handleGeneralIntent(userMessage, language);
+    return this.handleGeneralIntent(userMessage, language, chatId);
   }
 
   private getConversationState(chatId: string, userId: string): ConversationState {
@@ -1422,6 +1422,7 @@ YouTube: ${youtube}`;
     const bareBudgetMatch = isBudgetFollowUp ? normalized.match(/^(\d{3,5})$/) : null;
     const budget = budgetMatch?.[1] ?? bareBudgetMatch?.[1] ?? "";
     const category = this.extractKnownCategory(userMessage);
+    const flavorAvailabilityName = this.extractFlavorAvailabilityName(userMessage);
     const specificProductName = this.extractPotentialProductName(userMessage);
     const productName = specificProductName;
     const detailFollowUpIntent = this.getProductDetailFollowUpIntent(state, normalized, productName);
@@ -1488,7 +1489,7 @@ YouTube: ${youtube}`;
       return { intent: "order_tracking", language };
     }
 
-    if (/(how to order|order kaise karna hai|checkout kaise hoga|payment kaise karun|kaise order karun|how do i order|how can i order|cod hai|cash on delivery|payment methods?|آرڈر کیسے کرنا ہے|آرڈر کیسے کروں|ادائیگی کیسے ہوگی|چیک آؤٹ کیسے ہوگا)/i.test(normalized)) {
+    if (/(how to order|order kaise karna hai|checkout kaise hoga|payment kaise karun|kaise order karun|how do i order|how can i order|cod hai|cash on delivery|آرڈر کیسے کرنا ہے|آرڈر کیسے کروں|ادائیگی کیسے ہوگی|چیک آؤٹ کیسے ہوگا)/i.test(normalized)) {
       return { intent: "how_to_order", language };
     }
 
@@ -1549,7 +1550,11 @@ YouTube: ${youtube}`;
       return { intent: "shipping_refund_policy", language };
     }
 
-    if (/(new customer|first time|pehli dafa|first order|i'm new here|im new here)/i.test(normalized)) {
+    if (
+      /(new customer|first time|pehli dafa|first order|i'm new here|im new here)/i.test(normalized) &&
+      !this.isProductAvailabilityQuestion(userMessage) &&
+      !this.isCustomerFrustrationMessage(userMessage)
+    ) {
       return { intent: "new_customer_query", language };
     }
 
@@ -1743,10 +1748,10 @@ YouTube: ${youtube}`;
       };
     }
 
-    if (/(out of stock|stock available|availability|available\?|restock|restocking|reserve this|new products coming|new arrivals)/i.test(normalized)) {
+    if (this.isProductAvailabilityQuestion(userMessage)) {
       return /(restock|restocking)/i.test(normalized)
-        ? { intent: "product_restock", language, productName }
-        : { intent: "product_availability", language, productName };
+        ? { intent: "product_restock", language, productName: productName || flavorAvailabilityName }
+        : { intent: "product_availability", language, productName: productName || flavorAvailabilityName };
     }
 
     if (/(too expensive|mehnga|expensive|prices high|price high|why are your prices high|i'll order later|ill order later|i am not sure|i'm not sure)/i.test(normalized)) {
@@ -1787,7 +1792,7 @@ YouTube: ${youtube}`;
       return { intent: "cod_query", language };
     }
 
-    if (/(online payment|card payment|bank transfer|wallet payment|can i pay online|payment$|card chalta|easypaisa|jazzcash|checkout issue)/i.test(normalized)) {
+    if (/(online payment|card payment|bank transfer|wallet payment|can i pay online|payment methods?|payment kaise (karte|karti|karun|karein|karain)|payment$|card chalta|easypaisa|jazzcash|checkout issue)/i.test(normalized)) {
       return { intent: "online_payment", language };
     }
 
@@ -2189,12 +2194,16 @@ YouTube: ${youtube}`;
       "help",
     ].filter((token) => tokens.includes(token)).length;
 
-    if (englishHits > 0 && strongRomanHits === 0) {
-      return "english";
+    if (strongRomanHits > 0) {
+      return "roman_urdu";
     }
 
-    if (strongRomanHits > 0 && romanHits >= englishHits) {
+    if (fallbackLanguage === "roman_urdu" && romanHits > 0 && englishHits > 0) {
       return "roman_urdu";
+    }
+
+    if (englishHits > 0 && romanHits === 0) {
+      return "english";
     }
 
     if (englishHits > romanHits) {
@@ -2408,6 +2417,10 @@ YouTube: ${youtube}`;
   > | null {
     const signals = this.getMultilingualProductSignals(message);
 
+    if (!signals.recommendation) {
+      return null;
+    }
+
     if (signals.kids) {
       return "kids_recommendation";
     }
@@ -2490,7 +2503,66 @@ YouTube: ${youtube}`;
   }
 
   private extractPotentialProductName(message: string): string {
-    return this.extractKnownCategory(message) || this.extractSpecificNamedProduct(message);
+    return (
+      this.extractKnownCategory(message) ||
+      this.extractFlavorAvailabilityName(message) ||
+      this.extractSpecificNamedProduct(message)
+    );
+  }
+
+  private extractFlavorAvailabilityName(message: string): string {
+    const normalized = this.normalizeSnakitosMessage(message).toLowerCase();
+    const directFlavorMatch = normalized.match(
+      /\b([a-z][a-z0-9-]{2,})\s+(?:flavou?r|flavoured|flavored)\b/i,
+    );
+    if (directFlavorMatch) {
+      const flavor = directFlavorMatch[1];
+      if (
+        !/^(best|which|what|konsa|konsi|kaunsa|kaunsi|koi|any|available|flavour|flavor|kon|kya|all|every|se|say|from)$/i.test(
+          flavor,
+        )
+      ) {
+        return flavor;
+      }
+    }
+
+    const knownFlavorMatch = normalized.match(
+      /\b(mango|aam|apple|seb|nashpati|pear|orange|malta|grape|angoor|pineapple|ananas)\b/i,
+    );
+    if (knownFlavorMatch) {
+      return knownFlavorMatch[1];
+    }
+    if (/\b(mango|aam)\b/i.test(normalized) || /آم|مینگو|مانگو/i.test(message)) {
+      return "mango";
+    }
+
+    return "";
+  }
+
+  private isProductAvailabilityQuestion(message: string): boolean {
+    const normalized = this.normalizeSnakitosMessage(message).toLowerCase();
+    const hasAvailabilitySignal =
+      /(out of stock|stock available|availability|available\?|restock|restocking|reserve this|new products coming|new arrivals)/i.test(
+        normalized,
+      ) ||
+      /\b(do you have|do u have|have this|available hai|hai apke pass|hai aapke pass|apke pass|aapke pass|pass hai|mil jayega|milega|show karte|dikha rahe|dikhao)\b/i.test(
+        normalized,
+      ) ||
+      /ہے|ہیں|دکھائیں|دکھاؤ|موجود|دستیاب/i.test(message);
+    const hasProductSignal =
+      Boolean(this.extractKnownCategory(message)) ||
+      Boolean(this.extractFlavorAvailabilityName(message)) ||
+      /\b(flavour|flavor|chips|snack|snacks|product|products)\b/i.test(normalized) ||
+      /[\u0600-\u06ff]/u.test(message);
+
+    return hasAvailabilitySignal && hasProductSignal;
+  }
+
+  private isCustomerFrustrationMessage(message: string): boolean {
+    const normalized = this.normalizeSnakitosMessage(message).toLowerCase();
+    return /\b(kbh|kab se|bar bar|samjh nahi|samajh nahi|understand nahi|frustrated|gussa|wrong|galat)\b/i.test(
+      normalized,
+    );
   }
 
   private extractSpecificNamedProduct(message: string): string {
@@ -3052,7 +3124,11 @@ YouTube: ${youtube}`;
       case "online_payment":
         return this.buildPolicyTemplateResponse(
           userMessage,
-          "I don’t have confirmed exact payment-method details in the current public policy. Please check checkout for available payment options or contact Snakitos support for confirmation.",
+          language === "urdu"
+            ? "مجھے موجودہ عوامی پالیسی میں ادائیگی کے طریقوں کی تصدیق شدہ مکمل فہرست نہیں ملی۔ براہِ کرم چیک آؤٹ پر دستیاب ادائیگی کے اختیارات دیکھیں یا تصدیق کے لیے Snakitos سپورٹ سے رابطہ کریں۔"
+            : this.prefersRomanUrdu(language)
+              ? "Payment methods ki exact list current public policy mein confirm nahi hai. Checkout par available options check karein ya confirmation ke liye Snakitos support se rabta karein."
+              : "I don’t have confirmed exact payment-method details in the current public policy. Please check checkout for available payment options or contact Snakitos support for confirmation.",
           "https://snakitos.com/policies/",
         );
       case "whatsapp_order":
@@ -3307,10 +3383,28 @@ YouTube: ${youtube}`;
       case "product_availability":
       case "product_restock":
         if (classified.productName) {
+          const flavorAvailabilityResponse = await this.buildFlavorAvailabilityResponse(
+            classified.productName,
+            userMessage,
+            language,
+          );
+          if (flavorAvailabilityResponse) {
+            return flavorAvailabilityResponse;
+          }
+
           return await this.buildSpecificProductDetailResponse(
             this.composeContextualQuery(state, classified, userMessage),
             userMessage,
           );
+        }
+        if (classified.intent === "product_availability") {
+          const availableFlavorResponse = await this.buildAvailableFlavorListResponse(
+            userMessage,
+            language,
+          );
+          if (availableFlavorResponse) {
+            return availableFlavorResponse;
+          }
         }
         return {
           intent: "general",
@@ -3881,6 +3975,112 @@ YouTube: ${youtube}`;
     return {
       intent: "product",
       response: await this.buildDirectProductAnswer(products, query),
+    };
+  }
+
+  private async buildFlavorAvailabilityResponse(
+    productName: string,
+    userMessage: string,
+    language: ClassifiedIntent["language"],
+  ): Promise<Omit<ChatResponsePayload, "chatId" | "userId"> | null> {
+    const requestedFlavor = this.extractFlavorAvailabilityName(productName || userMessage);
+    if (!requestedFlavor) {
+      return null;
+    }
+
+    const matchingProducts = await this.getProductsForStructuredQuery(
+      requestedFlavor,
+      requestedFlavor,
+    );
+    const exactFlavorProducts = matchingProducts.filter((product) =>
+      new RegExp(`\\b${requestedFlavor}\\b`, "i").test(
+        [product.title, product.handle, product.productType, product.tags.join(" ")]
+          .filter(Boolean)
+          .join(" "),
+      ),
+    );
+
+    if (exactFlavorProducts.length > 0) {
+      return {
+        intent: "product",
+        response: await this.buildDirectProductAnswer(
+          exactFlavorProducts,
+          userMessage,
+          language,
+        ),
+        data: exactFlavorProducts,
+      };
+    }
+
+    const alternatives = await this.getProductsForStructuredQuery("banana chips", "banana chips");
+    const requestedFlavorLabel =
+      requestedFlavor === "aam"
+        ? "Mango"
+        : requestedFlavor === "seb"
+          ? "Apple"
+          : requestedFlavor === "pear"
+            ? "Nashpati"
+            : requestedFlavor.charAt(0).toUpperCase() + requestedFlavor.slice(1);
+    const message =
+      language === "urdu"
+        ? "Mango flavour ابھی current catalog میں available نہیں لگ رہا۔ آپ یہ available flavours دیکھ سکتے ہیں:"
+        : this.prefersRomanUrdu(language)
+          ? `${requestedFlavorLabel} flavour abhi current catalog mein available nahi lag raha. Aap yeh available flavours dekh sakte hain:`
+          : `${requestedFlavorLabel} flavour does not look available in the current catalog right now. Here are available flavour options you can check:`;
+
+    return {
+      intent: "product",
+      response: await this.buildResponseWithSuggestions({
+        type: "product",
+        message,
+        userMessage,
+        products: this.buildProductCards(alternatives, userMessage),
+        options: [
+          { label: "Spicy", value: "spicy snacks" },
+          { label: "Sweet", value: "sweet snacks" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      }),
+      data: alternatives,
+    };
+  }
+
+  private async buildAvailableFlavorListResponse(
+    userMessage: string,
+    language: ClassifiedIntent["language"],
+  ): Promise<Omit<ChatResponsePayload, "chatId" | "userId"> | null> {
+    const products = await this.getProductsForStructuredQuery("snacks", "available snack flavors");
+    const nonBundleProducts = products.filter(
+      (product) => !/(deal|bundle|combo|box|fiesta|party|mega|ultimate)/i.test(product.title),
+    );
+    const displayProducts = (nonBundleProducts.length > 0 ? nonBundleProducts : products).slice(0, 6);
+
+    if (displayProducts.length === 0) {
+      return null;
+    }
+
+    const message =
+      language === "urdu"
+        ? "\u062c\u06cc\u060c Snakitos \u06a9\u06d2 \u06cc\u06c1 \u062f\u0633\u062a\u06cc\u0627\u0628 \u0630\u0627\u0626\u0642\u06d2 \u06c1\u06cc\u06ba:"
+        : this.prefersRomanUrdu(language)
+          ? "Ji, yeh Snakitos ke available flavours hain:"
+          : "Here are the available Snakitos flavors:";
+
+    return {
+      intent: "product",
+      response: await this.buildResponseWithSuggestions({
+        type: "product",
+        message,
+        userMessage,
+        products: this.buildProductCards(displayProducts, userMessage),
+        options: [
+          { label: "Back", value: "show categories" },
+          { label: "Home", value: "home" },
+        ],
+        skipSuggestions: true,
+      }),
+      data: displayProducts,
     };
   }
 
@@ -4470,6 +4670,7 @@ YouTube: ${youtube}`;
   private async handleProductIntent(
     userMessage: string,
     chatId: string,
+    resolvedLanguage?: "english" | "roman_urdu" | "mixed" | "urdu",
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
     if (
       /\b(certificate|certification|halal certificate|certificate chahiye|certificate chaiye|certificate do)\b/i.test(
@@ -4577,7 +4778,7 @@ YouTube: ${youtube}`;
         );
         return {
           intent: "product",
-          response: await this.buildProductResponse(curatedProducts, userMessage),
+          response: await this.buildProductResponse(curatedProducts, userMessage, resolvedLanguage),
           data: fallbackProducts,
         };
       }
@@ -4599,7 +4800,7 @@ YouTube: ${youtube}`;
         );
         return {
           intent: "product",
-          response: await this.buildProductResponse(curatedProducts, userMessage),
+          response: await this.buildProductResponse(curatedProducts, userMessage, resolvedLanguage),
           data: fallbackProducts,
         };
       }
@@ -4634,8 +4835,8 @@ YouTube: ${youtube}`;
     return {
       intent: "product",
       response: shouldAnswerDirectly
-        ? await this.buildDirectProductAnswer(curatedProducts, userMessage)
-        : await this.buildProductResponse(curatedProducts, userMessage),
+        ? await this.buildDirectProductAnswer(curatedProducts, userMessage, resolvedLanguage)
+        : await this.buildProductResponse(curatedProducts, userMessage, resolvedLanguage),
       data: products,
     };
   }
@@ -4889,6 +5090,19 @@ YouTube: ${youtube}`;
     const policyDocument = this.resolvePolicyDocument(userMessage);
 
     if (!policyDocument) {
+      const knowledge = await knowledgeService.retrieve(userMessage);
+      if (knowledge.length > 0) {
+        return {
+          intent: "general",
+          response: await this.buildKnowledgeResponse(
+            knowledge,
+            userMessage,
+            resolvedLanguage,
+          ),
+          data: knowledge,
+        };
+      }
+
       return {
         intent: "general",
         response: await this.buildResponseWithSuggestions({
@@ -4949,6 +5163,7 @@ YouTube: ${youtube}`;
   private async handleGeneralIntent(
     userMessage: string,
     resolvedLanguage?: "english" | "roman_urdu" | "mixed" | "urdu",
+    chatId?: string,
   ): Promise<Omit<ChatResponsePayload, "chatId" | "userId">> {
     if (this.shouldAskForOrderIdentifier(userMessage)) {
       return {
@@ -4964,6 +5179,18 @@ YouTube: ${youtube}`;
           ],
           skipSuggestions: true,
         }),
+      };
+    }
+
+    const languageCapabilityResponse = await this.buildLanguageCapabilityResponse(
+      userMessage,
+      resolvedLanguage,
+    );
+    if (languageCapabilityResponse) {
+      return {
+        intent: "general",
+        response: languageCapabilityResponse,
+        data: [],
       };
     }
 
@@ -5003,15 +5230,67 @@ YouTube: ${youtube}`;
       };
     }
 
+    const recentMessages = chatId
+      ? await this.withTimeout(
+          supabaseService.getRecentMessages(chatId, 6),
+          250,
+          [] as Array<{ role: "user" | "bot"; content: string }>,
+        )
+      : [];
+
     return {
       intent: "general",
       response: await this.buildKnowledgeResponse(
         relevantKnowledge,
         userMessage,
         resolvedLanguage,
+        recentMessages,
       ),
       data: relevantKnowledge,
     };
+  }
+
+  private async buildLanguageCapabilityResponse(
+    userMessage: string,
+    resolvedLanguage?: "english" | "roman_urdu" | "mixed" | "urdu",
+  ): Promise<string | null> {
+    if (!this.isLanguageCapabilityQuestion(userMessage)) {
+      return null;
+    }
+
+    const language = resolvedLanguage ?? this.detectSnakitosLanguage(userMessage);
+    const message =
+      language === "urdu"
+        ? "جی، میں سندھی، پنجابی، پشتو، اردو، رومن اردو یا انگریزی میں مدد کرنے کی پوری کوشش کر سکتا ہوں۔ آپ جس زبان میں آسانی محسوس کریں، اسی میں بات کریں۔"
+        : this.prefersRomanUrdu(language)
+          ? "Ji bilkul, main Sindhi, Punjabi, Pashto, Urdu, Roman Urdu ya English mein madad karne ki poori koshish kar sakta hoon. Aap jis language mein comfortable hain usi mein baat karein."
+          : "Yes, I can do my best to help in Sindhi, Punjabi, Pashto, Urdu, Roman Urdu, or English. Please continue in whichever language is easiest for you.";
+
+    return this.buildResponseWithSuggestions({
+      type: "fallback",
+      message,
+      userMessage,
+      options: [
+        { label: "Snack Deals", value: "show best deals" },
+        { label: "Track Order", value: "track my order" },
+        { label: "Home", value: "home" },
+      ],
+      skipSuggestions: true,
+    });
+  }
+
+  private isLanguageCapabilityQuestion(userMessage: string): boolean {
+    const normalized = this.normalizeSnakitosMessage(userMessage).toLowerCase();
+    const mentionsLanguage =
+      /\b(sindhi|sindhi language|punjabi|pashto|pushto|urdu|roman urdu|language|languages|zuban|zabaan)\b/.test(
+        normalized,
+      );
+    const asksCapability =
+      /\b(can you|do you|are you able|can u|could you|speak|talk|reply|respond|bol|bolo|bolna|bolte|bolti|baat|jawab)\b/.test(
+        normalized,
+      );
+
+    return mentionsLanguage && asksCapability;
   }
 
   private shouldAskForOrderIdentifier(userMessage: string): boolean {
@@ -5907,7 +6186,11 @@ YouTube: ${youtube}`;
     return null;
   }
 
-  private async buildProductResponse(products: ProductLookupResult[], userMessage: string): Promise<string> {
+  private async buildProductResponse(
+    products: ProductLookupResult[],
+    userMessage: string,
+    resolvedLanguage?: "english" | "roman_urdu" | "mixed" | "urdu",
+  ): Promise<string> {
     const rankedProducts = this.rankProductsForDisplay(products, userMessage);
     const isDealsRequest = this.isHighTicketIntent(userMessage);
     const rankedOrOriginal = rankedProducts.length > 0 ? rankedProducts : products;
@@ -5931,7 +6214,13 @@ YouTube: ${youtube}`;
     const bestMatch = productPayload[0];
     const totalSavings = this.sumDisplayedSavings(productPayload);
     const message = bestMatch
-      ? this.buildProductMessage(bestMatch, userMessage, displayProducts.length, totalSavings)
+      ? this.buildProductMessage(
+          bestMatch,
+          userMessage,
+          displayProducts.length,
+          totalSavings,
+          resolvedLanguage,
+        )
       : "Top Picks for You:";
 
     return this.buildResponseWithSuggestions({
@@ -5950,10 +6239,11 @@ YouTube: ${youtube}`;
   private async buildDirectProductAnswer(
     products: ProductLookupResult[],
     userMessage: string,
+    resolvedLanguage?: "english" | "roman_urdu" | "mixed" | "urdu",
   ): Promise<string> {
     const comparison = this.extractComparisonSubjects(userMessage);
     if (comparison) {
-      const language = this.detectSnakitosLanguage(userMessage);
+      const language = resolvedLanguage ?? this.detectSnakitosLanguage(userMessage);
       const left = this.pickBestExactProductMatch(comparison.left, products);
       const right = this.pickBestExactProductMatch(comparison.right, products);
       if (left && right) {
@@ -5973,7 +6263,7 @@ YouTube: ${youtube}`;
 
     const exactSubject = this.extractWhatIsSubject(userMessage);
     if (exactSubject) {
-      const language = this.detectSnakitosLanguage(userMessage);
+      const language = resolvedLanguage ?? this.detectSnakitosLanguage(userMessage);
       const best = this.pickBestExactProductMatch(exactSubject, products);
       if (best) {
         return this.buildResponseWithSuggestions({
@@ -5998,7 +6288,7 @@ YouTube: ${youtube}`;
     const bestMatch = displayProducts[0];
     const category = this.extractKnownCategory(userMessage);
     const isDiscoveryStyleQuery = this.looksLikeProductDiscovery(userMessage);
-    const language = this.detectSnakitosLanguage(userMessage);
+    const language = resolvedLanguage ?? this.detectSnakitosLanguage(userMessage);
     let message = this.buildConciseProductRecommendationIntro({
       category,
       isDiscoveryStyleQuery,
@@ -6242,6 +6532,7 @@ YouTube: ${youtube}`;
     }>,
     userMessage: string,
     resolvedLanguage?: "english" | "roman_urdu" | "mixed" | "urdu",
+    recentMessages: Array<{ role: "user" | "bot"; content: string }> = [],
   ): Promise<string> {
     const topKnowledge = knowledge.slice(0, 3);
     const policyLink =
@@ -6250,6 +6541,7 @@ YouTube: ${youtube}`;
       topKnowledge.length > 0 && topKnowledge.every((item) => item.type === "policy")
         ? "policy"
         : "mixed";
+    const questionCategory = this.resolveGeneralQuestionCategory(userMessage);
 
     const snippets = topKnowledge
       .map((item) => this.normalizeKnowledgeSnippet(item.text, item.name))
@@ -6290,9 +6582,67 @@ YouTube: ${youtube}`;
       options,
       policyLink,
       responseLanguage: this.toResponseLanguageInstruction(resolvedLanguage),
+      recentMessages,
+      questionCategory,
       type,
       userMessage,
     });
+  }
+
+  private resolveGeneralQuestionCategory(userMessage: string): string {
+    const normalized = this.normalizeSnakitosMessage(userMessage).toLowerCase();
+    if (
+      /\b(payment|paisa|paise|cod|cash on delivery|checkout|easypaisa|jazzcash|adaigi|adayi)\b/i.test(
+        normalized,
+      ) ||
+      /(?:\u0627\u062f\u0627\u0626\u06cc\u06af\u06cc|\u067e\u06cc\u0633\u06d2|\u0686\u06cc\u06a9\s*\u0622\u0624\u0679|\u06a9\u06cc\u0634\s*\u0622\u0646\s*\u0688\u0644\u06cc\u0648\u0631\u06cc)/u.test(
+        userMessage,
+      )
+    ) {
+      return "payment and checkout";
+    }
+
+    if (
+      /\b(delivery|shipping|courier|parcel|dispatch|kitne din|kitny din|kab tak|deliver)\b/i.test(
+        normalized,
+      ) ||
+      /(?:\u0688\u06cc\u0644\u06cc\u0648\u0631\u06cc|\u062a\u0631\u0633\u06cc\u0644|\u067e\u0627\u0631\u0633\u0644|\u06a9\u062a\u0646\u06d2\s+\u062f\u0646)/u.test(
+        userMessage,
+      )
+    ) {
+      return "shipping and delivery";
+    }
+
+    if (
+      /\b(refund|return|exchange|wapis|wapas|replace|damaged|kharab)\b/i.test(normalized) ||
+      /(?:\u0631\u06cc\u0641\u0646\u0688|\u0648\u0627\u067e\u0633|\u062a\u0628\u062f\u06cc\u0644|\u062e\u0631\u0627\u0628)/u.test(
+        userMessage,
+      )
+    ) {
+      return "returns and refunds";
+    }
+
+    if (
+      /\b(contact|rabta|rabita|number|phone|whatsapp|email|address|pata)\b/i.test(normalized) ||
+      /(?:\u0631\u0627\u0628\u0637\u06c1|\u0646\u0645\u0628\u0631|\u0648\u0627\u0679\u0633\u0627\u067e|\u0627\u06cc\u0645\u06cc\u0644|\u067e\u062a\u06c1)/u.test(
+        userMessage,
+      )
+    ) {
+      return "contact and support";
+    }
+
+    if (
+      /\b(what do you sell|what is snakitos|about|brand|company|real store|original website|kis cheez ka store|kya bechte|ap log kya bechte|aap kya bechte)\b/i.test(
+        normalized,
+      ) ||
+      /(?:\u0628\u0631\u0627\u0646\u0688|\u062f\u06a9\u0627\u0646|\u0627\u0633\u0679\u0648\u0631|\u0628\u06cc\u0686\u062a\u06d2)/u.test(
+        userMessage,
+      )
+    ) {
+      return "brand and store";
+    }
+
+    return "general store question";
   }
 
   private async buildAiKnowledgeResponse(input: {
@@ -6309,6 +6659,8 @@ YouTube: ${youtube}`;
     options: Array<{ label: string; value: string }>;
     policyLink: string;
     responseLanguage?: string;
+    recentMessages: Array<{ role: "user" | "bot"; content: string }>;
+    questionCategory: string;
     type: "policy" | "mixed";
     userMessage: string;
   }): Promise<string> {
@@ -6318,7 +6670,9 @@ YouTube: ${youtube}`;
         userMessage: input.userMessage,
         context: {
           knowledge: input.knowledge,
+          recentMessages: input.recentMessages,
           responseLanguage: input.responseLanguage,
+          questionCategory: input.questionCategory,
         },
       });
 
@@ -7036,8 +7390,9 @@ YouTube: ${youtube}`;
     userMessage: string,
     totalCount: number,
     totalSavings: number,
+    resolvedLanguage?: "english" | "roman_urdu" | "mixed" | "urdu",
   ): string {
-    const language = this.detectSnakitosLanguage(userMessage);
+    const language = resolvedLanguage ?? this.detectSnakitosLanguage(userMessage);
 
     if (this.isPopularIntent(userMessage)) {
       if (this.prefersRomanUrdu(language)) {

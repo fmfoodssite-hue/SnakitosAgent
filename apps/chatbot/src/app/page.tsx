@@ -129,6 +129,14 @@ const WELCOME_MESSAGE_TEXT = [
   "السلام علیکم! 😊\n\nمیں آپ کی آرڈرز، ڈیلز، پروڈکٹ ریکمینڈیشنز، ڈیلیوری، ادائیگیوں، اور ریفنڈز سے متعلق ہر قسم کی مدد کر سکتا ہوں۔",
 ].join("\n\n");
 
+const STARTER_QUESTIONS: string[] = [
+  "Mera order kahan hai?",
+  "Aaj kal kaunsi deals chal rahi hain?",
+  "Mujhe best snacks suggest karein",
+  "Delivery kitne din mein hoti hai?",
+  "Refund ya return policy kya hai?",
+];
+
 function buildWelcomeMessageContent(): string {
   if (WELCOME_MESSAGE_TEXT) {
     return JSON.stringify({
@@ -433,6 +441,24 @@ export default function PublicChatbot() {
     </div>
   );
 
+  const renderStarterQuestions = () => (
+    <div className={styles.starterQuestions} aria-label="Suggested questions">
+      <p className={styles.starterQuestionsTitle}>Aap yahan se start kar sakte hain:</p>
+      <div className={styles.starterQuestionGrid}>
+        {STARTER_QUESTIONS.map((question) => (
+          <button
+            key={question}
+            type="button"
+            onClick={() => handleSend(question)}
+            className={styles.starterQuestionChip}
+          >
+            {question}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
   const renderAssistantMessage = (content: string, showActions: boolean) => {
     try {
       if (content.includes("Snakitos AI Assistant")) {
@@ -647,6 +673,10 @@ export default function PublicChatbot() {
                     );
                   })(),
                 )}
+
+                {messages.length === 1 && messages[0]?.role === "assistant" && !loading
+                  ? renderStarterQuestions()
+                  : null}
 
                 {loading ? (
                   <div className={styles.messageRowAssistant}>

@@ -517,6 +517,61 @@
   direction: rtl;
 }
 
+.starterQuestions {
+  display: grid;
+  gap: 10px;
+  max-width: calc(100% - 42px);
+  margin-left: 42px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid #eeeeee;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+  animation: widgetEnter 180ms ease-out both;
+}
+
+.starterQuestionsTitle {
+  margin: 0;
+  color: #777777;
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.starterQuestionGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.starterQuestionChip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 9px 12px;
+  border: 1px solid rgba(255, 107, 44, 0.16);
+  border-radius: 999px;
+  background: #fff6f1;
+  color: #6d3b26;
+  font-size: 0.76rem;
+  font-weight: 800;
+  line-height: 1.25;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(255, 107, 44, 0.08);
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.starterQuestionChip:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 107, 44, 0.28);
+  background: #ffede4;
+  color: #ff6b2c;
+}
+
 .inlineLink {
   color: #ff6b2c;
   font-weight: 700;
@@ -1185,9 +1240,14 @@
 
   .assistantBubble,
   .userBubble,
-  .loadingBubble {
+  .loadingBubble,
+  .starterQuestions {
     max-width: calc(100% - 34px);
     padding: 14px;
+  }
+
+  .starterQuestions {
+    margin-left: 34px;
   }
 
   .productCard {
@@ -1204,6 +1264,10 @@
   }
 
   .optionChip {
+    max-width: 100%;
+  }
+
+  .starterQuestionChip {
     max-width: 100%;
   }
 

@@ -296,6 +296,8 @@ export class KnowledgeService {
       .replace(/[?!.,]+$/g, "")
       .replace(/\s+/g, " ")
       .trim();
+    const semanticQuery = this.buildMultilingualSemanticQuery(originalQuery);
+    const routedQuery = [normalized, semanticQuery].filter(Boolean).join(" ");
     const language = this.detectQueryLanguage(originalQuery);
     const orderIdentifierPattern =
       /(#\s*[a-z0-9-]{3,}|\b\d{4,}\b|\b[\w.+-]+@[\w.-]+\.[a-z]{2,}\b|(?:\+?\d[\d\s\-()]{8,}\d))/i;
@@ -561,7 +563,7 @@ export class KnowledgeService {
         collectionToSearch:
           matchedRoute.publicCollectionToSearch ?? matchedRoute.collectionToSearch,
         searchQueries: [
-          normalized,
+           routedQuery,
           matchedRoute.normalizedQuery,
           matchedRoute.keywords,
           matchedRoute.romanUrdu,
@@ -576,23 +578,25 @@ export class KnowledgeService {
       };
     }
 
-    const intent = this.inferRoutedIntent(normalized);
+    const intent = this.inferRoutedIntent(routedQuery);
     const normalizedIntent = this.normalizeRouteIntent(intent);
     const collectionToSearch =
       normalizedIntent === "order_status"
         ? "orders_collection"
         : normalizedIntent === "store_policy"
           ? "store_faq_collection"
-          : "products_collection";
-    const normalizedQuery = this.expandNormalizedQuery(normalized, normalizedIntent);
-    const keywordQuery = this.buildKeywordQuery(normalized, normalizedIntent);
-    const romanUrduQuery = this.buildRomanUrduQuery(normalized, normalizedQuery, normalizedIntent);
-    const categoryQuery = this.buildCategoryQuery(normalized, normalizedIntent);
+          : normalizedIntent === "unknown"
+            ? "store_faq_collection"
+            : "products_collection";
+    const normalizedQuery = this.expandNormalizedQuery(routedQuery, normalizedIntent);
+    const keywordQuery = this.buildKeywordQuery(routedQuery, normalizedIntent);
+    const romanUrduQuery = this.buildRomanUrduQuery(routedQuery, normalizedQuery, normalizedIntent);
+    const categoryQuery = this.buildCategoryQuery(routedQuery, normalizedIntent);
     const publicCollection =
       intent === "mixed"
         ? "router_selects_correct_collection"
         : collectionToSearch;
-    const requiredAction = this.resolveRouteAction(intent, normalizedIntent, normalized, originalQuery, orderIdentifierPattern);
+    const requiredAction = this.resolveRouteAction(intent, normalizedIntent, routedQuery, originalQuery, orderIdentifierPattern);
 
     return {
       originalQuery,
@@ -600,10 +604,215 @@ export class KnowledgeService {
       normalizedQuery,
       intent,
       collectionToSearch: publicCollection,
-      searchQueries: [normalized, normalizedQuery, keywordQuery, romanUrduQuery, categoryQuery],
+      searchQueries: [normalized, semanticQuery, normalizedQuery, keywordQuery, romanUrduQuery, categoryQuery].filter(Boolean),
       requiredAction,
     };
   }
+
+  private buildMultilingualSemanticQuery(query: string): string {
+    const normalized = query.toLowerCase().replace(/\s+/g, " ").trim();
+    const terms = new Set<string>();
+    const add = (value: string, matcher: RegExp): void => {
+      if (matcher.test(normalized)) {
+        terms.add(value);
+      }
+    };
+    const hasUrdu = (codePointTerms: number[][]): boolean =>
+      codePointTerms.some((term) => normalized.includes(String.fromCodePoint(...term)));
+    const urdu = (...codePoints: number[]): number[] => codePoints;
+
+    add(
+      "brand about store what do you sell",
+      /\b(what do you sell|what is snakitos|about|brand|company|real store|original website|kis cheez ka store|kya bechte|ap log kya bechte|aap kya bechte|aap kon ho|ap kon ho|kon ho)\b/i,
+    );
+    if (
+      hasUrdu([
+        urdu(0x0628, 0x0631, 0x0627, 0x0646, 0x0688),
+        urdu(0x062f, 0x06a9, 0x0627, 0x0646),
+        urdu(0x0627, 0x0633, 0x0679, 0x0648, 0x0631),
+        urdu(0x0628, 0x06cc, 0x0686, 0x062a, 0x06d2),
+      ])
+    ) {
+      terms.add("brand about store what do you sell");
+    }
+
+    add(
+      "shipping delivery delivery time courier pakistan",
+      /\b(delivery|shipping|courier|parcel|kitne din|kitny din|kab tak|kab ayega|deliver|shehar|city)\b/i,
+    );
+    if (
+      hasUrdu([
+        urdu(0x0688, 0x06cc, 0x0644, 0x06cc, 0x0648, 0x0631, 0x06cc),
+        urdu(0x062a, 0x0631, 0x0633, 0x06cc, 0x0644),
+        urdu(0x067e, 0x0627, 0x0631, 0x0633, 0x0644),
+        urdu(0x06a9, 0x062a, 0x0646, 0x06d2),
+      ])
+    ) {
+      terms.add("shipping delivery delivery time courier pakistan");
+    }
+
+    add(
+      "payment checkout cash on delivery",
+      /\b(payment|paisa|paise|cod|cash on delivery|checkout|easypaisa|jazzcash|adaigi|adayi|payment kaise)\b/i,
+    );
+    if (
+      hasUrdu([
+        urdu(0x0627, 0x062f, 0x0627, 0x0626, 0x06cc, 0x06af, 0x06cc),
+        urdu(0x067e, 0x06cc, 0x0633, 0x06d2),
+        urdu(0x0686, 0x06cc, 0x06a9, 0x0622, 0x0624, 0x0679),
+        urdu(0x06a9, 0x06cc, 0x0634),
+      ])
+    ) {
+      terms.add("payment checkout cash on delivery");
+    }
+
+    add(
+      "returns refunds exchange support",
+      /\b(refund|return|wapis|wapas|paise wapis|replace|exchange|tabdeel|kharab|damaged)\b/i,
+    );
+    if (
+      hasUrdu([
+        urdu(0x0631, 0x06cc, 0x0641, 0x0646, 0x0688),
+        urdu(0x0648, 0x0627, 0x067e, 0x0633),
+        urdu(0x062a, 0x0628, 0x062f, 0x06cc, 0x0644),
+        urdu(0x0634, 0x06a9, 0x0627, 0x06cc, 0x062a),
+        urdu(0x062e, 0x0631, 0x0627, 0x0628),
+      ])
+    ) {
+      terms.add("returns refunds exchange support");
+    }
+
+    add(
+      "contact support whatsapp phone email address",
+      /\b(contact|rabta|rabita|number|phone|whatsapp|email|address|pata)\b/i,
+    );
+    if (
+      hasUrdu([
+        urdu(0x0631, 0x0627, 0x0628, 0x0637, 0x06c1),
+        urdu(0x0646, 0x0645, 0x0628, 0x0631),
+        urdu(0x0648, 0x0627, 0x0679, 0x0633, 0x0627, 0x067e),
+        urdu(0x0627, 0x06cc, 0x0645, 0x06cc, 0x0644),
+        urdu(0x067e, 0x062a, 0x06c1),
+      ])
+    ) {
+      terms.add("contact support whatsapp phone email address");
+    }
+
+    add(
+      "order process place order checkout",
+      /\b(how to order|how do i order|order kaise|kaise order|order karna|checkout kaise|order process)\b/i,
+    );
+    if (
+      hasUrdu([
+        urdu(0x0622, 0x0631, 0x0688, 0x0631),
+        urdu(0x0622, 0x0631, 0x0688, 0x0631, 0x0020, 0x06a9, 0x06cc, 0x0633, 0x06d2),
+        urdu(0x0686, 0x06cc, 0x06a9),
+      ])
+    ) {
+      terms.add("order process place order checkout");
+    }
+
+    add(
+      "product facts ingredients halal freshness storage expiry",
+      /\b(ingredient|ingredients|ajza|halal|fresh|taza|expiry|shelf life|storage|store kaise|safe)\b/i,
+    );
+    if (
+      hasUrdu([
+        urdu(0x0627, 0x062c, 0x0632, 0x0627, 0x0621),
+        urdu(0x062d, 0x0644, 0x0627, 0x0644),
+        urdu(0x062a, 0x0627, 0x0632, 0x06c1),
+        urdu(0x0645, 0x06cc, 0x0639, 0x0627, 0x062f),
+        urdu(0x0645, 0x062d, 0x0641, 0x0648, 0x0638),
+      ])
+    ) {
+      terms.add("product facts ingredients halal freshness storage expiry");
+    }
+
+    add(
+      "snack recommendation products best spicy sweet salty kids",
+      /\b(recommend|suggest|best|snack|snacks|products|spicy|sweet|salty|meetha|teekha|namkeen|kids|bachay|bache|tasty)\b/i,
+    );
+    if (
+      hasUrdu([
+        urdu(0x062a, 0x062c, 0x0648, 0x06cc, 0x0632),
+        urdu(0x0633, 0x0641, 0x0627, 0x0631, 0x0634),
+        urdu(0x0628, 0x06c1, 0x062a, 0x0631),
+        urdu(0x0645, 0x06cc, 0x0679, 0x06be, 0x0627),
+        urdu(0x0646, 0x0645, 0x06a9, 0x06cc, 0x0646),
+        urdu(0x0628, 0x0686, 0x0648, 0x06ba),
+      ])
+    ) {
+      terms.add("snack recommendation products best spicy sweet salty kids");
+    }
+
+    add(
+      "complaint support issue",
+      /\b(complaint|issue|problem|masla|masla hai|support|agent|shikayat)\b/i,
+    );
+    if (
+      hasUrdu([
+        urdu(0x0634, 0x06a9, 0x0627, 0x06cc, 0x062a),
+        urdu(0x0645, 0x0633, 0x0626, 0x0644, 0x06c1),
+        urdu(0x0645, 0x0634, 0x06a9, 0x0644),
+        urdu(0x0633, 0x067e, 0x0648, 0x0631, 0x0679),
+      ])
+    ) {
+      terms.add("complaint support issue");
+    }
+
+    return [...terms].join(" ");
+  }
+
+  /*
+  private buildLegacyMultilingualSemanticQuery(query: string): string {
+    const normalized = query.toLowerCase().replace(/\s+/g, " ").trim();
+    const terms = new Set<string>();
+    const add = (value: string, matcher: RegExp): void => {
+      if (matcher.test(normalized)) {
+        terms.add(value);
+      }
+    };
+
+    add(
+      "brand about store what do you sell",
+      /\b(what do you sell|what is snakitos|about|brand|company|real store|original website|kis cheez ka store|kya bechte|ap log kya bechte|aap kya bechte|aap kon ho|ap kon ho|kon ho)\b/i,
+    );
+    add(
+      "shipping delivery delivery time courier pakistan",
+      /\b(delivery|shipping|courier|parcel|kitne din|kitny din|kab tak|kab ayega|deliver|shehar|city)\b|[\u062f\u068c\u0644\u06cc\u0648\u0631\u06cc\u062a\u0631\u0633\u06cc\u0644\u067e\u0627\u0631\u0633\u0644\u0634\u06c1\u0631\u06a9\u062a\u0646\u06d2 \u062f\u0646]/u,
+    );
+    add(
+      "payment checkout cash on delivery",
+      /\b(payment|paisa|paise|cod|cash on delivery|checkout|easypaisa|jazzcash|adaigi|adayi|payment kaise)\b|[\u0627\u062f\u0627\u0626\u06cc\u06af\u06cc\u067e\u06cc\u0633\u06d2\u0686\u06cc\u06a9 \u0622\u0624\u0679\u06a9\u06cc\u0634 \u0622\u0646 \u0688\u0644\u06cc\u0648\u0631\u06cc]/u,
+    );
+    add(
+      "returns refunds exchange support",
+      /\b(refund|return|wapis|wapas|paise wapis|replace|exchange|tabdeel|kharab|damaged)\b|[\u0631\u06cc\u0641\u0646\u0688\u0648\u0627\u067e\u0633\u0648\u0627\u067e\u0633\u06cc\u0631\u0642\u0645\u062a\u0628\u062f\u06cc\u0644\u06cc\u0634\u06a9\u0627\u06cc\u062a\u062e\u0631\u0627\u0628]/u,
+    );
+    add(
+      "contact support whatsapp phone email address",
+      /\b(contact|rabta|rabita|number|phone|whatsapp|email|address|pata)\b|[\u0631\u0627\u0628\u0637\u06c1\u0646\u0645\u0628\u0631\u0648\u0627\u0679\u0633\u0627\u067e\u0627\u06cc\u0645\u06cc\u0644\u067e\u062a\u06c1]/u,
+    );
+    add(
+      "order process place order checkout",
+      /\b(how to order|how do i order|order kaise|kaise order|order karna|checkout kaise|order process)\b|[\u0622\u0631\u0688\u0631\u06a9\u06cc\u0633\u06d2\u06a2\u0631\u0646\u0627\u0686\u06cc\u06a9 \u0622\u0624\u0679]/u,
+    );
+    add(
+      "product facts ingredients halal freshness storage expiry",
+      /\b(ingredient|ingredients|ajza|halal|fresh|taza|expiry|shelf life|storage|store kaise|safe)\b|[\u0627\u062c\u0632\u0627\u0621\u062d\u0644\u0627\u0644\u062a\u0627\u0632\u06c1\u0645\u06cc\u0639\u0627\u062f\u0627\u0645\u062d\u0641\u0648\u0638]/u,
+    );
+    add(
+      "snack recommendation products best spicy sweet salty kids",
+      /\b(recommend|suggest|best|snack|snacks|products|spicy|sweet|salty|meetha|teekha|namkeen|kids|bachay|bache|tasty)\b|[\u062a\u062c\u0648\u06cc\u0632\u0633\u0641\u0627\u0631\u0634\u0628\u06c1\062a\0631\u0645\u06cc\u0679\06be\0627\u0646مکین\u0628\u0686\0648\06ba]/u,
+    );
+    add(
+      "complaint support issue",
+      /\b(complaint|issue|problem|masla|masla hai|support|agent|shikayat)\b|[\u0634\u06a9\u0627\u06cc\u062a\u0645\u0633\u0626\u0644\u06c1\u0645\u0634\u06a9\u0644\u0633\u067e\u0648\u0631\u0679]/u,
+    );
+
+    return [...terms].join(" ");
+  }
+  */
 
   private detectQueryLanguage(message: string): RoutedLanguage {
     if (/[\u0600-\u06FF]/.test(message)) {
@@ -1160,9 +1369,19 @@ export class KnowledgeService {
 
         const phraseBoost =
           (/\b(halal|halaal|certificate|pha)\b/.test(query) && /halal/.test(loweredCategory) ? 10 : 0) +
-          (/\b(delivery|shipping|courier|track|dispatch|cod|cash on delivery)\b/.test(query) &&
-          /delivery|payment|order-support/.test(loweredCategory)
-            ? 10
+          (/\b(delivery|shipping|courier|dispatch)\b/.test(query) && /delivery/.test(loweredCategory)
+            ? 12
+            : 0) +
+          (/\b(track|tracking|order status|parcel)\b/.test(query) && /order-support/.test(loweredCategory)
+            ? 12
+            : 0) +
+          (/\b(cod|cash on delivery|payment|checkout|easypaisa|jazzcash)\b/.test(query) &&
+          /payment/.test(loweredCategory)
+            ? 12
+            : 0) +
+          (/\b(refund|return|exchange|wapis|wapas|replace)\b/.test(query) &&
+          /refund|return/.test(loweredCategory)
+            ? 12
             : 0) +
           (/\b(expiry|shelf life|ingredients|weight|wazan|pack size|fresh)\b/.test(query) &&
           /product-facts|trust-support/.test(loweredCategory)
@@ -1170,7 +1389,7 @@ export class KnowledgeService {
             : 0) +
           (/\b(contact|support|whatsapp|wholesale|bulk)\b/.test(query) &&
           /support|support-escalation/.test(loweredCategory)
-            ? 10
+            ? 12
             : 0) +
           (/\b(store|brand|about|physical|location)\b/.test(query) && /store-faq/.test(loweredCategory)
             ? 10

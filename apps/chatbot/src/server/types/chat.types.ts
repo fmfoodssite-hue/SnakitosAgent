@@ -16,6 +16,7 @@ export type KnowledgeDocument = {
 
 export type AgentContext = {
   responseLanguage?: string;
+  questionCategory?: string;
   order?: Partial<OrderLookupResult>;
   products?: ProductLookupResult[];
   knowledge?: KnowledgeDocument[];
